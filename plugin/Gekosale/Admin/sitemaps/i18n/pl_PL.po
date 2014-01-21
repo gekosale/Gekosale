@@ -1,0 +1,9 @@
+msgid "TXT_NEWS_LIST"
+msgstr "Dodaj mapę"
+
+msgid "TXT_SITMAPS_LIST"
+msgstr "Mapy strony"
+
+msgid "TXT_CHANGE_FREQ"
+msgstr "Częstotliwość zmian"
+

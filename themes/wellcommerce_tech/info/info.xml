@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+	<template>
+		<name>WellCommerce Technologiczny</name>
+		<version>1.0.2</version>
+		<author>WellCommerce</author>
+		<site_url>http://wellcommerce.pl/</site_url>
+		<help_url>http://wellcommerce.pl/zasoby/</help_url>
+		<description>Szablon technologiczny dla sklepów WellCommerce</description>
+	</template>
+</info>

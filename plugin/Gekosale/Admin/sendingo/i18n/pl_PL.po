@@ -1,0 +1,2 @@
+msgid "TXT_SYNC"
+msgstr "Synchronizuj"

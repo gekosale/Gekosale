@@ -1,0 +1,166 @@
+#Gettext format file. To install it use: php tool.php translate install
+msgid "TXT_SHIPMENTS"
+msgstr "Przesyłki"
+
+msgid "TXT_CHANGE_ORDER_STATUS"
+msgstr "Status zamówienia"
+
+msgid "TXT_COD_AMOUNT"
+msgstr "Wartość pobrania"
+
+msgid "TXT_NOTIFY_USER"
+msgstr "Powiadom klienta"
+
+msgid "TXT_SHIPMENT"
+msgstr "Przesyłka"
+
+msgid "TXT_SHIPMENT_ADDED_TO_ORDER"
+msgstr "Przesyłka została nadana do zamówienia: "
+
+msgid "TXT_SHIPMENT_AMOUNT"
+msgstr "Wartość przesyłki"
+
+msgid "TXT_SHIPMENT_DATE"
+msgstr "Data nadania"
+
+msgid "TXT_SHIPMENT_DISPATCHER_NUMBER"
+msgstr "List przewozowy"
+
+msgid "TXT_SHIPMENT_NUMBER"
+msgstr "Numer przesyłki"
+
+msgid "TXT_SHIPMENT_WEIGHT"
+msgstr "Waga [kg]"
+
+msgid "TXT_STATUS_NO_CHANGE"
+msgstr "Nie zmieniaj statusu"
+
+msgid "TXT_CHANGE_ORDER_STATUS"
+msgstr "Status zamówienia"
+
+msgid "TXT_AMOUNT"
+msgstr "Wartość"
+
+msgid "TXT_DISPATCHER_NAME"
+msgstr "Metoda dostawy"
+
+msgid "TXT_DISPATCHER_NUMBER"
+msgstr "List przewozowy"
+
+msgid "TXT_SEND_SELECTED"
+msgstr "Nadaj przesyłki"
+
+msgid "TXT_SHIPMENT_EXPORT"
+msgstr "Drukuj przesyłki"
+
+msgid "TXT_SHIPMNET_SYMBOL"
+msgstr "Numer"
+
+msgid "TXT_ACCEPT_SUPERPACZKA_AGREEMENT"
+msgstr "Akceptuję <a href='/admin/shipment/agreement' target='_blank'>regulamin serwisu Superpaczka.pl</a> który obsługuje przesyłki"
+
+msgid "TXT_COD_VALUE"
+msgstr "Pobranie"
+
+msgid "TXT_DIMENSION"
+msgstr "Wymiary"
+
+msgid "TXT_GOTO_PAYMENTS"
+msgstr "Idź do płatności"
+
+msgid "TXT_IMPORTANT"
+msgstr "Ważne:"
+
+msgid "TXT_MUST_AGREE_SUPERPACZKA"
+msgstr "Musisz zaakceptować regulamin serwisu Superpaczka.pl który obsługuje przesyłki"
+
+msgid "TXT_ORDER_ID"
+msgstr "Zam."
+
+msgid "TXT_READ_ABOUT_PACKAGES"
+msgstr "Poznaj zasady pakowania przesyłek"
+
+msgid "TXT_SEND_ORDER_SHIPMENTS"
+msgstr "Nadaj i wyślij przesyłki do zamówień"
+
+msgid "TXT_SEND_SELECTED"
+msgstr "Nadaj paczki"
+
+msgid "TXT_SHIPMENTS_INVOICED_DEALED_BY_SUPERPACZKA"
+msgstr "Faktury i dokumenty dot. płatności zostaną wystawione przez Superpaczka.pl."
+
+msgid "TXT_SHIPMENT_ID"
+msgstr "Nr."
+
+msgid "TXT_SHIPMENT_PACKAGING"
+msgstr "Zasady pakowania przesyłek"
+
+msgid "TXT_SHIPMENT_PRICE"
+msgstr "Cena"
+
+msgid "TXT_SHIPMENT_SEND"
+msgstr ""
+
+msgid "TXT_SHIPMENT_SUPERPACZKA_AGREEMENT"
+msgstr "Regulamin serwisu Superpaczka.pl"
+
+msgid "TXT_SHIPMENT_WITH_SUPERPACZKA"
+msgstr "Przesyłki są nadawane przez Superpaczka.pl przy użyciu DPD i muszą być zapakowane zgodnie z zasadami. "
+
+msgid "TXT_PACKAGE_CONTENT"
+msgstr "Zawartość przesyłki"
+
+msgid "TXT_SHIPMENT_DEEP"
+msgstr "głęb."
+
+msgid "TXT_SHIPMENT_HEIGHT"
+msgstr "wys."
+
+msgid "TXT_SHIPMENT_NOT_SELECTED"
+msgstr "Nie wybrano żadnych przesyłek z listy."
+
+msgid "TXT_SHIPMENT_WIDTH"
+msgstr "szer."
+
+msgid "TXT_COUPONS"
+msgstr "Kupony rabatowe"
+
+msgid "ERR_EMPTY_INVOICE_NUMBER"
+msgstr "Numer przesyłki jest wymagany"
+
+msgid "ERR_EMPTY_SHIPMENT_DIMENSION"
+msgstr "Podaj wymiary przesyłki"
+
+msgid "TXT_SHIPMENT_SEND"
+msgstr "Nadaj przesyłki"
+
+msgid "ERR_EMPTY_SHIPMENT_SELECTED_LIST"
+msgstr "Musisz wybrać przynajmniej jedną przesyłkę którą chcesz nadać"
+
+msgid "TXT_SHIPMENT_TYPE"
+msgstr "Typ przesyłki"
+
+msgid "ERR_EMPTY_SHIPMENT_TYPE"
+msgstr "Wybierz typ przesyłki
+
+msgid "TXT_ELEKTRONICZNY_NADAWCA"
+msgstr "Elektroniczny Nadawca"
+
+msgid "TXT_DPD"
+msgstr "DPD"
+
+msgid "TXT_KURJERZY"
+msgstr "KurJerzy"
+
+msgid "TXT_INPOST"
+msgstr "Paczkomaty InPost"
+
+msgid "TXT_FURGONETKA"
+msgstr "Furgonetka"
+
+msgid "TXT_SHIPMENT_ADDED_DPD"
+msgstr "Twoje zamówienie zostało wysłane kurierem DPD. Numer przesyłki: {PACKAGE_NUMBER}"
+
+msgid "TXT_SHIPMENT_ADDED_EN"
+msgstr "Twoje zamówienie zostało wysłane Pocztą Polską. Numer przesyłki: {PACKAGE_NUMBER}"
+

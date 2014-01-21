@@ -1,0 +1,3 @@
+msgid "TXT_ADD_PRODUCT_NEW"
+msgstr "Dodaj produkt"
+

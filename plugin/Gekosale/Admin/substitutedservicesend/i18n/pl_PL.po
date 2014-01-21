@@ -1,0 +1,3 @@
+msgid "TXT_SEND_NOTIFICATION"
+msgstr "Wyślij powiadomienia"
+

@@ -1,0 +1,17 @@
+msgid "TXT_CLIENTS_INCREMENTALLY"
+msgstr "Klienci - przyrostowo"
+
+msgid "TXT_ORDERS_INCREMENTALLY"
+msgstr "Zamówienia - przyrostowo"
+
+msgid "TXT_EXECUTE"
+msgstr "Uruchom"
+
+msgid "TXT_EXCHANGE_CATEGORYSEPARATOR"
+msgstr "Ciąg oddzielający kategorie"
+
+msgid "TXT_LOGS"
+msgstr "Logi"
+
+msgid "TXT_EXCHANGE_MANUAL_CALL"
+msgstr "Ręczne wywołanie operacji"

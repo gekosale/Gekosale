@@ -1,0 +1,3 @@
+msgid "TXT_SPY_LIST"
+msgstr "Aktywni klienci"
+

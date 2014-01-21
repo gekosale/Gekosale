@@ -1,0 +1,8 @@
+msgid "TXT_COOKIES_1"
+msgstr "This site uses cookies to deliver services in accordance with <a href='{{ url }}' title='Privacy Policy'>privacy policy</a>"
+
+msgid "TXT_COOKIES_2"
+msgstr "You can specify the conditions for storage or access cookies on your browser or the configuration of the service."
+
+msgid "TXT_COOKIES_CLOSE"
+msgstr "Close"

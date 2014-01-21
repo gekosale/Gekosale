@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+{% if items|length > 0 %}
+{% for client in items %}
+	<c email="{{ client.email }}" phone="{{ client.phone }}" adddate="{{ client.adddate }}" ordertotal="{{ client.ordertotal }}">
+		<firstname>
+			<![CDATA[{{ client.firstname }}]]>
+		</firstname>
+		<surname>
+			<![CDATA[{{ client.surname }}]]>
+		</surname>
+		<groupname>
+			<![CDATA[{{ client.groupname }}]]>
+		</groupname>
+		<shop>
+			<![CDATA[{{ client.shop }}]]>
+		</shop>
+	</c>
+{% endfor %}
+{% endif %}
+</clients>

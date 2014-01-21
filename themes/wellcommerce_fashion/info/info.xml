@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+	<template>
+		<name>WellCommerce Fashion</name>
+		<version>1.0.0</version>
+		<author>Divante</author>
+		<site_url>http://divante.pl</site_url>
+		<help_url>http://divante.pl/help</help_url>
+		<description>Lorem ipsum pipsum</description>
+	</template>
+</info>

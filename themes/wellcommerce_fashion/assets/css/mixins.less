@@ -1,0 +1,27 @@
+.gradient (@from, @to) {
+	background-color: @to; /* fallback */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@from), to(@to)); /* Safari 4-5, Chrome 1-9 */
+    background-image: -webkit-linear-gradient(top, @from, @to); /* Safari 5.1, Chrome 10+ */
+    background-image: -moz-linear-gradient(top, @from, @to); /* Firefox 3.6+ */
+    background-image: -ms-linear-gradient(top, @from, @to); /* IE 10 */
+    background-image: -o-linear-gradient(top, @from, @to); /* Opera 11.10+ */
+    filter:	~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{from}', endColorstr='@{to}')"; /* IE */
+	background-image: linear-gradient(top, @from, @to);
+}
+
+.box-shadow (@x: 0, @y: 0, @blur: 1px, @color: #000) {
+	box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
+}
+
+.radius (@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.opacity (@opacity: 100) {
+	opacity: @opacity / 100;
+	filter: ~"alpha(opacity = @{opacity})";
+}

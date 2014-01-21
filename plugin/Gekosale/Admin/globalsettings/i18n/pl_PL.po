@@ -1,0 +1,29 @@
+msgid "TXT_STORE_SETTINGS"
+msgstr "Ustawienia sklepu"
+
+msgid "TXT_GALLERY_BGCOLOUR"
+msgstr "Kolor tła zdjęcia"
+
+msgid "TXT_GALLERY_LARGE_IMAGE_SETTINGS"
+msgstr "Ustaw wymiary największych zdjęć w sklepie"
+
+msgid "TXT_GALLERY_SMALLEST_IMAGE_SETTINGS"
+msgstr "Ustaw wymiary najmniejszych zdjęć w sklepie"
+
+msgid "TXT_SSL_HELP"
+msgstr "Włącz tę opcję jeżeli chcesz korzystać z szyfrowania stron oraz posiadasz działający certyfikat SSL"
+
+msgid "ERR_EMPTY_ADMIN_PANEL_LINK"
+msgstr "Nie podano adresu do panelu"
+
+msgid "TXT_CDN_SETTINGS"
+msgstr "Serwer statyczny"
+
+msgid "TXT_ENABLE_CDN"
+msgstr "Używaj serwera statycznego WellCommerce"
+
+msgid "TXT_ROBOTS"
+msgstr "Ustawienia pliku robots.txt"
+
+msgid "TXT_ROBOTS_CONTENT"
+msgstr "Zawartość pliku"

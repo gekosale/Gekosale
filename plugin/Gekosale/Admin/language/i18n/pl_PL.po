@@ -1,0 +1,2 @@
+msgid "TXT_LANGUAGES"
+msgstr "Wersje językowe"

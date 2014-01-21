@@ -1,0 +1,1 @@
+# Gettext format translations. To install them use: php tool.php translate install

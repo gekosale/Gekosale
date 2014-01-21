@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nokaut SYSTEM "http://www.nokaut.pl/integracja/nokaut.dtd">
+<offers>
+	<offer>
+		<id>{{ product.id }}</id>
+		<name><![CDATA[{{ product.name }}]]></name>
+		<description><![CDATA[{{ product.description }}]]></description>
+		<url>{{ product.url }}</url>
+		<image><![CDATA[{{ product.imageurl }}]]></image>
+		<price>{{ product.price }}</price>
+		<category><![CDATA[{{ product.categories }}]]></category>
+		<producer><![CDATA[{{ product.producer }}]]></producer>
+	</offer>
+</offers>

@@ -1,0 +1,5 @@
+msgid "TXT_CONTACT_SENT"
+msgstr "Wiadomość do nas dotarła. Skontaktujemy się w najszybszym, możliwym terminie."
+
+msgid "ERR_EMPTY_CONTACT_CONTENT"
+msgstr "Musisz podać treść wiadomości."

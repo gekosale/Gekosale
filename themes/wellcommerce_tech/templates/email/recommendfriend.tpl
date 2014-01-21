@@ -1,0 +1,2 @@
+<p>{% trans %}TXT_RECOMMEND_SHOP_NAME{% endtrans %} {{ SHOP_NAME }}</p>
+<p>{{ fromname }} ({{ fromemail }}) {% trans %}TXT_RECOMMEND_ADDRESS{% endtrans %} <a href="{{ recommendurl }}">{{ recommendurl }}</a> {% trans %}TXT_RECOMMEND_COMMENT{% endtrans %} {{ comment }}.</p>

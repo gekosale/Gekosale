@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mysql>
+	<queries>
+		<query>
+			<table>currency</table>
+			<column type="int">idcurrency</column>
+			<status>RELATED</status>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">idcurrency</column>
+				</condition>
+			</where>
+	  	</query>
+	  	<query>
+			<table>currencyrates</table>
+			<column type="int">idcurrencyrates</column>
+			<status>NOTICE</status>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">currencyfrom</column>
+					<bind>currency</bind>
+					<value>idcurrency</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>currencyview</table>
+			<column type="int">idcurrencyview</column>
+			<status>NOTICE</status>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">currencyid</column>
+					<bind>currency</bind>
+					<value>idcurrency</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>product</table>
+			<alias>product_1</alias>
+			<column type="int">idproduct</column>
+			<status>ERROR</status>
+			<errormsg>ERR_BIND_SELLCURRENCY_PRODUCT</errormsg>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">sellcurrencyid</column>
+					<bind>currency</bind>
+					<value>idcurrency</value>
+				</condition>
+			</where>	
+		</query>
+		<query>
+			<table>language</table>
+			<column type="int">idlanguage</column>
+			<status>ERROR</status>
+			<errormsg>ERR_BIND_CURRENCY_LANGUAGE</errormsg>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">currencyid</column>
+					<bind>currency</bind>
+					<value>idcurrency</value>
+				</condition>
+			</where>	
+		</query>
+		<query>
+			<table>product</table>
+			<alias>product_2</alias>
+			<column type="int">idproduct</column>
+			<status>ERROR</status>
+			<errormsg>ERR_BIND_BUYCURRENCY_PRODUCT</errormsg>
+			<controller>currency</controller>
+			<where>
+				<condition>
+					<column type="int">buycurrencyid</column>
+					<bind>currency</bind>
+					<value>idcurrency</value>
+				</condition>
+			</where>	
+		</query>
+ 	</queries>
+</mysql>

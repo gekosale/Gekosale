@@ -1,0 +1,3 @@
+msgid "ERR_EMPTY_SALES_PERSON"
+msgstr "Podaj imię i nazwisko osoby wystawiającej fakturę"
+

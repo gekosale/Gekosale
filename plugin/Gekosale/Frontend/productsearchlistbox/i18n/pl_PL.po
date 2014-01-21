@@ -1,0 +1,3 @@
+msgid "TXT_OPINIONS_QTY"
+msgstr "Ilość opinii"
+

@@ -1,0 +1,8 @@
+msgid "TXT_ATTRIBUTE_GROUP_LIST"
+msgstr "Lista grup atrybutów"
+
+msgid "TXT_RETURN_TO_PREVIOUS_SCREEN"
+msgstr "Wróć do poprzedniego ekranu"
+
+msgid "ERR_BIND_ATTRIBUTE_VALUE"
+msgstr "Niektóre cechy są przypisane do produktu w zamówieniach."

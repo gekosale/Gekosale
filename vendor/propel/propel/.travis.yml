@@ -1,0 +1,25 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - hhvm
+
+env:
+  - DB=mysql DB_USER=root
+  - DB=pgsql
+  - DB=sqlite
+
+before_script:
+  # Composer
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install --prefer-source
+
+  - ./tests/bin/setup.$DB.sh;
+
+script:
+  - ./tests/bin/phpunit.$DB.sh;
+
+matrix:
+  allow_failures:
+    - php: hhvm

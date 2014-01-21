@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<offers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+{% if items|length > 0 %}
+{% for product in items %}
+	<o id="{{ product.id }}" url="{{ product.url }}" price="{{ product.price }}" avail="{{ product.avail }}" weight="{{ product.weight }}" stock="{{ product.stock }}">
+		<cat>
+			<![CDATA[{{ product.category }}]]>
+		</cat>
+		<name>
+			<![CDATA[{{ product.name }}]]>
+		</name>
+		<imgs>
+			<main url="{{ product.photo }}"/>
+		</imgs>
+		<desc>
+			<![CDATA[{{ product.description }}]]>
+		</desc>
+		<attrs>
+			<a name="Producent">
+				<![CDATA[{{ product.producer }}]]>
+			</a>
+			<a name="EAN">
+				<![CDATA[{{ product.ean }}]]>
+			</a>
+		</attrs>
+	</o>
+{% endfor %}
+{% endif %}
+</offers>

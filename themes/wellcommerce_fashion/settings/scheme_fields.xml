@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	
+	<fieldset name="common_items" label="Powszechne elementy">
+		
+		<field type="width">
+			<label>Szerokość strony</label>
+			<selector>.container, .navbar-fixed-top .container, .navbar-fixed-bottom .container</selector>
+			<default>940</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło sklepu</label>
+			<selector>body</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>ededed</start>
+				<end>ffffff</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Odsyłacz</label>
+			<selector>a</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>0088CC</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="logo" label="Logo sklepu">
+		
+		<field type="width">
+			<label>Szerokość</label>
+			<selector>.header h1 a</selector>
+			<default>940</default>
+		</field>
+		
+		<field type="height">
+			<label>Wysokość</label>
+			<selector>.header h1 a</selector>
+			<default>108</default>
+		</field>
+		
+		<field type="background">
+			<label>Logo</label>
+			<selector>.header h1 a</selector>
+			<type image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>ededed</start>
+				<end>ffffff</end>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="header_items" label="Nagłówek">
+		
+		<field type="height">
+			<label>Wysokość nagłówka</label>
+			<selector>.header</selector>
+			<default>108</default>
+		</field>
+		
+		<field type="font">
+			<label>Etykiety pól</label>
+			<selector>.header label, .header .lang</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>969696</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Konto klienta - odsyłacz</label>
+			<selector>.header .nav-pills li a</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>0088CC</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Konto klienta - odsyłacz akt.</label>
+			<selector>.header .nav-pills li a:hover, .header .nav-pills li a:focus, .header .nav-pills li a:active</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>0088CC</colour>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Podgląd koszyka - tło</label>
+			<selector>#topBasket</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+		
+		<field type="height">
+			<label>Podgląd koszyka - wysokość</label>
+			<selector>#topBasket</selector>
+			<default>50</default>
+		</field>
+		
+		<field type="width">
+			<label>Podgląd koszyka - szerokość</label>
+			<selector>#topBasket</selector>
+			<default>217</default>
+		</field>
+		
+		<field type="font">
+			<label>Podgląd koszyka - czcionka</label>
+			<selector>#topBasket</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>0088CC</colour>
+			</default>
+		</field>
+		
+		<field type="icon">
+			<label>Podgląd koszyka - ikona usuwania produktu</label>
+			<selector>#topBasketContent .remove .icon-remove</selector>
+			<default>
+				<file>icon-uncollapse.png</file>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="navbar" label="Menu poziome">
+		
+		<field type="height">
+			<label>Wysokość menu</label>
+			<selector>.navbar</selector>
+			<default>52</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło menu</label>
+			<selector>.navbar</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+		
+		<field type="border-radius">
+			<label>Zaokrąglenie rogów</label>
+			<selector>.navbar</selector>
+			<default>5px</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="buttons" label="Przyciski">
+		
+		<field type="background">
+			<label>Przycisk główny</label>
+			<selector>.btn-primary</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Przycisk główny - hover</label>
+			<selector>.btn-primary:hover, .btn-primary:active</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="category-filters" label="Filtracja">
+		
+		<field type="background">
+			<label>Tło sortowania wyników</label>
+			<selector>.category-options</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+
+		<field type="border">
+			<label>Obramowanie sortowania wyników</label>
+			<selector>.category-options</selector>
+			<default>
+				<top>
+					<size>0</size>
+					<colour>000000</colour>
+				</top>
+				<right>
+					<size>0</size>
+					<colour>000000</colour>
+				</right>
+				<bottom>
+					<size>0</size>
+					<colour>000000</colour>
+				</bottom>
+				<left>
+					<size>0</size>
+					<colour>000000</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field type="border-radius">
+			<label>Zaokrąglenie rogów sortowania wyników</label>
+			<selector>.category-options</selector>
+			<default>5px</default>
+		</field>
+				
+	</fieldset>
+	
+	<fieldset name="footer" label="Stopka">
+		
+		<field type="background">
+			<label>Tło stopki</label>
+			<selector>.footer</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>009bfc</start>
+				<end>0075ef</end>
+			</default>
+		</field>
+
+		<field type="border">
+			<label>Obramowanie kontenera</label>
+			<selector>.footer .container.border</selector>
+			<default>
+				<top>
+					<size>0</size>
+					<colour>000000</colour>
+				</top>
+				<right>
+					<size>0</size>
+					<colour>000000</colour>
+				</right>
+				<bottom>
+					<size>0</size>
+					<colour>000000</colour>
+				</bottom>
+				<left>
+					<size>0</size>
+					<colour>000000</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field type="border-radius">
+			<label>Zaokrąglenie rogów kontenera</label>
+			<selector>.footer .container.border</selector>
+			<default>5px</default>
+		</field>
+				
+	</fieldset>
+	
+	<fieldset name="page-content" label="Zawartość strony">
+		
+		<field type="border">
+			<label>Obramowanie</label>
+			<selector>.content</selector>
+			<default>
+				<top>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</top>
+				<right>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</right>
+				<bottom>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</bottom>
+				<left>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field type="border-radius">
+			<label>Zaokrąglenie rogów</label>
+			<selector>.content</selector>
+			<default>4px</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło</label>
+			<selector>.content</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>34</height>
+			<default>
+				<type>2</type>
+				<start>f9f9f9</start>
+				<end>ededed</end>
+			</default>
+		</field>
+	</fieldset>
+	
+	<fieldset name="layoutbox" label="Domyślny boks">
+		
+		<field name="db" type="border">
+			<label>Obramowanie nagłówka</label>
+			<selector>.content <layout-box/> .head-block</selector>
+			<default>
+				<top>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</top>
+				<right>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</right>
+				<bottom>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</bottom>
+				<left>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field name="db" type="border-radius">
+			<label>Zaokrąglenie rogów nagłówka</label>
+			<selector>.content <layout-box/> .head-block</selector>
+			<default>4px</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło nagłówka</label>
+			<selector>.content <layout-box/> .head-block</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>34</height>
+			<default>
+				<type>2</type>
+				<start>f9f9f9</start>
+				<end>ededed</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Treść nagłówka</label>
+			<selector>.content <layout-box/> .head-block</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>0088CC</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+</configuration>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+{% if items|length > 0 %}
+{% for order in items %}
+	<o globalprice="{{ order.globalprice }}" dispatchmethodprice="{{ order.dispatchmethodprice }}" adddate="{{ order.adddate }}">
+		<client>
+			<![CDATA[{{ order.client }}]]>
+		</client>
+		<orderstatusname>
+			<![CDATA[{{ order.orderstatusname }}]]>
+		</orderstatusname>
+		<dispatchmethodname>
+			<![CDATA[{{ order.dispatchmethodname }}]]>
+		</dispatchmethodname>
+		<paymentmethodname>
+			<![CDATA[{{ order.paymentmethodname }}]]>
+		</paymentmethodname>
+		<shop>
+			<![CDATA[{{ order.shop }}]]>
+		</shop>
+	</o>
+{% endfor %}
+{% endif %}
+</clients>

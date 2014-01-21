@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /application/
+Disallow: /design/
+Disallow: /doc/
+Disallow: /cache/
+Disallow: /min/
+Disallow: /upload/
+Disallow: /serialization/
+Disallow: /wyszukiwarka/
+Disallow: /kontakt/
+Disallow: /regulamin

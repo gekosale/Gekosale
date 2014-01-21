@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	
+	<fieldset name="common_items" label="Powszechne elementy">
+		
+		<field type="width">
+			<label>Szerokość strony</label>
+			<selector>#main-container</selector>
+			<default>980</default>
+		</field>
+		
+		<field type="font">
+			<label>Tekst</label>
+			<selector>body</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło sklepu</label>
+			<selector>body</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>200</height>
+			<default>
+				<type>2</type>
+				<start>ededed</start>
+				<end>ffffff</end>
+			</default>
+		</field>
+		
+		<field type="margin-bottom">
+			<label>Odstęp za akapitem</label>
+			<selector>p</selector>
+			<default>10px</default>
+			<mode>select</mode>
+		</field>
+		
+		<field type="line-height">
+			<label>Interlinia</label>
+			<selector>p</selector>
+			<default>1.5em</default>
+			<mode>select</mode>
+		</field>
+		
+		<field type="font">
+			<label>Odsyłacz</label>
+			<selector>a</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>cc0000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Aktywny odsyłacz</label>
+			<selector>a:hover, a:focus, a:active</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>1</underline>
+				<uppercase>0</uppercase>
+				<colour>cc0000</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="header_options" label="Nagłówek">
+		
+		<field type="font">
+			<label>Tytuł strony</label>
+			<selector>#header h1, #header h1 a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>24</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Treść nagłówka</label>
+			<selector>#header</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Zawartość koszyka - tytuł</label>
+			<selector>#header-cart-summary h2, #header-cart-summary h2 a, #header-cart-summary h2 a:hover, #header-cart-summary h2 a:focus, #header-cart-summary h2 a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Konto klienta - odsyłacz</label>
+			<selector>#header-cart-summary a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Konto klienta - odsyłacz akt.</label>
+			<selector>#header-cart-summary a:hover, #header-cart-summary a:focus, #header-cart-summary a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>1</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło koszyka</label>
+			<selector>#cart-preview</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<width>156</width>
+			<default>
+				<type>3</type>
+				<start>ededed</start>
+				<end>ffffff</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Zawartość koszyka - odsyłacz</label>
+			<selector>#cart-preview a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Zawartość koszyka - odsyłacz akt.</label>
+			<selector>#cart-preview a:hover, #cart-preview a:focus, #cart-preview a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>1</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="horizontal_navigation" label="Nawigacja pozioma">
+		
+		<field name="hn" type="height">
+			<label>Wysokość</label>
+			<selector>#horizontal-navigation ul li a</selector>
+			<default>30</default>
+		</field>
+		
+		<field name="ulb" type="border">
+			<label>Obramowanie</label>
+			<selector>#horizontal-navigation</selector>
+			<default>
+				<top>
+					<size>0</size>
+					<colour>000000</colour>
+				</top>
+				<right>
+					<size>0</size>
+					<colour>000000</colour>
+				</right>
+				<bottom>
+					<size>0</size>
+					<colour>000000</colour>
+				</bottom>
+				<left>
+					<size>0</size>
+					<colour>000000</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field name="hn" type="border-radius">
+			<label>Zaokrąglenie rogów</label>
+			<comment><trans>TXT_BORDER_RADIUS_INFO</trans></comment>
+			<selector>#horizontal-navigation, #horizontal-navigation ul li a</selector>
+			<default>5px</default>
+		</field>
+
+		<field type="background">
+			<label>Tło</label>
+			<selector>#horizontal-navigation</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>30</height>
+			<default>
+				<type>2</type>
+				<start>4b4b4b</start>
+				<end>1c1c1c</end>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło elementu</label>
+			<selector>#horizontal-navigation li</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>30</height>
+			<default>
+				<type>2</type>
+				<start>4b4b4b</start>
+				<end>1c1c1c</end>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło wybranego elementu</label>
+			<selector>#horizontal-navigation ul li.active a</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>30</height>
+			<default>
+				<type>2</type>
+				<start>1c1c1c</start>
+				<end>4b4b4b</end>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło aktywnego elementu</label>
+			<selector>#horizontal-navigation ul li a:hover, #horizontal-navigation ul li a:focus, #horizontal-navigation ul li a:active</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>30</height>
+			<default>
+				<type>2</type>
+				<start>fff100</start>
+				<end>ff7000</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Element</label>
+			<selector>#horizontal-navigation ul li a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Wybrany element</label>
+			<selector>#horizontal-navigation ul li.active a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Aktywny element</label>
+			<selector>#horizontal-navigation ul li a:hover, #horizontal-navigation ul li a:focus, #horizontal-navigation ul li a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="footer_options" label="Stopka">
+		
+		<field type="border-radius">
+			<label>Zaokrąglenie rogów</label>
+			<comment><trans>TXT_BORDER_RADIUS_INFO</trans></comment>
+			<selector>#footer</selector>
+			<default>5px</default>
+		</field>
+		
+		<field type="border">
+			<label>Obramowanie</label>
+			<selector>#footer</selector>
+			<default>
+				<top>
+					<size>1</size>
+					<colour>d5d5d5</colour>
+				</top>
+				<right>
+					<size>1</size>
+					<colour>d5d5d5</colour>
+				</right>
+				<bottom>
+					<size>1</size>
+					<colour>d5d5d5</colour>
+				</bottom>
+				<left>
+					<size>1</size>
+					<colour>d5d5d5</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło</label>
+			<selector>#footer</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>75</height>
+			<default>
+				<type>2</type>
+				<start>4b4b4b</start>
+				<end>1c1c1c</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Treść</label>
+			<selector>#footer</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Odsyłacz</label>
+			<selector>#footer a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Aktywny odsyłacz</label>
+			<selector>#footer a:hover, #footer a:focus, #footer a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>1</underline>
+				<uppercase>0</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Nagłówek listy linków</label>
+			<selector>#footer h4</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>12</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>1</uppercase>
+				<colour>ffffff</colour>
+			</default>
+		</field>
+		
+		<field type="border">
+			<label>Obramowanie nagłówka listy linków</label>
+			<selector>#footer h4</selector>
+			<default>
+				<top>
+					<size>0</size>
+					<colour>d5d5d5</colour>
+				</top>
+				<right>
+					<size>0</size>
+					<colour>d5d5d5</colour>
+				</right>
+				<bottom>
+					<size>1</size>
+					<colour>d5d5d5</colour>
+				</bottom>
+				<left>
+					<size>0</size>
+					<colour>d5d5d5</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Treść copyright</label>
+			<selector>#copyright-bar</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Odsyłacz w copyright</label>
+			<selector>#copyright-bar a</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Aktywny odsyłacz w copyright</label>
+			<selector>#copyright-bar a:hover, #copyright-bar a:focus, #copyright-bar a:active</selector>
+			<default>
+				<family>Trebuchet MS,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>1</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="pagination_options" label="Paginacja w boksach">
+		
+		<field type="font">
+			<label>Odsyłacz w paginacji</label>
+			<selector>.layout-box-type-product-list .pagination li a</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>979797</colour>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Aktywny odsyłacz w paginacji</label>
+			<selector>.layout-box-type-product-list .pagination li a:hover, .layout-box-type-product-list .pagination li a:focus, .layout-box-type-product-list .pagination li a:active</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>979797</colour>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło aktywnego odsyłacza</label>
+			<selector>.layout-box-type-product-list .pagination li.active a</selector>
+			<type colour="1" />
+			<default>
+				<type>1</type>
+				<start>4b4b4b</start>
+				<end>1c1c1c</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Nieaktywny odsyłacz w paginacji</label>
+			<selector>.layout-box-type-product-list .pagination li.disabled a</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>d5d5d5</colour>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="layoutbox" label="Domyślny boks">
+		
+		<field name="db" type="border">
+			<label>Obramowanie</label>
+			<selector><layout-box/>.layout-box</selector>
+			<default>
+				<top>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</top>
+				<right>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</right>
+				<bottom>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</bottom>
+				<left>
+					<size>1</size>
+					<colour>d6d6d6</colour>
+				</left>
+			</default>
+		</field>
+		
+		<field name="db" type="border-radius">
+			<label>Zaokrąglenie rogów</label>
+			<comment><trans>TXT_BORDER_RADIUS_INFO</trans></comment>
+			<selector><layout-box/>.layout-box</selector>
+			<default>4px</default>
+		</field>
+		
+		<field name="db_header" type="line-height">
+			<label>Wysokość nagłówka</label>
+			<selector><layout-box/> .layout-box-header h3, <layout-box/> .layout-box-header h2, <layout-box/> .layout-box-header h1, <layout-box/> .layout-box-header, <layout-box/> .layout-box-icons</selector>
+			<default>34</default>
+			<mode>input</mode>
+		</field>
+		
+		<field type="background">
+			<label>Tło nagłówka</label>
+			<selector><layout-box/> .layout-box-header</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>34</height>
+			<default>
+				<type>2</type>
+				<start>f9f9f9</start>
+				<end>ededed</end>
+			</default>
+		</field>
+		
+		<field type="background">
+			<label>Tło wnętrza</label>
+			<selector><layout-box/> .layout-box-content</selector>
+			<type colour="1" gradient="1" image="1"/>
+			<height>50</height>
+			<default>
+				<type>1</type>
+				<start>ffffff</start>
+				<end>ffffff</end>
+			</default>
+		</field>
+		
+		<field type="font">
+			<label>Tekst nagłówka</label>
+			<selector><layout-box/> .layout-box-header h3, <layout-box/> .layout-box-header h2, <layout-box/> .layout-box-header h1</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>13</size>
+				<bold>1</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>000000</colour>
+			</default>
+		</field>
+		
+		<field type="text-align">
+			<label>Wyrównanie nagłówka</label>
+			<selector><layout-box/> .layout-box-header, <layout-box/> .layout-box-header h3, <layout-box/> .layout-box-header h2, <layout-box/> .layout-box-header h1</selector>
+			<default>left</default>
+		</field>
+		
+		<field type="font">
+			<label>Tekst zawartości</label>
+			<selector><layout-box/> .layout-box-content, <layout-box/> .layout-box-content p</selector>
+			<default>
+				<family>Arial,Arial,Helvetica,sans-serif</family>
+				<size>11</size>
+				<bold>0</bold>
+				<italic>0</italic>
+				<underline>0</underline>
+				<uppercase>0</uppercase>
+				<colour>5f5f5f</colour>
+			</default>
+		</field>
+		
+		<field type="text-align">
+			<label>Wyrównanie zawartości</label>
+			<selector><layout-box/> .layout-box-content, <layout-box/> .layout-box-content p</selector>
+			<default>left</default>
+		</field>
+		
+		<field type="icon">
+			<label>Ikona zamknięcia boksu</label>
+			<selector><layout-box/> .layout-box-icons .layout-box-close</selector>
+			<default>
+				<file>icon-close.png</file>
+			</default>
+		</field>
+		
+		<field type="icon">
+			<label>Ikona zwinięcia boksu</label>
+			<selector><layout-box/> .layout-box-icons .layout-box-collapse</selector>
+			<default>
+				<file>icon-collapse.png</file>
+			</default>
+		</field>
+		
+		<field type="icon">
+			<label>Ikona rozwinięcia boksu</label>
+			<selector><layout-box/> .layout-box-icons .layout-box-uncollapse</selector>
+			<default>
+				<file>icon-uncollapse.png</file>
+			</default>
+		</field>
+		
+	</fieldset>
+	
+</configuration>

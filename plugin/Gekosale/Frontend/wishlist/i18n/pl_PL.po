@@ -1,0 +1,23 @@
+msgid "TXT_WISHLIST_ERROR"
+msgstr "Wystąpił błąd przy dodawaniu produktu do schowka."
+
+msgid "TXT_WISHLIST_MUST_BE_LOGGED"
+msgstr "Funkcja dodawania produktów do schowka jest dostępna tylko dla zalogowanych użytkowników."
+
+msgid "TXT_WISHLIST_MODAL_HEADING"
+msgstr "Dodano do schowka"
+
+msgid "TXT_WISHLIST_MODAL_TEXT_1"
+msgstr "Produkt został dodany do"
+
+msgid "TXT_WISHLIST_MODAL_TEXT_2"
+msgstr "schowka."
+
+msgid "TXT_WISHLISTERR_MODAL_HEADING"
+msgstr "Musisz być zalogowany"
+
+msgid "TXT_WISHLISTERR_MODAL_TEXT_1"
+msgstr "Funkcja dodawania produktów do schowka jest dostępna tylko dla zalogowanych użytkowników. Jeżeli nie masz jeszcze konta, możesz je założyć"
+
+msgid "TXT_WISHLISTERR_MODAL_TEXT_2"
+msgstr "tutaj."

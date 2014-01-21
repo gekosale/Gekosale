@@ -1,0 +1,18 @@
+msgid "TXT_DISPATCHMETHOD_WEIGHT_TABLE_PRICE"
+msgstr "Tabela cen od wagi"
+
+msgid "TXT_PAYMENT_METHODS"
+msgstr "Metody płatności"
+
+msgid "TXT_INTEGRATION_KURJERZY"
+msgstr "Integracja KurJerzy.pl"
+
+msgid "TXT_INTEGRATION_FURGONETKA"
+msgstr "Integracja Furgonetka.pl"
+
+msgid "TXT_INTEGRATION_SENDIT"
+msgstr "Integracja Sendit.pl"
+
+msgid "TXT_DISPATCHMETHOD_FORMS"
+msgstr "Formy wysyłki"
+

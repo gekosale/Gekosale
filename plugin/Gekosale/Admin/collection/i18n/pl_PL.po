@@ -1,0 +1,33 @@
+msgid "TXT_COLLECTIONS_LIST"
+msgstr "Lista kolekcji producentów"
+
+msgid "TXT_COLLECTIONS"
+msgstr "Kolekcje producentów"
+
+msgid "TXT_COLLECTION"
+msgstr "Kolekcja producenta"
+
+msgid "TXT_ADD_COLLECTION"
+msgstr "Dodaj kolekcję"
+
+msgid "TXT_ADD_COLLECTION"
+msgstr "Dodaj kolekcję"
+
+msgid "TXT_EDIT_COLLECTION"
+msgstr "Edycja kolekcji"
+
+msgid "ERR_EMPTY_SEO_URL"
+msgstr "Nie określono SEO dla kolekcji"
+
+msgid "ERR_PRODUCER_ADD"
+msgstr "Błąd podczas dodawania nowej kolekcji"
+
+msgid "ERR_PRODUCER_SAVE"
+msgstr "Błąd w trakcie zapisywania kolekcji"
+
+msgid "ERR_PRODUCER_TRANSLATION_EDIT"
+msgstr "Błąd podczas edycji tłumaczenia kolekcji"
+
+msgid "ERR_PRODUCER_VIEW_EDIT"
+msgstr "Błąd podczas edycji widoku kolekcji"
+

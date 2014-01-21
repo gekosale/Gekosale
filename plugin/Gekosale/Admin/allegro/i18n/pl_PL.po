@@ -1,0 +1,44 @@
+msgid "TXT_ALLEGRO_CATEGORIES"
+msgstr "Kategorie Allegro"
+
+msgid "TXT_ALLEGRO_RELATED_CATEGORIES"
+msgstr "Powiązania kategorii"
+
+msgid "TXT_ALLEGRO_FAVOURITE_CATEGORIES"
+msgstr "Ulubione kategorie"
+
+msgid "TXT_ALLEGRO_CATEGORY"
+msgstr "Kategoria Allegro"
+
+msgid "TXT_REFRESH_ALLEGRO_CATEGORIES"
+msgstr "Odśwież kategorie Allegro"
+
+msgid "TXT_ALLEGRO_NEW_AUCTION"
+msgstr "Wystawianie nowych aukcji Allegro"
+
+msgid "ERR_EMPTY_TITLE_FORMA"
+msgstr "Nie podano formatu tytułu"
+
+msgid "ERR_EMPTY_EXCHANGE_DATA"
+msgstr "Nie podano kursu wymiany"
+
+msgid "TXT_COOKIES_1"
+msgstr "Strona korzysta z plików cookie w celu realizacji usług zgodnie z <a href='{{ url }}' title='Polityka prywatności'>Polityką prywatności</a>"
+
+msgid "TXT_COOKIES_2"
+msgstr "Możesz określić warunki przechowywania lub dostępu do cookie w Twojej przeglądarce lub konfiguracji usługi."
+
+msgid "TXT_COOKIES_CLOSE"
+msgstr "Zamknij"
+
+msgid "ERR_EMPTY_PRICE"
+msgstr "Nie podano ceny"
+
+msgid "TXT_ALLEGRO_GO_TO_SECOND_STEP"
+msgstr "Dalej, wybierz produkty"
+
+msgid "TXT_ALLEGRO_PUBLISH_AUCTION"
+msgstr "Publikuj aukcję"
+
+msgid "ERR_WRONG_ALLEGRO_START_DATE"
+msgstr "Niepoprawna data wystawienia aukcji"

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+	<c photo="{{ category.photo }}" shop="{{ category.shop }}" parent="{{ category.parent }}">
+		<name>
+			<![CDATA[{{ category.name }}]]>
+		</name>
+	</c>
+</categories>

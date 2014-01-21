@@ -1,0 +1,16 @@
+msgid "TXT_ADD_ORDER"
+msgstr "Dodaj zamówienie"
+
+
+msgid "TXT_FAST_TOOLS"
+msgstr "Szybki start:"
+
+msgid "TXT_SHOW_CLIENTS"
+msgstr "Pokaż klientów"
+
+msgid "TXT_CHECK_ORDERS"
+msgstr "Sprawdź zamówienia"
+
+msgid "TXT_LAST_OPINIONS"
+msgstr "Ostatnie opinie"
+

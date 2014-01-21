@@ -1,0 +1,6 @@
+msgid "TXT_INPOST_EXPORT"
+msgstr "Pobranie potwierdzenia nadania paczek do wysłania w formacie PDF"
+
+msgid "ERR_EMPTY_INPOST_SELECTED_LIST"
+msgstr "Nie wybrano żadnych paczek do generowania potwierdzenia"
+

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mysql>
+	<queries>
+		<query>
+			<table>file</table>
+			<column type="int">idfile</column>
+			<status>RELATED</status>
+			<controller>files</controller>
+			<where>
+				<condition>
+					<column type="int">idfile</column>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>productphoto</table>
+			<column type="int">productid</column>
+			<status>NOTICE</status>
+			<controller>product</controller>
+			<where>
+				<condition>
+					<column type="int">photoid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>productfile</table>
+			<column type="int">productid</column>
+			<status>NOTICE</status>
+			<controller>product</controller>
+			<where>
+				<condition>
+					<column type="int">fileid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>product</table>
+			<column type="int">idproduct</column>
+			<status>ERROR</status>
+			<errormsg>ERR_FILE_BIND_TO_PRODUCT</errormsg>
+			<controller>product</controller>
+			<where>
+				<condition>
+					<column type="int">idproduct</column>
+					<bind>productphoto</bind>
+					<value>productid</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>userdata</table>
+			<column type="int">userid</column>
+			<column type="varchar">firstname</column>
+			<column type="varchar">surname</column>
+			<column type="varchar">email</column>
+			<status>ERROR</status>
+			<errormsg>ERR_FILE_BIND_TO_USER</errormsg>
+			<controller>users</controller>
+			<where>
+				<condition>
+					<column type="int">photoid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>category</table>
+			<column type="int">idcategory</column>
+			<status>ERROR</status>
+			<errormsg>ERR_FILE_BIND_TO_CATEGORY</errormsg>
+			<controller>category</controller>
+			<where>
+				<condition>
+					<column type="int">photoid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>deliverer</table>
+			<column type="int">iddeliverer</column>
+			<status>ERROR</status>
+			<errormsg>ERR_FILE_BIND_TO_DELIVERER</errormsg>
+			<controller>deliverer</controller>
+			<where>
+				<condition>
+					<column type="int">photoid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+		<query>
+			<table>producer</table>
+			<column type="int">idproducer</column>
+			<status>ERROR</status>
+			<errormsg>ERR_FILE_BIND_TO_PRODUCER</errormsg>
+			<controller>producer</controller>
+			<where>
+				<condition>
+					<column type="int">photoid</column>
+					<bind>file</bind>
+					<value>idfile</value>
+				</condition>
+			</where>
+		</query>
+	</queries>
+</mysql>

@@ -1,0 +1,27 @@
+.gradient (@from, @to) {
+	background-color: @to; /* fallback */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@from), to(@to)); 
+    background-image: -webkit-linear-gradient(top, @from, @to); 
+    background-image: -moz-linear-gradient(top, @from, @to);
+    background-image: -ms-linear-gradient(top, @from, @to);
+    background-image: -o-linear-gradient(top, @from, @to); 
+    filter:	~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{from}', endColorstr='@{to}')";
+	background-image: linear-gradient(top, @from, @to);
+}
+
+.box-shadow (@x: 0, @y: 0, @blur: 1px, @color: #000) {
+	box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
+}
+
+.radius (@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.opacity (@opacity: 100) {
+	opacity: @opacity / 100;
+	filter: ~"alpha(opacity = @{opacity})";
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+	<c photo="chemia-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Żywność]]>
+		</name>
+	</c>
+	<c photo="" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Kosmetyki]]>
+		</name>
+	</c>
+	<c photo="chemia-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Artykuły chemiczne]]>
+		</name>
+	</c>
+	<c photo="book-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Książki i multimedia]]>
+		</name>
+	</c>
+	<c photo="obuwie-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Obuwie]]>
+		</name>
+	</c>
+	<c photo="bielizna-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Bielizna]]>
+		</name>
+	</c>
+	<c photo="ubrania-jpg" view="Przykładowy sklep" parent="">
+		<name>
+			<![CDATA[Ubrania]]>
+		</name>
+	</c>
+</categories>

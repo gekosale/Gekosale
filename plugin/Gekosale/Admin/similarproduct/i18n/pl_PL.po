@@ -1,0 +1,3 @@
+msgid "TXT_SIMILARPRODUCT_LIST"
+msgstr "Podobne produkty"
+

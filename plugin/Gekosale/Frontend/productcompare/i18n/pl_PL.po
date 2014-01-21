@@ -1,0 +1,11 @@
+msgid "TXT_ADD_TO_COMPARE"
+msgstr "Dodaj do porównania"
+
+msgid "TXT_DELETE_FROM_COMPARE"
+msgstr "Usuń z porównania"
+
+msgid "TXT_COMPARE_SELECTED"
+msgstr "Porównaj wybrane"
+
+msgid "TXT_COMPARE_PRODUCTS"
+msgstr "Zobacz porównanie"
