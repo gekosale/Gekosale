@@ -4,6 +4,7 @@ namespace Gekosale;
 use Symfony\Component\Routing;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Gekosale\Core\Seo;
 
 $this->routes = new RouteCollection();
 

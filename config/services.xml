@@ -8,21 +8,21 @@
     
 		<service id="request" synthetic="true" />
     
-        <service id="cache.storage" class="Gekosale\Cache\Storage\File" />
+        <service id="cache.storage" class="Gekosale\Core\Cache\Storage\File" />
 
-        <service id="cache" class="Gekosale\Cache">
+        <service id="cache" class="Gekosale\Core\Cache">
             <argument type="service" id="cache.storage" />
         </service>
         
-        <service id="session.storage" class="Gekosale\Session\Storage\Database">
+        <service id="session.storage" class="Gekosale\Core\Session\Storage\Database">
         	<argument type="service" id="service_container" />
         </service>
         
-        <service id="session" class="Gekosale\Session">
+        <service id="session" class="Gekosale\Core\Session">
             <argument type="service" id="session.storage" />
         </service>
         
-        <service id="right" class="Gekosale\Right">
+        <service id="right" class="Gekosale\Core\Right">
             <argument type="service" id="service_container" />
         </service>
         
@@ -43,26 +43,26 @@
             <argument>routes.php</argument>
         </service>
         
-        <service id="registry" class="Gekosale\Registry" />
+        <service id="registry" class="Gekosale\Core\Registry" />
 
-		<service id="classmapper" class="Gekosale\ClassMapper">
+		<service id="classmapper" class="Gekosale\Core\ClassMapper">
             <argument type="service" id="service_container" />
         </service>
         
-		<service id="dispatcher" class="Gekosale\EventDispatcher">
+		<service id="dispatcher" class="Gekosale\Core\EventDispatcher">
             <argument type="service" id="service_container" />
             <call method="addSubscribers" />
         </service>
         
-		<service id="controller.resolver" class="Gekosale\Resolver\Controller">
+		<service id="controller.resolver" class="Gekosale\Core\Resolver\Controller">
 			<argument type="service" id="service_container" />
         </service>
         
-		<service id="model.resolver" class="Gekosale\Resolver\Model">
+		<service id="model.resolver" class="Gekosale\Core\Resolver\Model">
 			<argument type="service" id="service_container" />
         </service>
         
-		<service id="form.resolver" class="Gekosale\Resolver\Form">
+		<service id="form.resolver" class="Gekosale\Core\Resolver\Form">
 			<argument type="service" id="service_container" />
         </service>
         
@@ -72,11 +72,11 @@
             <argument type="service" id="controller.resolver" />
         </service>
                 
-        <service id="translation" class="Gekosale\Translation">
+        <service id="translation" class="Gekosale\Core\Translation">
             <argument>%locale%</argument>
         </service>
         
-        <service id="db" class="Gekosale\Db">
+        <service id="db" class="Gekosale\Core\Db">
         	<argument type="service" id="service_container" />
             <argument>%database%</argument>
         </service>

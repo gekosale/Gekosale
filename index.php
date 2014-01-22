@@ -20,4 +20,4 @@
 
 include 'bootstrap.php';
 
-Gekosale\App::Run();
+Gekosale\Core\App::Run();

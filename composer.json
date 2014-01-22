@@ -1,11 +1,11 @@
 {
-    "name": "wellcommerce/wellcommerce",
-    "description": "Platforma e-commerce do prowadzenia sklepów internetowych",
+    "name": "gekosale/gekosale",
+    "description": "E-commerce platform",
     "minimum-stability": "alpha",
     "authors": [
         {
-            "name": "WellCommerce spółka z ograniczoną odpowiedzialnością",
-            "email": "info@wellcommerce.pl"
+            "name": "Adam Piotrowski",
+            "email": "adam@gekosale.com"
         }
     ],
     "license": "proprietary",

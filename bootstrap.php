@@ -1,6 +1,5 @@
 <?php
 
-DEFINE('__ENABLE_DEBUG__', 0);
 DEFINE('DS', DIRECTORY_SEPARATOR);
 DEFINE('ROOTPATH', dirname(__FILE__) . DS);
 
