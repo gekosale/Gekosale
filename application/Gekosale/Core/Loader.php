@@ -211,17 +211,6 @@ class Loader
             }
             $this->container->get('session')->setActiveShopCurrencyId($this->layer['idcurrency']);
             $this->container->get('session')->setActiveForceLogin($this->layer['forcelogin']);
-            
-            if ($this->container->get('session')->getActiveBrowserData() == NULL){
-                $browser = new Browser();
-                $Data = Array(
-                    'browser' => $browser->getBrowser(),
-                    'platform' => $browser->getPlatform(),
-                    'ismobile' => $browser->isMobile(),
-                    'isbot' => $browser->isRobot()
-                );
-                $this->container->get('session')->setActiveBrowserData($Data);
-            }
         }
     }
 

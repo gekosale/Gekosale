@@ -7,7 +7,7 @@
 * @author      WellCommerce, info@wellcommerce.pl
 */
 
-namespace Gekosale\Core\Migrate;
+namespace Gekosale\Migrate;
 use Gekosale\Core\Migrate;
 
 class <?php echo $classname;?> extends Migrate

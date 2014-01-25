@@ -1,6 +1,0 @@
-msgid "TXT_PRODUCT_PROMOTIONS"
-msgstr "Promocje"
-
-msgid "TXT_SALES_STATS"
-msgstr "Statystyki sprzedaży"
-

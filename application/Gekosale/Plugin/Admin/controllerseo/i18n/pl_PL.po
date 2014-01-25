@@ -1,3 +1,0 @@
-msgid "TXT_CONTROLLERSEO_LIST"
-msgstr "Lista przekierowań"
-

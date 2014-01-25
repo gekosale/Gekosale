@@ -1,5 +1,0 @@
-msgid "TXT_ADMINISTRATORS"
-msgstr "Administratorzy"
-
-msgid "TXT_ADMINISTRATORS_LIST"
-msgstr "Lista administratorów"

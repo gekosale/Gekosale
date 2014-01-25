@@ -26,7 +26,7 @@ class Clear extends AbstractCommand
 
     protected function execute (InputInterface $input, OutputInterface $output)
     {
-        $path = ROOTPATH . 'plugin';
+        $path = ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Plugin';
         
         $classmapPath = ROOTPATH . 'serialization' . DS . 'classesmap.reg';
         

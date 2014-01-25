@@ -1,3 +1,0 @@
-msgid "TXT_ORDER_STATUS_GROUPS_EDIT"
-msgstr "Edycja statusów"
-

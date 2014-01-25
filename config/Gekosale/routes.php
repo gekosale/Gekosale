@@ -161,7 +161,7 @@ $this->routes->add('frontend.integration', new Route('/' . Seo::getSeo('integrat
     'param' => NULL
 ), array(
     '_scheme' => 'http',
-    'param' => '(ceneo|domodi|ceneria|cenuj|kreocen|kupujemy|najtaniej24|nokaut|oferciak|okazje|radar|skapiec|smartbay|szoker|tortura|webkupiec)(\.xml)?'
+    'param' => '(ceneo|ceneria|cenuj|kreocen|kupujemy|najtaniej24|nokaut|oferciak|okazje|radar|skapiec|smartbay|szoker|tortura|webkupiec)(\.xml)?'
 )));
 
 $this->routes->add('frontend.firmes', new Route('/firmes/{param}', array(

@@ -1,2 +1,0 @@
-msgid "TXT_ADMINISTRATOR_GROUPS"
-msgstr "Grupy uprawnień"

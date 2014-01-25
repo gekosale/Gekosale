@@ -1,3 +1,0 @@
-msgid "ERR_VALUE_ALREADY_EXISTS"
-msgstr "Stawka o takiej wartości już istnieje"
-

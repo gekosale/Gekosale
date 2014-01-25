@@ -1,5 +1,0 @@
-msgid "TXT_TEMPLATE_LIBRARY"
-msgstr "Biblioteka szablonów"
-
-msgid "ERR_DELETE_FILE"
-msgstr "Błąd podczas usuwania pliku"

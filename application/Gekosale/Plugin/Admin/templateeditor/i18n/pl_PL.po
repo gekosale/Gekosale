@@ -1,3 +1,0 @@
-msgid "TXT_EXPORT"
-msgstr "Eksportuj"
-

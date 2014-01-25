@@ -1,2 +1,0 @@
-msgid "TXT_REFRESH_SEO"
-msgstr "Wygeneruj URL na podstawie nazwy"

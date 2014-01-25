@@ -1,5 +1,0 @@
-msgid "ERR_OPINION_NICK_REQUIRED"
-msgstr "Aby dodać opinię, musisz podać swój nick."
-
-msgid "ERR_OPINION_ADD_FAILED"
-msgstr "Nie udało się dodać opinii."

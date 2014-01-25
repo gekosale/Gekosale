@@ -1,9 +1,0 @@
-msgid "TXT_BUYALSO_STATS"
-msgstr "Kupili również..."
-
-msgid "TXT_PRODUCT_STATS"
-msgstr "Bestsellery"
-
-msgid "TXT_CROSSSELL_LIST"
-msgstr "Lista crosselingu"
-

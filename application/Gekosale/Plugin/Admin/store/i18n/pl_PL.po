@@ -1,5 +1,0 @@
-msgid "ERR_DELETE_ONLY_STORE"
-msgstr "Nie możesz skasować jedynej firmy."
-
-msgid "TXT_COMPANIES_LIST"
-msgstr "Lista firm"

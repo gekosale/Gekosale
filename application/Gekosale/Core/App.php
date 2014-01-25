@@ -273,18 +273,6 @@ class App
             DEFINE('DESIGNPATH', App::getURLForDesignDirectory());
         }
         
-        // remember login and password
-        if (self::$registry->router->getMode() == 1){
-            if ((int) self::$container->get('session')->getActiveUserid() === 0){
-                App::getModel('login')->getAdminAutologinKey();
-            }
-        }
-        else{
-            if ((int) self::$container->get('session')->getActiveClientid() === 0){
-                App::getModel('clientlogin')->getAutologinKey();
-            }
-        }
-        
         self::$registry->template = new Template(self::$registry, self::$registry->router->getMode(), self::$container);
         
         self::$registry->template->setStaticTemplateVariables();

@@ -58,7 +58,7 @@ class Add extends AbstractCommand
     {
         ob_start();
         ob_implicit_flush(0);
-        include ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Console' . DS . 'Template' . DS . 'Migrate.php';
+        include ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Core' . DS . 'Console' . DS . 'Template' . DS . 'Migrate.php';
         
         return ob_get_clean();
     }

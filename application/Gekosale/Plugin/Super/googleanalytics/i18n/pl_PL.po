@@ -1,2 +1,0 @@
-msgid "TXT_ENABLE_UNIVERSAL_GA"
-msgstr "Korzystaj z Universal Analytics"

@@ -1,3 +1,0 @@
-msgid "TXT_PRICE_COMPARISONS"
-msgstr "Porównywarki"
-

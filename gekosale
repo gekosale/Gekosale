@@ -10,5 +10,5 @@
 
 include 'bootstrap.php';
 
-$console = new Gekosale\Console();
+$console = new Gekosale\Core\Console();
 $console->run();

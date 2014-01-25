@@ -1,2 +1,0 @@
-msgid "TXT_QUICK_UPDATE_ADVANCED"
-msgstr "Szybka aktualizacja"

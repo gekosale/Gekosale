@@ -1,3 +1,0 @@
-msgid "TXT_ORDER_SAVED"
-msgstr "Zamówienie zostało zapisane."
-
