@@ -5,8 +5,34 @@
         xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+
         <parameter key="locale">pl_PL</parameter>
         <parameter key="timezone">Europe/Warsaw</parameter>
+
+        <parameter key="application.namespaces" type="collection">
+            <parameter>Gekosale</parameter>
+        </parameter>
+
+        <parameter key="application.design_path">%application.root_path%design</parameter>
+
+        <parameter key="admin.themes" type="collection">
+            <parameter>%application.design_path%/admin/default/templates</parameter>
+        </parameter>
+
+        <parameter key="front.themes" type="collection">
+            <parameter>%application.design_path%/front/default/templates</parameter>
+        </parameter>
+
+        <parameter key="propel.config" type="collection">
+            <parameter key="dsn">mysql:host=localhost;dbname=gekosale3</parameter>
+            <parameter key="user">root</parameter>
+            <parameter key="password"></parameter>
+        </parameter>
+
+        <parameter key="session.config" type="collection">
+            <parameter key="db_table">session</parameter>
+        </parameter>
+
     </parameters>
 
 </container>

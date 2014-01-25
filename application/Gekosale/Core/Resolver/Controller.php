@@ -28,37 +28,22 @@ class Controller extends BaseControllerResolver
 
     public function getController (Request $request)
     {
-        $this->mode = ucfirst($request->attributes->get('mode'));
         $this->action = ucfirst($request->attributes->get('action'));
         $this->baseController = $request->attributes->get('controller');
-        $this->namespaces = App::getRegistry()->loader->getNamespaces();
-        $this->classesMap = $this->container->get('classmapper')->getClassMap();
-        
-        $lastNs = '';
-        foreach ($this->namespaces as $namespace){
-            $ns = $namespace . DS . $this->mode . DS . strtolower($this->baseController . DS . 'controller' . DS . $this->baseController);
-            if (isset($this->classesMap[$ns])){
-                require_once $this->classesMap[$ns];
-                $lastNs = $namespace;
-            }
-        }
-        
-        if (! empty($lastNs)){
-            $class = $lastNs . '\\' . $this->baseController . 'Controller';
-        }
-        
-        $controllerObject = $this->createController($class);
-        
+        $controllerObject = $this->createController($this->baseController);
         return $controllerObject;
     }
 
     protected function createController ($class)
     {
-        $controllerObject = new $class(App::getRegistry(), $this->container);
-        $controllerObject->setDesignPath(strtolower($this->baseController . DS . $this->action . DS));
+        $controller = new $class();
+        
+        if ($controller instanceof ContainerAwareInterface){
+            $controller->setContainer($this->container);
+        }
         
         return array(
-            $controllerObject,
+            $controller,
             $this->action
         );
     }

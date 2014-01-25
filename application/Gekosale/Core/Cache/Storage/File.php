@@ -18,8 +18,7 @@
  * $Id: cache.class.php 54 2011-04-09 07:52:26Z krzotr $
  */
 namespace Gekosale\Core\Cache\Storage;
-use Exception;
-use Gekosale\Core\Helper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class File
 {
@@ -28,22 +27,21 @@ class File
 
     protected $cacheid;
 
-    protected $suffix = '.reg';
+    protected $extension;
 
-    public function __construct ()
+    protected $container;
+
+    public function __construct (ContainerInterface $container, $path, $extension)
     {
-        $this->path = ROOTPATH . 'serialization' . DS;
-        $this->cacheid = Helper::getViewId() . '_' . Helper::getLanguageId();
+        $this->container = $container;
+        $this->path = $path;
+        $this->extension = $extension;
+        $this->cacheid = $this->container->get('helper')->getViewId() . '_' . $this->container->get('helper')->getLanguageId();
     }
 
-    public function save ($name, $value, $time)
+    public function save ($name, $value)
     {
-        if (@file_put_contents($this->getCacheFileName($name), $value, LOCK_EX) === FALSE){
-            throw new Exception('Can not serialize content to file ' . $this->getCacheFileName($name) . '. Check directory\'s permissions');
-        }
-        
-        $time = time() + ($time ?  : 2592000);
-        touch($this->getCacheFileName($name), $time, $time);
+        $this->container->get('filesystem')->dumpFile($this->getCacheFileName($name), $value);
     }
 
     public function load ($name)
@@ -69,14 +67,14 @@ class File
 
     public function deleteAll ()
     {
-        foreach (glob($this->path . '*' . $this->suffix) as $fn){
+        foreach (glob($this->path . '*' . $this->extension) as $fn){
             @unlink($fn);
         }
     }
 
     public function getCacheFileName ($name)
     {
-        $cacheid = Helper::getViewId() . '_' . Helper::getLanguageId();
-        return $this->path . strtolower($name) . '_' . $cacheid . $this->suffix;
+        $cacheid = $this->container->get('helper')->getViewId() . '_' . $this->container->get('helper')->getLanguageId();
+        return $this->path . strtolower($name) . '_' . $cacheid . $this->extension;
     }
 }

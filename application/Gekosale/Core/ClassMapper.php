@@ -23,7 +23,7 @@ class ClassMapper extends ContainerAware
     {
         $this->container = $container;
         
-        $this->classMapPath = ROOTPATH . 'serialization' . DS . $this->classMapFile;
+        $this->classMapPath = ROOTPATH . 'var' . DS . 'serialization' . DS . $this->classMapFile;
         
         $this->classMap = @ file_get_contents($this->classMapPath);
         
@@ -42,5 +42,4 @@ class ClassMapper extends ContainerAware
         }
         return NULL;
     }
-    
 }

@@ -20,4 +20,5 @@
 
 include 'bootstrap.php';
 
-Gekosale\Core\App::Run();
+$application = new Gekosale\Core\Application();
+$application->run();

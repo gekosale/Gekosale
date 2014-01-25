@@ -27,7 +27,7 @@ class Diff extends AbstractCommand
         $inputDir = ROOTPATH . 'sql';
         
         $outputDir = ROOTPATH;
-        
+
         system("php {$propelBin} migration:diff --input-dir {$inputDir} --output-dir {$outputDir}/sql");
     }
 }

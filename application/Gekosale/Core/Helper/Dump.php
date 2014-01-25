@@ -1,7 +1,7 @@
 <?php
 namespace Gekosale\Core;
 
-class Arr
+class Dump
 {
 
 	public static function merge (Array $array1, Array $array2, $recursive = TRUE)

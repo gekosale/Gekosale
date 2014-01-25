@@ -4,14 +4,20 @@ namespace Gekosale\Core;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Propel\Runtime\Propel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Translation extends Translator
 {
 
-    protected $locale = 'pl_PL';
+    protected $locale;
 
-    public function __construct ()
+    protected $container;
+
+    public function __construct (ContainerInterface $container, $locale)
     {
+        $this->container = $container;
+        $this->locale = $locale;
+        
         parent::__construct($this->locale);
         parent::addLoader('array', new ArrayLoader());
         parent::addResource('array', $this->getResource(), $this->locale);
@@ -19,7 +25,7 @@ class Translation extends Translator
 
     protected function getResource ()
     {
-        if (($Data = App::getContainer()->get('cache')->load('translations')) === false){
+        if (($Data = $this->container->get('cache')->load('translations')) === false){
             $sql = 'SELECT
                     	T.name,
                       	TD.translation
@@ -27,12 +33,12 @@ class Translation extends Translator
                     LEFT JOIN translationdata TD ON T.idtranslation = TD.translationid
                     WHERE TD.languageid = :languageid';
             $stmt = Db::getInstance()->prepare($sql);
-            $stmt->bindValue('languageid', Helper::getLanguageId());
+            $stmt->bindValue('languageid', $this->container->get('helper')->getLanguageId());
             $stmt->execute();
             while ($rs = $stmt->fetch()){
                 $Data[$rs['name']] = $rs['translation'];
             }
-            App::getContainer()->get('cache')->save('translations', $Data);
+            $this->container->get('cache')->save('translations', $Data);
         }
         return $Data;
     }

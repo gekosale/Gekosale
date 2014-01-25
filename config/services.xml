@@ -1,84 +1,100 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<container
-        xmlns="http://symfony.com/schema/dic/services"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <services>
-    
+	<services>
+
 		<service id="request" synthetic="true" />
-    
-        <service id="cache.storage" class="Gekosale\Core\Cache\Storage\File" />
 
-        <service id="cache" class="Gekosale\Core\Cache">
-            <argument type="service" id="cache.storage" />
+		<service id="cache.storage" class="Gekosale\Core\Cache\Storage\File">
+			<argument type="service" id="service_container" />
+			<argument>%application.root_path%var/cache</argument>
+			<argument>reg</argument>
+		</service>
+
+		<service id="cache" class="Gekosale\Core\Cache">
+			<argument type="service" id="cache.storage" />
+		</service>
+
+		<service id="session.handler" class="Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler">
+            <argument type="service" id="propel.connection" />
+            <argument>%session.config%</argument>
         </service>
-        
-        <service id="session.storage" class="Gekosale\Core\Session\Storage\Database">
-        	<argument type="service" id="service_container" />
+
+        <service id="session.storage" class="Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage">
+            <argument type="collection" />
+            <argument type="service" id="session.handler" />
         </service>
-        
-        <service id="session" class="Gekosale\Core\Session">
+
+        <service id="session" class="Symfony\Component\HttpFoundation\Session\Session">
             <argument type="service" id="session.storage" />
-        </service>
-        
-        <service id="right" class="Gekosale\Core\Right">
-            <argument type="service" id="service_container" />
-        </service>
-        
-        <service id="finder" class="Symfony\Component\Finder\Finder" />
-        
-        <service id="filesystem" class="Symfony\Component\Filesystem\Filesystem" />
-        
-        <service id="config.locator" class="Symfony\Component\Config\FileLocator">
-            <argument>%application.root_path%config/Gekosale</argument>
+            <call method="start" />
         </service>
 
-        <service id="router.loader" class="Symfony\Component\Routing\Loader\PhpFileLoader">
-            <argument type="service" id="config.locator" />
-        </service>
+		<service id="right" class="Gekosale\Core\Right">
+			<argument type="service" id="service_container" />
+		</service>
 
-        <service id="router" class="Symfony\Component\Routing\Router">
-            <argument type="service" id="router.loader" />
-            <argument>routes.php</argument>
-        </service>
-        
-        <service id="registry" class="Gekosale\Core\Registry" />
+		<service id="finder" class="Symfony\Component\Finder\Finder" />
+
+		<service id="filesystem" class="Symfony\Component\Filesystem\Filesystem" />
+
+		<service id="config.locator" class="Symfony\Component\Config\FileLocator">
+			<argument>%application.root_path%config</argument>
+		</service>
+
+		<service id="router.loader" class="Symfony\Component\Routing\Loader\PhpFileLoader">
+			<argument type="service" id="config.locator" />
+		</service>
+
+		<service id="router" class="Symfony\Component\Routing\Router">
+			<argument type="service" id="router.loader" />
+			<argument>routing.php</argument>
+		</service>
+		
+		<service id="helper" class="Gekosale\Core\Helper">
+			<argument type="service" id="service_container" />
+		</service>
+
+		<service id="registry" class="Gekosale\Core\Registry" />
 
 		<service id="classmapper" class="Gekosale\Core\ClassMapper">
-            <argument type="service" id="service_container" />
-        </service>
-        
+			<argument type="service" id="service_container" />
+		</service>
+
 		<service id="dispatcher" class="Gekosale\Core\EventDispatcher">
-            <argument type="service" id="service_container" />
-            <call method="addSubscribers" />
-        </service>
-        
+			<argument type="service" id="service_container" />
+			<call method="addSubscribers" />
+		</service>
+
 		<service id="controller.resolver" class="Gekosale\Core\Resolver\Controller">
 			<argument type="service" id="service_container" />
-        </service>
-        
+		</service>
+
 		<service id="model.resolver" class="Gekosale\Core\Resolver\Model">
 			<argument type="service" id="service_container" />
-        </service>
-        
+		</service>
+
 		<service id="form.resolver" class="Gekosale\Core\Resolver\Form">
 			<argument type="service" id="service_container" />
-        </service>
-        
-        <service id="kernel" class="Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel">
-            <argument type="service" id="dispatcher" />
-            <argument type="service" id="service_container" />
-            <argument type="service" id="controller.resolver" />
-        </service>
-                
-        <service id="translation" class="Gekosale\Core\Translation">
-            <argument>%locale%</argument>
-        </service>
-        
-        <service id="db" class="Gekosale\Core\Db">
-        	<argument type="service" id="service_container" />
-            <argument>%database%</argument>
-        </service>
-    </services>
+		</service>
+
+		<service id="kernel"
+			class="Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel">
+			<argument type="service" id="dispatcher" />
+			<argument type="service" id="service_container" />
+			<argument type="service" id="controller.resolver" />
+		</service>
+
+		<service id="translation" class="Gekosale\Core\Translation">
+			<argument type="service" id="service_container" />
+			<argument>%locale%</argument>
+		</service>
+
+		<service id="db" class="Gekosale\Core\Db">
+			<argument type="service" id="service_container" />
+			<argument>%database%</argument>
+		</service>
+	</services>
 </container>

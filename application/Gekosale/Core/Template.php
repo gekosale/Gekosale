@@ -59,7 +59,7 @@ class Template
         $this->template->addFunction('css_asset', new Twig_Function_Function('Gekosale\Template::getCSSAsset'));
         $this->template->addFunction('recommendations', new Twig_Function_Function('Gekosale\Template::getRecommendations'));
         $this->template->addExtension(new Twig_Extensions_Extension_Intl());
-        $this->template->addExtension(new TranslationExtension(new Translation()));
+        $this->template->addExtension(new TranslationExtension($this->container->get('translation')));
         $this->template->addExtension(new RoutingExtension($this->container->get('router')->getGenerator()));
         $this->template->addExtension(new Twig_Extension_Optimizer(Twig_NodeVisitor_Optimizer::OPTIMIZE_ALL));
     }

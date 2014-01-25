@@ -26,9 +26,9 @@ class Clear extends AbstractCommand
 
     protected function execute (InputInterface $input, OutputInterface $output)
     {
-        $path = ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Plugin';
+        $path = ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Component';
         
-        $classmapPath = ROOTPATH . 'serialization' . DS . 'classesmap.reg';
+        $classmapPath = ROOTPATH . 'var' . DS . 'serialization' . DS . 'classesmap.reg';
         
         $dir = new RegExiterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::FOLLOW_SYMLINKS)), '~.+\.php\z~');
         

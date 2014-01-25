@@ -197,12 +197,10 @@ class App
         
         self::$config = include_once ROOTPATH . 'config' . DS . 'settings.php';
         
-        if (! self::isCli()){
-            App::setRequest();
-            DEFINE('SSLNAME', (isset(self::$config['ssl']) && self::$config['ssl'] == 1) ? 'https' : 'http');
-            DEFINE('__ADMINPANE__', self::$config['admin_panel_link']);
-            App::setUrl();
-        }
+        App::setRequest();
+        DEFINE('SSLNAME', (isset(self::$config['ssl']) && self::$config['ssl'] == 1) ? 'https' : 'http');
+        DEFINE('__ADMINPANE__', self::$config['admin_panel_link']);
+        App::setUrl();
         
         self::$container = self::getContainerBuilder();
         
@@ -210,12 +208,10 @@ class App
         
         $loader->load('config.xml');
         
-        if (! self::isCli()){
-            self::$registry->router = new Router(self::$registry, self::$container);
-            self::$registry->loader = new Loader(self::$registry, self::$container);
-            self::$registry->core = new Core(self::$registry, self::$container);
-            self::$container->get('session')->setActiveEncryptionKeyValue((string) self::$config['client_data_encription_string']);
-        }
+        self::$registry->router = new Router(self::$registry, self::$container);
+        self::$registry->loader = new Loader(self::$registry, self::$container);
+        self::$registry->core = new Core(self::$registry, self::$container);
+        self::$container->get('session')->setActiveEncryptionKeyValue((string) self::$config['client_data_encription_string']);
     }
 
     public static function getContainerBuilder ()
@@ -238,16 +234,6 @@ class App
         );
     }
 
-    public static function isCli ()
-    {
-        if (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
     public static function Run ()
     {
         App::init();
@@ -261,11 +247,13 @@ class App
             }, self::$request->getUri());
             self::$registry->xajax->configure('requestURI', self::$registry->router->is404() ? self::getHost(1) : $url);
         }
+        
         self::$registry->xajaxInterface = new XajaxInterface();
         
         self::$container->get('session')->clearTemp();
         
         DEFINE('URL', App::getHost(1) . '/');
+        
         if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on'){
             DEFINE('DESIGNPATH', str_replace('http://', 'https://', App::getURLForDesignDirectory()));
         }

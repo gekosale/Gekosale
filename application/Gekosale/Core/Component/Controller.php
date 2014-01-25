@@ -18,9 +18,9 @@
  * $Id: controller.class.php 438 2011-08-27 09:29:36Z gekosale $ 
  */
 namespace Gekosale\Core\Component;
-use Gekosale\Core\App;
+use Gekosale\Core\Component;
 
-class Controller extends \Gekosale\Component
+class Controller extends Component
 {
 
     protected $designPath;
