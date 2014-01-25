@@ -20,7 +20,7 @@
         </parameter>
 
         <parameter key="front.themes" type="collection">
-            <parameter>%application.design_path%/frontend/default/templates</parameter>
+            <parameter>%application.design_path%/frontend/Gekosale/templates</parameter>
         </parameter>
 
         <parameter key="propel.config" type="collection">

@@ -127,17 +127,16 @@
 
 		<service id="twig.extension.translation" class="Symfony\Bridge\Twig\Extension\TranslationExtension">
 			<argument type="service" id="translation" />
-			<tag name="twig.extension" alias="translation" />
+			<tag name="twig.extension" />
 		</service>
-		
+
 		<service id="twig.extension.routing" class="Symfony\Bridge\Twig\Extension\RoutingExtension">
 			<argument type="service" id="urlgenerator" />
-			<tag name="twig.extension" alias="routing" />
+			<tag name="twig.extension" />
 		</service>
-		
+
 		<service id="twig.extension.intl" class="Twig_Extensions_Extension_Intl">
-			<argument type="service" id="translation" />
-			<tag name="twig.extension" alias="intl" />
+			<tag name="twig.extension" />
 		</service>
 		
 		

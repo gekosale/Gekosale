@@ -25,22 +25,22 @@ class Translation extends Translator
 
     protected function getResource ()
     {
-        if (($Data = $this->container->get('cache')->load('translations')) === false){
-            $sql = 'SELECT
-                    	T.name,
-                      	TD.translation
-                    FROM translation T
-                    LEFT JOIN translationdata TD ON T.idtranslation = TD.translationid
-                    WHERE TD.languageid = :languageid';
-            $stmt = Db::getInstance()->prepare($sql);
-            $stmt->bindValue('languageid', $this->container->get('helper')->getLanguageId());
-            $stmt->execute();
-            while ($rs = $stmt->fetch()){
-                $Data[$rs['name']] = $rs['translation'];
-            }
-            $this->container->get('cache')->save('translations', $Data);
-        }
-        return $Data;
+//        if (($Data = $this->container->get('cache')->load('translations')) === false){
+////            $sql = 'SELECT
+////                    	T.name,
+////                      	TD.translation
+////                    FROM translation T
+////                    LEFT JOIN translationdata TD ON T.idtranslation = TD.translationid
+////                    WHERE TD.languageid = :languageid';
+////            $stmt = Db::getInstance()->prepare($sql);
+////            $stmt->bindValue('languageid', $this->container->get('helper')->getLanguageId());
+////            $stmt->execute();
+////            while ($rs = $stmt->fetch()){
+////                $Data[$rs['name']] = $rs['translation'];
+////            }
+//            $this->container->get('cache')->save('translations', $Data);
+//        }
+//        return $Data;
     }
 
     public static function get ($id)
