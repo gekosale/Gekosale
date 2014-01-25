@@ -16,11 +16,11 @@
         <parameter key="application.design_path">%application.root_path%design</parameter>
 
         <parameter key="admin.themes" type="collection">
-            <parameter>%application.design_path%/admin/default/templates</parameter>
+            <parameter>%application.design_path%/admin/Gekosale/templates</parameter>
         </parameter>
 
         <parameter key="front.themes" type="collection">
-            <parameter>%application.design_path%/front/default/templates</parameter>
+            <parameter>%application.design_path%/frontend/default/templates</parameter>
         </parameter>
 
         <parameter key="propel.config" type="collection">

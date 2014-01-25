@@ -8,5 +8,8 @@ class Dashboard extends Frontend
 
     public function index ()
     {
+        return Array(
+            'foo' => 'bar'
+        );
     }
 }

@@ -57,13 +57,11 @@
 			<argument type="service" id="service_container" />
 		</service>
 
-		<service id="registry" class="Gekosale\Core\Registry" />
-
 		<service id="classmapper" class="Gekosale\Core\ClassMapper">
 			<argument type="service" id="service_container" />
 		</service>
 
-		<service id="dispatcher" class="Gekosale\Core\EventDispatcher">
+		<service id="dispatcher" class="Gekosale\Core\Event">
 			<argument type="service" id="service_container" />
 			<call method="addSubscribers" />
 		</service>
@@ -96,5 +94,52 @@
 			<argument type="service" id="service_container" />
 			<argument>%database%</argument>
 		</service>
+		
+        <service id="twig.loader.front" class="Twig_Loader_Filesystem">
+            <argument>%front.themes%</argument>
+        </service>
+
+        <service id="twig.loader.admin" class="Twig_Loader_Filesystem">
+            <argument>%admin.themes%</argument>
+        </service>
+
+        <service id="template.admin" class="Gekosale\Core\Template">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="twig.loader.admin" />
+            <argument type="collection">
+                <argument key="cache">%application.root_path%var/cache</argument>
+                <argument key="auto_reload">true</argument>
+                <argument key="autoescape">true</argument>
+            </argument>
+            <call method="initEngine" />
+        </service>
+
+        <service id="template.front" class="Gekosale\Core\Template">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="twig.loader.front" />
+            <argument type="collection">
+                <argument key="cache">%application.root_path%var/cache</argument>
+                <argument key="auto_reload">true</argument>
+                <argument key="autoescape">true</argument>
+            </argument>
+            <call method="initEngine" />
+        </service>
+
+		<service id="twig.extension.translation" class="Symfony\Bridge\Twig\Extension\TranslationExtension">
+			<argument type="service" id="translation" />
+			<tag name="twig.extension" alias="translation" />
+		</service>
+		
+		<service id="twig.extension.routing" class="Symfony\Bridge\Twig\Extension\RoutingExtension">
+			<argument type="service" id="urlgenerator" />
+			<tag name="twig.extension" alias="routing" />
+		</service>
+		
+		<service id="twig.extension.intl" class="Twig_Extensions_Extension_Intl">
+			<argument type="service" id="translation" />
+			<tag name="twig.extension" alias="intl" />
+		</service>
+		
+		
 	</services>
 </container>
