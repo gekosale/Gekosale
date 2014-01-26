@@ -3,7 +3,9 @@
 namespace Gekosale\Core;
 
 use Twig_Environment,
-    Twig_Loader_Filesystem;
+    Twig_Loader_Filesystem,
+    Twig_Extension_Optimizer,
+    Twig_NodeVisitor_Optimizer;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -34,6 +36,7 @@ class Template
         foreach ($this->extensions as $extensionName => $extensionAttributes) {
             $this->engine->addExtension($this->container->get($extensionName));
         }
+        $this->engine->addExtension(new Twig_Extension_Optimizer(Twig_NodeVisitor_Optimizer::OPTIMIZE_ALL));
     }
 
     public function getEngine()

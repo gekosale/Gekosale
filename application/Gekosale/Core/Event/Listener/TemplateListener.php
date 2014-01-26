@@ -10,10 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TemplateListener implements EventSubscriberInterface
 {
-
-    const MODE_ADMIN = 1;
-    const MODE_FRONT = 0;
-
     public function onKernelController(FilterControllerEvent $event)
     {
         $event->getRequest()->attributes->set('_template_vars', Array());
@@ -26,7 +22,6 @@ class TemplateListener implements EventSubscriberInterface
         $route            = $request->attributes->get('_route');
         $controllerResult = $event->getControllerResult();
         $templateVars     = $request->attributes->get('_template_vars');
-        $templating       = $container->get('template.admin');
 
         $parameters = array_merge($templateVars, $controllerResult);
 
@@ -36,10 +31,10 @@ class TemplateListener implements EventSubscriberInterface
         );
 
         switch ($request->attributes->get('mode')) {
-            case self::MODE_ADMIN:
-                $response = $container->get('template.front')->engine->render($template, $parameters);
+            case 'admin':
+                $response = $container->get('template.admin')->engine->render($template, $parameters);
                 break;
-            case self::MODE_FRONT:
+            case 'frontend':
                 $response = $container->get('template.front')->engine->render($template, $parameters);
                 break;
         }
@@ -47,9 +42,10 @@ class TemplateListener implements EventSubscriberInterface
         $event->setResponse(new Response($response));
     }
 
-    protected function getTemplateName($controller, $action)
+    protected function getTemplateName($route, $action)
     {
-        return sprintf('%s\%s.twig', $controller, $action);
+
+        return sprintf('%s\%s.twig', $route, $action);
     }
 
     public static function getSubscribedEvents()

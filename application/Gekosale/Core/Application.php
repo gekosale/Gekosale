@@ -71,7 +71,8 @@ class Application
     public function stop()
     {
         $this->container->get('kernel')->terminate($this->request, $this->response);
-        $this->stopwatch->stop('application');
+        $event = $this->stopwatch->stop('application');
+        echo $event->getDuration();
     }
 
     protected function getContainerBuilder()
