@@ -1,34 +1,30 @@
 <?php
 
-namespace Gekosale\Component\Configuration\Model\Availablity\Base;
+namespace Gekosale\Component\Configuration\Model\Availability\Base;
 
-use \DateTime;
 use \Exception;
 use \PDO;
-use Gekosale\Component\Configuration\Model\Availablity\Availablity as ChildAvailablity;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n as ChildAvailablityI18n;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery as ChildAvailablityI18nQuery;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityQuery as ChildAvailablityQuery;
-use Gekosale\Component\Configuration\Model\Availablity\Map\AvailablityTableMap;
+use Gekosale\Component\Configuration\Model\Availability\Availability as ChildAvailability;
+use Gekosale\Component\Configuration\Model\Availability\AvailabilityI18nQuery as ChildAvailabilityI18nQuery;
+use Gekosale\Component\Configuration\Model\Availability\AvailabilityQuery as ChildAvailabilityQuery;
+use Gekosale\Component\Configuration\Model\Availability\Map\AvailabilityI18nTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Propel\Runtime\Util\PropelDateTime;
 
-abstract class Availablity implements ActiveRecordInterface 
+abstract class AvailabilityI18n implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Availablity\\Map\\AvailablityTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Availability\\Map\\AvailabilityI18nTableMap';
 
 
     /**
@@ -64,23 +60,22 @@ abstract class Availablity implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the add_date field.
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * The value for the locale field.
+     * Note: this column has a database default value of: 'en_US'
      * @var        string
      */
-    protected $add_date;
+    protected $locale;
 
     /**
-     * The value for the value field.
-     * @var        int
+     * The value for the name field.
+     * @var        string
      */
-    protected $value;
+    protected $name;
 
     /**
-     * @var        ObjectCollection|ChildAvailablityI18n[] Collection to store aggregation of ChildAvailablityI18n objects.
+     * @var        Availability
      */
-    protected $collAvailablityI18ns;
-    protected $collAvailablityI18nsPartial;
+    protected $aAvailability;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -90,26 +85,6 @@ abstract class Availablity implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
-    // i18n behavior
-    
-    /**
-     * Current locale
-     * @var        string
-     */
-    protected $currentLocale = 'en_US';
-    
-    /**
-     * Current translation objects
-     * @var        array[ChildAvailablityI18n]
-     */
-    protected $currentTranslations;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection
-     */
-    protected $availablityI18nsScheduledForDeletion = null;
-
     /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
@@ -118,10 +93,11 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->locale = 'en_US';
     }
 
     /**
-     * Initializes internal state of Gekosale\Component\Configuration\Model\Availablity\Base\Availablity object.
+     * Initializes internal state of Gekosale\Component\Configuration\Model\Availability\Base\AvailabilityI18n object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -218,9 +194,9 @@ abstract class Availablity implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Availablity</code> instance.  If
-     * <code>obj</code> is an instance of <code>Availablity</code>, delegates to
-     * <code>equals(Availablity)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>AvailabilityI18n</code> instance.  If
+     * <code>obj</code> is an instance of <code>AvailabilityI18n</code>, delegates to
+     * <code>equals(AvailabilityI18n)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -303,7 +279,7 @@ abstract class Availablity implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Availablity The current object, for fluid interface
+     * @return AvailabilityI18n The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -335,7 +311,7 @@ abstract class Availablity implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return Availablity The current object, for fluid interface
+     * @return AvailabilityI18n The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -392,41 +368,32 @@ abstract class Availablity implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [add_date] column value.
+     * Get the [locale] column value.
      * 
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
-     *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return   string
      */
-    public function getAdddate($format = NULL)
+    public function getLocale()
     {
-        if ($format === null) {
-            return $this->add_date;
-        } else {
-            return $this->add_date instanceof \DateTime ? $this->add_date->format($format) : null;
-        }
+
+        return $this->locale;
     }
 
     /**
-     * Get the [value] column value.
+     * Get the [name] column value.
      * 
-     * @return   int
+     * @return   string
      */
-    public function getValue()
+    public function getName()
     {
 
-        return $this->value;
+        return $this->name;
     }
 
     /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\Availablity The current object (for fluent API support)
+     * @return   \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -436,7 +403,11 @@ abstract class Availablity implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[AvailablityTableMap::ID] = true;
+            $this->modifiedColumns[AvailabilityI18nTableMap::ID] = true;
+        }
+
+        if ($this->aAvailability !== null && $this->aAvailability->getId() !== $v) {
+            $this->aAvailability = null;
         }
 
 
@@ -444,46 +415,46 @@ abstract class Availablity implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Sets the value of [add_date] column to a normalized version of the date/time value specified.
+     * Set the value of [locale] column.
      * 
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\Availablity The current object (for fluent API support)
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n The current object (for fluent API support)
      */
-    public function setAdddate($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->add_date !== null || $dt !== null) {
-            if ($dt !== $this->add_date) {
-                $this->add_date = $dt;
-                $this->modifiedColumns[AvailablityTableMap::ADD_DATE] = true;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setAdddate()
-
-    /**
-     * Set the value of [value] column.
-     * 
-     * @param      int $v new value
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\Availablity The current object (for fluent API support)
-     */
-    public function setValue($v)
+    public function setLocale($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->value !== $v) {
-            $this->value = $v;
-            $this->modifiedColumns[AvailablityTableMap::VALUE] = true;
+        if ($this->locale !== $v) {
+            $this->locale = $v;
+            $this->modifiedColumns[AvailabilityI18nTableMap::LOCALE] = true;
         }
 
 
         return $this;
-    } // setValue()
+    } // setLocale()
+
+    /**
+     * Set the value of [name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n The current object (for fluent API support)
+     */
+    public function setName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[AvailabilityI18nTableMap::NAME] = true;
+        }
+
+
+        return $this;
+    } // setName()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -495,6 +466,10 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->locale !== 'en_US') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -522,17 +497,14 @@ abstract class Availablity implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AvailablityTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AvailabilityI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AvailablityTableMap::translateFieldName('Adddate', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->add_date = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AvailabilityI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->locale = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AvailablityTableMap::translateFieldName('Value', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->value = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AvailabilityI18nTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -541,10 +513,10 @@ abstract class Availablity implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = AvailablityTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = AvailabilityI18nTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Availablity\Availablity object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n object", 0, $e);
         }
     }
 
@@ -563,6 +535,9 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aAvailability !== null && $this->id !== $this->aAvailability->getId()) {
+            $this->aAvailability = null;
+        }
     } // ensureConsistency
 
     /**
@@ -586,13 +561,13 @@ abstract class Availablity implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(AvailablityTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildAvailablityQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildAvailabilityI18nQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -602,8 +577,7 @@ abstract class Availablity implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collAvailablityI18ns = null;
-
+            $this->aAvailability = null;
         } // if (deep)
     }
 
@@ -613,8 +587,8 @@ abstract class Availablity implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Availablity::setDeleted()
-     * @see Availablity::isDeleted()
+     * @see AvailabilityI18n::setDeleted()
+     * @see AvailabilityI18n::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -623,12 +597,12 @@ abstract class Availablity implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildAvailablityQuery::create()
+            $deleteQuery = ChildAvailabilityI18nQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -665,7 +639,7 @@ abstract class Availablity implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -685,7 +659,7 @@ abstract class Availablity implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                AvailablityTableMap::addInstanceToPool($this);
+                AvailabilityI18nTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -715,6 +689,18 @@ abstract class Availablity implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aAvailability !== null) {
+                if ($this->aAvailability->isModified() || $this->aAvailability->isNew()) {
+                    $affectedRows += $this->aAvailability->save($con);
+                }
+                $this->setAvailability($this->aAvailability);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -724,23 +710,6 @@ abstract class Availablity implements ActiveRecordInterface
                 }
                 $affectedRows += 1;
                 $this->resetModified();
-            }
-
-            if ($this->availablityI18nsScheduledForDeletion !== null) {
-                if (!$this->availablityI18nsScheduledForDeletion->isEmpty()) {
-                    \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery::create()
-                        ->filterByPrimaryKeys($this->availablityI18nsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->availablityI18nsScheduledForDeletion = null;
-                }
-            }
-
-                if ($this->collAvailablityI18ns !== null) {
-            foreach ($this->collAvailablityI18ns as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -763,24 +732,20 @@ abstract class Availablity implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[AvailablityTableMap::ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . AvailablityTableMap::ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(AvailablityTableMap::ID)) {
+        if ($this->isColumnModified(AvailabilityI18nTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(AvailablityTableMap::ADD_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'ADD_DATE';
+        if ($this->isColumnModified(AvailabilityI18nTableMap::LOCALE)) {
+            $modifiedColumns[':p' . $index++]  = 'LOCALE';
         }
-        if ($this->isColumnModified(AvailablityTableMap::VALUE)) {
-            $modifiedColumns[':p' . $index++]  = 'VALUE';
+        if ($this->isColumnModified(AvailabilityI18nTableMap::NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'NAME';
         }
 
         $sql = sprintf(
-            'INSERT INTO availablity (%s) VALUES (%s)',
+            'INSERT INTO availability_i18n (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -792,11 +757,11 @@ abstract class Availablity implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'ADD_DATE':                        
-                        $stmt->bindValue($identifier, $this->add_date ? $this->add_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'LOCALE':                        
+                        $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
                         break;
-                    case 'VALUE':                        
-                        $stmt->bindValue($identifier, $this->value, PDO::PARAM_INT);
+                    case 'NAME':                        
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -805,13 +770,6 @@ abstract class Availablity implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -844,7 +802,7 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = AvailablityTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = AvailabilityI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -864,10 +822,10 @@ abstract class Availablity implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getAdddate();
+                return $this->getLocale();
                 break;
             case 2:
-                return $this->getValue();
+                return $this->getName();
                 break;
             default:
                 return null;
@@ -892,15 +850,15 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Availablity'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['AvailabilityI18n'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Availablity'][$this->getPrimaryKey()] = true;
-        $keys = AvailablityTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['AvailabilityI18n'][serialize($this->getPrimaryKey())] = true;
+        $keys = AvailabilityI18nTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getAdddate(),
-            $keys[2] => $this->getValue(),
+            $keys[1] => $this->getLocale(),
+            $keys[2] => $this->getName(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -908,8 +866,8 @@ abstract class Availablity implements ActiveRecordInterface
         }
         
         if ($includeForeignObjects) {
-            if (null !== $this->collAvailablityI18ns) {
-                $result['AvailablityI18ns'] = $this->collAvailablityI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->aAvailability) {
+                $result['Availability'] = $this->aAvailability->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -929,7 +887,7 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = AvailablityTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = AvailabilityI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -949,10 +907,10 @@ abstract class Availablity implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setAdddate($value);
+                $this->setLocale($value);
                 break;
             case 2:
-                $this->setValue($value);
+                $this->setName($value);
                 break;
         } // switch()
     }
@@ -976,11 +934,11 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = AvailablityTableMap::getFieldNames($keyType);
+        $keys = AvailabilityI18nTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setAdddate($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setValue($arr[$keys[2]]);
+        if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
     }
 
     /**
@@ -990,11 +948,11 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(AvailablityTableMap::DATABASE_NAME);
+        $criteria = new Criteria(AvailabilityI18nTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(AvailablityTableMap::ID)) $criteria->add(AvailablityTableMap::ID, $this->id);
-        if ($this->isColumnModified(AvailablityTableMap::ADD_DATE)) $criteria->add(AvailablityTableMap::ADD_DATE, $this->add_date);
-        if ($this->isColumnModified(AvailablityTableMap::VALUE)) $criteria->add(AvailablityTableMap::VALUE, $this->value);
+        if ($this->isColumnModified(AvailabilityI18nTableMap::ID)) $criteria->add(AvailabilityI18nTableMap::ID, $this->id);
+        if ($this->isColumnModified(AvailabilityI18nTableMap::LOCALE)) $criteria->add(AvailabilityI18nTableMap::LOCALE, $this->locale);
+        if ($this->isColumnModified(AvailabilityI18nTableMap::NAME)) $criteria->add(AvailabilityI18nTableMap::NAME, $this->name);
 
         return $criteria;
     }
@@ -1009,30 +967,37 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(AvailablityTableMap::DATABASE_NAME);
-        $criteria->add(AvailablityTableMap::ID, $this->id);
+        $criteria = new Criteria(AvailabilityI18nTableMap::DATABASE_NAME);
+        $criteria->add(AvailabilityI18nTableMap::ID, $this->id);
+        $criteria->add(AvailabilityI18nTableMap::LOCALE, $this->locale);
 
         return $criteria;
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return   int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getLocale();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setLocale($keys[1]);
     }
 
     /**
@@ -1042,7 +1007,7 @@ abstract class Availablity implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getLocale());
     }
 
     /**
@@ -1051,32 +1016,18 @@ abstract class Availablity implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Availablity\Availablity (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setAdddate($this->getAdddate());
-        $copyObj->setValue($this->getValue());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getAvailablityI18ns() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addAvailablityI18n($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setId($this->getId());
+        $copyObj->setLocale($this->getLocale());
+        $copyObj->setName($this->getName());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1089,7 +1040,7 @@ abstract class Availablity implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Component\Configuration\Model\Availablity\Availablity Clone of current object.
+     * @return                 \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1102,245 +1053,55 @@ abstract class Availablity implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildAvailability object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('AvailablityI18n' == $relationName) {
-            return $this->initAvailablityI18ns();
-        }
-    }
-
-    /**
-     * Clears out the collAvailablityI18ns collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addAvailablityI18ns()
-     */
-    public function clearAvailablityI18ns()
-    {
-        $this->collAvailablityI18ns = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collAvailablityI18ns collection loaded partially.
-     */
-    public function resetPartialAvailablityI18ns($v = true)
-    {
-        $this->collAvailablityI18nsPartial = $v;
-    }
-
-    /**
-     * Initializes the collAvailablityI18ns collection.
-     *
-     * By default this just sets the collAvailablityI18ns collection to an empty array (like clearcollAvailablityI18ns());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initAvailablityI18ns($overrideExisting = true)
-    {
-        if (null !== $this->collAvailablityI18ns && !$overrideExisting) {
-            return;
-        }
-        $this->collAvailablityI18ns = new ObjectCollection();
-        $this->collAvailablityI18ns->setModel('\Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n');
-    }
-
-    /**
-     * Gets an array of ChildAvailablityI18n objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildAvailablity is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildAvailablityI18n[] List of ChildAvailablityI18n objects
+     * @param                  ChildAvailability $v
+     * @return                 \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getAvailablityI18ns($criteria = null, ConnectionInterface $con = null)
+    public function setAvailability(ChildAvailability $v = null)
     {
-        $partial = $this->collAvailablityI18nsPartial && !$this->isNew();
-        if (null === $this->collAvailablityI18ns || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collAvailablityI18ns) {
-                // return empty collection
-                $this->initAvailablityI18ns();
-            } else {
-                $collAvailablityI18ns = ChildAvailablityI18nQuery::create(null, $criteria)
-                    ->filterByAvailablity($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collAvailablityI18nsPartial && count($collAvailablityI18ns)) {
-                        $this->initAvailablityI18ns(false);
-
-                        foreach ($collAvailablityI18ns as $obj) {
-                            if (false == $this->collAvailablityI18ns->contains($obj)) {
-                                $this->collAvailablityI18ns->append($obj);
-                            }
-                        }
-
-                        $this->collAvailablityI18nsPartial = true;
-                    }
-
-                    reset($collAvailablityI18ns);
-
-                    return $collAvailablityI18ns;
-                }
-
-                if ($partial && $this->collAvailablityI18ns) {
-                    foreach ($this->collAvailablityI18ns as $obj) {
-                        if ($obj->isNew()) {
-                            $collAvailablityI18ns[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collAvailablityI18ns = $collAvailablityI18ns;
-                $this->collAvailablityI18nsPartial = false;
-            }
+        if ($v === null) {
+            $this->setId(NULL);
+        } else {
+            $this->setId($v->getId());
         }
 
-        return $this->collAvailablityI18ns;
-    }
+        $this->aAvailability = $v;
 
-    /**
-     * Sets a collection of AvailablityI18n objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $availablityI18ns A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildAvailablity The current object (for fluent API support)
-     */
-    public function setAvailablityI18ns(Collection $availablityI18ns, ConnectionInterface $con = null)
-    {
-        $availablityI18nsToDelete = $this->getAvailablityI18ns(new Criteria(), $con)->diff($availablityI18ns);
-
-        
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->availablityI18nsScheduledForDeletion = clone $availablityI18nsToDelete;
-
-        foreach ($availablityI18nsToDelete as $availablityI18nRemoved) {
-            $availablityI18nRemoved->setAvailablity(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildAvailability object, it will not be re-added.
+        if ($v !== null) {
+            $v->addAvailabilityI18n($this);
         }
 
-        $this->collAvailablityI18ns = null;
-        foreach ($availablityI18ns as $availablityI18n) {
-            $this->addAvailablityI18n($availablityI18n);
-        }
-
-        $this->collAvailablityI18ns = $availablityI18ns;
-        $this->collAvailablityI18nsPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related AvailablityI18n objects.
+     * Get the associated ChildAvailability object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related AvailablityI18n objects.
+     * @param      ConnectionInterface $con Optional Connection object.
+     * @return                 ChildAvailability The associated ChildAvailability object.
      * @throws PropelException
      */
-    public function countAvailablityI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getAvailability(ConnectionInterface $con = null)
     {
-        $partial = $this->collAvailablityI18nsPartial && !$this->isNew();
-        if (null === $this->collAvailablityI18ns || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collAvailablityI18ns) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getAvailablityI18ns());
-            }
-
-            $query = ChildAvailablityI18nQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByAvailablity($this)
-                ->count($con);
+        if ($this->aAvailability === null && ($this->id !== null)) {
+            $this->aAvailability = ChildAvailabilityQuery::create()->findPk($this->id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aAvailability->addAvailabilityI18ns($this);
+             */
         }
 
-        return count($this->collAvailablityI18ns);
-    }
-
-    /**
-     * Method called to associate a ChildAvailablityI18n object to this object
-     * through the ChildAvailablityI18n foreign key attribute.
-     *
-     * @param    ChildAvailablityI18n $l ChildAvailablityI18n
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\Availablity The current object (for fluent API support)
-     */
-    public function addAvailablityI18n(ChildAvailablityI18n $l)
-    {
-        if ($l && $locale = $l->getLocale()) {
-            $this->setLocale($locale);
-            $this->currentTranslations[$locale] = $l;
-        }
-        if ($this->collAvailablityI18ns === null) {
-            $this->initAvailablityI18ns();
-            $this->collAvailablityI18nsPartial = true;
-        }
-
-        if (!in_array($l, $this->collAvailablityI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddAvailablityI18n($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param AvailablityI18n $availablityI18n The availablityI18n object to add.
-     */
-    protected function doAddAvailablityI18n($availablityI18n)
-    {
-        $this->collAvailablityI18ns[]= $availablityI18n;
-        $availablityI18n->setAvailablity($this);
-    }
-
-    /**
-     * @param  AvailablityI18n $availablityI18n The availablityI18n object to remove.
-     * @return ChildAvailablity The current object (for fluent API support)
-     */
-    public function removeAvailablityI18n($availablityI18n)
-    {
-        if ($this->getAvailablityI18ns()->contains($availablityI18n)) {
-            $this->collAvailablityI18ns->remove($this->collAvailablityI18ns->search($availablityI18n));
-            if (null === $this->availablityI18nsScheduledForDeletion) {
-                $this->availablityI18nsScheduledForDeletion = clone $this->collAvailablityI18ns;
-                $this->availablityI18nsScheduledForDeletion->clear();
-            }
-            $this->availablityI18nsScheduledForDeletion[]= clone $availablityI18n;
-            $availablityI18n->setAvailablity(null);
-        }
-
-        return $this;
+        return $this->aAvailability;
     }
 
     /**
@@ -1349,8 +1110,8 @@ abstract class Availablity implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->add_date = null;
-        $this->value = null;
+        $this->locale = null;
+        $this->name = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1371,18 +1132,9 @@ abstract class Availablity implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collAvailablityI18ns) {
-                foreach ($this->collAvailablityI18ns as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        // i18n behavior
-        $this->currentLocale = 'en_US';
-        $this->currentTranslations = null;
-
-        $this->collAvailablityI18ns = null;
+        $this->aAvailability = null;
     }
 
     /**
@@ -1392,130 +1144,7 @@ abstract class Availablity implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(AvailablityTableMap::DEFAULT_STRING_FORMAT);
-    }
-
-    // i18n behavior
-    
-    /**
-     * Sets the locale for translations
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     *
-     * @return    ChildAvailablity The current object (for fluent API support)
-     */
-    public function setLocale($locale = 'en_US')
-    {
-        $this->currentLocale = $locale;
-    
-        return $this;
-    }
-    
-    /**
-     * Gets the locale for translations
-     *
-     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
-     */
-    public function getLocale()
-    {
-        return $this->currentLocale;
-    }
-    
-    /**
-     * Returns the current translation for a given locale
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return ChildAvailablityI18n */
-    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
-    {
-        if (!isset($this->currentTranslations[$locale])) {
-            if (null !== $this->collAvailablityI18ns) {
-                foreach ($this->collAvailablityI18ns as $translation) {
-                    if ($translation->getLocale() == $locale) {
-                        $this->currentTranslations[$locale] = $translation;
-    
-                        return $translation;
-                    }
-                }
-            }
-            if ($this->isNew()) {
-                $translation = new ChildAvailablityI18n();
-                $translation->setLocale($locale);
-            } else {
-                $translation = ChildAvailablityI18nQuery::create()
-                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
-                    ->findOneOrCreate($con);
-                $this->currentTranslations[$locale] = $translation;
-            }
-            $this->addAvailablityI18n($translation);
-        }
-    
-        return $this->currentTranslations[$locale];
-    }
-    
-    /**
-     * Remove the translation for a given locale
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return    ChildAvailablity The current object (for fluent API support)
-     */
-    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
-    {
-        if (!$this->isNew()) {
-            ChildAvailablityI18nQuery::create()
-                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
-                ->delete($con);
-        }
-        if (isset($this->currentTranslations[$locale])) {
-            unset($this->currentTranslations[$locale]);
-        }
-        foreach ($this->collAvailablityI18ns as $key => $translation) {
-            if ($translation->getLocale() == $locale) {
-                unset($this->collAvailablityI18ns[$key]);
-                break;
-            }
-        }
-    
-        return $this;
-    }
-    
-    /**
-     * Returns the current translation
-     *
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return ChildAvailablityI18n */
-    public function getCurrentTranslation(ConnectionInterface $con = null)
-    {
-        return $this->getTranslation($this->getLocale(), $con);
-    }
-    
-    
-        /**
-         * Get the [name] column value.
-         * 
-         * @return   string
-         */
-        public function getName()
-        {
-        return $this->getCurrentTranslation()->getName();
-    }
-    
-    
-        /**
-         * Set the value of [name] column.
-         * 
-         * @param      string $v new value
-         * @return   \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n The current object (for fluent API support)
-         */
-        public function setName($v)
-        {    $this->getCurrentTranslation()->setName($v);
-    
-        return $this;
+        return (string) $this->exportTo(AvailabilityI18nTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

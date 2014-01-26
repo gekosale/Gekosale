@@ -1,12 +1,12 @@
 <?php
 
-namespace Gekosale\Component\Configuration\Model\Availablity\Base;
+namespace Gekosale\Component\Configuration\Model\Availability\Base;
 
 use \Exception;
 use \PDO;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n as ChildAvailablityI18n;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery as ChildAvailablityI18nQuery;
-use Gekosale\Component\Configuration\Model\Availablity\Map\AvailablityI18nTableMap;
+use Gekosale\Component\Configuration\Model\Availability\AvailabilityI18n as ChildAvailabilityI18n;
+use Gekosale\Component\Configuration\Model\Availability\AvailabilityI18nQuery as ChildAvailabilityI18nQuery;
+use Gekosale\Component\Configuration\Model\Availability\Map\AvailabilityI18nTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -17,67 +17,67 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'availablity_i18n' table.
+ * Base class that represents a query for the 'availability_i18n' table.
  *
  * 
  *
- * @method     ChildAvailablityI18nQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildAvailablityI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
- * @method     ChildAvailablityI18nQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildAvailabilityI18nQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildAvailabilityI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
+ * @method     ChildAvailabilityI18nQuery orderByName($order = Criteria::ASC) Order by the name column
  *
- * @method     ChildAvailablityI18nQuery groupById() Group by the id column
- * @method     ChildAvailablityI18nQuery groupByLocale() Group by the locale column
- * @method     ChildAvailablityI18nQuery groupByName() Group by the name column
+ * @method     ChildAvailabilityI18nQuery groupById() Group by the id column
+ * @method     ChildAvailabilityI18nQuery groupByLocale() Group by the locale column
+ * @method     ChildAvailabilityI18nQuery groupByName() Group by the name column
  *
- * @method     ChildAvailablityI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildAvailablityI18nQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildAvailablityI18nQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildAvailabilityI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildAvailabilityI18nQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildAvailabilityI18nQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildAvailablityI18nQuery leftJoinAvailablity($relationAlias = null) Adds a LEFT JOIN clause to the query using the Availablity relation
- * @method     ChildAvailablityI18nQuery rightJoinAvailablity($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Availablity relation
- * @method     ChildAvailablityI18nQuery innerJoinAvailablity($relationAlias = null) Adds a INNER JOIN clause to the query using the Availablity relation
+ * @method     ChildAvailabilityI18nQuery leftJoinAvailability($relationAlias = null) Adds a LEFT JOIN clause to the query using the Availability relation
+ * @method     ChildAvailabilityI18nQuery rightJoinAvailability($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Availability relation
+ * @method     ChildAvailabilityI18nQuery innerJoinAvailability($relationAlias = null) Adds a INNER JOIN clause to the query using the Availability relation
  *
- * @method     ChildAvailablityI18n findOne(ConnectionInterface $con = null) Return the first ChildAvailablityI18n matching the query
- * @method     ChildAvailablityI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAvailablityI18n matching the query, or a new ChildAvailablityI18n object populated from the query conditions when no match is found
+ * @method     ChildAvailabilityI18n findOne(ConnectionInterface $con = null) Return the first ChildAvailabilityI18n matching the query
+ * @method     ChildAvailabilityI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAvailabilityI18n matching the query, or a new ChildAvailabilityI18n object populated from the query conditions when no match is found
  *
- * @method     ChildAvailablityI18n findOneById(int $id) Return the first ChildAvailablityI18n filtered by the id column
- * @method     ChildAvailablityI18n findOneByLocale(string $locale) Return the first ChildAvailablityI18n filtered by the locale column
- * @method     ChildAvailablityI18n findOneByName(string $name) Return the first ChildAvailablityI18n filtered by the name column
+ * @method     ChildAvailabilityI18n findOneById(int $id) Return the first ChildAvailabilityI18n filtered by the id column
+ * @method     ChildAvailabilityI18n findOneByLocale(string $locale) Return the first ChildAvailabilityI18n filtered by the locale column
+ * @method     ChildAvailabilityI18n findOneByName(string $name) Return the first ChildAvailabilityI18n filtered by the name column
  *
- * @method     array findById(int $id) Return ChildAvailablityI18n objects filtered by the id column
- * @method     array findByLocale(string $locale) Return ChildAvailablityI18n objects filtered by the locale column
- * @method     array findByName(string $name) Return ChildAvailablityI18n objects filtered by the name column
+ * @method     array findById(int $id) Return ChildAvailabilityI18n objects filtered by the id column
+ * @method     array findByLocale(string $locale) Return ChildAvailabilityI18n objects filtered by the locale column
+ * @method     array findByName(string $name) Return ChildAvailabilityI18n objects filtered by the name column
  *
  */
-abstract class AvailablityI18nQuery extends ModelCriteria
+abstract class AvailabilityI18nQuery extends ModelCriteria
 {
     
     /**
-     * Initializes internal state of \Gekosale\Component\Configuration\Model\Availablity\Base\AvailablityI18nQuery object.
+     * Initializes internal state of \Gekosale\Component\Configuration\Model\Availability\Base\AvailabilityI18nQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Gekosale\\Component\\Configuration\\Model\\Availablity\\AvailablityI18n', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\Gekosale\\Component\\Configuration\\Model\\Availability\\AvailabilityI18n', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildAvailablityI18nQuery object.
+     * Returns a new ChildAvailabilityI18nQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildAvailablityI18nQuery
+     * @return ChildAvailabilityI18nQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery) {
+        if ($criteria instanceof \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18nQuery) {
             return $criteria;
         }
-        $query = new \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery();
+        $query = new \Gekosale\Component\Configuration\Model\Availability\AvailabilityI18nQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -100,19 +100,19 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      * @param array[$id, $locale] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildAvailablityI18n|array|mixed the result, formatted by the current formatter
+     * @return ChildAvailabilityI18n|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = AvailablityI18nTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
+        if ((null !== ($obj = AvailabilityI18nTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -131,11 +131,11 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildAvailablityI18n A model object, or null if the key is not found
+     * @return   ChildAvailabilityI18n A model object, or null if the key is not found
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOCALE, NAME FROM availablity_i18n WHERE ID = :p0 AND LOCALE = :p1';
+        $sql = 'SELECT ID, LOCALE, NAME FROM availability_i18n WHERE ID = :p0 AND LOCALE = :p1';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);            
@@ -147,9 +147,9 @@ abstract class AvailablityI18nQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            $obj = new ChildAvailablityI18n();
+            $obj = new ChildAvailabilityI18n();
             $obj->hydrate($row);
-            AvailablityI18nTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            AvailabilityI18nTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 
@@ -162,7 +162,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildAvailablityI18n|array|mixed the result, formatted by the current formatter
+     * @return ChildAvailabilityI18n|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -204,12 +204,12 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(AvailablityI18nTableMap::ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(AvailablityI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(AvailabilityI18nTableMap::ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(AvailabilityI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -219,7 +219,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
@@ -227,8 +227,8 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(AvailablityI18nTableMap::ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(AvailablityI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(AvailabilityI18nTableMap::ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(AvailabilityI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -246,7 +246,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @see       filterByAvailablity()
+     * @see       filterByAvailability()
      *
      * @param     mixed $id The value to use as filter.
      *              Use scalar values for equality.
@@ -254,18 +254,18 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(AvailablityI18nTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(AvailabilityI18nTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(AvailablityI18nTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(AvailabilityI18nTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -276,7 +276,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(AvailablityI18nTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(AvailabilityI18nTableMap::ID, $id, $comparison);
     }
 
     /**
@@ -292,7 +292,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
     public function filterByLocale($locale = null, $comparison = null)
     {
@@ -305,7 +305,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(AvailablityI18nTableMap::LOCALE, $locale, $comparison);
+        return $this->addUsingAlias(AvailabilityI18nTableMap::LOCALE, $locale, $comparison);
     }
 
     /**
@@ -321,7 +321,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
     public function filterByName($name = null, $comparison = null)
     {
@@ -334,46 +334,46 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(AvailablityI18nTableMap::NAME, $name, $comparison);
+        return $this->addUsingAlias(AvailabilityI18nTableMap::NAME, $name, $comparison);
     }
 
     /**
-     * Filter the query by a related \Gekosale\Component\Configuration\Model\Availablity\Availablity object
+     * Filter the query by a related \Gekosale\Component\Configuration\Model\Availability\Availability object
      *
-     * @param \Gekosale\Component\Configuration\Model\Availablity\Availablity|ObjectCollection $availablity The related object(s) to use as filter
+     * @param \Gekosale\Component\Configuration\Model\Availability\Availability|ObjectCollection $availability The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
-    public function filterByAvailablity($availablity, $comparison = null)
+    public function filterByAvailability($availability, $comparison = null)
     {
-        if ($availablity instanceof \Gekosale\Component\Configuration\Model\Availablity\Availablity) {
+        if ($availability instanceof \Gekosale\Component\Configuration\Model\Availability\Availability) {
             return $this
-                ->addUsingAlias(AvailablityI18nTableMap::ID, $availablity->getId(), $comparison);
-        } elseif ($availablity instanceof ObjectCollection) {
+                ->addUsingAlias(AvailabilityI18nTableMap::ID, $availability->getId(), $comparison);
+        } elseif ($availability instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(AvailablityI18nTableMap::ID, $availablity->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(AvailabilityI18nTableMap::ID, $availability->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByAvailablity() only accepts arguments of type \Gekosale\Component\Configuration\Model\Availablity\Availablity or Collection');
+            throw new PropelException('filterByAvailability() only accepts arguments of type \Gekosale\Component\Configuration\Model\Availability\Availability or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Availablity relation
+     * Adds a JOIN clause to the query using the Availability relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
-    public function joinAvailablity($relationAlias = null, $joinType = 'LEFT JOIN')
+    public function joinAvailability($relationAlias = null, $joinType = 'LEFT JOIN')
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Availablity');
+        $relationMap = $tableMap->getRelation('Availability');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -388,14 +388,14 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Availablity');
+            $this->addJoinObject($join, 'Availability');
         }
 
         return $this;
     }
 
     /**
-     * Use the Availablity relation Availablity object
+     * Use the Availability relation Availability object
      *
      * @see useQuery()
      *
@@ -403,27 +403,27 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\AvailablityQuery A secondary query class using the current class as primary query
+     * @return   \Gekosale\Component\Configuration\Model\Availability\AvailabilityQuery A secondary query class using the current class as primary query
      */
-    public function useAvailablityQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    public function useAvailabilityQuery($relationAlias = null, $joinType = 'LEFT JOIN')
     {
         return $this
-            ->joinAvailablity($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Availablity', '\Gekosale\Component\Configuration\Model\Availablity\AvailablityQuery');
+            ->joinAvailability($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Availability', '\Gekosale\Component\Configuration\Model\Availability\AvailabilityQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildAvailablityI18n $availablityI18n Object to remove from the list of results
+     * @param   ChildAvailabilityI18n $availabilityI18n Object to remove from the list of results
      *
-     * @return ChildAvailablityI18nQuery The current query, for fluid interface
+     * @return ChildAvailabilityI18nQuery The current query, for fluid interface
      */
-    public function prune($availablityI18n = null)
+    public function prune($availabilityI18n = null)
     {
-        if ($availablityI18n) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(AvailablityI18nTableMap::ID), $availablityI18n->getId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(AvailablityI18nTableMap::LOCALE), $availablityI18n->getLocale(), Criteria::NOT_EQUAL);
+        if ($availabilityI18n) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(AvailabilityI18nTableMap::ID), $availabilityI18n->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(AvailabilityI18nTableMap::LOCALE), $availabilityI18n->getLocale(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
@@ -431,7 +431,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the availablity_i18n table.
+     * Deletes all rows from the availability_i18n table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -439,7 +439,7 @@ abstract class AvailablityI18nQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
@@ -450,8 +450,8 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            AvailablityI18nTableMap::clearInstancePool();
-            AvailablityI18nTableMap::clearRelatedInstancePool();
+            AvailabilityI18nTableMap::clearInstancePool();
+            AvailabilityI18nTableMap::clearRelatedInstancePool();
 
             $con->commit();
         } catch (PropelException $e) {
@@ -463,9 +463,9 @@ abstract class AvailablityI18nQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildAvailablityI18n or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ChildAvailabilityI18n or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or ChildAvailablityI18n object or primary key or array of primary keys
+     * @param mixed               $values Criteria or ChildAvailabilityI18n object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -476,13 +476,13 @@ abstract class AvailablityI18nQuery extends ModelCriteria
      public function delete(ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailabilityI18nTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(AvailablityI18nTableMap::DATABASE_NAME);
+        $criteria->setDbName(AvailabilityI18nTableMap::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -492,10 +492,10 @@ abstract class AvailablityI18nQuery extends ModelCriteria
             $con->beginTransaction();
             
 
-        AvailablityI18nTableMap::removeInstanceFromPool($criteria);
+        AvailabilityI18nTableMap::removeInstanceFromPool($criteria);
         
             $affectedRows += ModelCriteria::delete($con);
-            AvailablityI18nTableMap::clearRelatedInstancePool();
+            AvailabilityI18nTableMap::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -505,4 +505,4 @@ abstract class AvailablityI18nQuery extends ModelCriteria
         }
     }
 
-} // AvailablityI18nQuery
+} // AvailabilityI18nQuery

@@ -1,13 +1,13 @@
 <?php
 
-namespace Gekosale\Component\Configuration\Model\Availablity\Base;
+namespace Gekosale\Component\Product\Model\Producer\Base;
 
 use \Exception;
 use \PDO;
-use Gekosale\Component\Configuration\Model\Availablity\Availablity as ChildAvailablity;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery as ChildAvailablityI18nQuery;
-use Gekosale\Component\Configuration\Model\Availablity\AvailablityQuery as ChildAvailablityQuery;
-use Gekosale\Component\Configuration\Model\Availablity\Map\AvailablityI18nTableMap;
+use Gekosale\Component\Product\Model\Producer\Producer as ChildProducer;
+use Gekosale\Component\Product\Model\Producer\ProducerI18nQuery as ChildProducerI18nQuery;
+use Gekosale\Component\Product\Model\Producer\ProducerQuery as ChildProducerQuery;
+use Gekosale\Component\Product\Model\Producer\Map\ProducerI18nTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -19,12 +19,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
-abstract class AvailablityI18n implements ActiveRecordInterface 
+abstract class ProducerI18n implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Availablity\\Map\\AvailablityI18nTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Product\\Model\\Producer\\Map\\ProducerI18nTableMap';
 
 
     /**
@@ -67,15 +67,45 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     protected $locale;
 
     /**
+     * The value for the slug field.
+     * @var        string
+     */
+    protected $slug;
+
+    /**
      * The value for the name field.
      * @var        string
      */
     protected $name;
 
     /**
-     * @var        Availablity
+     * The value for the description field.
+     * @var        string
      */
-    protected $aAvailablity;
+    protected $description;
+
+    /**
+     * The value for the meta_title field.
+     * @var        string
+     */
+    protected $meta_title;
+
+    /**
+     * The value for the meta_keywords field.
+     * @var        string
+     */
+    protected $meta_keywords;
+
+    /**
+     * The value for the meta_description field.
+     * @var        string
+     */
+    protected $meta_description;
+
+    /**
+     * @var        Producer
+     */
+    protected $aProducer;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -97,7 +127,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Gekosale\Component\Configuration\Model\Availablity\Base\AvailablityI18n object.
+     * Initializes internal state of Gekosale\Component\Product\Model\Producer\Base\ProducerI18n object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -194,9 +224,9 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>AvailablityI18n</code> instance.  If
-     * <code>obj</code> is an instance of <code>AvailablityI18n</code>, delegates to
-     * <code>equals(AvailablityI18n)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>ProducerI18n</code> instance.  If
+     * <code>obj</code> is an instance of <code>ProducerI18n</code>, delegates to
+     * <code>equals(ProducerI18n)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -279,7 +309,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return AvailablityI18n The current object, for fluid interface
+     * @return ProducerI18n The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -311,7 +341,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return AvailablityI18n The current object, for fluid interface
+     * @return ProducerI18n The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -379,6 +409,17 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     }
 
     /**
+     * Get the [slug] column value.
+     * 
+     * @return   string
+     */
+    public function getSlug()
+    {
+
+        return $this->slug;
+    }
+
+    /**
      * Get the [name] column value.
      * 
      * @return   string
@@ -390,10 +431,54 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     }
 
     /**
+     * Get the [description] column value.
+     * 
+     * @return   string
+     */
+    public function getDescription()
+    {
+
+        return $this->description;
+    }
+
+    /**
+     * Get the [meta_title] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaTitle()
+    {
+
+        return $this->meta_title;
+    }
+
+    /**
+     * Get the [meta_keywords] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaKeywords()
+    {
+
+        return $this->meta_keywords;
+    }
+
+    /**
+     * Get the [meta_description] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaDescription()
+    {
+
+        return $this->meta_description;
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n The current object (for fluent API support)
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -403,11 +488,11 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[AvailablityI18nTableMap::ID] = true;
+            $this->modifiedColumns[ProducerI18nTableMap::ID] = true;
         }
 
-        if ($this->aAvailablity !== null && $this->aAvailablity->getId() !== $v) {
-            $this->aAvailablity = null;
+        if ($this->aProducer !== null && $this->aProducer->getId() !== $v) {
+            $this->aProducer = null;
         }
 
 
@@ -418,7 +503,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      * Set the value of [locale] column.
      * 
      * @param      string $v new value
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n The current object (for fluent API support)
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
      */
     public function setLocale($v)
     {
@@ -428,7 +513,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
         if ($this->locale !== $v) {
             $this->locale = $v;
-            $this->modifiedColumns[AvailablityI18nTableMap::LOCALE] = true;
+            $this->modifiedColumns[ProducerI18nTableMap::LOCALE] = true;
         }
 
 
@@ -436,10 +521,31 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     } // setLocale()
 
     /**
+     * Set the value of [slug] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
+     */
+    public function setSlug($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->slug !== $v) {
+            $this->slug = $v;
+            $this->modifiedColumns[ProducerI18nTableMap::SLUG] = true;
+        }
+
+
+        return $this;
+    } // setSlug()
+
+    /**
      * Set the value of [name] column.
      * 
      * @param      string $v new value
-     * @return   \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n The current object (for fluent API support)
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -449,12 +555,96 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[AvailablityI18nTableMap::NAME] = true;
+            $this->modifiedColumns[ProducerI18nTableMap::NAME] = true;
         }
 
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [description] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[ProducerI18nTableMap::DESCRIPTION] = true;
+        }
+
+
+        return $this;
+    } // setDescription()
+
+    /**
+     * Set the value of [meta_title] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
+     */
+    public function setMetaTitle($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_title !== $v) {
+            $this->meta_title = $v;
+            $this->modifiedColumns[ProducerI18nTableMap::META_TITLE] = true;
+        }
+
+
+        return $this;
+    } // setMetaTitle()
+
+    /**
+     * Set the value of [meta_keywords] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
+     */
+    public function setMetaKeywords($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_keywords !== $v) {
+            $this->meta_keywords = $v;
+            $this->modifiedColumns[ProducerI18nTableMap::META_KEYWORDS] = true;
+        }
+
+
+        return $this;
+    } // setMetaKeywords()
+
+    /**
+     * Set the value of [meta_description] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
+     */
+    public function setMetaDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_description !== $v) {
+            $this->meta_description = $v;
+            $this->modifiedColumns[ProducerI18nTableMap::META_DESCRIPTION] = true;
+        }
+
+
+        return $this;
+    } // setMetaDescription()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -497,14 +687,29 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AvailablityI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProducerI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AvailablityI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProducerI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
             $this->locale = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AvailablityI18nTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProducerI18nTableMap::translateFieldName('Slug', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->slug = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProducerI18nTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProducerI18nTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProducerI18nTableMap::translateFieldName('MetaTitle', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_title = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ProducerI18nTableMap::translateFieldName('MetaKeywords', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_keywords = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ProducerI18nTableMap::translateFieldName('MetaDescription', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -513,10 +718,10 @@ abstract class AvailablityI18n implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = AvailablityI18nTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ProducerI18nTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Product\Model\Producer\ProducerI18n object", 0, $e);
         }
     }
 
@@ -535,8 +740,8 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aAvailablity !== null && $this->id !== $this->aAvailablity->getId()) {
-            $this->aAvailablity = null;
+        if ($this->aProducer !== null && $this->id !== $this->aProducer->getId()) {
+            $this->aProducer = null;
         }
     } // ensureConsistency
 
@@ -561,13 +766,13 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ProducerI18nTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildAvailablityI18nQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildProducerI18nQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -577,7 +782,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aAvailablity = null;
+            $this->aProducer = null;
         } // if (deep)
     }
 
@@ -587,8 +792,8 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see AvailablityI18n::setDeleted()
-     * @see AvailablityI18n::isDeleted()
+     * @see ProducerI18n::setDeleted()
+     * @see ProducerI18n::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -597,12 +802,12 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProducerI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildAvailablityI18nQuery::create()
+            $deleteQuery = ChildProducerI18nQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -639,7 +844,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ProducerI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -659,7 +864,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                AvailablityI18nTableMap::addInstanceToPool($this);
+                ProducerI18nTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -694,11 +899,11 @@ abstract class AvailablityI18n implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aAvailablity !== null) {
-                if ($this->aAvailablity->isModified() || $this->aAvailablity->isNew()) {
-                    $affectedRows += $this->aAvailablity->save($con);
+            if ($this->aProducer !== null) {
+                if ($this->aProducer->isModified() || $this->aProducer->isNew()) {
+                    $affectedRows += $this->aProducer->save($con);
                 }
-                $this->setAvailablity($this->aAvailablity);
+                $this->setProducer($this->aProducer);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -734,18 +939,33 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(AvailablityI18nTableMap::ID)) {
+        if ($this->isColumnModified(ProducerI18nTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(AvailablityI18nTableMap::LOCALE)) {
+        if ($this->isColumnModified(ProducerI18nTableMap::LOCALE)) {
             $modifiedColumns[':p' . $index++]  = 'LOCALE';
         }
-        if ($this->isColumnModified(AvailablityI18nTableMap::NAME)) {
+        if ($this->isColumnModified(ProducerI18nTableMap::SLUG)) {
+            $modifiedColumns[':p' . $index++]  = 'SLUG';
+        }
+        if ($this->isColumnModified(ProducerI18nTableMap::NAME)) {
             $modifiedColumns[':p' . $index++]  = 'NAME';
+        }
+        if ($this->isColumnModified(ProducerI18nTableMap::DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+        }
+        if ($this->isColumnModified(ProducerI18nTableMap::META_TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'META_TITLE';
+        }
+        if ($this->isColumnModified(ProducerI18nTableMap::META_KEYWORDS)) {
+            $modifiedColumns[':p' . $index++]  = 'META_KEYWORDS';
+        }
+        if ($this->isColumnModified(ProducerI18nTableMap::META_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'META_DESCRIPTION';
         }
 
         $sql = sprintf(
-            'INSERT INTO availablity_i18n (%s) VALUES (%s)',
+            'INSERT INTO producer_i18n (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -760,8 +980,23 @@ abstract class AvailablityI18n implements ActiveRecordInterface
                     case 'LOCALE':                        
                         $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
                         break;
+                    case 'SLUG':                        
+                        $stmt->bindValue($identifier, $this->slug, PDO::PARAM_STR);
+                        break;
                     case 'NAME':                        
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'DESCRIPTION':                        
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'META_TITLE':                        
+                        $stmt->bindValue($identifier, $this->meta_title, PDO::PARAM_STR);
+                        break;
+                    case 'META_KEYWORDS':                        
+                        $stmt->bindValue($identifier, $this->meta_keywords, PDO::PARAM_STR);
+                        break;
+                    case 'META_DESCRIPTION':                        
+                        $stmt->bindValue($identifier, $this->meta_description, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -802,7 +1037,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = AvailablityI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProducerI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -825,7 +1060,22 @@ abstract class AvailablityI18n implements ActiveRecordInterface
                 return $this->getLocale();
                 break;
             case 2:
+                return $this->getSlug();
+                break;
+            case 3:
                 return $this->getName();
+                break;
+            case 4:
+                return $this->getDescription();
+                break;
+            case 5:
+                return $this->getMetaTitle();
+                break;
+            case 6:
+                return $this->getMetaKeywords();
+                break;
+            case 7:
+                return $this->getMetaDescription();
                 break;
             default:
                 return null;
@@ -850,15 +1100,20 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['AvailablityI18n'][serialize($this->getPrimaryKey())])) {
+        if (isset($alreadyDumpedObjects['ProducerI18n'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['AvailablityI18n'][serialize($this->getPrimaryKey())] = true;
-        $keys = AvailablityI18nTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['ProducerI18n'][serialize($this->getPrimaryKey())] = true;
+        $keys = ProducerI18nTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getLocale(),
-            $keys[2] => $this->getName(),
+            $keys[2] => $this->getSlug(),
+            $keys[3] => $this->getName(),
+            $keys[4] => $this->getDescription(),
+            $keys[5] => $this->getMetaTitle(),
+            $keys[6] => $this->getMetaKeywords(),
+            $keys[7] => $this->getMetaDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -866,8 +1121,8 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         }
         
         if ($includeForeignObjects) {
-            if (null !== $this->aAvailablity) {
-                $result['Availablity'] = $this->aAvailablity->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aProducer) {
+                $result['Producer'] = $this->aProducer->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -887,7 +1142,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = AvailablityI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ProducerI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -910,7 +1165,22 @@ abstract class AvailablityI18n implements ActiveRecordInterface
                 $this->setLocale($value);
                 break;
             case 2:
+                $this->setSlug($value);
+                break;
+            case 3:
                 $this->setName($value);
+                break;
+            case 4:
+                $this->setDescription($value);
+                break;
+            case 5:
+                $this->setMetaTitle($value);
+                break;
+            case 6:
+                $this->setMetaKeywords($value);
+                break;
+            case 7:
+                $this->setMetaDescription($value);
                 break;
         } // switch()
     }
@@ -934,11 +1204,16 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = AvailablityI18nTableMap::getFieldNames($keyType);
+        $keys = ProducerI18nTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+        if (array_key_exists($keys[2], $arr)) $this->setSlug($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setName($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setDescription($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setMetaTitle($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setMetaKeywords($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setMetaDescription($arr[$keys[7]]);
     }
 
     /**
@@ -948,11 +1223,16 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(AvailablityI18nTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ProducerI18nTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(AvailablityI18nTableMap::ID)) $criteria->add(AvailablityI18nTableMap::ID, $this->id);
-        if ($this->isColumnModified(AvailablityI18nTableMap::LOCALE)) $criteria->add(AvailablityI18nTableMap::LOCALE, $this->locale);
-        if ($this->isColumnModified(AvailablityI18nTableMap::NAME)) $criteria->add(AvailablityI18nTableMap::NAME, $this->name);
+        if ($this->isColumnModified(ProducerI18nTableMap::ID)) $criteria->add(ProducerI18nTableMap::ID, $this->id);
+        if ($this->isColumnModified(ProducerI18nTableMap::LOCALE)) $criteria->add(ProducerI18nTableMap::LOCALE, $this->locale);
+        if ($this->isColumnModified(ProducerI18nTableMap::SLUG)) $criteria->add(ProducerI18nTableMap::SLUG, $this->slug);
+        if ($this->isColumnModified(ProducerI18nTableMap::NAME)) $criteria->add(ProducerI18nTableMap::NAME, $this->name);
+        if ($this->isColumnModified(ProducerI18nTableMap::DESCRIPTION)) $criteria->add(ProducerI18nTableMap::DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ProducerI18nTableMap::META_TITLE)) $criteria->add(ProducerI18nTableMap::META_TITLE, $this->meta_title);
+        if ($this->isColumnModified(ProducerI18nTableMap::META_KEYWORDS)) $criteria->add(ProducerI18nTableMap::META_KEYWORDS, $this->meta_keywords);
+        if ($this->isColumnModified(ProducerI18nTableMap::META_DESCRIPTION)) $criteria->add(ProducerI18nTableMap::META_DESCRIPTION, $this->meta_description);
 
         return $criteria;
     }
@@ -967,9 +1247,9 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(AvailablityI18nTableMap::DATABASE_NAME);
-        $criteria->add(AvailablityI18nTableMap::ID, $this->id);
-        $criteria->add(AvailablityI18nTableMap::LOCALE, $this->locale);
+        $criteria = new Criteria(ProducerI18nTableMap::DATABASE_NAME);
+        $criteria->add(ProducerI18nTableMap::ID, $this->id);
+        $criteria->add(ProducerI18nTableMap::LOCALE, $this->locale);
 
         return $criteria;
     }
@@ -1016,7 +1296,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Product\Model\Producer\ProducerI18n (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1025,7 +1305,12 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     {
         $copyObj->setId($this->getId());
         $copyObj->setLocale($this->getLocale());
+        $copyObj->setSlug($this->getSlug());
         $copyObj->setName($this->getName());
+        $copyObj->setDescription($this->getDescription());
+        $copyObj->setMetaTitle($this->getMetaTitle());
+        $copyObj->setMetaKeywords($this->getMetaKeywords());
+        $copyObj->setMetaDescription($this->getMetaDescription());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1040,7 +1325,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n Clone of current object.
+     * @return                 \Gekosale\Component\Product\Model\Producer\ProducerI18n Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1054,13 +1339,13 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildAvailablity object.
+     * Declares an association between this object and a ChildProducer object.
      *
-     * @param                  ChildAvailablity $v
-     * @return                 \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n The current object (for fluent API support)
+     * @param                  ChildProducer $v
+     * @return                 \Gekosale\Component\Product\Model\Producer\ProducerI18n The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setAvailablity(ChildAvailablity $v = null)
+    public function setProducer(ChildProducer $v = null)
     {
         if ($v === null) {
             $this->setId(NULL);
@@ -1068,12 +1353,12 @@ abstract class AvailablityI18n implements ActiveRecordInterface
             $this->setId($v->getId());
         }
 
-        $this->aAvailablity = $v;
+        $this->aProducer = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildAvailablity object, it will not be re-added.
+        // If this object has already been added to the ChildProducer object, it will not be re-added.
         if ($v !== null) {
-            $v->addAvailablityI18n($this);
+            $v->addProducerI18n($this);
         }
 
 
@@ -1082,26 +1367,26 @@ abstract class AvailablityI18n implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildAvailablity object
+     * Get the associated ChildProducer object
      *
      * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildAvailablity The associated ChildAvailablity object.
+     * @return                 ChildProducer The associated ChildProducer object.
      * @throws PropelException
      */
-    public function getAvailablity(ConnectionInterface $con = null)
+    public function getProducer(ConnectionInterface $con = null)
     {
-        if ($this->aAvailablity === null && ($this->id !== null)) {
-            $this->aAvailablity = ChildAvailablityQuery::create()->findPk($this->id, $con);
+        if ($this->aProducer === null && ($this->id !== null)) {
+            $this->aProducer = ChildProducerQuery::create()->findPk($this->id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAvailablity->addAvailablityI18ns($this);
+                $this->aProducer->addProducerI18ns($this);
              */
         }
 
-        return $this->aAvailablity;
+        return $this->aProducer;
     }
 
     /**
@@ -1111,7 +1396,12 @@ abstract class AvailablityI18n implements ActiveRecordInterface
     {
         $this->id = null;
         $this->locale = null;
+        $this->slug = null;
         $this->name = null;
+        $this->description = null;
+        $this->meta_title = null;
+        $this->meta_keywords = null;
+        $this->meta_description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1134,7 +1424,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aAvailablity = null;
+        $this->aProducer = null;
     }
 
     /**
@@ -1144,7 +1434,7 @@ abstract class AvailablityI18n implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(AvailablityI18nTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ProducerI18nTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
