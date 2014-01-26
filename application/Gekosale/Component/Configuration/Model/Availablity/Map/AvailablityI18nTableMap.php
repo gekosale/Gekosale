@@ -1,9 +1,9 @@
 <?php
 
-namespace Gekosale\Core\Session\Model\Map;
+namespace Gekosale\Component\Configuration\Model\Availablity\Map;
 
-use Gekosale\Core\Session\Model\Session;
-use Gekosale\Core\Session\Model\SessionQuery;
+use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n;
+use Gekosale\Component\Configuration\Model\Availablity\AvailablityI18nQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'session' table.
+ * This class defines the structure of the 'availablity_i18n' table.
  *
  *
  *
@@ -26,14 +26,14 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SessionTableMap extends TableMap
+class AvailablityI18nTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'Gekosale.Core.Session.Model.Map.SessionTableMap';
+    const CLASS_NAME = 'Gekosale.Component.Configuration.Model.Availablity.Map.AvailablityI18nTableMap';
 
     /**
      * The default database name for this class
@@ -43,17 +43,17 @@ class SessionTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'session';
+    const TABLE_NAME = 'availablity_i18n';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Gekosale\\Core\\Session\\Model\\Session';
+    const OM_CLASS = '\\Gekosale\\Component\\Configuration\\Model\\Availablity\\AvailablityI18n';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Gekosale.Core.Session.Model.Session';
+    const CLASS_DEFAULT = 'Gekosale.Component.Configuration.Model.Availablity.AvailablityI18n';
 
     /**
      * The total number of columns
@@ -71,19 +71,19 @@ class SessionTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the SESS_ID field
+     * the column name for the ID field
      */
-    const SESS_ID = 'session.SESS_ID';
+    const ID = 'availablity_i18n.ID';
 
     /**
-     * the column name for the SESS_DATA field
+     * the column name for the LOCALE field
      */
-    const SESS_DATA = 'session.SESS_DATA';
+    const LOCALE = 'availablity_i18n.LOCALE';
 
     /**
-     * the column name for the SESS_TIME field
+     * the column name for the NAME field
      */
-    const SESS_TIME = 'session.SESS_TIME';
+    const NAME = 'availablity_i18n.NAME';
 
     /**
      * The default string format for model objects of the related table
@@ -97,11 +97,11 @@ class SessionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('SessId', 'SessData', 'SessTime', ),
-        self::TYPE_STUDLYPHPNAME => array('sessId', 'sessData', 'sessTime', ),
-        self::TYPE_COLNAME       => array(SessionTableMap::SESS_ID, SessionTableMap::SESS_DATA, SessionTableMap::SESS_TIME, ),
-        self::TYPE_RAW_COLNAME   => array('SESS_ID', 'SESS_DATA', 'SESS_TIME', ),
-        self::TYPE_FIELDNAME     => array('sess_id', 'sess_data', 'sess_time', ),
+        self::TYPE_PHPNAME       => array('Id', 'Locale', 'Name', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'locale', 'name', ),
+        self::TYPE_COLNAME       => array(AvailablityI18nTableMap::ID, AvailablityI18nTableMap::LOCALE, AvailablityI18nTableMap::NAME, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'LOCALE', 'NAME', ),
+        self::TYPE_FIELDNAME     => array('id', 'locale', 'name', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,11 +112,11 @@ class SessionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('SessId' => 0, 'SessData' => 1, 'SessTime' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('sessId' => 0, 'sessData' => 1, 'sessTime' => 2, ),
-        self::TYPE_COLNAME       => array(SessionTableMap::SESS_ID => 0, SessionTableMap::SESS_DATA => 1, SessionTableMap::SESS_TIME => 2, ),
-        self::TYPE_RAW_COLNAME   => array('SESS_ID' => 0, 'SESS_DATA' => 1, 'SESS_TIME' => 2, ),
-        self::TYPE_FIELDNAME     => array('sess_id' => 0, 'sess_data' => 1, 'sess_time' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Locale' => 1, 'Name' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'locale' => 1, 'name' => 2, ),
+        self::TYPE_COLNAME       => array(AvailablityI18nTableMap::ID => 0, AvailablityI18nTableMap::LOCALE => 1, AvailablityI18nTableMap::NAME => 2, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'LOCALE' => 1, 'NAME' => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'locale' => 1, 'name' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -130,15 +130,15 @@ class SessionTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('session');
-        $this->setPhpName('Session');
-        $this->setClassName('\\Gekosale\\Core\\Session\\Model\\Session');
-        $this->setPackage('Gekosale.Core.Session.Model');
+        $this->setName('availablity_i18n');
+        $this->setPhpName('AvailablityI18n');
+        $this->setClassName('\\Gekosale\\Component\\Configuration\\Model\\Availablity\\AvailablityI18n');
+        $this->setPackage('Gekosale.Component.Configuration.Model.Availablity');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('SESS_ID', 'SessId', 'VARCHAR', true, 100, null);
-        $this->addColumn('SESS_DATA', 'SessData', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('SESS_TIME', 'SessTime', 'INTEGER', false, 10, null);
+        $this->addForeignPrimaryKey('ID', 'Id', 'INTEGER' , 'availablity', 'ID', true, 10, null);
+        $this->addPrimaryKey('LOCALE', 'Locale', 'VARCHAR', true, 5, 'en_US');
+        $this->addColumn('NAME', 'Name', 'VARCHAR', false, 255, null);
     } // initialize()
 
     /**
@@ -146,7 +146,61 @@ class SessionTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Availablity', '\\Gekosale\\Component\\Configuration\\Model\\Availablity\\Availablity', RelationMap::MANY_TO_ONE, array('id' => 'id', ), 'CASCADE', null);
     } // buildRelations()
+
+    /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n $obj A \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize(array((string) $obj->getId(), (string) $obj->getLocale()));
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n) {
+                $key = serialize(array((string) $value->getId(), (string) $value->getLocale()));
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize(array((string) $value[0], (string) $value[1]));
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -162,11 +216,11 @@ class SessionTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**
@@ -184,11 +238,7 @@ class SessionTableMap extends TableMap
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
 
-            return (string) $row[
-                            $indexType == TableMap::TYPE_NUM
-                            ? 0 + $offset
-                            : self::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)
-                        ];
+            return $pks;
     }
     
     /**
@@ -204,7 +254,7 @@ class SessionTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? SessionTableMap::CLASS_DEFAULT : SessionTableMap::OM_CLASS;
+        return $withPrefix ? AvailablityI18nTableMap::CLASS_DEFAULT : AvailablityI18nTableMap::OM_CLASS;
     }
 
     /**
@@ -218,21 +268,21 @@ class SessionTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (Session object, last column rank)
+     * @return array (AvailablityI18n object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = SessionTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = SessionTableMap::getInstanceFromPool($key))) {
+        $key = AvailablityI18nTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = AvailablityI18nTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + SessionTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + AvailablityI18nTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = SessionTableMap::OM_CLASS;
+            $cls = AvailablityI18nTableMap::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            SessionTableMap::addInstanceToPool($obj, $key);
+            AvailablityI18nTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -255,8 +305,8 @@ class SessionTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = SessionTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = SessionTableMap::getInstanceFromPool($key))) {
+            $key = AvailablityI18nTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = AvailablityI18nTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -265,7 +315,7 @@ class SessionTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                SessionTableMap::addInstanceToPool($obj, $key);
+                AvailablityI18nTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -286,13 +336,13 @@ class SessionTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(SessionTableMap::SESS_ID);
-            $criteria->addSelectColumn(SessionTableMap::SESS_DATA);
-            $criteria->addSelectColumn(SessionTableMap::SESS_TIME);
+            $criteria->addSelectColumn(AvailablityI18nTableMap::ID);
+            $criteria->addSelectColumn(AvailablityI18nTableMap::LOCALE);
+            $criteria->addSelectColumn(AvailablityI18nTableMap::NAME);
         } else {
-            $criteria->addSelectColumn($alias . '.SESS_ID');
-            $criteria->addSelectColumn($alias . '.SESS_DATA');
-            $criteria->addSelectColumn($alias . '.SESS_TIME');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.LOCALE');
+            $criteria->addSelectColumn($alias . '.NAME');
         }
     }
 
@@ -305,7 +355,7 @@ class SessionTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(SessionTableMap::DATABASE_NAME)->getTable(SessionTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(AvailablityI18nTableMap::DATABASE_NAME)->getTable(AvailablityI18nTableMap::TABLE_NAME);
     }
 
     /**
@@ -313,16 +363,16 @@ class SessionTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(SessionTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(SessionTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new SessionTableMap());
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(AvailablityI18nTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(AvailablityI18nTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new AvailablityI18nTableMap());
       }
     }
 
     /**
-     * Performs a DELETE on the database, given a Session or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a AvailablityI18n or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Session object or primary key or array of primary keys
+     * @param mixed               $values Criteria or AvailablityI18n object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -333,25 +383,35 @@ class SessionTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Gekosale\Core\Session\Model\Session) { // it's a model object
+        } elseif ($values instanceof \Gekosale\Component\Configuration\Model\Availablity\AvailablityI18n) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
-            $criteria->add(SessionTableMap::SESS_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(AvailablityI18nTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(AvailablityI18nTableMap::ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(AvailablityI18nTableMap::LOCALE, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
-        $query = SessionQuery::create()->mergeWith($criteria);
+        $query = AvailablityI18nQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { SessionTableMap::clearInstancePool();
+        if ($values instanceof Criteria) { AvailablityI18nTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { SessionTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) { AvailablityI18nTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -359,20 +419,20 @@ class SessionTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the session table.
+     * Deletes all rows from the availablity_i18n table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return SessionQuery::create()->doDeleteAll($con);
+        return AvailablityI18nQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Session or Criteria object.
+     * Performs an INSERT on the database, given a AvailablityI18n or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Session object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or AvailablityI18n object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -381,18 +441,18 @@ class SessionTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(AvailablityI18nTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Session object
+            $criteria = $criteria->buildCriteria(); // build Criteria from AvailablityI18n object
         }
 
 
         // Set the correct dbName
-        $query = SessionQuery::create()->mergeWith($criteria);
+        $query = AvailablityI18nQuery::create()->mergeWith($criteria);
 
         try {
             // use transaction because $criteria could contain info
@@ -408,7 +468,7 @@ class SessionTableMap extends TableMap
         return $pk;
     }
 
-} // SessionTableMap
+} // AvailablityI18nTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-SessionTableMap::buildTableMap();
+AvailablityI18nTableMap::buildTableMap();

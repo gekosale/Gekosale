@@ -1,11 +1,11 @@
 <?php
 
-namespace Gekosale\Core\Session\Model\Base;
+namespace Gekosale\Component\Configuration\Model\Currency\Base;
 
 use \Exception;
 use \PDO;
-use Gekosale\Core\Session\Model\SessionQuery as ChildSessionQuery;
-use Gekosale\Core\Session\Model\Map\SessionTableMap;
+use Gekosale\Component\Configuration\Model\Currency\CurrencyQuery as ChildCurrencyQuery;
+use Gekosale\Component\Configuration\Model\Currency\Map\CurrencyTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -17,12 +17,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
-abstract class Session implements ActiveRecordInterface 
+abstract class Currency implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Core\\Session\\Model\\Map\\SessionTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Currency\\Map\\CurrencyTableMap';
 
 
     /**
@@ -52,22 +52,64 @@ abstract class Session implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the sess_id field.
-     * @var        string
-     */
-    protected $sess_id;
-
-    /**
-     * The value for the sess_data field.
-     * @var        string
-     */
-    protected $sess_data;
-
-    /**
-     * The value for the sess_time field.
+     * The value for the id field.
      * @var        int
      */
-    protected $sess_time;
+    protected $id;
+
+    /**
+     * The value for the name field.
+     * @var        string
+     */
+    protected $name;
+
+    /**
+     * The value for the symbol field.
+     * @var        string
+     */
+    protected $symbol;
+
+    /**
+     * The value for the decimal_separator field.
+     * @var        string
+     */
+    protected $decimal_separator;
+
+    /**
+     * The value for the thousand_separator field.
+     * @var        string
+     */
+    protected $thousand_separator;
+
+    /**
+     * The value for the positive_preffix field.
+     * @var        string
+     */
+    protected $positive_preffix;
+
+    /**
+     * The value for the positive_suffix field.
+     * @var        string
+     */
+    protected $positive_suffix;
+
+    /**
+     * The value for the negative_preffix field.
+     * @var        string
+     */
+    protected $negative_preffix;
+
+    /**
+     * The value for the negative_suffix field.
+     * @var        string
+     */
+    protected $negative_suffix;
+
+    /**
+     * The value for the decimal_count field.
+     * @var        int
+     */
+    protected $decimal_count;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -78,7 +120,7 @@ abstract class Session implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Gekosale\Core\Session\Model\Base\Session object.
+     * Initializes internal state of Gekosale\Component\Configuration\Model\Currency\Base\Currency object.
      */
     public function __construct()
     {
@@ -173,9 +215,9 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Session</code> instance.  If
-     * <code>obj</code> is an instance of <code>Session</code>, delegates to
-     * <code>equals(Session)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Currency</code> instance.  If
+     * <code>obj</code> is an instance of <code>Currency</code>, delegates to
+     * <code>equals(Currency)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -258,7 +300,7 @@ abstract class Session implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Session The current object, for fluid interface
+     * @return Currency The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -290,7 +332,7 @@ abstract class Session implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return Session The current object, for fluid interface
+     * @return Currency The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -336,100 +378,324 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Get the [sess_id] column value.
-     * 
-     * @return   string
-     */
-    public function getSessId()
-    {
-
-        return $this->sess_id;
-    }
-
-    /**
-     * Get the [sess_data] column value.
-     * 
-     * @return   string
-     */
-    public function getSessData()
-    {
-
-        return $this->sess_data;
-    }
-
-    /**
-     * Get the [sess_time] column value.
+     * Get the [id] column value.
      * 
      * @return   int
      */
-    public function getSessTime()
+    public function getId()
     {
 
-        return $this->sess_time;
+        return $this->id;
     }
 
     /**
-     * Set the value of [sess_id] column.
+     * Get the [name] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessId($v)
+    public function getName()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_id !== $v) {
-            $this->sess_id = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_ID] = true;
-        }
-
-
-        return $this;
-    } // setSessId()
+        return $this->name;
+    }
 
     /**
-     * Set the value of [sess_data] column.
+     * Get the [symbol] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessData($v)
+    public function getSymbol()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_data !== $v) {
-            $this->sess_data = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_DATA] = true;
-        }
-
-
-        return $this;
-    } // setSessData()
+        return $this->symbol;
+    }
 
     /**
-     * Set the value of [sess_time] column.
+     * Get the [decimal_separator] column value.
+     * 
+     * @return   string
+     */
+    public function getDecimalSeparator()
+    {
+
+        return $this->decimal_separator;
+    }
+
+    /**
+     * Get the [thousand_separator] column value.
+     * 
+     * @return   string
+     */
+    public function getThousandSeparator()
+    {
+
+        return $this->thousand_separator;
+    }
+
+    /**
+     * Get the [positive_preffix] column value.
+     * 
+     * @return   string
+     */
+    public function getPositivePreffix()
+    {
+
+        return $this->positive_preffix;
+    }
+
+    /**
+     * Get the [positive_suffix] column value.
+     * 
+     * @return   string
+     */
+    public function getPositiveSuffix()
+    {
+
+        return $this->positive_suffix;
+    }
+
+    /**
+     * Get the [negative_preffix] column value.
+     * 
+     * @return   string
+     */
+    public function getNegativePreffix()
+    {
+
+        return $this->negative_preffix;
+    }
+
+    /**
+     * Get the [negative_suffix] column value.
+     * 
+     * @return   string
+     */
+    public function getNegativeSuffix()
+    {
+
+        return $this->negative_suffix;
+    }
+
+    /**
+     * Get the [decimal_count] column value.
+     * 
+     * @return   int
+     */
+    public function getDecimalCount()
+    {
+
+        return $this->decimal_count;
+    }
+
+    /**
+     * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
      */
-    public function setSessTime($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->sess_time !== $v) {
-            $this->sess_time = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_TIME] = true;
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[CurrencyTableMap::ID] = true;
         }
 
 
         return $this;
-    } // setSessTime()
+    } // setId()
+
+    /**
+     * Set the value of [name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[CurrencyTableMap::NAME] = true;
+        }
+
+
+        return $this;
+    } // setName()
+
+    /**
+     * Set the value of [symbol] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setSymbol($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->symbol !== $v) {
+            $this->symbol = $v;
+            $this->modifiedColumns[CurrencyTableMap::SYMBOL] = true;
+        }
+
+
+        return $this;
+    } // setSymbol()
+
+    /**
+     * Set the value of [decimal_separator] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setDecimalSeparator($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->decimal_separator !== $v) {
+            $this->decimal_separator = $v;
+            $this->modifiedColumns[CurrencyTableMap::DECIMAL_SEPARATOR] = true;
+        }
+
+
+        return $this;
+    } // setDecimalSeparator()
+
+    /**
+     * Set the value of [thousand_separator] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setThousandSeparator($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->thousand_separator !== $v) {
+            $this->thousand_separator = $v;
+            $this->modifiedColumns[CurrencyTableMap::THOUSAND_SEPARATOR] = true;
+        }
+
+
+        return $this;
+    } // setThousandSeparator()
+
+    /**
+     * Set the value of [positive_preffix] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setPositivePreffix($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->positive_preffix !== $v) {
+            $this->positive_preffix = $v;
+            $this->modifiedColumns[CurrencyTableMap::POSITIVE_PREFFIX] = true;
+        }
+
+
+        return $this;
+    } // setPositivePreffix()
+
+    /**
+     * Set the value of [positive_suffix] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setPositiveSuffix($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->positive_suffix !== $v) {
+            $this->positive_suffix = $v;
+            $this->modifiedColumns[CurrencyTableMap::POSITIVE_SUFFIX] = true;
+        }
+
+
+        return $this;
+    } // setPositiveSuffix()
+
+    /**
+     * Set the value of [negative_preffix] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setNegativePreffix($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->negative_preffix !== $v) {
+            $this->negative_preffix = $v;
+            $this->modifiedColumns[CurrencyTableMap::NEGATIVE_PREFFIX] = true;
+        }
+
+
+        return $this;
+    } // setNegativePreffix()
+
+    /**
+     * Set the value of [negative_suffix] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setNegativeSuffix($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->negative_suffix !== $v) {
+            $this->negative_suffix = $v;
+            $this->modifiedColumns[CurrencyTableMap::NEGATIVE_SUFFIX] = true;
+        }
+
+
+        return $this;
+    } // setNegativeSuffix()
+
+    /**
+     * Set the value of [decimal_count] column.
+     * 
+     * @param      int $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Currency\Currency The current object (for fluent API support)
+     */
+    public function setDecimalCount($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->decimal_count !== $v) {
+            $this->decimal_count = $v;
+            $this->modifiedColumns[CurrencyTableMap::DECIMAL_COUNT] = true;
+        }
+
+
+        return $this;
+    } // setDecimalCount()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -468,14 +734,35 @@ abstract class Session implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTableMap::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_id = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CurrencyTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTableMap::translateFieldName('SessData', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_data = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CurrencyTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTableMap::translateFieldName('SessTime', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_time = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CurrencyTableMap::translateFieldName('Symbol', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->symbol = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CurrencyTableMap::translateFieldName('DecimalSeparator', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->decimal_separator = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CurrencyTableMap::translateFieldName('ThousandSeparator', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->thousand_separator = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CurrencyTableMap::translateFieldName('PositivePreffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->positive_preffix = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CurrencyTableMap::translateFieldName('PositiveSuffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->positive_suffix = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CurrencyTableMap::translateFieldName('NegativePreffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->negative_preffix = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : CurrencyTableMap::translateFieldName('NegativeSuffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->negative_suffix = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : CurrencyTableMap::translateFieldName('DecimalCount', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->decimal_count = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -484,10 +771,10 @@ abstract class Session implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = SessionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = CurrencyTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Core\Session\Model\Session object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Currency\Currency object", 0, $e);
         }
     }
 
@@ -529,13 +816,13 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(CurrencyTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildSessionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildCurrencyQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -554,8 +841,8 @@ abstract class Session implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Session::setDeleted()
-     * @see Session::isDeleted()
+     * @see Currency::setDeleted()
+     * @see Currency::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -564,12 +851,12 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildSessionQuery::create()
+            $deleteQuery = ChildCurrencyQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -606,7 +893,7 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -626,7 +913,7 @@ abstract class Session implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                SessionTableMap::addInstanceToPool($this);
+                CurrencyTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -687,20 +974,45 @@ abstract class Session implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[CurrencyTableMap::ID] = true;
+        if (null !== $this->id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CurrencyTableMap::ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_ID';
+        if ($this->isColumnModified(CurrencyTableMap::ID)) {
+            $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_DATA';
+        if ($this->isColumnModified(CurrencyTableMap::NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'NAME';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_TIME';
+        if ($this->isColumnModified(CurrencyTableMap::SYMBOL)) {
+            $modifiedColumns[':p' . $index++]  = 'SYMBOL';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::DECIMAL_SEPARATOR)) {
+            $modifiedColumns[':p' . $index++]  = 'DECIMAL_SEPARATOR';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::THOUSAND_SEPARATOR)) {
+            $modifiedColumns[':p' . $index++]  = 'THOUSAND_SEPARATOR';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::POSITIVE_PREFFIX)) {
+            $modifiedColumns[':p' . $index++]  = 'POSITIVE_PREFFIX';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::POSITIVE_SUFFIX)) {
+            $modifiedColumns[':p' . $index++]  = 'POSITIVE_SUFFIX';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::NEGATIVE_PREFFIX)) {
+            $modifiedColumns[':p' . $index++]  = 'NEGATIVE_PREFFIX';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::NEGATIVE_SUFFIX)) {
+            $modifiedColumns[':p' . $index++]  = 'NEGATIVE_SUFFIX';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::DECIMAL_COUNT)) {
+            $modifiedColumns[':p' . $index++]  = 'DECIMAL_COUNT';
         }
 
         $sql = sprintf(
-            'INSERT INTO session (%s) VALUES (%s)',
+            'INSERT INTO currency (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -709,14 +1021,35 @@ abstract class Session implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'SESS_ID':                        
-                        $stmt->bindValue($identifier, $this->sess_id, PDO::PARAM_STR);
+                    case 'ID':                        
+                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'SESS_DATA':                        
-                        $stmt->bindValue($identifier, $this->sess_data, PDO::PARAM_STR);
+                    case 'NAME':                        
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'SESS_TIME':                        
-                        $stmt->bindValue($identifier, $this->sess_time, PDO::PARAM_INT);
+                    case 'SYMBOL':                        
+                        $stmt->bindValue($identifier, $this->symbol, PDO::PARAM_STR);
+                        break;
+                    case 'DECIMAL_SEPARATOR':                        
+                        $stmt->bindValue($identifier, $this->decimal_separator, PDO::PARAM_STR);
+                        break;
+                    case 'THOUSAND_SEPARATOR':                        
+                        $stmt->bindValue($identifier, $this->thousand_separator, PDO::PARAM_STR);
+                        break;
+                    case 'POSITIVE_PREFFIX':                        
+                        $stmt->bindValue($identifier, $this->positive_preffix, PDO::PARAM_STR);
+                        break;
+                    case 'POSITIVE_SUFFIX':                        
+                        $stmt->bindValue($identifier, $this->positive_suffix, PDO::PARAM_STR);
+                        break;
+                    case 'NEGATIVE_PREFFIX':                        
+                        $stmt->bindValue($identifier, $this->negative_preffix, PDO::PARAM_STR);
+                        break;
+                    case 'NEGATIVE_SUFFIX':                        
+                        $stmt->bindValue($identifier, $this->negative_suffix, PDO::PARAM_STR);
+                        break;
+                    case 'DECIMAL_COUNT':                        
+                        $stmt->bindValue($identifier, $this->decimal_count, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -725,6 +1058,13 @@ abstract class Session implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -757,7 +1097,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CurrencyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -774,13 +1114,34 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getSessId();
+                return $this->getId();
                 break;
             case 1:
-                return $this->getSessData();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getSessTime();
+                return $this->getSymbol();
+                break;
+            case 3:
+                return $this->getDecimalSeparator();
+                break;
+            case 4:
+                return $this->getThousandSeparator();
+                break;
+            case 5:
+                return $this->getPositivePreffix();
+                break;
+            case 6:
+                return $this->getPositiveSuffix();
+                break;
+            case 7:
+                return $this->getNegativePreffix();
+                break;
+            case 8:
+                return $this->getNegativeSuffix();
+                break;
+            case 9:
+                return $this->getDecimalCount();
                 break;
             default:
                 return null;
@@ -804,15 +1165,22 @@ abstract class Session implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['Session'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Currency'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Session'][$this->getPrimaryKey()] = true;
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Currency'][$this->getPrimaryKey()] = true;
+        $keys = CurrencyTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getSessId(),
-            $keys[1] => $this->getSessData(),
-            $keys[2] => $this->getSessTime(),
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getSymbol(),
+            $keys[3] => $this->getDecimalSeparator(),
+            $keys[4] => $this->getThousandSeparator(),
+            $keys[5] => $this->getPositivePreffix(),
+            $keys[6] => $this->getPositiveSuffix(),
+            $keys[7] => $this->getNegativePreffix(),
+            $keys[8] => $this->getNegativeSuffix(),
+            $keys[9] => $this->getDecimalCount(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -836,7 +1204,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CurrencyTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -853,13 +1221,34 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setSessId($value);
+                $this->setId($value);
                 break;
             case 1:
-                $this->setSessData($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setSessTime($value);
+                $this->setSymbol($value);
+                break;
+            case 3:
+                $this->setDecimalSeparator($value);
+                break;
+            case 4:
+                $this->setThousandSeparator($value);
+                break;
+            case 5:
+                $this->setPositivePreffix($value);
+                break;
+            case 6:
+                $this->setPositiveSuffix($value);
+                break;
+            case 7:
+                $this->setNegativePreffix($value);
+                break;
+            case 8:
+                $this->setNegativeSuffix($value);
+                break;
+            case 9:
+                $this->setDecimalCount($value);
                 break;
         } // switch()
     }
@@ -883,11 +1272,18 @@ abstract class Session implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $keys = CurrencyTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setSessId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setSessData($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSessTime($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setSymbol($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDecimalSeparator($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setThousandSeparator($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setPositivePreffix($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setPositiveSuffix($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setNegativePreffix($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setNegativeSuffix($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setDecimalCount($arr[$keys[9]]);
     }
 
     /**
@@ -897,11 +1293,18 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
+        $criteria = new Criteria(CurrencyTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) $criteria->add(SessionTableMap::SESS_DATA, $this->sess_data);
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) $criteria->add(SessionTableMap::SESS_TIME, $this->sess_time);
+        if ($this->isColumnModified(CurrencyTableMap::ID)) $criteria->add(CurrencyTableMap::ID, $this->id);
+        if ($this->isColumnModified(CurrencyTableMap::NAME)) $criteria->add(CurrencyTableMap::NAME, $this->name);
+        if ($this->isColumnModified(CurrencyTableMap::SYMBOL)) $criteria->add(CurrencyTableMap::SYMBOL, $this->symbol);
+        if ($this->isColumnModified(CurrencyTableMap::DECIMAL_SEPARATOR)) $criteria->add(CurrencyTableMap::DECIMAL_SEPARATOR, $this->decimal_separator);
+        if ($this->isColumnModified(CurrencyTableMap::THOUSAND_SEPARATOR)) $criteria->add(CurrencyTableMap::THOUSAND_SEPARATOR, $this->thousand_separator);
+        if ($this->isColumnModified(CurrencyTableMap::POSITIVE_PREFFIX)) $criteria->add(CurrencyTableMap::POSITIVE_PREFFIX, $this->positive_preffix);
+        if ($this->isColumnModified(CurrencyTableMap::POSITIVE_SUFFIX)) $criteria->add(CurrencyTableMap::POSITIVE_SUFFIX, $this->positive_suffix);
+        if ($this->isColumnModified(CurrencyTableMap::NEGATIVE_PREFFIX)) $criteria->add(CurrencyTableMap::NEGATIVE_PREFFIX, $this->negative_preffix);
+        if ($this->isColumnModified(CurrencyTableMap::NEGATIVE_SUFFIX)) $criteria->add(CurrencyTableMap::NEGATIVE_SUFFIX, $this->negative_suffix);
+        if ($this->isColumnModified(CurrencyTableMap::DECIMAL_COUNT)) $criteria->add(CurrencyTableMap::DECIMAL_COUNT, $this->decimal_count);
 
         return $criteria;
     }
@@ -916,30 +1319,30 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
-        $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
+        $criteria = new Criteria(CurrencyTableMap::DATABASE_NAME);
+        $criteria->add(CurrencyTableMap::ID, $this->id);
 
         return $criteria;
     }
 
     /**
      * Returns the primary key for this object (row).
-     * @return   string
+     * @return   int
      */
     public function getPrimaryKey()
     {
-        return $this->getSessId();
+        return $this->getId();
     }
 
     /**
-     * Generic method to set the primary key (sess_id column).
+     * Generic method to set the primary key (id column).
      *
-     * @param       string $key Primary key.
+     * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setSessId($key);
+        $this->setId($key);
     }
 
     /**
@@ -949,7 +1352,7 @@ abstract class Session implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getSessId();
+        return null === $this->getId();
     }
 
     /**
@@ -958,18 +1361,25 @@ abstract class Session implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Core\Session\Model\Session (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Currency\Currency (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setSessId($this->getSessId());
-        $copyObj->setSessData($this->getSessData());
-        $copyObj->setSessTime($this->getSessTime());
+        $copyObj->setName($this->getName());
+        $copyObj->setSymbol($this->getSymbol());
+        $copyObj->setDecimalSeparator($this->getDecimalSeparator());
+        $copyObj->setThousandSeparator($this->getThousandSeparator());
+        $copyObj->setPositivePreffix($this->getPositivePreffix());
+        $copyObj->setPositiveSuffix($this->getPositiveSuffix());
+        $copyObj->setNegativePreffix($this->getNegativePreffix());
+        $copyObj->setNegativeSuffix($this->getNegativeSuffix());
+        $copyObj->setDecimalCount($this->getDecimalCount());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -982,7 +1392,7 @@ abstract class Session implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Core\Session\Model\Session Clone of current object.
+     * @return                 \Gekosale\Component\Configuration\Model\Currency\Currency Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1000,9 +1410,16 @@ abstract class Session implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->sess_id = null;
-        $this->sess_data = null;
-        $this->sess_time = null;
+        $this->id = null;
+        $this->name = null;
+        $this->symbol = null;
+        $this->decimal_separator = null;
+        $this->thousand_separator = null;
+        $this->positive_preffix = null;
+        $this->positive_suffix = null;
+        $this->negative_preffix = null;
+        $this->negative_suffix = null;
+        $this->decimal_count = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1033,7 +1450,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(SessionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(CurrencyTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

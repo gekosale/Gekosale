@@ -28,7 +28,7 @@ class Controller extends BaseControllerResolver
 
     public function getController (Request $request)
     {
-        $this->action = ucfirst($request->attributes->get('action'));
+        $this->action = $request->attributes->get('action');
         $this->baseController = $request->attributes->get('controller');
         $controllerObject = $this->createController($this->baseController);
         return $controllerObject;

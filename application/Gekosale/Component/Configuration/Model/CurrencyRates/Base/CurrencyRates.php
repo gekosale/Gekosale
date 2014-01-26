@@ -1,11 +1,11 @@
 <?php
 
-namespace Gekosale\Core\Session\Model\Base;
+namespace Gekosale\Component\Configuration\Model\CurrencyRates\Base;
 
 use \Exception;
 use \PDO;
-use Gekosale\Core\Session\Model\SessionQuery as ChildSessionQuery;
-use Gekosale\Core\Session\Model\Map\SessionTableMap;
+use Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRatesQuery as ChildCurrencyRatesQuery;
+use Gekosale\Component\Configuration\Model\CurrencyRates\Map\CurrencyRatesTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -17,12 +17,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
-abstract class Session implements ActiveRecordInterface 
+abstract class CurrencyRates implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Core\\Session\\Model\\Map\\SessionTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\CurrencyRates\\Map\\CurrencyRatesTableMap';
 
 
     /**
@@ -52,22 +52,28 @@ abstract class Session implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the sess_id field.
-     * @var        string
-     */
-    protected $sess_id;
-
-    /**
-     * The value for the sess_data field.
-     * @var        string
-     */
-    protected $sess_data;
-
-    /**
-     * The value for the sess_time field.
+     * The value for the id field.
      * @var        int
      */
-    protected $sess_time;
+    protected $id;
+
+    /**
+     * The value for the currency_from field.
+     * @var        int
+     */
+    protected $currency_from;
+
+    /**
+     * The value for the currency_to field.
+     * @var        int
+     */
+    protected $currency_to;
+
+    /**
+     * The value for the exchange_rate field.
+     * @var        string
+     */
+    protected $exchange_rate;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -78,7 +84,7 @@ abstract class Session implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Gekosale\Core\Session\Model\Base\Session object.
+     * Initializes internal state of Gekosale\Component\Configuration\Model\CurrencyRates\Base\CurrencyRates object.
      */
     public function __construct()
     {
@@ -173,9 +179,9 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Session</code> instance.  If
-     * <code>obj</code> is an instance of <code>Session</code>, delegates to
-     * <code>equals(Session)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>CurrencyRates</code> instance.  If
+     * <code>obj</code> is an instance of <code>CurrencyRates</code>, delegates to
+     * <code>equals(CurrencyRates)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -258,7 +264,7 @@ abstract class Session implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Session The current object, for fluid interface
+     * @return CurrencyRates The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -290,7 +296,7 @@ abstract class Session implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return Session The current object, for fluid interface
+     * @return CurrencyRates The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -336,100 +342,132 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Get the [sess_id] column value.
-     * 
-     * @return   string
-     */
-    public function getSessId()
-    {
-
-        return $this->sess_id;
-    }
-
-    /**
-     * Get the [sess_data] column value.
-     * 
-     * @return   string
-     */
-    public function getSessData()
-    {
-
-        return $this->sess_data;
-    }
-
-    /**
-     * Get the [sess_time] column value.
+     * Get the [id] column value.
      * 
      * @return   int
      */
-    public function getSessTime()
+    public function getId()
     {
 
-        return $this->sess_time;
+        return $this->id;
     }
 
     /**
-     * Set the value of [sess_id] column.
+     * Get the [currency_from] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   int
      */
-    public function setSessId($v)
+    public function getCurrencyFrom()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_id !== $v) {
-            $this->sess_id = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_ID] = true;
-        }
-
-
-        return $this;
-    } // setSessId()
+        return $this->currency_from;
+    }
 
     /**
-     * Set the value of [sess_data] column.
+     * Get the [currency_to] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   int
      */
-    public function setSessData($v)
+    public function getCurrencyTo()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_data !== $v) {
-            $this->sess_data = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_DATA] = true;
-        }
-
-
-        return $this;
-    } // setSessData()
+        return $this->currency_to;
+    }
 
     /**
-     * Set the value of [sess_time] column.
+     * Get the [exchange_rate] column value.
+     * 
+     * @return   string
+     */
+    public function getExchangeRate()
+    {
+
+        return $this->exchange_rate;
+    }
+
+    /**
+     * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates The current object (for fluent API support)
      */
-    public function setSessTime($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->sess_time !== $v) {
-            $this->sess_time = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_TIME] = true;
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[CurrencyRatesTableMap::ID] = true;
         }
 
 
         return $this;
-    } // setSessTime()
+    } // setId()
+
+    /**
+     * Set the value of [currency_from] column.
+     * 
+     * @param      int $v new value
+     * @return   \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates The current object (for fluent API support)
+     */
+    public function setCurrencyFrom($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->currency_from !== $v) {
+            $this->currency_from = $v;
+            $this->modifiedColumns[CurrencyRatesTableMap::CURRENCY_FROM] = true;
+        }
+
+
+        return $this;
+    } // setCurrencyFrom()
+
+    /**
+     * Set the value of [currency_to] column.
+     * 
+     * @param      int $v new value
+     * @return   \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates The current object (for fluent API support)
+     */
+    public function setCurrencyTo($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->currency_to !== $v) {
+            $this->currency_to = $v;
+            $this->modifiedColumns[CurrencyRatesTableMap::CURRENCY_TO] = true;
+        }
+
+
+        return $this;
+    } // setCurrencyTo()
+
+    /**
+     * Set the value of [exchange_rate] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates The current object (for fluent API support)
+     */
+    public function setExchangeRate($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->exchange_rate !== $v) {
+            $this->exchange_rate = $v;
+            $this->modifiedColumns[CurrencyRatesTableMap::EXCHANGE_RATE] = true;
+        }
+
+
+        return $this;
+    } // setExchangeRate()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -468,14 +506,17 @@ abstract class Session implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTableMap::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_id = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CurrencyRatesTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTableMap::translateFieldName('SessData', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_data = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CurrencyRatesTableMap::translateFieldName('CurrencyFrom', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->currency_from = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTableMap::translateFieldName('SessTime', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_time = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CurrencyRatesTableMap::translateFieldName('CurrencyTo', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->currency_to = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CurrencyRatesTableMap::translateFieldName('ExchangeRate', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->exchange_rate = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -484,10 +525,10 @@ abstract class Session implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = SessionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = CurrencyRatesTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Core\Session\Model\Session object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates object", 0, $e);
         }
     }
 
@@ -529,13 +570,13 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(CurrencyRatesTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildSessionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildCurrencyRatesQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -554,8 +595,8 @@ abstract class Session implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Session::setDeleted()
-     * @see Session::isDeleted()
+     * @see CurrencyRates::setDeleted()
+     * @see CurrencyRates::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -564,12 +605,12 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyRatesTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildSessionQuery::create()
+            $deleteQuery = ChildCurrencyRatesQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -606,7 +647,7 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CurrencyRatesTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -626,7 +667,7 @@ abstract class Session implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                SessionTableMap::addInstanceToPool($this);
+                CurrencyRatesTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -687,20 +728,27 @@ abstract class Session implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[CurrencyRatesTableMap::ID] = true;
+        if (null !== $this->id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CurrencyRatesTableMap::ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_ID';
+        if ($this->isColumnModified(CurrencyRatesTableMap::ID)) {
+            $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_DATA';
+        if ($this->isColumnModified(CurrencyRatesTableMap::CURRENCY_FROM)) {
+            $modifiedColumns[':p' . $index++]  = 'CURRENCY_FROM';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_TIME';
+        if ($this->isColumnModified(CurrencyRatesTableMap::CURRENCY_TO)) {
+            $modifiedColumns[':p' . $index++]  = 'CURRENCY_TO';
+        }
+        if ($this->isColumnModified(CurrencyRatesTableMap::EXCHANGE_RATE)) {
+            $modifiedColumns[':p' . $index++]  = 'EXCHANGE_RATE';
         }
 
         $sql = sprintf(
-            'INSERT INTO session (%s) VALUES (%s)',
+            'INSERT INTO currency_rates (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -709,14 +757,17 @@ abstract class Session implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'SESS_ID':                        
-                        $stmt->bindValue($identifier, $this->sess_id, PDO::PARAM_STR);
+                    case 'ID':                        
+                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'SESS_DATA':                        
-                        $stmt->bindValue($identifier, $this->sess_data, PDO::PARAM_STR);
+                    case 'CURRENCY_FROM':                        
+                        $stmt->bindValue($identifier, $this->currency_from, PDO::PARAM_INT);
                         break;
-                    case 'SESS_TIME':                        
-                        $stmt->bindValue($identifier, $this->sess_time, PDO::PARAM_INT);
+                    case 'CURRENCY_TO':                        
+                        $stmt->bindValue($identifier, $this->currency_to, PDO::PARAM_INT);
+                        break;
+                    case 'EXCHANGE_RATE':                        
+                        $stmt->bindValue($identifier, $this->exchange_rate, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -725,6 +776,13 @@ abstract class Session implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -757,7 +815,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CurrencyRatesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -774,13 +832,16 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getSessId();
+                return $this->getId();
                 break;
             case 1:
-                return $this->getSessData();
+                return $this->getCurrencyFrom();
                 break;
             case 2:
-                return $this->getSessTime();
+                return $this->getCurrencyTo();
+                break;
+            case 3:
+                return $this->getExchangeRate();
                 break;
             default:
                 return null;
@@ -804,15 +865,16 @@ abstract class Session implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['Session'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['CurrencyRates'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Session'][$this->getPrimaryKey()] = true;
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['CurrencyRates'][$this->getPrimaryKey()] = true;
+        $keys = CurrencyRatesTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getSessId(),
-            $keys[1] => $this->getSessData(),
-            $keys[2] => $this->getSessTime(),
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getCurrencyFrom(),
+            $keys[2] => $this->getCurrencyTo(),
+            $keys[3] => $this->getExchangeRate(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -836,7 +898,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CurrencyRatesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -853,13 +915,16 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setSessId($value);
+                $this->setId($value);
                 break;
             case 1:
-                $this->setSessData($value);
+                $this->setCurrencyFrom($value);
                 break;
             case 2:
-                $this->setSessTime($value);
+                $this->setCurrencyTo($value);
+                break;
+            case 3:
+                $this->setExchangeRate($value);
                 break;
         } // switch()
     }
@@ -883,11 +948,12 @@ abstract class Session implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $keys = CurrencyRatesTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setSessId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setSessData($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSessTime($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setCurrencyFrom($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCurrencyTo($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setExchangeRate($arr[$keys[3]]);
     }
 
     /**
@@ -897,11 +963,12 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
+        $criteria = new Criteria(CurrencyRatesTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) $criteria->add(SessionTableMap::SESS_DATA, $this->sess_data);
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) $criteria->add(SessionTableMap::SESS_TIME, $this->sess_time);
+        if ($this->isColumnModified(CurrencyRatesTableMap::ID)) $criteria->add(CurrencyRatesTableMap::ID, $this->id);
+        if ($this->isColumnModified(CurrencyRatesTableMap::CURRENCY_FROM)) $criteria->add(CurrencyRatesTableMap::CURRENCY_FROM, $this->currency_from);
+        if ($this->isColumnModified(CurrencyRatesTableMap::CURRENCY_TO)) $criteria->add(CurrencyRatesTableMap::CURRENCY_TO, $this->currency_to);
+        if ($this->isColumnModified(CurrencyRatesTableMap::EXCHANGE_RATE)) $criteria->add(CurrencyRatesTableMap::EXCHANGE_RATE, $this->exchange_rate);
 
         return $criteria;
     }
@@ -916,30 +983,30 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
-        $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
+        $criteria = new Criteria(CurrencyRatesTableMap::DATABASE_NAME);
+        $criteria->add(CurrencyRatesTableMap::ID, $this->id);
 
         return $criteria;
     }
 
     /**
      * Returns the primary key for this object (row).
-     * @return   string
+     * @return   int
      */
     public function getPrimaryKey()
     {
-        return $this->getSessId();
+        return $this->getId();
     }
 
     /**
-     * Generic method to set the primary key (sess_id column).
+     * Generic method to set the primary key (id column).
      *
-     * @param       string $key Primary key.
+     * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setSessId($key);
+        $this->setId($key);
     }
 
     /**
@@ -949,7 +1016,7 @@ abstract class Session implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getSessId();
+        return null === $this->getId();
     }
 
     /**
@@ -958,18 +1025,19 @@ abstract class Session implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Core\Session\Model\Session (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setSessId($this->getSessId());
-        $copyObj->setSessData($this->getSessData());
-        $copyObj->setSessTime($this->getSessTime());
+        $copyObj->setCurrencyFrom($this->getCurrencyFrom());
+        $copyObj->setCurrencyTo($this->getCurrencyTo());
+        $copyObj->setExchangeRate($this->getExchangeRate());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -982,7 +1050,7 @@ abstract class Session implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Core\Session\Model\Session Clone of current object.
+     * @return                 \Gekosale\Component\Configuration\Model\CurrencyRates\CurrencyRates Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1000,9 +1068,10 @@ abstract class Session implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->sess_id = null;
-        $this->sess_data = null;
-        $this->sess_time = null;
+        $this->id = null;
+        $this->currency_from = null;
+        $this->currency_to = null;
+        $this->exchange_rate = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1033,7 +1102,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(SessionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(CurrencyRatesTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

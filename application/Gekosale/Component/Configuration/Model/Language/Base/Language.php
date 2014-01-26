@@ -1,11 +1,12 @@
 <?php
 
-namespace Gekosale\Core\Session\Model\Base;
+namespace Gekosale\Component\Configuration\Model\Language\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
-use Gekosale\Core\Session\Model\SessionQuery as ChildSessionQuery;
-use Gekosale\Core\Session\Model\Map\SessionTableMap;
+use Gekosale\Component\Configuration\Model\Language\LanguageQuery as ChildLanguageQuery;
+use Gekosale\Component\Configuration\Model\Language\Map\LanguageTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,13 +17,14 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
-abstract class Session implements ActiveRecordInterface 
+abstract class Language implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Core\\Session\\Model\\Map\\SessionTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Language\\Map\\LanguageTableMap';
 
 
     /**
@@ -52,22 +54,35 @@ abstract class Session implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the sess_id field.
-     * @var        string
-     */
-    protected $sess_id;
-
-    /**
-     * The value for the sess_data field.
-     * @var        string
-     */
-    protected $sess_data;
-
-    /**
-     * The value for the sess_time field.
+     * The value for the id field.
      * @var        int
      */
-    protected $sess_time;
+    protected $id;
+
+    /**
+     * The value for the name field.
+     * @var        string
+     */
+    protected $name;
+
+    /**
+     * The value for the translation field.
+     * @var        string
+     */
+    protected $translation;
+
+    /**
+     * The value for the add_date field.
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * @var        string
+     */
+    protected $add_date;
+
+    /**
+     * The value for the currency field.
+     * @var        int
+     */
+    protected $currency;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -78,10 +93,22 @@ abstract class Session implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Gekosale\Core\Session\Model\Base\Session object.
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+    }
+
+    /**
+     * Initializes internal state of Gekosale\Component\Configuration\Model\Language\Base\Language object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -173,9 +200,9 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Session</code> instance.  If
-     * <code>obj</code> is an instance of <code>Session</code>, delegates to
-     * <code>equals(Session)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Language</code> instance.  If
+     * <code>obj</code> is an instance of <code>Language</code>, delegates to
+     * <code>equals(Language)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -258,7 +285,7 @@ abstract class Session implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Session The current object, for fluid interface
+     * @return Language The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -290,7 +317,7 @@ abstract class Session implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return Session The current object, for fluid interface
+     * @return Language The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -336,100 +363,173 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Get the [sess_id] column value.
-     * 
-     * @return   string
-     */
-    public function getSessId()
-    {
-
-        return $this->sess_id;
-    }
-
-    /**
-     * Get the [sess_data] column value.
-     * 
-     * @return   string
-     */
-    public function getSessData()
-    {
-
-        return $this->sess_data;
-    }
-
-    /**
-     * Get the [sess_time] column value.
+     * Get the [id] column value.
      * 
      * @return   int
      */
-    public function getSessTime()
+    public function getId()
     {
 
-        return $this->sess_time;
+        return $this->id;
     }
 
     /**
-     * Set the value of [sess_id] column.
+     * Get the [name] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessId($v)
+    public function getName()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_id !== $v) {
-            $this->sess_id = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_ID] = true;
-        }
-
-
-        return $this;
-    } // setSessId()
+        return $this->name;
+    }
 
     /**
-     * Set the value of [sess_data] column.
+     * Get the [translation] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessData($v)
+    public function getTranslation()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_data !== $v) {
-            $this->sess_data = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_DATA] = true;
-        }
-
-
-        return $this;
-    } // setSessData()
+        return $this->translation;
+    }
 
     /**
-     * Set the value of [sess_time] column.
+     * Get the [optionally formatted] temporal [add_date] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getAddDate($format = NULL)
+    {
+        if ($format === null) {
+            return $this->add_date;
+        } else {
+            return $this->add_date instanceof \DateTime ? $this->add_date->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [currency] column value.
+     * 
+     * @return   int
+     */
+    public function getCurrency()
+    {
+
+        return $this->currency;
+    }
+
+    /**
+     * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   \Gekosale\Component\Configuration\Model\Language\Language The current object (for fluent API support)
      */
-    public function setSessTime($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->sess_time !== $v) {
-            $this->sess_time = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_TIME] = true;
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[LanguageTableMap::ID] = true;
         }
 
 
         return $this;
-    } // setSessTime()
+    } // setId()
+
+    /**
+     * Set the value of [name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Language\Language The current object (for fluent API support)
+     */
+    public function setName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[LanguageTableMap::NAME] = true;
+        }
+
+
+        return $this;
+    } // setName()
+
+    /**
+     * Set the value of [translation] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Language\Language The current object (for fluent API support)
+     */
+    public function setTranslation($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->translation !== $v) {
+            $this->translation = $v;
+            $this->modifiedColumns[LanguageTableMap::TRANSLATION] = true;
+        }
+
+
+        return $this;
+    } // setTranslation()
+
+    /**
+     * Sets the value of [add_date] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Component\Configuration\Model\Language\Language The current object (for fluent API support)
+     */
+    public function setAddDate($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->add_date !== null || $dt !== null) {
+            if ($dt !== $this->add_date) {
+                $this->add_date = $dt;
+                $this->modifiedColumns[LanguageTableMap::ADD_DATE] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setAddDate()
+
+    /**
+     * Set the value of [currency] column.
+     * 
+     * @param      int $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Language\Language The current object (for fluent API support)
+     */
+    public function setCurrency($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->currency !== $v) {
+            $this->currency = $v;
+            $this->modifiedColumns[LanguageTableMap::CURRENCY] = true;
+        }
+
+
+        return $this;
+    } // setCurrency()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -468,14 +568,23 @@ abstract class Session implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTableMap::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_id = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : LanguageTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTableMap::translateFieldName('SessData', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_data = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LanguageTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTableMap::translateFieldName('SessTime', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_time = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LanguageTableMap::translateFieldName('Translation', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->translation = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : LanguageTableMap::translateFieldName('AddDate', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->add_date = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LanguageTableMap::translateFieldName('Currency', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->currency = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -484,10 +593,10 @@ abstract class Session implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = SessionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = LanguageTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Core\Session\Model\Session object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Language\Language object", 0, $e);
         }
     }
 
@@ -529,13 +638,13 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(LanguageTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildSessionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildLanguageQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -554,8 +663,8 @@ abstract class Session implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Session::setDeleted()
-     * @see Session::isDeleted()
+     * @see Language::setDeleted()
+     * @see Language::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -564,12 +673,12 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LanguageTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildSessionQuery::create()
+            $deleteQuery = ChildLanguageQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -606,7 +715,7 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LanguageTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -626,7 +735,7 @@ abstract class Session implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                SessionTableMap::addInstanceToPool($this);
+                LanguageTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -687,20 +796,30 @@ abstract class Session implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[LanguageTableMap::ID] = true;
+        if (null !== $this->id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LanguageTableMap::ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_ID';
+        if ($this->isColumnModified(LanguageTableMap::ID)) {
+            $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_DATA';
+        if ($this->isColumnModified(LanguageTableMap::NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'NAME';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_TIME';
+        if ($this->isColumnModified(LanguageTableMap::TRANSLATION)) {
+            $modifiedColumns[':p' . $index++]  = 'TRANSLATION';
+        }
+        if ($this->isColumnModified(LanguageTableMap::ADD_DATE)) {
+            $modifiedColumns[':p' . $index++]  = 'ADD_DATE';
+        }
+        if ($this->isColumnModified(LanguageTableMap::CURRENCY)) {
+            $modifiedColumns[':p' . $index++]  = 'CURRENCY';
         }
 
         $sql = sprintf(
-            'INSERT INTO session (%s) VALUES (%s)',
+            'INSERT INTO language (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -709,14 +828,20 @@ abstract class Session implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'SESS_ID':                        
-                        $stmt->bindValue($identifier, $this->sess_id, PDO::PARAM_STR);
+                    case 'ID':                        
+                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'SESS_DATA':                        
-                        $stmt->bindValue($identifier, $this->sess_data, PDO::PARAM_STR);
+                    case 'NAME':                        
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'SESS_TIME':                        
-                        $stmt->bindValue($identifier, $this->sess_time, PDO::PARAM_INT);
+                    case 'TRANSLATION':                        
+                        $stmt->bindValue($identifier, $this->translation, PDO::PARAM_STR);
+                        break;
+                    case 'ADD_DATE':                        
+                        $stmt->bindValue($identifier, $this->add_date ? $this->add_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'CURRENCY':                        
+                        $stmt->bindValue($identifier, $this->currency, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -725,6 +850,13 @@ abstract class Session implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -757,7 +889,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LanguageTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -774,13 +906,19 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getSessId();
+                return $this->getId();
                 break;
             case 1:
-                return $this->getSessData();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getSessTime();
+                return $this->getTranslation();
+                break;
+            case 3:
+                return $this->getAddDate();
+                break;
+            case 4:
+                return $this->getCurrency();
                 break;
             default:
                 return null;
@@ -804,15 +942,17 @@ abstract class Session implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['Session'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Language'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Session'][$this->getPrimaryKey()] = true;
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Language'][$this->getPrimaryKey()] = true;
+        $keys = LanguageTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getSessId(),
-            $keys[1] => $this->getSessData(),
-            $keys[2] => $this->getSessTime(),
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getTranslation(),
+            $keys[3] => $this->getAddDate(),
+            $keys[4] => $this->getCurrency(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -836,7 +976,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LanguageTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -853,13 +993,19 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setSessId($value);
+                $this->setId($value);
                 break;
             case 1:
-                $this->setSessData($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setSessTime($value);
+                $this->setTranslation($value);
+                break;
+            case 3:
+                $this->setAddDate($value);
+                break;
+            case 4:
+                $this->setCurrency($value);
                 break;
         } // switch()
     }
@@ -883,11 +1029,13 @@ abstract class Session implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $keys = LanguageTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setSessId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setSessData($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSessTime($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setTranslation($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setAddDate($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCurrency($arr[$keys[4]]);
     }
 
     /**
@@ -897,11 +1045,13 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
+        $criteria = new Criteria(LanguageTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) $criteria->add(SessionTableMap::SESS_DATA, $this->sess_data);
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) $criteria->add(SessionTableMap::SESS_TIME, $this->sess_time);
+        if ($this->isColumnModified(LanguageTableMap::ID)) $criteria->add(LanguageTableMap::ID, $this->id);
+        if ($this->isColumnModified(LanguageTableMap::NAME)) $criteria->add(LanguageTableMap::NAME, $this->name);
+        if ($this->isColumnModified(LanguageTableMap::TRANSLATION)) $criteria->add(LanguageTableMap::TRANSLATION, $this->translation);
+        if ($this->isColumnModified(LanguageTableMap::ADD_DATE)) $criteria->add(LanguageTableMap::ADD_DATE, $this->add_date);
+        if ($this->isColumnModified(LanguageTableMap::CURRENCY)) $criteria->add(LanguageTableMap::CURRENCY, $this->currency);
 
         return $criteria;
     }
@@ -916,30 +1066,30 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
-        $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
+        $criteria = new Criteria(LanguageTableMap::DATABASE_NAME);
+        $criteria->add(LanguageTableMap::ID, $this->id);
 
         return $criteria;
     }
 
     /**
      * Returns the primary key for this object (row).
-     * @return   string
+     * @return   int
      */
     public function getPrimaryKey()
     {
-        return $this->getSessId();
+        return $this->getId();
     }
 
     /**
-     * Generic method to set the primary key (sess_id column).
+     * Generic method to set the primary key (id column).
      *
-     * @param       string $key Primary key.
+     * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setSessId($key);
+        $this->setId($key);
     }
 
     /**
@@ -949,7 +1099,7 @@ abstract class Session implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getSessId();
+        return null === $this->getId();
     }
 
     /**
@@ -958,18 +1108,20 @@ abstract class Session implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Core\Session\Model\Session (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Language\Language (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setSessId($this->getSessId());
-        $copyObj->setSessData($this->getSessData());
-        $copyObj->setSessTime($this->getSessTime());
+        $copyObj->setName($this->getName());
+        $copyObj->setTranslation($this->getTranslation());
+        $copyObj->setAddDate($this->getAddDate());
+        $copyObj->setCurrency($this->getCurrency());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -982,7 +1134,7 @@ abstract class Session implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Core\Session\Model\Session Clone of current object.
+     * @return                 \Gekosale\Component\Configuration\Model\Language\Language Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1000,11 +1152,14 @@ abstract class Session implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->sess_id = null;
-        $this->sess_data = null;
-        $this->sess_time = null;
+        $this->id = null;
+        $this->name = null;
+        $this->translation = null;
+        $this->add_date = null;
+        $this->currency = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1033,7 +1188,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(SessionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(LanguageTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

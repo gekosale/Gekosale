@@ -1,11 +1,13 @@
 <?php
 
-namespace Gekosale\Core\Session\Model\Base;
+namespace Gekosale\Component\Configuration\Model\Unit\Base;
 
 use \Exception;
 use \PDO;
-use Gekosale\Core\Session\Model\SessionQuery as ChildSessionQuery;
-use Gekosale\Core\Session\Model\Map\SessionTableMap;
+use Gekosale\Component\Configuration\Model\Unit\Unit as ChildUnit;
+use Gekosale\Component\Configuration\Model\Unit\UnitI18nQuery as ChildUnitI18nQuery;
+use Gekosale\Component\Configuration\Model\Unit\UnitQuery as ChildUnitQuery;
+use Gekosale\Component\Configuration\Model\Unit\Map\UnitI18nTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -17,12 +19,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
-abstract class Session implements ActiveRecordInterface 
+abstract class UnitI18n implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Gekosale\\Core\\Session\\Model\\Map\\SessionTableMap';
+    const TABLE_MAP = '\\Gekosale\\Component\\Configuration\\Model\\Unit\\Map\\UnitI18nTableMap';
 
 
     /**
@@ -52,22 +54,34 @@ abstract class Session implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the sess_id field.
-     * @var        string
-     */
-    protected $sess_id;
-
-    /**
-     * The value for the sess_data field.
-     * @var        string
-     */
-    protected $sess_data;
-
-    /**
-     * The value for the sess_time field.
+     * The value for the id field.
      * @var        int
      */
-    protected $sess_time;
+    protected $id;
+
+    /**
+     * The value for the locale field.
+     * Note: this column has a database default value of: 'en_US'
+     * @var        string
+     */
+    protected $locale;
+
+    /**
+     * The value for the full_name field.
+     * @var        string
+     */
+    protected $full_name;
+
+    /**
+     * The value for the short_name field.
+     * @var        string
+     */
+    protected $short_name;
+
+    /**
+     * @var        Unit
+     */
+    protected $aUnit;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -78,10 +92,23 @@ abstract class Session implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Gekosale\Core\Session\Model\Base\Session object.
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->locale = 'en_US';
+    }
+
+    /**
+     * Initializes internal state of Gekosale\Component\Configuration\Model\Unit\Base\UnitI18n object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -173,9 +200,9 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Session</code> instance.  If
-     * <code>obj</code> is an instance of <code>Session</code>, delegates to
-     * <code>equals(Session)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>UnitI18n</code> instance.  If
+     * <code>obj</code> is an instance of <code>UnitI18n</code>, delegates to
+     * <code>equals(UnitI18n)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -258,7 +285,7 @@ abstract class Session implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Session The current object, for fluid interface
+     * @return UnitI18n The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -290,7 +317,7 @@ abstract class Session implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return Session The current object, for fluid interface
+     * @return UnitI18n The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -336,100 +363,136 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
-     * Get the [sess_id] column value.
-     * 
-     * @return   string
-     */
-    public function getSessId()
-    {
-
-        return $this->sess_id;
-    }
-
-    /**
-     * Get the [sess_data] column value.
-     * 
-     * @return   string
-     */
-    public function getSessData()
-    {
-
-        return $this->sess_data;
-    }
-
-    /**
-     * Get the [sess_time] column value.
+     * Get the [id] column value.
      * 
      * @return   int
      */
-    public function getSessTime()
+    public function getId()
     {
 
-        return $this->sess_time;
+        return $this->id;
     }
 
     /**
-     * Set the value of [sess_id] column.
+     * Get the [locale] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessId($v)
+    public function getLocale()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_id !== $v) {
-            $this->sess_id = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_ID] = true;
-        }
-
-
-        return $this;
-    } // setSessId()
+        return $this->locale;
+    }
 
     /**
-     * Set the value of [sess_data] column.
+     * Get the [full_name] column value.
      * 
-     * @param      string $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   string
      */
-    public function setSessData($v)
+    public function getFullName()
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
 
-        if ($this->sess_data !== $v) {
-            $this->sess_data = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_DATA] = true;
-        }
-
-
-        return $this;
-    } // setSessData()
+        return $this->full_name;
+    }
 
     /**
-     * Set the value of [sess_time] column.
+     * Get the [short_name] column value.
+     * 
+     * @return   string
+     */
+    public function getShortName()
+    {
+
+        return $this->short_name;
+    }
+
+    /**
+     * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \Gekosale\Core\Session\Model\Session The current object (for fluent API support)
+     * @return   \Gekosale\Component\Configuration\Model\Unit\UnitI18n The current object (for fluent API support)
      */
-    public function setSessTime($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->sess_time !== $v) {
-            $this->sess_time = $v;
-            $this->modifiedColumns[SessionTableMap::SESS_TIME] = true;
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[UnitI18nTableMap::ID] = true;
+        }
+
+        if ($this->aUnit !== null && $this->aUnit->getId() !== $v) {
+            $this->aUnit = null;
         }
 
 
         return $this;
-    } // setSessTime()
+    } // setId()
+
+    /**
+     * Set the value of [locale] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Unit\UnitI18n The current object (for fluent API support)
+     */
+    public function setLocale($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->locale !== $v) {
+            $this->locale = $v;
+            $this->modifiedColumns[UnitI18nTableMap::LOCALE] = true;
+        }
+
+
+        return $this;
+    } // setLocale()
+
+    /**
+     * Set the value of [full_name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Unit\UnitI18n The current object (for fluent API support)
+     */
+    public function setFullName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->full_name !== $v) {
+            $this->full_name = $v;
+            $this->modifiedColumns[UnitI18nTableMap::FULL_NAME] = true;
+        }
+
+
+        return $this;
+    } // setFullName()
+
+    /**
+     * Set the value of [short_name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Component\Configuration\Model\Unit\UnitI18n The current object (for fluent API support)
+     */
+    public function setShortName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->short_name !== $v) {
+            $this->short_name = $v;
+            $this->modifiedColumns[UnitI18nTableMap::SHORT_NAME] = true;
+        }
+
+
+        return $this;
+    } // setShortName()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -441,6 +504,10 @@ abstract class Session implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->locale !== 'en_US') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -468,14 +535,17 @@ abstract class Session implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTableMap::translateFieldName('SessId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_id = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UnitI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTableMap::translateFieldName('SessData', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_data = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UnitI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->locale = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTableMap::translateFieldName('SessTime', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->sess_time = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UnitI18nTableMap::translateFieldName('FullName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->full_name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UnitI18nTableMap::translateFieldName('ShortName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->short_name = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -484,10 +554,10 @@ abstract class Session implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = SessionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = UnitI18nTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \Gekosale\Core\Session\Model\Session object", 0, $e);
+            throw new PropelException("Error populating \Gekosale\Component\Configuration\Model\Unit\UnitI18n object", 0, $e);
         }
     }
 
@@ -506,6 +576,9 @@ abstract class Session implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aUnit !== null && $this->id !== $this->aUnit->getId()) {
+            $this->aUnit = null;
+        }
     } // ensureConsistency
 
     /**
@@ -529,13 +602,13 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UnitI18nTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildSessionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUnitI18nQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -545,6 +618,7 @@ abstract class Session implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aUnit = null;
         } // if (deep)
     }
 
@@ -554,8 +628,8 @@ abstract class Session implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Session::setDeleted()
-     * @see Session::isDeleted()
+     * @see UnitI18n::setDeleted()
+     * @see UnitI18n::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -564,12 +638,12 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildSessionQuery::create()
+            $deleteQuery = ChildUnitI18nQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -606,7 +680,7 @@ abstract class Session implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UnitI18nTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -626,7 +700,7 @@ abstract class Session implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                SessionTableMap::addInstanceToPool($this);
+                UnitI18nTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -655,6 +729,18 @@ abstract class Session implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUnit !== null) {
+                if ($this->aUnit->isModified() || $this->aUnit->isNew()) {
+                    $affectedRows += $this->aUnit->save($con);
+                }
+                $this->setUnit($this->aUnit);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -689,18 +775,21 @@ abstract class Session implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_ID';
+        if ($this->isColumnModified(UnitI18nTableMap::ID)) {
+            $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_DATA';
+        if ($this->isColumnModified(UnitI18nTableMap::LOCALE)) {
+            $modifiedColumns[':p' . $index++]  = 'LOCALE';
         }
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) {
-            $modifiedColumns[':p' . $index++]  = 'SESS_TIME';
+        if ($this->isColumnModified(UnitI18nTableMap::FULL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'FULL_NAME';
+        }
+        if ($this->isColumnModified(UnitI18nTableMap::SHORT_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'SHORT_NAME';
         }
 
         $sql = sprintf(
-            'INSERT INTO session (%s) VALUES (%s)',
+            'INSERT INTO unit_i18n (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -709,14 +798,17 @@ abstract class Session implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'SESS_ID':                        
-                        $stmt->bindValue($identifier, $this->sess_id, PDO::PARAM_STR);
+                    case 'ID':                        
+                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'SESS_DATA':                        
-                        $stmt->bindValue($identifier, $this->sess_data, PDO::PARAM_STR);
+                    case 'LOCALE':                        
+                        $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
                         break;
-                    case 'SESS_TIME':                        
-                        $stmt->bindValue($identifier, $this->sess_time, PDO::PARAM_INT);
+                    case 'FULL_NAME':                        
+                        $stmt->bindValue($identifier, $this->full_name, PDO::PARAM_STR);
+                        break;
+                    case 'SHORT_NAME':                        
+                        $stmt->bindValue($identifier, $this->short_name, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -757,7 +849,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -774,13 +866,16 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getSessId();
+                return $this->getId();
                 break;
             case 1:
-                return $this->getSessData();
+                return $this->getLocale();
                 break;
             case 2:
-                return $this->getSessTime();
+                return $this->getFullName();
+                break;
+            case 3:
+                return $this->getShortName();
                 break;
             default:
                 return null;
@@ -799,26 +894,33 @@ abstract class Session implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Session'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['UnitI18n'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Session'][$this->getPrimaryKey()] = true;
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['UnitI18n'][serialize($this->getPrimaryKey())] = true;
+        $keys = UnitI18nTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getSessId(),
-            $keys[1] => $this->getSessData(),
-            $keys[2] => $this->getSessTime(),
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getLocale(),
+            $keys[2] => $this->getFullName(),
+            $keys[3] => $this->getShortName(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
         
+        if ($includeForeignObjects) {
+            if (null !== $this->aUnit) {
+                $result['Unit'] = $this->aUnit->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -836,7 +938,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = SessionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UnitI18nTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -853,13 +955,16 @@ abstract class Session implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setSessId($value);
+                $this->setId($value);
                 break;
             case 1:
-                $this->setSessData($value);
+                $this->setLocale($value);
                 break;
             case 2:
-                $this->setSessTime($value);
+                $this->setFullName($value);
+                break;
+            case 3:
+                $this->setShortName($value);
                 break;
         } // switch()
     }
@@ -883,11 +988,12 @@ abstract class Session implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = SessionTableMap::getFieldNames($keyType);
+        $keys = UnitI18nTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setSessId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setSessData($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSessTime($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setFullName($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setShortName($arr[$keys[3]]);
     }
 
     /**
@@ -897,11 +1003,12 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UnitI18nTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SessionTableMap::SESS_ID)) $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
-        if ($this->isColumnModified(SessionTableMap::SESS_DATA)) $criteria->add(SessionTableMap::SESS_DATA, $this->sess_data);
-        if ($this->isColumnModified(SessionTableMap::SESS_TIME)) $criteria->add(SessionTableMap::SESS_TIME, $this->sess_time);
+        if ($this->isColumnModified(UnitI18nTableMap::ID)) $criteria->add(UnitI18nTableMap::ID, $this->id);
+        if ($this->isColumnModified(UnitI18nTableMap::LOCALE)) $criteria->add(UnitI18nTableMap::LOCALE, $this->locale);
+        if ($this->isColumnModified(UnitI18nTableMap::FULL_NAME)) $criteria->add(UnitI18nTableMap::FULL_NAME, $this->full_name);
+        if ($this->isColumnModified(UnitI18nTableMap::SHORT_NAME)) $criteria->add(UnitI18nTableMap::SHORT_NAME, $this->short_name);
 
         return $criteria;
     }
@@ -916,30 +1023,37 @@ abstract class Session implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(SessionTableMap::DATABASE_NAME);
-        $criteria->add(SessionTableMap::SESS_ID, $this->sess_id);
+        $criteria = new Criteria(UnitI18nTableMap::DATABASE_NAME);
+        $criteria->add(UnitI18nTableMap::ID, $this->id);
+        $criteria->add(UnitI18nTableMap::LOCALE, $this->locale);
 
         return $criteria;
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return   string
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getSessId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getLocale();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (sess_id column).
+     * Set the [composite] primary key.
      *
-     * @param       string $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setSessId($key);
+        $this->setId($keys[0]);
+        $this->setLocale($keys[1]);
     }
 
     /**
@@ -949,7 +1063,7 @@ abstract class Session implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getSessId();
+        return (null === $this->getId()) && (null === $this->getLocale());
     }
 
     /**
@@ -958,16 +1072,17 @@ abstract class Session implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Gekosale\Core\Session\Model\Session (or compatible) type.
+     * @param      object $copyObj An object of \Gekosale\Component\Configuration\Model\Unit\UnitI18n (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setSessId($this->getSessId());
-        $copyObj->setSessData($this->getSessData());
-        $copyObj->setSessTime($this->getSessTime());
+        $copyObj->setId($this->getId());
+        $copyObj->setLocale($this->getLocale());
+        $copyObj->setFullName($this->getFullName());
+        $copyObj->setShortName($this->getShortName());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -982,7 +1097,7 @@ abstract class Session implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \Gekosale\Core\Session\Model\Session Clone of current object.
+     * @return                 \Gekosale\Component\Configuration\Model\Unit\UnitI18n Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -996,15 +1111,68 @@ abstract class Session implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildUnit object.
+     *
+     * @param                  ChildUnit $v
+     * @return                 \Gekosale\Component\Configuration\Model\Unit\UnitI18n The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUnit(ChildUnit $v = null)
+    {
+        if ($v === null) {
+            $this->setId(NULL);
+        } else {
+            $this->setId($v->getId());
+        }
+
+        $this->aUnit = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUnit object, it will not be re-added.
+        if ($v !== null) {
+            $v->addUnitI18n($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUnit object
+     *
+     * @param      ConnectionInterface $con Optional Connection object.
+     * @return                 ChildUnit The associated ChildUnit object.
+     * @throws PropelException
+     */
+    public function getUnit(ConnectionInterface $con = null)
+    {
+        if ($this->aUnit === null && ($this->id !== null)) {
+            $this->aUnit = ChildUnitQuery::create()->findPk($this->id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUnit->addUnitI18ns($this);
+             */
+        }
+
+        return $this->aUnit;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
-        $this->sess_id = null;
-        $this->sess_data = null;
-        $this->sess_time = null;
+        $this->id = null;
+        $this->locale = null;
+        $this->full_name = null;
+        $this->short_name = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1024,6 +1192,7 @@ abstract class Session implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aUnit = null;
     }
 
     /**
@@ -1033,7 +1202,7 @@ abstract class Session implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(SessionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UnitI18nTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

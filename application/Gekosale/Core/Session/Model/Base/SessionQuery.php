@@ -16,7 +16,7 @@ use Propel\Runtime\Exception\PropelException;
 /**
  * Base class that represents a query for the 'session' table.
  *
- *
+ * 
  *
  * @method     ChildSessionQuery orderBySessId($order = Criteria::ASC) Order by the sess_id column
  * @method     ChildSessionQuery orderBySessData($order = Criteria::ASC) Order by the sess_data column
@@ -44,7 +44,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class SessionQuery extends ModelCriteria
 {
-
+    
     /**
      * Initializes internal state of \Gekosale\Core\Session\Model\Base\SessionQuery object.
      *
@@ -130,7 +130,7 @@ abstract class SessionQuery extends ModelCriteria
     {
         $sql = 'SELECT SESS_ID, SESS_DATA, SESS_TIME FROM session WHERE SESS_ID = :p0';
         try {
-            $stmt = $con->prepare($sql);
+            $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_STR);
             $stmt->execute();
         } catch (Exception $e) {
@@ -392,10 +392,10 @@ abstract class SessionQuery extends ModelCriteria
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-
+            
 
         SessionTableMap::removeInstanceFromPool($criteria);
-
+        
             $affectedRows += ModelCriteria::delete($con);
             SessionTableMap::clearRelatedInstancePool();
             $con->commit();
