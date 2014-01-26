@@ -10,4 +10,10 @@
         <default key="param"></default>
         <default key="mode">admin</default>
     </route>
+    <route id="vat" path="/vat/{action}/{id}">
+        <default key="controller">Gekosale\Component\Configuration\Controller\Admin\Vat</default>
+        <default key="action">index</default>
+        <default key="id"></default>
+        <default key="mode">admin</default>
+    </route>
 </routes>

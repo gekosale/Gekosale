@@ -3,7 +3,6 @@
 namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Component extends ContainerAware
 {
@@ -50,5 +49,10 @@ class Component extends ContainerAware
     protected function getRegistry()
     {
         return $this->registry;
+    }
+
+    protected function getComponent($id)
+    {
+        return $this->container->get('component.resolver')->getComponent($id);
     }
 }

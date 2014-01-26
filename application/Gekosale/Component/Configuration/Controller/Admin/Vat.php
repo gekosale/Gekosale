@@ -1,6 +1,6 @@
 <?php
 
-namespace Gekosale\Component\Vat\Controller\Admin;
+namespace Gekosale\Component\Configuration\Controller\Admin;
 use Gekosale\Core\Component\Controller\Admin;
 use FormEngine;
 
@@ -30,11 +30,10 @@ class Vat extends Admin
 		$this->renderLayout();
 	}
 
-	public function add ()
+	public function add ($id)
 	{
-		
-		$form = $this->formModel->initForm();
-		
+        $form = $this->getComponent('Configuration\Form\Vat');
+
 		if ($form->Validate(FormEngine\FE::SubmittedData())){
 			$this->model->addNewVAT($form->getSubmitValues(FormEngine\Elements\Form::FORMAT_FLAT));
 			
