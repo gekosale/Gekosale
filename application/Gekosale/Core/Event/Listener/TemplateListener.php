@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TemplateListener implements EventSubscriberInterface
 {
+
     public function onKernelController(FilterControllerEvent $event)
     {
         $event->getRequest()->attributes->set('_template_vars', Array());
@@ -19,16 +20,16 @@ class TemplateListener implements EventSubscriberInterface
     {
         $container        = $event->getDispatcher()->getContainer();
         $request          = $event->getRequest();
-        $route            = $request->attributes->get('_route');
+        $controller       = $request->attributes->get('controller');
+        $action           = $request->attributes->get('action');
         $controllerResult = $event->getControllerResult();
         $templateVars     = $request->attributes->get('_template_vars');
 
         $parameters = array_merge($templateVars, $controllerResult);
 
-        $template = $this->getTemplateName(
-            $route,
-            $request->attributes->get('action')
-        );
+        $controllerParts = explode('\\', $controller);
+
+        $template = $this->guessTemplateName($controller, $action);
 
         switch ($request->attributes->get('mode')) {
             case 'admin':
@@ -42,9 +43,17 @@ class TemplateListener implements EventSubscriberInterface
         $event->setResponse(new Response($response));
     }
 
-    protected function getTemplateName($route, $action)
+    /**
+     * Guesses and returns the template name to render based on the controller
+     * and action names.
+     *
+     * @param  string $route
+     * @param  string $action
+     *
+     * @return string    Template name
+     */
+    protected function guessTemplateName($controller, $action)
     {
-
         return sprintf('%s\%s.twig', $route, $action);
     }
 

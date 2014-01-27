@@ -1,21 +1,5 @@
 <?php
 
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
- *
- * Copyright (c) 2009-2011 Gekosale
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
- */
 namespace FormEngine;
 use Gekosale\App as App;
 
@@ -23,6 +7,8 @@ abstract class Node
 {
 
     public $form;
+
+    public $container;
 
     public $parent;
 
@@ -53,11 +39,6 @@ abstract class Node
         $this->_xajaxMethods = Array();
     }
 
-    public function trans ($id)
-    {
-        return App::getContainer()->get('translation')->trans($id);
-    }
-
     public function Render ($mode = 'JS', $tabs = '')
     {
         $this->_tabs = $tabs;
@@ -67,6 +48,7 @@ abstract class Node
         foreach ($lines as &$line){
             $line = $this->_tabs . $line;
         }
+        
         return implode("\n", $lines);
     }
 
@@ -129,6 +111,7 @@ abstract class Node
                 $values = $filter->Filter($values);
             }
         }
+        
         return $values;
     }
 
@@ -148,6 +131,7 @@ abstract class Node
                 return '';
             }
         }
+        
         return $value;
     }
 
@@ -165,6 +149,7 @@ abstract class Node
                 return '';
             }
         }
+        
         return $value;
     }
 
@@ -181,8 +166,8 @@ abstract class Node
                     $repetitions = $child->_HarvestRepetitions($levelsCount);
                     foreach ($repetitions as $repetition){
                         $levelsCopy = $levels + Array(
-                                $repetition
-                            );
+                            $repetition
+                        );
                         $array[$repetition][$name] = $child->_Harvest($action, $levelsCount + 1, $levelsCopy);
                     }
                 }
@@ -190,12 +175,14 @@ abstract class Node
                     $array[$name] = $child->_Harvest($action, $levelsCount, $levels);
                 }
             }
+            
             return $array;
         }
         else{
             if (is_array($action)){
                 return call_user_func($action, $this, $levels);
             }
+            
             return $action($this, $levels);
         }
     }
@@ -207,11 +194,13 @@ abstract class Node
             foreach ($this->_children as $child){
                 array_push($array, $child->_HarvestRepetitions($level));
             }
+            
             return array_unique($array);
         }
         else{
             $value = $this->GetValue();
             $repetitions = $this->_ExtractRepetitions($value, $level);
+            
             return array_unique($repetitions);
         }
     }
@@ -222,12 +211,14 @@ abstract class Node
             if (is_array($array)){
                 return array_keys($array);
             }
+            
             return Array();
         }
         $repetitions = Array();
         foreach ($array as $key => $value){
             array_push($repetitions, $this->_ExtractRepetitions($value, $targetLevel, $level + 1));
         }
+        
         return $repetitions;
     }
 
@@ -240,6 +231,7 @@ abstract class Node
                 $attributesString .= $this->_tabs . $attribute . ",\n";
             }
         }
+        
         return substr($attributesString, 0, - 2) . "\n";
     }
 
@@ -262,6 +254,7 @@ abstract class Node
                 elseif ($type == FE::TYPE_BOOLEAN){
                     return 'false';
                 }
+                
                 return '\'\'';
             }
             if ($type == FE::TYPE_FUNCTION){
@@ -279,6 +272,7 @@ abstract class Node
             elseif ($type == FE::TYPE_BOOLEAN){
                 return $this->_attributes[$attributeName] ? 'true' : 'false';
             }
+            
             return str_replace(Array(
                 "\r\n",
                 "\n"
@@ -306,6 +300,7 @@ abstract class Node
                     $valuePart = '\'' . addslashes($valuePart) . '\'';
                 }
             }
+            
             return str_replace("\n", '\n', $name . ': [' . implode(', ', $value) . ']');
         }
         else{
@@ -335,8 +330,10 @@ abstract class Node
             if (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] == FE::INFINITE)){
                 $max = 'GForm.INFINITE';
             }
+            
             return "oRepeat: {iMin: {$min}, iMax: {$max}}";
         }
+        
         return '';
     }
 
@@ -351,6 +348,7 @@ abstract class Node
         if (count($dependencies)){
             return 'agDependencies: [' . implode(', ', $dependencies) . ']';
         }
+        
         return '';
     }
 
@@ -361,10 +359,7 @@ abstract class Node
 
     public function Render_JS ()
     {
-        $render = "
-			{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->_PrepareAttributes_JS())}}
-		";
-        return $render;
+        return "{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->_PrepareAttributes_JS())}}";
     }
 
     public function Render_JSAllegroParams ()
@@ -381,7 +376,7 @@ abstract class Node
     {
     }
 
-    public function Validate ($values = Array())
+    public function Validate ()
     {
         return true;
     }
@@ -391,6 +386,7 @@ abstract class Node
         if (is_numeric(key($array)) or substr(key($array), 0, 4) == 'new-'){
             return true;
         }
+        
         return false;
     }
 
@@ -402,6 +398,7 @@ abstract class Node
     {
         $attributes = Array();
         $attributes = array_merge($attributes, $this->_xajaxMethods);
+        
         return $attributes;
     }
 

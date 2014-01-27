@@ -21,11 +21,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * 
  *
- * @method     ChildVatI18nQuery orderByIdvat($order = Criteria::ASC) Order by the id column
+ * @method     ChildVatI18nQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildVatI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
  * @method     ChildVatI18nQuery orderByName($order = Criteria::ASC) Order by the name column
  *
- * @method     ChildVatI18nQuery groupByIdvat() Group by the id column
+ * @method     ChildVatI18nQuery groupById() Group by the id column
  * @method     ChildVatI18nQuery groupByLocale() Group by the locale column
  * @method     ChildVatI18nQuery groupByName() Group by the name column
  *
@@ -40,11 +40,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildVatI18n findOne(ConnectionInterface $con = null) Return the first ChildVatI18n matching the query
  * @method     ChildVatI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildVatI18n matching the query, or a new ChildVatI18n object populated from the query conditions when no match is found
  *
- * @method     ChildVatI18n findOneByIdvat(int $id) Return the first ChildVatI18n filtered by the id column
+ * @method     ChildVatI18n findOneById(int $id) Return the first ChildVatI18n filtered by the id column
  * @method     ChildVatI18n findOneByLocale(string $locale) Return the first ChildVatI18n filtered by the locale column
  * @method     ChildVatI18n findOneByName(string $name) Return the first ChildVatI18n filtered by the name column
  *
- * @method     array findByIdvat(int $id) Return ChildVatI18n objects filtered by the id column
+ * @method     array findById(int $id) Return ChildVatI18n objects filtered by the id column
  * @method     array findByLocale(string $locale) Return ChildVatI18n objects filtered by the locale column
  * @method     array findByName(string $name) Return ChildVatI18n objects filtered by the name column
  *
@@ -241,14 +241,14 @@ abstract class VatI18nQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByIdvat(1234); // WHERE id = 1234
-     * $query->filterByIdvat(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterByIdvat(array('min' => 12)); // WHERE id > 12
+     * $query->filterById(1234); // WHERE id = 1234
+     * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
      * @see       filterByVat()
      *
-     * @param     mixed $idvat The value to use as filter.
+     * @param     mixed $id The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -256,16 +256,16 @@ abstract class VatI18nQuery extends ModelCriteria
      *
      * @return ChildVatI18nQuery The current query, for fluid interface
      */
-    public function filterByIdvat($idvat = null, $comparison = null)
+    public function filterById($id = null, $comparison = null)
     {
-        if (is_array($idvat)) {
+        if (is_array($id)) {
             $useMinMax = false;
-            if (isset($idvat['min'])) {
-                $this->addUsingAlias(VatI18nTableMap::ID, $idvat['min'], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(VatI18nTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($idvat['max'])) {
-                $this->addUsingAlias(VatI18nTableMap::ID, $idvat['max'], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(VatI18nTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -276,7 +276,7 @@ abstract class VatI18nQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatI18nTableMap::ID, $idvat, $comparison);
+        return $this->addUsingAlias(VatI18nTableMap::ID, $id, $comparison);
     }
 
     /**
@@ -349,14 +349,14 @@ abstract class VatI18nQuery extends ModelCriteria
     {
         if ($vat instanceof \Gekosale\Component\Configuration\Model\Vat\Vat) {
             return $this
-                ->addUsingAlias(VatI18nTableMap::ID, $vat->getIdvat(), $comparison);
+                ->addUsingAlias(VatI18nTableMap::ID, $vat->getId(), $comparison);
         } elseif ($vat instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(VatI18nTableMap::ID, $vat->toKeyValue('PrimaryKey', 'Idvat'), $comparison);
+                ->addUsingAlias(VatI18nTableMap::ID, $vat->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByVat() only accepts arguments of type \Gekosale\Component\Configuration\Model\Vat\Vat or Collection');
         }
@@ -422,7 +422,7 @@ abstract class VatI18nQuery extends ModelCriteria
     public function prune($vatI18n = null)
     {
         if ($vatI18n) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(VatI18nTableMap::ID), $vatI18n->getIdvat(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(VatI18nTableMap::ID), $vatI18n->getId(), Criteria::NOT_EQUAL);
             $this->addCond('pruneCond1', $this->getAliasedColName(VatI18nTableMap::LOCALE), $vatI18n->getLocale(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }

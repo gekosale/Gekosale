@@ -5,8 +5,6 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolver as BaseController
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Gekosale\Core\Registry;
-use Gekosale\Core\App;
 
 class Controller extends BaseControllerResolver
 {

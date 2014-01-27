@@ -4,13 +4,13 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="dashboard" path="/">
+    <route id="admin.dashboard" path="/">
         <default key="controller">Gekosale\Component\Dashboard\Controller\Admin\Dashboard</default>
         <default key="action">index</default>
         <default key="param"></default>
         <default key="mode">admin</default>
     </route>
-    <route id="vat" path="/vat/{action}/{id}">
+    <route id="admin.vat" path="/vat/{action}/{id}">
         <default key="controller">Gekosale\Component\Configuration\Controller\Admin\Vat</default>
         <default key="action">index</default>
         <default key="id"></default>

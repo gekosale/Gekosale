@@ -35,7 +35,6 @@ class Application
          * Get request
          */
         $this->request = Request::createFromGlobals();
-
         /*
          * Init Service Container
          */
@@ -88,7 +87,7 @@ class Application
     protected function getKernelParameters()
     {
         return array(
-            'application.root_path' => ROOTPATH
+            'application.root_path' => ROOTPATH,
         );
     }
 }

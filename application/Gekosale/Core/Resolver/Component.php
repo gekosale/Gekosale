@@ -21,6 +21,10 @@ class Component extends Resolver
             }
         }
 
+        if (!isset($component)) {
+            throw new \InvalidArgumentException(sprintf('Component "%s" does not exist.', $id));
+        }
+
         return $component;
     }
 

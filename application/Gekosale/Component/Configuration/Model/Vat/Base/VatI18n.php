@@ -361,7 +361,7 @@ abstract class VatI18n implements ActiveRecordInterface
      * 
      * @return   int
      */
-    public function getIdvat()
+    public function getId()
     {
 
         return $this->id;
@@ -395,7 +395,7 @@ abstract class VatI18n implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \Gekosale\Component\Configuration\Model\Vat\VatI18n The current object (for fluent API support)
      */
-    public function setIdvat($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -406,13 +406,13 @@ abstract class VatI18n implements ActiveRecordInterface
             $this->modifiedColumns[VatI18nTableMap::ID] = true;
         }
 
-        if ($this->aVat !== null && $this->aVat->getIdvat() !== $v) {
+        if ($this->aVat !== null && $this->aVat->getId() !== $v) {
             $this->aVat = null;
         }
 
 
         return $this;
-    } // setIdvat()
+    } // setId()
 
     /**
      * Set the value of [locale] column.
@@ -497,7 +497,7 @@ abstract class VatI18n implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : VatI18nTableMap::translateFieldName('Idvat', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : VatI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : VatI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
@@ -535,7 +535,7 @@ abstract class VatI18n implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aVat !== null && $this->id !== $this->aVat->getIdvat()) {
+        if ($this->aVat !== null && $this->id !== $this->aVat->getId()) {
             $this->aVat = null;
         }
     } // ensureConsistency
@@ -819,7 +819,7 @@ abstract class VatI18n implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getIdvat();
+                return $this->getId();
                 break;
             case 1:
                 return $this->getLocale();
@@ -856,7 +856,7 @@ abstract class VatI18n implements ActiveRecordInterface
         $alreadyDumpedObjects['VatI18n'][serialize($this->getPrimaryKey())] = true;
         $keys = VatI18nTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdvat(),
+            $keys[0] => $this->getId(),
             $keys[1] => $this->getLocale(),
             $keys[2] => $this->getName(),
         );
@@ -904,7 +904,7 @@ abstract class VatI18n implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setIdvat($value);
+                $this->setId($value);
                 break;
             case 1:
                 $this->setLocale($value);
@@ -936,7 +936,7 @@ abstract class VatI18n implements ActiveRecordInterface
     {
         $keys = VatI18nTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdvat($arr[$keys[0]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
     }
@@ -982,7 +982,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getIdvat();
+        $pks[0] = $this->getId();
         $pks[1] = $this->getLocale();
 
         return $pks;
@@ -996,7 +996,7 @@ abstract class VatI18n implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setIdvat($keys[0]);
+        $this->setId($keys[0]);
         $this->setLocale($keys[1]);
     }
 
@@ -1007,7 +1007,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getIdvat()) && (null === $this->getLocale());
+        return (null === $this->getId()) && (null === $this->getLocale());
     }
 
     /**
@@ -1023,7 +1023,7 @@ abstract class VatI18n implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setIdvat($this->getIdvat());
+        $copyObj->setId($this->getId());
         $copyObj->setLocale($this->getLocale());
         $copyObj->setName($this->getName());
         if ($makeNew) {
@@ -1063,9 +1063,9 @@ abstract class VatI18n implements ActiveRecordInterface
     public function setVat(ChildVat $v = null)
     {
         if ($v === null) {
-            $this->setIdvat(NULL);
+            $this->setId(NULL);
         } else {
-            $this->setIdvat($v->getIdvat());
+            $this->setId($v->getId());
         }
 
         $this->aVat = $v;

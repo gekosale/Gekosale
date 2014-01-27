@@ -39,12 +39,6 @@ return array(
     'HipChat' => $vendorDir . '/hipchat/hipchat-php/src',
     'Gekosale' => $baseDir . '/application',
     'FormEngine' => $baseDir . '/lib',
-    'Doctrine\\DBAL\\' => $vendorDir . '/doctrine/dbal/lib',
-    'Doctrine\\Common\\Lexer\\' => $vendorDir . '/doctrine/lexer/lib',
-    'Doctrine\\Common\\Inflector\\' => $vendorDir . '/doctrine/inflector/lib',
-    'Doctrine\\Common\\Collections\\' => $vendorDir . '/doctrine/collections/lib',
-    'Doctrine\\Common\\Cache\\' => $vendorDir . '/doctrine/cache/lib',
-    'Doctrine\\Common\\Annotations\\' => $vendorDir . '/doctrine/annotations/lib',
-    'Doctrine\\Common\\' => $vendorDir . '/doctrine/common/lib',
+    'Assetic' => $vendorDir . '/kriswallsmith/assetic/src',
     '' => $baseDir . '/lib',
 );

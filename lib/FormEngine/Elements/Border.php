@@ -20,12 +20,6 @@ namespace FormEngine\Elements;
 
 class Border extends TextField
 {
-
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-	}
-
 	protected function _PrepareAttributes_JS ()
 	{
 		$attributes = Array(

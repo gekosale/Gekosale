@@ -106,8 +106,8 @@ class VatTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Idvat', 'Value', 'Adddate', ),
-        self::TYPE_STUDLYPHPNAME => array('idvat', 'value', 'adddate', ),
+        self::TYPE_PHPNAME       => array('Id', 'Value', 'AddDate', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'value', 'addDate', ),
         self::TYPE_COLNAME       => array(VatTableMap::ID, VatTableMap::VALUE, VatTableMap::ADD_DATE, ),
         self::TYPE_RAW_COLNAME   => array('ID', 'VALUE', 'ADD_DATE', ),
         self::TYPE_FIELDNAME     => array('id', 'value', 'add_date', ),
@@ -121,8 +121,8 @@ class VatTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Idvat' => 0, 'Value' => 1, 'Adddate' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('idvat' => 0, 'value' => 1, 'adddate' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Value' => 1, 'AddDate' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'value' => 1, 'addDate' => 2, ),
         self::TYPE_COLNAME       => array(VatTableMap::ID => 0, VatTableMap::VALUE => 1, VatTableMap::ADD_DATE => 2, ),
         self::TYPE_RAW_COLNAME   => array('ID' => 0, 'VALUE' => 1, 'ADD_DATE' => 2, ),
         self::TYPE_FIELDNAME     => array('id' => 0, 'value' => 1, 'add_date' => 2, ),
@@ -145,9 +145,9 @@ class VatTableMap extends TableMap
         $this->setPackage('Gekosale.Component.Configuration.Model.Vat');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('ID', 'Idvat', 'INTEGER', true, 10, null);
+        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('VALUE', 'Value', 'DECIMAL', true, 5, 0);
-        $this->addColumn('ADD_DATE', 'Adddate', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('ADD_DATE', 'AddDate', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -194,11 +194,11 @@ class VatTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Idvat', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Idvat', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -219,7 +219,7 @@ class VatTableMap extends TableMap
             return (int) $row[
                             $indexType == TableMap::TYPE_NUM
                             ? 0 + $offset
-                            : self::translateFieldName('Idvat', TableMap::TYPE_PHPNAME, $indexType)
+                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
                         ];
     }
     

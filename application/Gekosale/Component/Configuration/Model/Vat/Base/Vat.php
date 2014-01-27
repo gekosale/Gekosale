@@ -387,7 +387,7 @@ abstract class Vat implements ActiveRecordInterface
      * 
      * @return   int
      */
-    public function getIdvat()
+    public function getId()
     {
 
         return $this->id;
@@ -415,7 +415,7 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getAdddate($format = NULL)
+    public function getAddDate($format = NULL)
     {
         if ($format === null) {
             return $this->add_date;
@@ -430,7 +430,7 @@ abstract class Vat implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \Gekosale\Component\Configuration\Model\Vat\Vat The current object (for fluent API support)
      */
-    public function setIdvat($v)
+    public function setId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -443,7 +443,7 @@ abstract class Vat implements ActiveRecordInterface
 
 
         return $this;
-    } // setIdvat()
+    } // setId()
 
     /**
      * Set the value of [value] column.
@@ -473,7 +473,7 @@ abstract class Vat implements ActiveRecordInterface
      *               Empty strings are treated as NULL.
      * @return   \Gekosale\Component\Configuration\Model\Vat\Vat The current object (for fluent API support)
      */
-    public function setAdddate($v)
+    public function setAddDate($v)
     {
         $dt = PropelDateTime::newInstance($v, null, '\DateTime');
         if ($this->add_date !== null || $dt !== null) {
@@ -485,7 +485,7 @@ abstract class Vat implements ActiveRecordInterface
 
 
         return $this;
-    } // setAdddate()
+    } // setAddDate()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -528,13 +528,13 @@ abstract class Vat implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : VatTableMap::translateFieldName('Idvat', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : VatTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : VatTableMap::translateFieldName('Value', TableMap::TYPE_PHPNAME, $indexType)];
             $this->value = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : VatTableMap::translateFieldName('Adddate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : VatTableMap::translateFieldName('AddDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -817,7 +817,7 @@ abstract class Vat implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setIdvat($pk);
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -867,13 +867,13 @@ abstract class Vat implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getIdvat();
+                return $this->getId();
                 break;
             case 1:
                 return $this->getValue();
                 break;
             case 2:
-                return $this->getAdddate();
+                return $this->getAddDate();
                 break;
             default:
                 return null;
@@ -904,9 +904,9 @@ abstract class Vat implements ActiveRecordInterface
         $alreadyDumpedObjects['Vat'][$this->getPrimaryKey()] = true;
         $keys = VatTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdvat(),
+            $keys[0] => $this->getId(),
             $keys[1] => $this->getValue(),
-            $keys[2] => $this->getAdddate(),
+            $keys[2] => $this->getAddDate(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -952,13 +952,13 @@ abstract class Vat implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setIdvat($value);
+                $this->setId($value);
                 break;
             case 1:
                 $this->setValue($value);
                 break;
             case 2:
-                $this->setAdddate($value);
+                $this->setAddDate($value);
                 break;
         } // switch()
     }
@@ -984,9 +984,9 @@ abstract class Vat implements ActiveRecordInterface
     {
         $keys = VatTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdvat($arr[$keys[0]]);
+        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setValue($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setAdddate($arr[$keys[2]]);
+        if (array_key_exists($keys[2], $arr)) $this->setAddDate($arr[$keys[2]]);
     }
 
     /**
@@ -1027,7 +1027,7 @@ abstract class Vat implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getIdvat();
+        return $this->getId();
     }
 
     /**
@@ -1038,7 +1038,7 @@ abstract class Vat implements ActiveRecordInterface
      */
     public function setPrimaryKey($key)
     {
-        $this->setIdvat($key);
+        $this->setId($key);
     }
 
     /**
@@ -1048,7 +1048,7 @@ abstract class Vat implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdvat();
+        return null === $this->getId();
     }
 
     /**
@@ -1065,7 +1065,7 @@ abstract class Vat implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setValue($this->getValue());
-        $copyObj->setAdddate($this->getAdddate());
+        $copyObj->setAddDate($this->getAddDate());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1082,7 +1082,7 @@ abstract class Vat implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdvat(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 

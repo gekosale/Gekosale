@@ -29,6 +29,12 @@
             <parameter key="password"></parameter>
         </parameter>
 
+        <parameter key="languages" type="collection">
+            <parameter key="1">pl_PL</parameter>
+            <parameter key="2">en_EN</parameter>
+            <parameter key="3">de_DE</parameter>
+        </parameter>
+
         <parameter key="session.config" type="collection">
             <parameter key="db_table">session</parameter>
         </parameter>

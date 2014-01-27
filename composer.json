@@ -28,12 +28,11 @@
         "symfony/yaml": "2.4.x-dev",
         "predis/predis": "0.8.x-dev",
         "hipchat/hipchat-php": "v1.2",
-        "doctrine/dbal": "2.5.x-dev",
         "monolog/monolog": "1.7.0",
         "symfony/twig-bridge": "2.4.x-dev",
+        "kriswallsmith/assetic": "v1.1.2",
         "twig/extensions": "1.0.x-dev",
-        "propel/propel": "dev-master",
-        "phpunit/phpunit": "3.7.*"
+        "propel/propel": "dev-master"
     },
     "autoload": {
         "psr-0": {

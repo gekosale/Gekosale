@@ -22,13 +22,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * 
  *
- * @method     ChildVatQuery orderByIdvat($order = Criteria::ASC) Order by the id column
+ * @method     ChildVatQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildVatQuery orderByValue($order = Criteria::ASC) Order by the value column
- * @method     ChildVatQuery orderByAdddate($order = Criteria::ASC) Order by the add_date column
+ * @method     ChildVatQuery orderByAddDate($order = Criteria::ASC) Order by the add_date column
  *
- * @method     ChildVatQuery groupByIdvat() Group by the id column
+ * @method     ChildVatQuery groupById() Group by the id column
  * @method     ChildVatQuery groupByValue() Group by the value column
- * @method     ChildVatQuery groupByAdddate() Group by the add_date column
+ * @method     ChildVatQuery groupByAddDate() Group by the add_date column
  *
  * @method     ChildVatQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildVatQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -41,13 +41,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildVat findOne(ConnectionInterface $con = null) Return the first ChildVat matching the query
  * @method     ChildVat findOneOrCreate(ConnectionInterface $con = null) Return the first ChildVat matching the query, or a new ChildVat object populated from the query conditions when no match is found
  *
- * @method     ChildVat findOneByIdvat(int $id) Return the first ChildVat filtered by the id column
+ * @method     ChildVat findOneById(int $id) Return the first ChildVat filtered by the id column
  * @method     ChildVat findOneByValue(string $value) Return the first ChildVat filtered by the value column
- * @method     ChildVat findOneByAdddate(string $add_date) Return the first ChildVat filtered by the add_date column
+ * @method     ChildVat findOneByAddDate(string $add_date) Return the first ChildVat filtered by the add_date column
  *
- * @method     array findByIdvat(int $id) Return ChildVat objects filtered by the id column
+ * @method     array findById(int $id) Return ChildVat objects filtered by the id column
  * @method     array findByValue(string $value) Return ChildVat objects filtered by the value column
- * @method     array findByAdddate(string $add_date) Return ChildVat objects filtered by the add_date column
+ * @method     array findByAddDate(string $add_date) Return ChildVat objects filtered by the add_date column
  *
  */
 abstract class VatQuery extends ModelCriteria
@@ -230,12 +230,12 @@ abstract class VatQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByIdvat(1234); // WHERE id = 1234
-     * $query->filterByIdvat(array(12, 34)); // WHERE id IN (12, 34)
-     * $query->filterByIdvat(array('min' => 12)); // WHERE id > 12
+     * $query->filterById(1234); // WHERE id = 1234
+     * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $idvat The value to use as filter.
+     * @param     mixed $id The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -243,16 +243,16 @@ abstract class VatQuery extends ModelCriteria
      *
      * @return ChildVatQuery The current query, for fluid interface
      */
-    public function filterByIdvat($idvat = null, $comparison = null)
+    public function filterById($id = null, $comparison = null)
     {
-        if (is_array($idvat)) {
+        if (is_array($id)) {
             $useMinMax = false;
-            if (isset($idvat['min'])) {
-                $this->addUsingAlias(VatTableMap::ID, $idvat['min'], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(VatTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($idvat['max'])) {
-                $this->addUsingAlias(VatTableMap::ID, $idvat['max'], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(VatTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -263,7 +263,7 @@ abstract class VatQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatTableMap::ID, $idvat, $comparison);
+        return $this->addUsingAlias(VatTableMap::ID, $id, $comparison);
     }
 
     /**
@@ -312,12 +312,12 @@ abstract class VatQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByAdddate('2011-03-14'); // WHERE add_date = '2011-03-14'
-     * $query->filterByAdddate('now'); // WHERE add_date = '2011-03-14'
-     * $query->filterByAdddate(array('max' => 'yesterday')); // WHERE add_date > '2011-03-13'
+     * $query->filterByAddDate('2011-03-14'); // WHERE add_date = '2011-03-14'
+     * $query->filterByAddDate('now'); // WHERE add_date = '2011-03-14'
+     * $query->filterByAddDate(array('max' => 'yesterday')); // WHERE add_date > '2011-03-13'
      * </code>
      *
-     * @param     mixed $adddate The value to use as filter.
+     * @param     mixed $addDate The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -327,16 +327,16 @@ abstract class VatQuery extends ModelCriteria
      *
      * @return ChildVatQuery The current query, for fluid interface
      */
-    public function filterByAdddate($adddate = null, $comparison = null)
+    public function filterByAddDate($addDate = null, $comparison = null)
     {
-        if (is_array($adddate)) {
+        if (is_array($addDate)) {
             $useMinMax = false;
-            if (isset($adddate['min'])) {
-                $this->addUsingAlias(VatTableMap::ADD_DATE, $adddate['min'], Criteria::GREATER_EQUAL);
+            if (isset($addDate['min'])) {
+                $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($adddate['max'])) {
-                $this->addUsingAlias(VatTableMap::ADD_DATE, $adddate['max'], Criteria::LESS_EQUAL);
+            if (isset($addDate['max'])) {
+                $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -347,7 +347,7 @@ abstract class VatQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatTableMap::ADD_DATE, $adddate, $comparison);
+        return $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate, $comparison);
     }
 
     /**
@@ -362,7 +362,7 @@ abstract class VatQuery extends ModelCriteria
     {
         if ($vatI18n instanceof \Gekosale\Component\Configuration\Model\Vat\VatI18n) {
             return $this
-                ->addUsingAlias(VatTableMap::ID, $vatI18n->getIdvat(), $comparison);
+                ->addUsingAlias(VatTableMap::ID, $vatI18n->getId(), $comparison);
         } elseif ($vatI18n instanceof ObjectCollection) {
             return $this
                 ->useVatI18nQuery()
@@ -433,7 +433,7 @@ abstract class VatQuery extends ModelCriteria
     public function prune($vat = null)
     {
         if ($vat) {
-            $this->addUsingAlias(VatTableMap::ID, $vat->getIdvat(), Criteria::NOT_EQUAL);
+            $this->addUsingAlias(VatTableMap::ID, $vat->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;

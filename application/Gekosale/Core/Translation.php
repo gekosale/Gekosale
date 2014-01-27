@@ -25,6 +25,7 @@ class Translation extends Translator
 
     protected function getResource ()
     {
+        $Data = Array();
 //        if (($Data = $this->container->get('cache')->load('translations')) === false){
 ////            $sql = 'SELECT
 ////                    	T.name,
@@ -40,7 +41,7 @@ class Translation extends Translator
 ////            }
 //            $this->container->get('cache')->save('translations', $Data);
 //        }
-//        return $Data;
+        return $Data;
     }
 
     public static function get ($id)
