@@ -1305,8 +1305,8 @@ abstract class Vat implements ActiveRecordInterface
      */
     public function addVatI18n(ChildVatI18n $l)
     {
-        if ($l && $locale = $l->getLocale()) {
-            $this->setLocale($locale);
+        if ($l && $locale = $l->getLanguageId()) {
+            $this->setLanguageId($locale);
             $this->currentTranslations[$locale] = $l;
         }
         if ($this->collVatI18ns === null) {
@@ -1410,7 +1410,7 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @return    ChildVat The current object (for fluent API support)
      */
-    public function setLocale($locale = 'en_US')
+    public function setLanguageId($locale = 'en_US')
     {
         $this->currentLocale = $locale;
     
@@ -1422,7 +1422,7 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
      */
-    public function getLocale()
+    public function getLanguageId()
     {
         return $this->currentLocale;
     }
@@ -1439,7 +1439,7 @@ abstract class Vat implements ActiveRecordInterface
         if (!isset($this->currentTranslations[$locale])) {
             if (null !== $this->collVatI18ns) {
                 foreach ($this->collVatI18ns as $translation) {
-                    if ($translation->getLocale() == $locale) {
+                    if ($translation->getLanguageId() == $locale) {
                         $this->currentTranslations[$locale] = $translation;
     
                         return $translation;
@@ -1448,7 +1448,7 @@ abstract class Vat implements ActiveRecordInterface
             }
             if ($this->isNew()) {
                 $translation = new ChildVatI18n();
-                $translation->setLocale($locale);
+                $translation->setLanguageId($locale);
             } else {
                 $translation = ChildVatI18nQuery::create()
                     ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
@@ -1480,7 +1480,7 @@ abstract class Vat implements ActiveRecordInterface
             unset($this->currentTranslations[$locale]);
         }
         foreach ($this->collVatI18ns as $key => $translation) {
-            if ($translation->getLocale() == $locale) {
+            if ($translation->getLanguageId() == $locale) {
                 unset($this->collVatI18ns[$key]);
                 break;
             }

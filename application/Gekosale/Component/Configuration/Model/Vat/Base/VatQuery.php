@@ -531,7 +531,7 @@ abstract class VatQuery extends ModelCriteria
     
         return $this
             ->joinVatI18n($relationAlias, $joinType)
-            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+            ->addJoinCondition($relationName, $relationName . '.LanguageId = ?', $locale);
     }
     
     /**

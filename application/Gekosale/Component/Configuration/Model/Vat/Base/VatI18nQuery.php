@@ -22,11 +22,11 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildVatI18nQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildVatI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
+ * @method     ChildVatI18nQuery orderByLanguageId($order = Criteria::ASC) Order by the language_id column
  * @method     ChildVatI18nQuery orderByName($order = Criteria::ASC) Order by the name column
  *
  * @method     ChildVatI18nQuery groupById() Group by the id column
- * @method     ChildVatI18nQuery groupByLocale() Group by the locale column
+ * @method     ChildVatI18nQuery groupByLanguageId() Group by the language_id column
  * @method     ChildVatI18nQuery groupByName() Group by the name column
  *
  * @method     ChildVatI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -41,11 +41,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildVatI18n findOneOrCreate(ConnectionInterface $con = null) Return the first ChildVatI18n matching the query, or a new ChildVatI18n object populated from the query conditions when no match is found
  *
  * @method     ChildVatI18n findOneById(int $id) Return the first ChildVatI18n filtered by the id column
- * @method     ChildVatI18n findOneByLocale(string $locale) Return the first ChildVatI18n filtered by the locale column
+ * @method     ChildVatI18n findOneByLanguageId(string $language_id) Return the first ChildVatI18n filtered by the language_id column
  * @method     ChildVatI18n findOneByName(string $name) Return the first ChildVatI18n filtered by the name column
  *
  * @method     array findById(int $id) Return ChildVatI18n objects filtered by the id column
- * @method     array findByLocale(string $locale) Return ChildVatI18n objects filtered by the locale column
+ * @method     array findByLanguageId(string $language_id) Return ChildVatI18n objects filtered by the language_id column
  * @method     array findByName(string $name) Return ChildVatI18n objects filtered by the name column
  *
  */
@@ -97,7 +97,7 @@ abstract class VatI18nQuery extends ModelCriteria
      * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param array[$id, $locale] $key Primary key to use for the query
+     * @param array[$id, $language_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildVatI18n|array|mixed the result, formatted by the current formatter
@@ -135,7 +135,7 @@ abstract class VatI18nQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOCALE, NAME FROM vat_i18n WHERE ID = :p0 AND LOCALE = :p1';
+        $sql = 'SELECT ID, LANGUAGE_ID, NAME FROM vat_i18n WHERE ID = :p0 AND LANGUAGE_ID = :p1';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);            
@@ -209,7 +209,7 @@ abstract class VatI18nQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
         $this->addUsingAlias(VatI18nTableMap::ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(VatI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(VatI18nTableMap::LANGUAGE_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -228,7 +228,7 @@ abstract class VatI18nQuery extends ModelCriteria
         }
         foreach ($keys as $key) {
             $cton0 = $this->getNewCriterion(VatI18nTableMap::ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(VatI18nTableMap::LOCALE, $key[1], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(VatI18nTableMap::LANGUAGE_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -280,32 +280,32 @@ abstract class VatI18nQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the locale column
+     * Filter the query on the language_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByLocale('fooValue');   // WHERE locale = 'fooValue'
-     * $query->filterByLocale('%fooValue%'); // WHERE locale LIKE '%fooValue%'
+     * $query->filterByLanguageId('fooValue');   // WHERE language_id = 'fooValue'
+     * $query->filterByLanguageId('%fooValue%'); // WHERE language_id LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $locale The value to use as filter.
+     * @param     string $languageId The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildVatI18nQuery The current query, for fluid interface
      */
-    public function filterByLocale($locale = null, $comparison = null)
+    public function filterByLanguageId($languageId = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($locale)) {
+            if (is_array($languageId)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $locale)) {
-                $locale = str_replace('*', '%', $locale);
+            } elseif (preg_match('/[\%\*]/', $languageId)) {
+                $languageId = str_replace('*', '%', $languageId);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(VatI18nTableMap::LOCALE, $locale, $comparison);
+        return $this->addUsingAlias(VatI18nTableMap::LANGUAGE_ID, $languageId, $comparison);
     }
 
     /**
@@ -423,7 +423,7 @@ abstract class VatI18nQuery extends ModelCriteria
     {
         if ($vatI18n) {
             $this->addCond('pruneCond0', $this->getAliasedColName(VatI18nTableMap::ID), $vatI18n->getId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(VatI18nTableMap::LOCALE), $vatI18n->getLocale(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(VatI18nTableMap::LANGUAGE_ID), $vatI18n->getLanguageId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

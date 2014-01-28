@@ -60,11 +60,11 @@ abstract class VatI18n implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the locale field.
+     * The value for the language_id field.
      * Note: this column has a database default value of: 'en_US'
      * @var        string
      */
-    protected $locale;
+    protected $language_id;
 
     /**
      * The value for the name field.
@@ -93,7 +93,7 @@ abstract class VatI18n implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->locale = 'en_US';
+        $this->language_id = 'en_US';
     }
 
     /**
@@ -368,14 +368,14 @@ abstract class VatI18n implements ActiveRecordInterface
     }
 
     /**
-     * Get the [locale] column value.
+     * Get the [language_id] column value.
      * 
      * @return   string
      */
-    public function getLocale()
+    public function getLanguageId()
     {
 
-        return $this->locale;
+        return $this->language_id;
     }
 
     /**
@@ -415,25 +415,25 @@ abstract class VatI18n implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [locale] column.
+     * Set the value of [language_id] column.
      * 
      * @param      string $v new value
      * @return   \Gekosale\Component\Configuration\Model\Vat\VatI18n The current object (for fluent API support)
      */
-    public function setLocale($v)
+    public function setLanguageId($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->locale !== $v) {
-            $this->locale = $v;
-            $this->modifiedColumns[VatI18nTableMap::LOCALE] = true;
+        if ($this->language_id !== $v) {
+            $this->language_id = $v;
+            $this->modifiedColumns[VatI18nTableMap::LANGUAGE_ID] = true;
         }
 
 
         return $this;
-    } // setLocale()
+    } // setLanguageId()
 
     /**
      * Set the value of [name] column.
@@ -466,7 +466,7 @@ abstract class VatI18n implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->locale !== 'en_US') {
+            if ($this->language_id !== 'en_US') {
                 return false;
             }
 
@@ -500,8 +500,8 @@ abstract class VatI18n implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : VatI18nTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : VatI18nTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->locale = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : VatI18nTableMap::translateFieldName('LanguageId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->language_id = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : VatI18nTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
@@ -737,8 +737,8 @@ abstract class VatI18n implements ActiveRecordInterface
         if ($this->isColumnModified(VatI18nTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(VatI18nTableMap::LOCALE)) {
-            $modifiedColumns[':p' . $index++]  = 'LOCALE';
+        if ($this->isColumnModified(VatI18nTableMap::LANGUAGE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'LANGUAGE_ID';
         }
         if ($this->isColumnModified(VatI18nTableMap::NAME)) {
             $modifiedColumns[':p' . $index++]  = 'NAME';
@@ -757,8 +757,8 @@ abstract class VatI18n implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'LOCALE':                        
-                        $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
+                    case 'LANGUAGE_ID':                        
+                        $stmt->bindValue($identifier, $this->language_id, PDO::PARAM_STR);
                         break;
                     case 'NAME':                        
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
@@ -822,7 +822,7 @@ abstract class VatI18n implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getLocale();
+                return $this->getLanguageId();
                 break;
             case 2:
                 return $this->getName();
@@ -857,7 +857,7 @@ abstract class VatI18n implements ActiveRecordInterface
         $keys = VatI18nTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getLocale(),
+            $keys[1] => $this->getLanguageId(),
             $keys[2] => $this->getName(),
         );
         $virtualColumns = $this->virtualColumns;
@@ -907,7 +907,7 @@ abstract class VatI18n implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setLocale($value);
+                $this->setLanguageId($value);
                 break;
             case 2:
                 $this->setName($value);
@@ -937,7 +937,7 @@ abstract class VatI18n implements ActiveRecordInterface
         $keys = VatI18nTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
+        if (array_key_exists($keys[1], $arr)) $this->setLanguageId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
     }
 
@@ -951,7 +951,7 @@ abstract class VatI18n implements ActiveRecordInterface
         $criteria = new Criteria(VatI18nTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(VatI18nTableMap::ID)) $criteria->add(VatI18nTableMap::ID, $this->id);
-        if ($this->isColumnModified(VatI18nTableMap::LOCALE)) $criteria->add(VatI18nTableMap::LOCALE, $this->locale);
+        if ($this->isColumnModified(VatI18nTableMap::LANGUAGE_ID)) $criteria->add(VatI18nTableMap::LANGUAGE_ID, $this->language_id);
         if ($this->isColumnModified(VatI18nTableMap::NAME)) $criteria->add(VatI18nTableMap::NAME, $this->name);
 
         return $criteria;
@@ -969,7 +969,7 @@ abstract class VatI18n implements ActiveRecordInterface
     {
         $criteria = new Criteria(VatI18nTableMap::DATABASE_NAME);
         $criteria->add(VatI18nTableMap::ID, $this->id);
-        $criteria->add(VatI18nTableMap::LOCALE, $this->locale);
+        $criteria->add(VatI18nTableMap::LANGUAGE_ID, $this->language_id);
 
         return $criteria;
     }
@@ -983,7 +983,7 @@ abstract class VatI18n implements ActiveRecordInterface
     {
         $pks = array();
         $pks[0] = $this->getId();
-        $pks[1] = $this->getLocale();
+        $pks[1] = $this->getLanguageId();
 
         return $pks;
     }
@@ -997,7 +997,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function setPrimaryKey($keys)
     {
         $this->setId($keys[0]);
-        $this->setLocale($keys[1]);
+        $this->setLanguageId($keys[1]);
     }
 
     /**
@@ -1007,7 +1007,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getId()) && (null === $this->getLocale());
+        return (null === $this->getId()) && (null === $this->getLanguageId());
     }
 
     /**
@@ -1024,7 +1024,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setId($this->getId());
-        $copyObj->setLocale($this->getLocale());
+        $copyObj->setLanguageId($this->getLanguageId());
         $copyObj->setName($this->getName());
         if ($makeNew) {
             $copyObj->setNew(true);
@@ -1110,7 +1110,7 @@ abstract class VatI18n implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->locale = null;
+        $this->language_id = null;
         $this->name = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

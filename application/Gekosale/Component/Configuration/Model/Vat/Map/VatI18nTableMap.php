@@ -76,9 +76,9 @@ class VatI18nTableMap extends TableMap
     const ID = 'vat_i18n.ID';
 
     /**
-     * the column name for the LOCALE field
+     * the column name for the LANGUAGE_ID field
      */
-    const LOCALE = 'vat_i18n.LOCALE';
+    const LANGUAGE_ID = 'vat_i18n.LANGUAGE_ID';
 
     /**
      * the column name for the NAME field
@@ -97,11 +97,11 @@ class VatI18nTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Locale', 'Name', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'locale', 'name', ),
-        self::TYPE_COLNAME       => array(VatI18nTableMap::ID, VatI18nTableMap::LOCALE, VatI18nTableMap::NAME, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'LOCALE', 'NAME', ),
-        self::TYPE_FIELDNAME     => array('id', 'locale', 'name', ),
+        self::TYPE_PHPNAME       => array('Id', 'LanguageId', 'Name', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'languageId', 'name', ),
+        self::TYPE_COLNAME       => array(VatI18nTableMap::ID, VatI18nTableMap::LANGUAGE_ID, VatI18nTableMap::NAME, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'LANGUAGE_ID', 'NAME', ),
+        self::TYPE_FIELDNAME     => array('id', 'language_id', 'name', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,11 +112,11 @@ class VatI18nTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Locale' => 1, 'Name' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'locale' => 1, 'name' => 2, ),
-        self::TYPE_COLNAME       => array(VatI18nTableMap::ID => 0, VatI18nTableMap::LOCALE => 1, VatI18nTableMap::NAME => 2, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'LOCALE' => 1, 'NAME' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'locale' => 1, 'name' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'LanguageId' => 1, 'Name' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'languageId' => 1, 'name' => 2, ),
+        self::TYPE_COLNAME       => array(VatI18nTableMap::ID => 0, VatI18nTableMap::LANGUAGE_ID => 1, VatI18nTableMap::NAME => 2, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'LANGUAGE_ID' => 1, 'NAME' => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'language_id' => 1, 'name' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,7 +137,7 @@ class VatI18nTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('ID', 'Id', 'INTEGER' , 'vat', 'ID', true, 10, null);
-        $this->addPrimaryKey('LOCALE', 'Locale', 'VARCHAR', true, 5, 'en_US');
+        $this->addPrimaryKey('LANGUAGE_ID', 'LanguageId', 'VARCHAR', true, 5, 'en_US');
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 128, null);
     } // initialize()
 
@@ -164,7 +164,7 @@ class VatI18nTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getId(), (string) $obj->getLocale()));
+                $key = serialize(array((string) $obj->getId(), (string) $obj->getLanguageId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -184,7 +184,7 @@ class VatI18nTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \Gekosale\Component\Configuration\Model\Vat\VatI18n) {
-                $key = serialize(array((string) $value->getId(), (string) $value->getLocale()));
+                $key = serialize(array((string) $value->getId(), (string) $value->getLanguageId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -216,11 +216,11 @@ class VatI18nTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('LanguageId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('LanguageId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**
@@ -337,11 +337,11 @@ class VatI18nTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(VatI18nTableMap::ID);
-            $criteria->addSelectColumn(VatI18nTableMap::LOCALE);
+            $criteria->addSelectColumn(VatI18nTableMap::LANGUAGE_ID);
             $criteria->addSelectColumn(VatI18nTableMap::NAME);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.LOCALE');
+            $criteria->addSelectColumn($alias . '.LANGUAGE_ID');
             $criteria->addSelectColumn($alias . '.NAME');
         }
     }
@@ -402,7 +402,7 @@ class VatI18nTableMap extends TableMap
             }
             foreach ($values as $value) {
                 $criterion = $criteria->getNewCriterion(VatI18nTableMap::ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(VatI18nTableMap::LOCALE, $value[1]));
+                $criterion->addAnd($criteria->getNewCriterion(VatI18nTableMap::LANGUAGE_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
