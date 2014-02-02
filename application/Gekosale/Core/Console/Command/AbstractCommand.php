@@ -8,6 +8,7 @@
  * @author      Adam Piotrowski, apiotrowski@wellcommerce.pl
  */
 namespace Gekosale\Core\Console\Command;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,7 +23,7 @@ abstract class AbstractCommand extends Command
 
     protected function getFilesystem ()
     {
-        if (null === $this->filesystem){
+        if (null === $this->filesystem) {
             $this->filesystem = new Filesystem();
         }
         
@@ -31,7 +32,7 @@ abstract class AbstractCommand extends Command
 
     protected function getFinder ()
     {
-        if (null === $this->finder){
+        if (null === $this->finder) {
             $this->finder = new Finder();
         }
         
@@ -42,10 +43,10 @@ abstract class AbstractCommand extends Command
     {
         $filesystem = $this->getFilesystem();
         
-        try{
+        try {
             $filesystem->mkdir($directory, $chmod);
         }
-        catch (IOException $e){
+        catch (IOException $e) {
             throw new IOException(sprintf('Unable to write the "%s" directory', $directory), 0, $e);
         }
     }

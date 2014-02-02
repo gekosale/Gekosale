@@ -32,15 +32,16 @@
         "symfony/twig-bridge": "2.4.x-dev",
         "kriswallsmith/assetic": "v1.1.2",
         "twig/extensions": "1.0.x-dev",
-        "propel/propel": "dev-master"
+        "propel/propel": "dev-master",
+        "doctrine/common": "*",
+        "apigen/apigen": "2.8.0",
+       	"phing/phing": "dev-master"
     },
     "autoload": {
         "psr-0": {
             "Gekosale": "application",
             "PasswordHash": "lib",
-            "FormEngine": "lib",
-            "SimpleForm": "lib",
-            "": "lib/"
+            "": "application/"
         },
         "classmap": [
             "lib/dispatcher/sfEvent.php",

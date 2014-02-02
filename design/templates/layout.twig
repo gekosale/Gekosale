@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl">
+<head>
+    <title>{{ SHOP_NAME }} - Panel administracyjny</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Author" content="Verison; http://verison.pl"/>
+    <meta http-equiv="Description" content="Panel administracyjny systemu sklepowego Gekosale."/>
+    <meta name="robots" content="noindex, nofollow"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    {% block stylesheet %}
+        <link rel="stylesheet" href="{{ asset('design/_fonts_panel/fonts.css') }}" type="text/css"/>
+        <link rel="stylesheet" href="{{ asset('design/_css_panel/core/style.css') }}" type="text/css"/>
+    {% endblock %}
+    {% block javascript %}
+
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery-1.4.2.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/xajax/xajax_core.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.jqplugin.1.0.2.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/swf.packed.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.scrollTo.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.cookie.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery-ui-1.7.2.custom.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.checkboxes.pack.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/json2.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/base64.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.hotkeys.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.onkeyup.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_panel/gekosale.js') }}"></script>
+    {% endblock %}
+    <script type="text/javascript">
+        new GCore({
+            iCookieLifetime: 30,
+            sDesignPath: 'http://gekosale3.tpl/design/',
+            iActiveView: '{{ view }}',
+            iActiveLanguage: '{{ language }}',
+            aoLanguages: '{{ languages }}',
+            aoVatValues: '{{ vatvalues }}',
+            sUrl: '{{ URL }}',
+            sCurrentController: '{{ CURRENT_CONTROLLER }}',
+            sCurrentAction: '{{ CURRENT_ACTION }}'
+        });
+    </script>
+    <script type="text/javascript" src="{{ asset('design/_js_panel/init.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('design/_js_panel/gf.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('design/_js_panel/pl_PL.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('design/_js_panel/hotkeys.js') }}"></script>
+    <script type="text/javascript">
+        GF_Debug.s_iLevel = GF_Debug.LEVEL_ALL;
+    </script>
+    {{ xajax|raw }}
+    {% if error is defined %}
+        <script type="text/javascript">
+            GError('{% trans %}TXT_ERROR_OCCURED{% endtrans %}', '{{ error }}');
+        </script>
+    {% endif %}
+    {% if message is defined %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                GMessage('{{ message }}');
+            });
+        </script>
+    {% endif %}
+</head>
+<body>
+<div id="header">
+    <div class="layout-container">
+        <h1><a href="{{ path('admin.dashboard') }}"><img src="{{ asset('design/_images_panel/logos/logo.png') }}" alt=""/></a></h1>
+
+        <div id="livesearch">
+            <input type="text" name="search" id="search" placeholder="{% trans %}TXT_SEARCH{% endtrans %}"/>
+        </div>
+        <div id="top-menu">
+            <ul>
+                <li>
+                    <a href="{{ URL }}users/edit/{{ user_id }}">{% if user_name == ' ' %}{% trans %}TXT_ADMIN_ACCOUNT{% endtrans %}{% else %}{{ user_name }}{% endif %}</a>
+                    (<a href="{{ URL }}logout">{% trans %}TXT_LOGOUT{% endtrans %}</a>)
+                </li>
+                <li>
+                    <a target="_blank" href="http://wellcommerce.pl/zasoby/">{% trans %}TXT_HELP{% endtrans %}</a>
+                </li>
+                <li>
+                    <a href="{{ FRONTEND_URL }}" target="_blank">{% trans %}TXT_HOME_PAGE{% endtrans %}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="navigation-bar">
+    <div class="layout-container">
+        <div id="selectors" style="float: right; margin-top: 8px;"></div>
+        {% include 'navigation.twig' %}
+
+        <div id="boxShop">
+            <span class="icon"></span>
+
+            <div class="field-select">
+                <select name="view-switcher" onchange="xajax_ChangeActiveView(this.value);">
+                    {% for view in views %}
+                        <option value="{{ view.id }}" {% if view.active %}selected="selected"{% endif %}>{{ view.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="message-bar"></div>
+<div id="content" class="layout-container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

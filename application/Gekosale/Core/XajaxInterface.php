@@ -2,22 +2,18 @@
 
 /**
  * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
  *
- * Copyright (c) 2008-2012 Gekosale sp. z o.o.. Zabronione jest usuwanie informacji o licencji i autorach.
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  *
- * This library is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version. 
- * 
- * 
- * $Revision: 438 $
- * $Author: gekosale $
- * $Date: 2011-08-27 11:29:36 +0200 (So, 27 sie 2011) $
- * $Id: xajaxinterface.class.php 438 2011-08-27 09:29:36Z gekosale $ 
+ * @category    Gekosale
+ * @package     Gekosale\Core
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use xajaxResponse;
 
 class XajaxInterface
@@ -27,8 +23,11 @@ class XajaxInterface
 
     protected $autoId;
 
-    public function __construct ()
+    protected $container;
+
+    public function __construct (ContainerInterface $container)
     {
+        $this->container = $container;
         $this->callbacks = Array();
         $this->autoId = 0;
     }
@@ -44,7 +43,7 @@ class XajaxInterface
         $callback = $registrationArray;
         $callbackName = '_auto_callback_' . $this->autoId ++;
         $this->registerCallback($callbackName, $callback);
-        App::getRegistry()->xajax->registerFunction(Array(
+        $this->container->get('xajax')->registerFunction(Array(
             $name,
             $this,
             $callbackName
@@ -54,17 +53,17 @@ class XajaxInterface
 
     public function __call ($name, $arguments)
     {
-        try{
+        try {
             $request = $arguments[0];
             $responseHandler = $arguments[1];
             $objResponse = new xajaxResponse();
             $response = call_user_func($this->callbacks[$name], $request);
-            if (! is_array($response)){
+            if (! is_array($response)) {
                 $response = Array();
             }
             $objResponse->script("{$responseHandler}(" . json_encode($response) . ")");
         }
-        catch (Exception $e){
+        catch (Exception $e) {
             $objResponse = new xajaxResponse();
             $objResponse->script("GError('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
         }

@@ -1,12 +1,26 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ *
+ * @category    Gekosale
+ * @package     Gekosale\Core
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core;
 
-use Symfony\Component\HttpFoundation\Request, Symfony\Component\Config\FileLocator,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader, Symfony\Component\Stopwatch\Stopwatch;
-use Propel\Runtime\Propel, Propel\Runtime\Connection\ConnectionManagerSingle;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Stopwatch\Stopwatch;
+use Propel\Runtime\Propel;
+use Propel\Runtime\Connection\ConnectionManagerSingle;
 
 class Application
 {
@@ -22,30 +36,31 @@ class Application
 
     protected $stopwatch;
 
-    public function __construct()
+    public function __construct ()
     {
         /*
          * Init Stopwatch component and start timing
          */
         $this->stopwatch = new Stopwatch();
-
+        
         $this->stopwatch->start('application');
-
+        
         /*
          * Get request
          */
         $this->request = Request::createFromGlobals();
+        
         /*
          * Init Service Container
          */
         $this->container = $this->getContainerBuilder();
-
+        
         /*
          * Load application configuration
          */
         $loader = new XmlFileLoader($this->container, new FileLocator(ROOTPATH . 'config'));
         $loader->load('config.xml');
-
+        
         /*
          * Init Propel Connection Manager
          */
@@ -58,7 +73,7 @@ class Application
         $this->container->set('urlgenerator', $this->container->get('router')->getGenerator());
     }
 
-    public function run()
+    public function run ()
     {
         /*
          * Resolve controller and dispatch application
@@ -67,27 +82,27 @@ class Application
         $this->response->send();
     }
 
-    public function stop()
+    public function stop ()
     {
         $this->container->get('kernel')->terminate($this->request, $this->response);
         $event = $this->stopwatch->stop('application');
         echo $event->getDuration();
     }
 
-    protected function getContainerBuilder()
+    protected function getContainerBuilder ()
     {
         return new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
     }
 
-    public function getContainer()
+    public function getContainer ()
     {
         return $this->container;
     }
 
-    protected function getKernelParameters()
+    protected function getKernelParameters ()
     {
         return array(
-            'application.root_path' => ROOTPATH,
+            'application.root_path' => ROOTPATH
         );
     }
 }

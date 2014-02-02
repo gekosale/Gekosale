@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Propel;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,8 +29,6 @@ class Reverse extends AbstractCommand
         
         $outputDir = ROOTPATH;
         
-        $config = $this->getConfig();
-        
-        system("php {$propelBin} reverse --input-dir {$inputDir} --output-dir {$outputDir}/sql mysql:host={$config['database']['host']};dbname={$config['database']['dbname']};user={$config['database']['user']};password={$config['database']['password']}");
+        system("php {$propelBin} reverse --input-dir {$inputDir} --output-dir {$outputDir}/sql mysql:host=localhost;dbname=gekosale3;user=root;password=");
     }
 }

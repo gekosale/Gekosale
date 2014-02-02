@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * @category    Gekosale
+ * @package     Gekosale\Event\Listener
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core\Event\Listener;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -11,60 +23,70 @@ use Symfony\Component\HttpFoundation\Response;
 class TemplateListener implements EventSubscriberInterface
 {
 
-    public function onKernelController(FilterControllerEvent $event)
+    protected $engine = 'twig';
+
+    public function onKernelController (FilterControllerEvent $event)
     {
         $event->getRequest()->attributes->set('_template_vars', Array());
     }
 
-    public function onKernelView(GetResponseForControllerResultEvent $event)
+    public function onKernelView (GetResponseForControllerResultEvent $event)
     {
-        $container        = $event->getDispatcher()->getContainer();
-        $request          = $event->getRequest();
-        $controller       = $request->attributes->get('controller');
-        $action           = $request->attributes->get('action');
+        $container = $event->getDispatcher()->getContainer();
+        $request = $event->getRequest();
+        $controller = $request->attributes->get('controller');
+        $action = $request->attributes->get('action');
         $controllerResult = $event->getControllerResult();
-        $templateVars     = $request->attributes->get('_template_vars');
-
+        $templateVars = $request->attributes->get('_template_vars');
+        
+        /*
+         * Always register Xajax
+         */
+        $templateVars['xajax'] = $container->get('xajax')->getJavascript();
+        $container->get('xajax')->processRequest();
+        
         $parameters = array_merge($templateVars, $controllerResult);
-
-        $controllerParts = explode('\\', $controller);
-
-        $template = $this->guessTemplateName($controller, $action);
-
+        
         switch ($request->attributes->get('mode')) {
             case 'admin':
+                $template = $this->guessAdminTemplateName($controller, $action);
                 $response = $container->get('template.admin')->engine->render($template, $parameters);
                 break;
             case 'frontend':
+                $template = $this->guessFrontTemplateName($controller, $action);
                 $response = $container->get('template.front')->engine->render($template, $parameters);
                 break;
         }
-
+        
         $event->setResponse(new Response($response));
     }
 
-    /**
-     * Guesses and returns the template name to render based on the controller
-     * and action names.
-     *
-     * @param  string $route
-     * @param  string $action
-     *
-     * @return string    Template name
-     */
-    protected function guessTemplateName($controller, $action)
+    protected function guessAdminTemplateName ($controller, $action)
     {
-        return sprintf('%s\%s.twig', $route, $action);
+        if (! preg_match('/Controller\\\Admin\\\(.+)$/', $controller, $matchController)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" class does not look like an admin controller class', $controller));
+        }
+        
+        return sprintf('%s\%s.%s', strtolower($matchController[1]), $action, $this->engine);
     }
 
-    public static function getSubscribedEvents()
+    protected function guessFrontTemplateName ($controller, $action)
+    {
+        if (! preg_match('/Controller\\\Frontend\\\(.+)$/', $controller, $matchController)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" class does not look like a frontend controller class', $controller));
+        }
+        
+        return sprintf('%s\%s.%s', strtolower($matchController[1]), $action, $this->engine);
+    }
+
+    public static function getSubscribedEvents ()
     {
         return array(
             KernelEvents::CONTROLLER => array(
                 'onKernelController',
-                -128
+                - 128
             ),
-            KernelEvents::VIEW       => 'onKernelView'
+            KernelEvents::VIEW => 'onKernelView'
         );
     }
 }

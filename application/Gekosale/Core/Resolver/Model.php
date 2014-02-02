@@ -1,35 +1,53 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution 
+ * 
+ * For the full copyright and license information, 
+ * please view the LICENSE file that was distributed with this source code. 
+ * 
+ * @category    Gekosale 
+ * @package     Gekosale\Core 
+ * @subpackage  Gekosale\Core\Resolver
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core\Resolver;
+
 use Gekosale\Core\Resolver;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Doctrine\Common\Annotations\AnnotationReader;
 
-class Model extends Resolver
+class Model extends Resolver implements ResolverInterface
 {
 
-    const COMPONENT_FOLDER = 'Component';
-
-    public function getModel ($id)
+    public function create ($class)
     {
-        foreach ($this->getNamespaces() as $namespace){
-            $className = $this->getClassName($namespace, $id);
-            if (class_exists($className)){
-                $component = new $className();
-                if ($component instanceof ContainerAwareInterface){
-                    $component->setContainer($this->container);
+        if (! class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Model "%s" does not exist.', $class));
+        }
+        
+        $model = new $class();
+        
+        $annotationReader = new AnnotationReader();
+        $reflectionClass = new \ReflectionClass($class);
+        $classAnnotations = $annotationReader->getClassAnnotations($reflectionClass);
+        
+        if ($model instanceof ContainerAwareInterface) {
+            $model->setContainer($this->container);
+        }
+        
+        foreach ($classAnnotations as $annotation) {
+            if ($annotation instanceof \Gekosale\Core\Datagrid) {
+                $datagrid = new $annotation->model();
+                if ($datagrid instanceof ContainerAwareInterface) {
+                    $datagrid->setContainer($this->container);
                 }
+                echo $annotation->alias;
+                $model->$annotation->alias = $datagrid;
             }
         }
         
-        if (! isset($component)){
-            throw new \InvalidArgumentException(sprintf('Model "%s" does not exist.', $id));
-        }
-        
-        return $component;
-    }
-
-    protected function getClassName ($namespace, $id)
-    {
-        return sprintf('%s\%s\%s', $namespace, self::COMPONENT_FOLDER, $id);
+        return $model;
     }
 }

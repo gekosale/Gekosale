@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Cache;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Gekosale\Core\Db;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,8 +35,8 @@ class Clear extends AbstractCommand
         
         $this->classesMap = array();
         $pathLen = strlen($path) + 1;
-        foreach ($dir as $file){
-            if ($file->isFile() && ! preg_match('~migrate_\d+\z~', $file->getBasename('.php'))){
+        foreach ($dir as $file) {
+            if ($file->isFile() && ! preg_match('~migrate_\d+\z~', $file->getBasename('.php'))) {
                 $this->classesMap[substr($file->getPathname(), $pathLen, - 4)] = $file->getPathname();
             }
         }

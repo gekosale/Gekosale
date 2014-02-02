@@ -228,3 +228,5 @@ pip-log.txt
 /*.buildpath
 /sample.htaccess
 /.idea
+
+/vendor

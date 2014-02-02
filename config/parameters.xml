@@ -16,7 +16,7 @@
         <parameter key="application.design_path">%application.root_path%design</parameter>
 
         <parameter key="admin.themes" type="collection">
-            <parameter>%application.design_path%/admin/Gekosale/templates</parameter>
+            <parameter>%application.design_path%/templates</parameter>
         </parameter>
 
         <parameter key="front.themes" type="collection">
@@ -29,10 +29,15 @@
             <parameter key="password"></parameter>
         </parameter>
 
-        <parameter key="languages" type="collection">
-            <parameter key="1">pl_PL</parameter>
-            <parameter key="2">en_EN</parameter>
-            <parameter key="3">de_DE</parameter>
+        <parameter key="router.options" type="collection">
+            <parameter key="cache_dir">%application.root_path%var</parameter>
+            <parameter key="generator_cache_class">GekosaleUrlGenerator</parameter>
+            <parameter key="matcher_cache_class">GekosaleUrlMatcher</parameter>
+        </parameter>
+        
+        <parameter key="locales" type="collection">
+            <parameter key="1">Polski</parameter>
+            <parameter key="2">English</parameter>
         </parameter>
 
         <parameter key="session.config" type="collection">

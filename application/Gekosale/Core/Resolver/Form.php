@@ -1,32 +1,37 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution 
+ * 
+ * For the full copyright and license information, 
+ * please view the LICENSE file that was distributed with this source code. 
+ * 
+ * @category    Gekosale 
+ * @package     Gekosale\Core 
+ * @subpackage  Gekosale\Core\Resolver
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core\Resolver;
+
 use Gekosale\Core\Resolver;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class Form extends Resolver
+class Form extends Resolver implements ResolverInterface
 {
 
-    const COMPONENT_FOLDER = 'Component';
-
-    public function getForm ($id)
+    public function create ($class)
     {
-        foreach ($this->getNamespaces() as $namespace){
-            $className = $this->getClassName($namespace, $id);
-            if (class_exists($className)){
-                $component = new $className($this->container);
-            }
+        if (! class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Form "%s" does not exist.', $class));
         }
         
-        if (! isset($component)){
-            throw new \InvalidArgumentException(sprintf('Component "%s" does not exist.', $id));
+        $form = new $class();
+        
+        if ($form instanceof ContainerAwareInterface) {
+            $form->setContainer($this->container);
         }
         
-        return $component;
-    }
-
-    protected function getClassName ($namespace, $id)
-    {
-        return sprintf('%s\%s\%s', $namespace, self::COMPONENT_FOLDER, $id);
+        return $form;
     }
 }

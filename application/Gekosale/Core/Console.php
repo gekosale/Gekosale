@@ -1,19 +1,19 @@
 <?php
 
 /**
+ * Gekosale, Open Source E-Commerce Solution
  *
- * WellCommerce
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  *
- * @copyright   Copyright (c) 2012-2013 WellCommerce
- * @author      Adam Piotrowski, apiotrowski@wellcommerce.pl
+ * @category    Gekosale
+ * @package     Gekosale\Core
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
-use Gekosale\Core\App;
+
 use Symfony\Component\Console\Application;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class Console extends Application
 {
@@ -32,7 +32,7 @@ class Console extends Application
             new Console\Command\Propel\Migration(),
             new Console\Command\Migrate\Add(),
             new Console\Command\Migrate\Up(),
-            new Console\Command\Tests\Run()
+            new Console\Command\Routes\Dump()
         ));
     }
 }

@@ -1,37 +1,26 @@
 <?php
-
-use Symfony\Component\Routing;
+/*
+ * Gekosale, Open Source E-Commerce Solution
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * @category    Gekosale
+ * @package     Gekosale\Plugin\Vat
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-$this->routes = new RouteCollection();
+$this->collection = new RouteCollection();
 
-$this->routes->add(
-    'dashboard',
-    new Route('/',
-        array(
-             'mode'       => 'frontend',
-             'controller' => 'Gekosale\Component\Dashboard\Controller\Frontend\Dashboard',
-             'action'     => 'index',
-             'param'      => null
-        ),
-        array(
-             '_scheme' => 'http'
-        ))
-);
+$this->collection->add('admin.dashboard', new Route('/admin/dashboard', array(
+    'controller' => 'Gekosale\Plugin\Dashboard\Controller\Admin\Dashboard',
+    'mode' => 'admin',
+    'action' => 'index',
+    'param' => NULL
+)));
 
-$this->routes->add(
-    'admin.dashboard',
-    new Route('/admin',
-        array(
-             'mode'       => 'admin',
-             'controller' => 'Gekosale\Component\Dashboard\Controller\Admin\Dashboard',
-             'action'     => 'index',
-             'param'      => null
-        ),
-        array(
-             '_scheme' => 'http'
-        ))
-);
-
-return $this->routes;
+return $this->collection;

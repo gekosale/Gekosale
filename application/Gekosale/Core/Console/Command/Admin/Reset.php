@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Admin;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Gekosale\Core\Db;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,10 +36,10 @@ class Reset extends AbstractCommand
         
         $question = Array();
         
-        foreach($this->getUsers() as $id => $user){
+        foreach ($this->getUsers() as $id => $user) {
             $question[] = "<comment>{$id}</comment>: {$user}\n";
         }
-       
+        
         $question[] = "\n<question>Choose an existing user [<comment>$defaultUser</comment>]:</question>\n";
         
         $user = $dialog->askAndValidate($output, $question, function  ($typeInput)
@@ -64,27 +65,27 @@ class Reset extends AbstractCommand
 				ORDER BY surname, firstname';
         $stmt = Db::getInstance()->prepare($sql);
         $stmt->execute();
-        while ($rs = $stmt->fetch()){
+        while ($rs = $stmt->fetch()) {
             $Data[$rs['id']] = $rs['email'];
         }
         return $Data;
     }
-    
+
     protected function execute (InputInterface $input, OutputInterface $output)
     {
         $result = $input->getArguments();
         
-        $this->resetUser($result['user'],$result['pass']);
+        $this->resetUser($result['user'], $result['pass']);
         
         $out = sprintf('%sAccount %s reseted with new password %s.%s', PHP_EOL, $result['user'], $result['pass'], PHP_EOL);
         
         $output->write($out);
     }
-    
+
     protected function resetUser ($id, $password)
     {
         $hash = new \PasswordHash\PasswordHash();
-    
+        
         $sql = 'UPDATE user SET
 					password = :password
         		WHERE iduser = :id';

@@ -1,7 +1,20 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ *
+ * @category    Gekosale
+ * @package     Gekosale\Core
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core;
+
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class Component extends ContainerAware
 {
@@ -16,11 +29,6 @@ class Component extends ContainerAware
         return $this->container->get($id);
     }
 
-    public function getParam ($param = 'param', $default = null)
-    {
-        return $this->registry->router->getParamFromRoute($param, $default);
-    }
-
     public function trans ($id)
     {
         return $this->container->get('translation')->trans($id);
@@ -31,29 +39,14 @@ class Component extends ContainerAware
         return $this->container->get('db');
     }
 
-    public function getForm ($id)
-    {
-        return $this->container->get('form.resolver')->getForm($id);
-    }
-
     public function getSession ()
     {
         return $this->container->get('session');
     }
 
-    protected function getTemplate ()
-    {
-        return $this->registry->template;
-    }
-
-    protected function getCore ()
-    {
-        return $this->registry->core;
-    }
-
     protected function getRouter ()
     {
-        return $this->registry->router;
+        return $this->container->get('router');
     }
 
     protected function getRequest ()
@@ -61,24 +54,42 @@ class Component extends ContainerAware
         return $this->container->get('request');
     }
 
-    protected function getRegistry ()
+    protected function getModel ($class)
     {
-        return $this->registry;
+        return $this->container->get('resolver.model')->create($class);
     }
 
-    protected function getComponent ($id)
+    protected function getForm ($class)
     {
-        return $this->container->get('component.resolver')->getComponent($id);
+        return $this->container->get('resolver.form')->create($class);
     }
 
-    protected function getModel ($id)
+    protected function getDatagrid ()
     {
-        return $this->container->get('model.resolver')->getModel($id);
+        return $this->container->get('datagrid');
     }
 
-    protected function getLocale ($id)
+    protected function getLocales ()
     {
-        $languages = $this->container->getParameter('languages');
-        return $languages[$id];
+        return array_keys($this->container->getParameter('locales'));
+    }
+
+    public function getPropertyAccessor ()
+    {
+        return PropertyAccess::createPropertyAccessor();
+    }
+
+    public function registerXajaxMethod ($method, $model)
+    {
+        $this->container->get('xajax')->registerFunction(array(
+            $method,
+            $model,
+            $method
+        ));
+    }
+
+    public function getJavascript ()
+    {
+        return $this->container->get('xajax')->getJavascript();
     }
 }

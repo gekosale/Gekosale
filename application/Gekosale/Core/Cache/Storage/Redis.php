@@ -1,7 +1,19 @@
 <?php
 
+/**
+ * Gekosale, Open Source E-Commerce Solution 
+ * 
+ * For the full copyright and license information, 
+ * please view the LICENSE file that was distributed with this source code. 
+ * 
+ * @category    Gekosale 
+ * @package     Gekosale\Component\Cache
+ * @subpackage  Gekosale\Component\Cache\Storage
+ * @author      Adam Piotrowski <adam@gekosale.com>
+ * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+ */
 namespace Gekosale\Core\Cache\Storage;
-use Gekosale\Core\Helper;
+
 use Predis;
 
 class Redis
@@ -36,10 +48,10 @@ class Redis
 
     public function load ($key)
     {
-        if ($data = $this->client->get($key)){
+        if ($data = $this->client->get($key)) {
             return $data;
         }
-        else{
+        else {
             return FALSE;
         }
     }

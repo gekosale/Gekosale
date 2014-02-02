@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Tests;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputArgument;

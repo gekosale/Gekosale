@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Migrate;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Gekosale\Core\Db;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,14 +41,14 @@ class Up extends AbstractCommand
         $path = ROOTPATH . 'application' . DS . $namespace . DS . 'Migrate';
         $finder = $this->getFinder()->files()->in($path);
         
-        foreach ($finder as $file){
+        foreach ($finder as $file) {
             $migration = $this->getMigrationObject($namespace, $file->getRealpath());
-            if ($migration->check() == 0){
+            if ($migration->check() == 0) {
                 $migration->up();
                 $migration->save();
                 $output->writeln(sprintf('Executing migration "%s"', get_class($migration)));
             }
-            else{
+            else {
                 $output->writeln(sprintf('Skipping migration "%s"', get_class($migration)));
             }
         }

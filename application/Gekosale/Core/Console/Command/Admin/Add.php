@@ -1,6 +1,7 @@
 <?php
 
 namespace Gekosale\Core\Console\Command\Admin;
+
 use Gekosale\Core\Console\Command\AbstractCommand;
 use Gekosale\Core\Db;
 use Symfony\Component\Console\Input\InputArgument;
