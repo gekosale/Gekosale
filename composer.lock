@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e91070e715de8f139d2786dccde5ee0b",
+    "hash": "ffb0c9036b11ce8853b037fefc13d196",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -568,7 +568,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -869,17 +869,69 @@
             "time": "2013-12-31 00:08:21"
         },
         {
+            "name": "phing/phing",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phingofficial/phing.git",
+                "reference": "2b10760d24d442092b2f7dd6982066f9981c5217"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phingofficial/phing/zipball/2b10760d24d442092b2f7dd6982066f9981c5217",
+                "reference": "2b10760d24d442092b2f7dd6982066f9981c5217",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "bin": [
+                "bin/phing"
+            ],
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "classes/phing/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "classes"
+            ],
+            "license": [
+                "LGPL3"
+            ],
+            "authors": [
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net"
+                },
+                {
+                    "name": "Phing Community",
+                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
+                }
+            ],
+            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
+            "homepage": "http://www.phing.info/",
+            "keywords": [
+                "build",
+                "task",
+                "tool"
+            ],
+            "time": "2014-02-01 12:34:43"
+        },
+        {
             "name": "predis/predis",
             "version": "0.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nrk/predis.git",
-                "reference": "9d0201ed9ef4fae09ed251897260941af230bed3"
+                "reference": "5f2eea628eb465d866ad2771927d83769c8f956c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nrk/predis/zipball/9d0201ed9ef4fae09ed251897260941af230bed3",
-                "reference": "9d0201ed9ef4fae09ed251897260941af230bed3",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/5f2eea628eb465d866ad2771927d83769c8f956c",
+                "reference": "5f2eea628eb465d866ad2771927d83769c8f956c",
                 "shasum": ""
             },
             "require": {
@@ -913,7 +965,7 @@
                 "predis",
                 "redis"
             ],
-            "time": "2014-01-08 16:38:22"
+            "time": "2014-01-16 14:10:29"
         },
         {
             "name": "propel/propel",
@@ -921,12 +973,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "793aea6b762d9a72b083bfc49c74c574f67650c8"
+                "reference": "944fb8792f45815c797ff13666739fa3fd394471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/793aea6b762d9a72b083bfc49c74c574f67650c8",
-                "reference": "793aea6b762d9a72b083bfc49c74c574f67650c8",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/944fb8792f45815c797ff13666739fa3fd394471",
+                "reference": "944fb8792f45815c797ff13666739fa3fd394471",
                 "shasum": ""
             },
             "require": {
@@ -978,7 +1030,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2014-01-08 10:53:39"
+            "time": "2014-01-29 23:27:22"
         },
         {
             "name": "psr/log",
@@ -1025,12 +1077,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/BrowserKit.git",
-                "reference": "c6b3cd51651f445908a11f3f81f965a157daef38"
+                "reference": "3898f9f9aafc853124c90a9d1a4f98c1034e627e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/c6b3cd51651f445908a11f3f81f965a157daef38",
-                "reference": "c6b3cd51651f445908a11f3f81f965a157daef38",
+                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/3898f9f9aafc853124c90a9d1a4f98c1034e627e",
+                "reference": "3898f9f9aafc853124c90a9d1a4f98c1034e627e",
                 "shasum": ""
             },
             "require": {
@@ -1061,7 +1113,7 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
+                    "name": "Fabien Potencier2",
                     "email": "fabien@symfony.com"
                 },
                 {
@@ -1071,7 +1123,7 @@
             ],
             "description": "Symfony BrowserKit Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-24 14:36:08"
         },
         {
             "name": "symfony/config",
@@ -1128,12 +1180,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "86e13d5b06146fbe81006570ad26cb7cbeafba15"
+                "reference": "80068b6e36cae1044fa4ed5ef09e13f65703fb39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/86e13d5b06146fbe81006570ad26cb7cbeafba15",
-                "reference": "86e13d5b06146fbe81006570ad26cb7cbeafba15",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/80068b6e36cae1044fa4ed5ef09e13f65703fb39",
+                "reference": "80068b6e36cae1044fa4ed5ef09e13f65703fb39",
                 "shasum": ""
             },
             "require": {
@@ -1172,7 +1224,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-24 14:36:08"
         },
         {
             "name": "symfony/debug",
@@ -1236,12 +1288,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "08ded9842337ff55cfb622292ec50814d4697073"
+                "reference": "22739f68580ad7bae19b10daa7cae29f5a3d04e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/08ded9842337ff55cfb622292ec50814d4697073",
-                "reference": "08ded9842337ff55cfb622292ec50814d4697073",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/22739f68580ad7bae19b10daa7cae29f5a3d04e6",
+                "reference": "22739f68580ad7bae19b10daa7cae29f5a3d04e6",
                 "shasum": ""
             },
             "require": {
@@ -1284,7 +1336,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-26 21:33:04"
         },
         {
             "name": "symfony/dom-crawler",
@@ -1544,12 +1596,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "eb1ed60a4a066238106721f67f664fd6382a99ea"
+                "reference": "baa7bf261230ce946e20680b55e9cb2e29ec5eac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/eb1ed60a4a066238106721f67f664fd6382a99ea",
-                "reference": "eb1ed60a4a066238106721f67f664fd6382a99ea",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/baa7bf261230ce946e20680b55e9cb2e29ec5eac",
+                "reference": "baa7bf261230ce946e20680b55e9cb2e29ec5eac",
                 "shasum": ""
             },
             "require": {
@@ -1606,7 +1658,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-24 14:36:08"
         },
         {
             "name": "symfony/options-resolver",
@@ -1667,12 +1719,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "4f196b9d307d9e1a3d4372f1735c301c03d476c5"
+                "reference": "597b921d82673c0b1442f7b3498fcc4a978ad26f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/4f196b9d307d9e1a3d4372f1735c301c03d476c5",
-                "reference": "4f196b9d307d9e1a3d4372f1735c301c03d476c5",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/597b921d82673c0b1442f7b3498fcc4a978ad26f",
+                "reference": "597b921d82673c0b1442f7b3498fcc4a978ad26f",
                 "shasum": ""
             },
             "require": {
@@ -1705,7 +1757,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-21 09:48:43"
         },
         {
             "name": "symfony/property-access",
@@ -1772,12 +1824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "e4ef317134f5628b5f0d3b0ac96d30ba1c8146cc"
+                "reference": "c98a6dec5651ab5a06b2486aff244e6ed24e54bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/e4ef317134f5628b5f0d3b0ac96d30ba1c8146cc",
-                "reference": "e4ef317134f5628b5f0d3b0ac96d30ba1c8146cc",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/c98a6dec5651ab5a06b2486aff244e6ed24e54bb",
+                "reference": "c98a6dec5651ab5a06b2486aff244e6ed24e54bb",
                 "shasum": ""
             },
             "require": {
@@ -1829,7 +1881,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-24 18:08:49"
         },
         {
             "name": "symfony/security-core",
@@ -2001,12 +2053,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "d08c27077115e4bd3030a812e4083daa49254ca9"
+                "reference": "c9efc5d2cc0daf5c197895e7898c8732c9d301d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/d08c27077115e4bd3030a812e4083daa49254ca9",
-                "reference": "d08c27077115e4bd3030a812e4083daa49254ca9",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/c9efc5d2cc0daf5c197895e7898c8732c9d301d6",
+                "reference": "c9efc5d2cc0daf5c197895e7898c8732c9d301d6",
                 "shasum": ""
             },
             "require": {
@@ -2047,7 +2099,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-24 14:36:08"
         },
         {
             "name": "symfony/twig-bridge",
@@ -2056,12 +2108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/TwigBridge.git",
-                "reference": "7a6f294160c160035c231024cd7ca8a8b3a9b529"
+                "reference": "0f087fa433a8666820192958dae5738aeb023456"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/TwigBridge/zipball/7a6f294160c160035c231024cd7ca8a8b3a9b529",
-                "reference": "7a6f294160c160035c231024cd7ca8a8b3a9b529",
+                "url": "https://api.github.com/repos/symfony/TwigBridge/zipball/0f087fa433a8666820192958dae5738aeb023456",
+                "reference": "0f087fa433a8666820192958dae5738aeb023456",
                 "shasum": ""
             },
             "require": {
@@ -2070,6 +2122,7 @@
                 "twig/twig": "~1.12"
             },
             "require-dev": {
+                "symfony/expression-language": "~2.4",
                 "symfony/form": "~2.2",
                 "symfony/http-kernel": "~2.2",
                 "symfony/routing": "~2.2",
@@ -2080,6 +2133,7 @@
                 "symfony/yaml": "~2.0"
             },
             "suggest": {
+                "symfony/expression": "For using the ExpressionExtension",
                 "symfony/form": "For using the FormExtension",
                 "symfony/http-kernel": "For using the HttpKernelExtension",
                 "symfony/routing": "For using the RoutingExtension",
@@ -2116,7 +2170,7 @@
             ],
             "description": "Symfony Twig Bridge",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-01-26 21:33:04"
         },
         {
             "name": "symfony/validator",
@@ -2354,7 +2408,8 @@
         "predis/predis": 20,
         "symfony/twig-bridge": 20,
         "twig/extensions": 20,
-        "propel/propel": 20
+        "propel/propel": 20,
+        "phing/phing": 20
     },
     "platform": [
 

@@ -22,7 +22,7 @@ class FieldsetLanguage extends Fieldset
     public function __construct ($attributes, ContainerInterface $container)
     {
         parent::__construct($attributes);
-        $this->languages = $container->getParameter('locales');
+        $this->languages = $container->getParameter('languages');
         $this->_attributes['repeat_min'] = count($this->languages);
         $this->_attributes['repeat_max'] = count($this->languages);
     }
