@@ -2,6 +2,7 @@
 
 namespace Gekosale\Plugin\Vat\Model\ORM\Map;
 
+use Gekosale\Plugin\Shop\Model\ORM\Map\ShopTableMap;
 use Gekosale\Plugin\Vat\Model\ORM\Vat;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery;
 use Propel\Runtime\Propel;
@@ -58,7 +59,7 @@ class VatTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -68,22 +69,27 @@ class VatTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the ID field
      */
-    const ID = 'vat.ID';
+    const COL_ID = 'vat.ID';
 
     /**
      * the column name for the VALUE field
      */
-    const VALUE = 'vat.VALUE';
+    const COL_VALUE = 'vat.VALUE';
 
     /**
-     * the column name for the ADD_DATE field
+     * the column name for the CREATED_AT field
      */
-    const ADD_DATE = 'vat.ADD_DATE';
+    const COL_CREATED_AT = 'vat.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'vat.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
@@ -97,12 +103,12 @@ class VatTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Value', 'AddDate', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'value', 'addDate', ),
-        self::TYPE_COLNAME       => array(VatTableMap::ID, VatTableMap::VALUE, VatTableMap::ADD_DATE, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'VALUE', 'ADD_DATE', ),
-        self::TYPE_FIELDNAME     => array('id', 'value', 'add_date', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'Value', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'value', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(VatTableMap::COL_ID, VatTableMap::COL_VALUE, VatTableMap::COL_CREATED_AT, VatTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_VALUE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'value', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,12 +118,12 @@ class VatTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Value' => 1, 'AddDate' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'value' => 1, 'addDate' => 2, ),
-        self::TYPE_COLNAME       => array(VatTableMap::ID => 0, VatTableMap::VALUE => 1, VatTableMap::ADD_DATE => 2, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'VALUE' => 1, 'ADD_DATE' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'value' => 1, 'add_date' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Value' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'value' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
+        self::TYPE_COLNAME       => array(VatTableMap::COL_ID => 0, VatTableMap::COL_VALUE => 1, VatTableMap::COL_CREATED_AT => 2, VatTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_VALUE' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'value' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -138,7 +144,8 @@ class VatTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('VALUE', 'Value', 'DECIMAL', true, 5, 0);
-        $this->addColumn('ADD_DATE', 'AddDate', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -146,7 +153,8 @@ class VatTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('VatTranslation', '\\Gekosale\\Plugin\\Vat\\Model\\ORM\\VatTranslation', RelationMap::ONE_TO_MANY, array('id' => 'vat_id', ), 'CASCADE', null, 'VatTranslations');
+        $this->addRelation('Product', '\\Gekosale\\Plugin\\Product\\Model\\ORM\\Product', RelationMap::ONE_TO_MANY, array('id' => 'vat_id', ), null, null, 'Products');
+        $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::ONE_TO_MANY, array('id' => 'default_vat_id', ), 'SET NULL', null, 'Shops');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to vat     * by a foreign key with ON DELETE CASCADE
@@ -155,7 +163,7 @@ class VatTableMap extends TableMap
     {
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-                VatTranslationTableMap::clearInstancePool();
+                ShopTableMap::clearInstancePool();
             }
 
     /**
@@ -296,13 +304,15 @@ class VatTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(VatTableMap::ID);
-            $criteria->addSelectColumn(VatTableMap::VALUE);
-            $criteria->addSelectColumn(VatTableMap::ADD_DATE);
+            $criteria->addSelectColumn(VatTableMap::COL_ID);
+            $criteria->addSelectColumn(VatTableMap::COL_VALUE);
+            $criteria->addSelectColumn(VatTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(VatTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.VALUE');
-            $criteria->addSelectColumn($alias . '.ADD_DATE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 
@@ -354,7 +364,7 @@ class VatTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(VatTableMap::DATABASE_NAME);
-            $criteria->add(VatTableMap::ID, (array) $values, Criteria::IN);
+            $criteria->add(VatTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = VatQuery::create()->mergeWith($criteria);
@@ -400,8 +410,8 @@ class VatTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Vat object
         }
 
-        if ($criteria->containsKey(VatTableMap::ID) && $criteria->keyContainsValue(VatTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.VatTableMap::ID.')');
+        if ($criteria->containsKey(VatTableMap::COL_ID) && $criteria->keyContainsValue(VatTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.VatTableMap::COL_ID.')');
         }
 
 

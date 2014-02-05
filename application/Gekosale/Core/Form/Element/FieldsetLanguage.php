@@ -22,18 +22,18 @@ class FieldsetLanguage extends Fieldset
     public function __construct ($attributes, ContainerInterface $container)
     {
         parent::__construct($attributes);
-        $this->languages = $container->getParameter('languages');
-        $this->_attributes['repeat_min'] = count($this->languages);
-        $this->_attributes['repeat_max'] = count($this->languages);
+        $this->locales = $container->getParameter('locales');
+        $this->_attributes['repeat_min'] = count($this->locales);
+        $this->_attributes['repeat_max'] = count($this->locales);
     }
 
     protected function _FormatLanguages_JS ()
     {
         $options = Array();
-        foreach ($this->languages as $id => $name) {
-            $value = addslashes($id);
+        foreach ($this->locales as $locale => $name) {
+            $value = addslashes($locale);
             $label = addslashes($name);
-            $flag = addslashes($id) . '.png';
+            $flag = addslashes($locale) . '.png';
             $options[] = "{sValue: '{$value}', sLabel: '{$label}',sFlag: '{$flag}' }";
         }
         

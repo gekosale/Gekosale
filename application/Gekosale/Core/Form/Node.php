@@ -391,9 +391,17 @@ abstract class Node
         return true;
     }
 
+    protected function _IsLocale ($locale)
+    {
+        $data = \Locale::parseLocale($locale);
+        return isset($data['region']);
+    }
+
     protected function _IsIterated ($array)
     {
-        if (is_numeric(key($array)) or substr(key($array), 0, 4) == 'new-') {
+        $islocale = $this->_IsLocale(key($array));
+        
+        if (is_numeric(key($array)) or substr(key($array), 0, 4) == 'new-' or $islocale) {
             return true;
         }
         

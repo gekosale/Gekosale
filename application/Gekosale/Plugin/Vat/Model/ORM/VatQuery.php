@@ -1,21 +1,21 @@
 <?php
 
-/**
- * Gekosale, Open Source E-Commerce Solution
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Plugin
- * @subpackage  Gekosale\Plugin\Vat
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
- */
 namespace Gekosale\Plugin\Vat\Model\ORM;
 
 use Gekosale\Plugin\Vat\Model\ORM\Base\VatQuery as BaseVatQuery;
 
+
+/**
+ * Skeleton subclass for performing query and update operations on the 'vat' table.
+ *
+ * 
+ *
+ * You should add additional methods to this class to meet the
+ * application requirements.  This class will only be generated as
+ * long as it does not already exist in the output directory.
+ *
+ */
 class VatQuery extends BaseVatQuery
 {
-}
+
+} // VatQuery

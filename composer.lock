@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ffb0c9036b11ce8853b037fefc13d196",
+    "hash": "1d6f813064a49b34d818b4fdd1e24177",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -581,48 +581,6 @@
             "time": "2013-01-12 18:59:04"
         },
         {
-            "name": "hipchat/hipchat-php",
-            "version": "v1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/hipchat/hipchat-php.git",
-                "reference": "49e62eb4dbb651af2547795efd777e8eb737d755"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/hipchat/hipchat-php/zipball/49e62eb4dbb651af2547795efd777e8eb737d755",
-                "reference": "49e62eb4dbb651af2547795efd777e8eb737d755",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "HipChat": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "HipChat",
-                    "email": "support@hipchat.com",
-                    "homepage": "https://www.hipchat.com",
-                    "role": "Company"
-                }
-            ],
-            "description": "PHP library for HipChat",
-            "homepage": "http://github.com/hipchat/hipchat-php",
-            "keywords": [
-                "hipchat"
-            ],
-            "time": "2012-11-30 16:47:14"
-        },
-        {
             "name": "kriswallsmith/assetic",
             "version": "v1.1.2",
             "source": {
@@ -867,58 +825,6 @@
                 "templating"
             ],
             "time": "2013-12-31 00:08:21"
-        },
-        {
-            "name": "phing/phing",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phingofficial/phing.git",
-                "reference": "2b10760d24d442092b2f7dd6982066f9981c5217"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/2b10760d24d442092b2f7dd6982066f9981c5217",
-                "reference": "2b10760d24d442092b2f7dd6982066f9981c5217",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "bin": [
-                "bin/phing"
-            ],
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "classes/phing/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "classes"
-            ],
-            "license": [
-                "LGPL3"
-            ],
-            "authors": [
-                {
-                    "name": "Michiel Rook",
-                    "email": "mrook@php.net"
-                },
-                {
-                    "name": "Phing Community",
-                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
-                }
-            ],
-            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
-            "homepage": "http://www.phing.info/",
-            "keywords": [
-                "build",
-                "task",
-                "tool"
-            ],
-            "time": "2014-02-01 12:34:43"
         },
         {
             "name": "predis/predis",
@@ -1180,12 +1086,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "80068b6e36cae1044fa4ed5ef09e13f65703fb39"
+                "reference": "b93de9e62eae87ac734fd56da2088f0494ab0214"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/80068b6e36cae1044fa4ed5ef09e13f65703fb39",
-                "reference": "80068b6e36cae1044fa4ed5ef09e13f65703fb39",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/b93de9e62eae87ac734fd56da2088f0494ab0214",
+                "reference": "b93de9e62eae87ac734fd56da2088f0494ab0214",
                 "shasum": ""
             },
             "require": {
@@ -1224,7 +1130,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-24 14:36:08"
+            "time": "2014-02-03 17:15:33"
         },
         {
             "name": "symfony/debug",
@@ -1596,12 +1502,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "baa7bf261230ce946e20680b55e9cb2e29ec5eac"
+                "reference": "8da2b0f1908be2490ca553dd5acbc6787c127051"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/baa7bf261230ce946e20680b55e9cb2e29ec5eac",
-                "reference": "baa7bf261230ce946e20680b55e9cb2e29ec5eac",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/8da2b0f1908be2490ca553dd5acbc6787c127051",
+                "reference": "8da2b0f1908be2490ca553dd5acbc6787c127051",
                 "shasum": ""
             },
             "require": {
@@ -1658,7 +1564,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-24 14:36:08"
+            "time": "2014-02-03 17:15:33"
         },
         {
             "name": "symfony/options-resolver",
@@ -2053,12 +1959,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "c9efc5d2cc0daf5c197895e7898c8732c9d301d6"
+                "reference": "b00fd07417e493e08488e87bcebeb9681fc7323b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/c9efc5d2cc0daf5c197895e7898c8732c9d301d6",
-                "reference": "c9efc5d2cc0daf5c197895e7898c8732c9d301d6",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/b00fd07417e493e08488e87bcebeb9681fc7323b",
+                "reference": "b00fd07417e493e08488e87bcebeb9681fc7323b",
                 "shasum": ""
             },
             "require": {
@@ -2099,7 +2005,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-24 14:36:08"
+            "time": "2014-02-03 17:15:33"
         },
         {
             "name": "symfony/twig-bridge",
@@ -2408,8 +2314,7 @@
         "predis/predis": 20,
         "symfony/twig-bridge": 20,
         "twig/extensions": 20,
-        "propel/propel": 20,
-        "phing/phing": 20
+        "propel/propel": 20
     },
     "platform": [
 

@@ -54,6 +54,11 @@ class Component extends ContainerAware
         return $this->container->get('request');
     }
 
+    protected function getDispatcher ()
+    {
+        return $this->container->get('dispatcher');
+    }
+
     protected function getModel ($class)
     {
         return $this->container->get('resolver.model')->create($class);

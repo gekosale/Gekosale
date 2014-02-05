@@ -4,6 +4,8 @@ namespace Gekosale\Plugin\Vat\Model\ORM\Base;
 
 use \Exception;
 use \PDO;
+use Gekosale\Plugin\Product\Model\ORM\Product;
+use Gekosale\Plugin\Shop\Model\ORM\Shop;
 use Gekosale\Plugin\Vat\Model\ORM\Vat as ChildVat;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery as ChildVatQuery;
 use Gekosale\Plugin\Vat\Model\ORM\Map\VatTableMap;
@@ -23,30 +25,38 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildVatQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildVatQuery orderByValue($order = Criteria::ASC) Order by the value column
- * @method     ChildVatQuery orderByAddDate($order = Criteria::ASC) Order by the add_date column
+ * @method     ChildVatQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildVatQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildVatQuery groupById() Group by the id column
  * @method     ChildVatQuery groupByValue() Group by the value column
- * @method     ChildVatQuery groupByAddDate() Group by the add_date column
+ * @method     ChildVatQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildVatQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildVatQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildVatQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildVatQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildVatQuery leftJoinVatTranslation($relationAlias = null) Adds a LEFT JOIN clause to the query using the VatTranslation relation
- * @method     ChildVatQuery rightJoinVatTranslation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the VatTranslation relation
- * @method     ChildVatQuery innerJoinVatTranslation($relationAlias = null) Adds a INNER JOIN clause to the query using the VatTranslation relation
+ * @method     ChildVatQuery leftJoinProduct($relationAlias = null) Adds a LEFT JOIN clause to the query using the Product relation
+ * @method     ChildVatQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
+ * @method     ChildVatQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
+ *
+ * @method     ChildVatQuery leftJoinShop($relationAlias = null) Adds a LEFT JOIN clause to the query using the Shop relation
+ * @method     ChildVatQuery rightJoinShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Shop relation
+ * @method     ChildVatQuery innerJoinShop($relationAlias = null) Adds a INNER JOIN clause to the query using the Shop relation
  *
  * @method     ChildVat findOne(ConnectionInterface $con = null) Return the first ChildVat matching the query
  * @method     ChildVat findOneOrCreate(ConnectionInterface $con = null) Return the first ChildVat matching the query, or a new ChildVat object populated from the query conditions when no match is found
  *
  * @method     ChildVat findOneById(int $id) Return the first ChildVat filtered by the id column
  * @method     ChildVat findOneByValue(string $value) Return the first ChildVat filtered by the value column
- * @method     ChildVat findOneByAddDate(string $add_date) Return the first ChildVat filtered by the add_date column
+ * @method     ChildVat findOneByCreatedAt(string $created_at) Return the first ChildVat filtered by the created_at column
+ * @method     ChildVat findOneByUpdatedAt(string $updated_at) Return the first ChildVat filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildVat objects filtered by the id column
  * @method     array findByValue(string $value) Return ChildVat objects filtered by the value column
- * @method     array findByAddDate(string $add_date) Return ChildVat objects filtered by the add_date column
+ * @method     array findByCreatedAt(string $created_at) Return ChildVat objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildVat objects filtered by the updated_at column
  *
  */
 abstract class VatQuery extends ModelCriteria
@@ -135,7 +145,7 @@ abstract class VatQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, VALUE, ADD_DATE FROM vat WHERE ID = :p0';
+        $sql = 'SELECT ID, VALUE, CREATED_AT, UPDATED_AT FROM vat WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -208,7 +218,7 @@ abstract class VatQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(VatTableMap::ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(VatTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -221,7 +231,7 @@ abstract class VatQuery extends ModelCriteria
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(VatTableMap::ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(VatTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -247,11 +257,11 @@ abstract class VatQuery extends ModelCriteria
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(VatTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(VatTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(VatTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(VatTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -262,7 +272,7 @@ abstract class VatQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(VatTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -288,11 +298,11 @@ abstract class VatQuery extends ModelCriteria
         if (is_array($value)) {
             $useMinMax = false;
             if (isset($value['min'])) {
-                $this->addUsingAlias(VatTableMap::VALUE, $value['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(VatTableMap::COL_VALUE, $value['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($value['max'])) {
-                $this->addUsingAlias(VatTableMap::VALUE, $value['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(VatTableMap::COL_VALUE, $value['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -303,20 +313,20 @@ abstract class VatQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatTableMap::VALUE, $value, $comparison);
+        return $this->addUsingAlias(VatTableMap::COL_VALUE, $value, $comparison);
     }
 
     /**
-     * Filter the query on the add_date column
+     * Filter the query on the created_at column
      *
      * Example usage:
      * <code>
-     * $query->filterByAddDate('2011-03-14'); // WHERE add_date = '2011-03-14'
-     * $query->filterByAddDate('now'); // WHERE add_date = '2011-03-14'
-     * $query->filterByAddDate(array('max' => 'yesterday')); // WHERE add_date > '2011-03-13'
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
      * </code>
      *
-     * @param     mixed $addDate The value to use as filter.
+     * @param     mixed $createdAt The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -326,16 +336,16 @@ abstract class VatQuery extends ModelCriteria
      *
      * @return ChildVatQuery The current query, for fluid interface
      */
-    public function filterByAddDate($addDate = null, $comparison = null)
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
-        if (is_array($addDate)) {
+        if (is_array($createdAt)) {
             $useMinMax = false;
-            if (isset($addDate['min'])) {
-                $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate['min'], Criteria::GREATER_EQUAL);
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(VatTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($addDate['max'])) {
-                $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate['max'], Criteria::LESS_EQUAL);
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(VatTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -346,44 +356,87 @@ abstract class VatQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(VatTableMap::ADD_DATE, $addDate, $comparison);
+        return $this->addUsingAlias(VatTableMap::COL_CREATED_AT, $createdAt, $comparison);
     }
 
     /**
-     * Filter the query by a related \Gekosale\Plugin\Vat\Model\ORM\VatTranslation object
+     * Filter the query on the updated_at column
      *
-     * @param \Gekosale\Plugin\Vat\Model\ORM\VatTranslation|ObjectCollection $vatTranslation  the related object to use as filter
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildVatQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(VatTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(VatTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(VatTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Gekosale\Plugin\Product\Model\ORM\Product object
+     *
+     * @param \Gekosale\Plugin\Product\Model\ORM\Product|ObjectCollection $product  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildVatQuery The current query, for fluid interface
      */
-    public function filterByVatTranslation($vatTranslation, $comparison = null)
+    public function filterByProduct($product, $comparison = null)
     {
-        if ($vatTranslation instanceof \Gekosale\Plugin\Vat\Model\ORM\VatTranslation) {
+        if ($product instanceof \Gekosale\Plugin\Product\Model\ORM\Product) {
             return $this
-                ->addUsingAlias(VatTableMap::ID, $vatTranslation->getVatId(), $comparison);
-        } elseif ($vatTranslation instanceof ObjectCollection) {
+                ->addUsingAlias(VatTableMap::COL_ID, $product->getVatId(), $comparison);
+        } elseif ($product instanceof ObjectCollection) {
             return $this
-                ->useVatTranslationQuery()
-                ->filterByPrimaryKeys($vatTranslation->getPrimaryKeys())
+                ->useProductQuery()
+                ->filterByPrimaryKeys($product->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByVatTranslation() only accepts arguments of type \Gekosale\Plugin\Vat\Model\ORM\VatTranslation or Collection');
+            throw new PropelException('filterByProduct() only accepts arguments of type \Gekosale\Plugin\Product\Model\ORM\Product or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the VatTranslation relation
+     * Adds a JOIN clause to the query using the Product relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ChildVatQuery The current query, for fluid interface
      */
-    public function joinVatTranslation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('VatTranslation');
+        $relationMap = $tableMap->getRelation('Product');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -398,14 +451,14 @@ abstract class VatQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'VatTranslation');
+            $this->addJoinObject($join, 'Product');
         }
 
         return $this;
     }
 
     /**
-     * Use the VatTranslation relation VatTranslation object
+     * Use the Product relation Product object
      *
      * @see useQuery()
      *
@@ -413,13 +466,86 @@ abstract class VatQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery A secondary query class using the current class as primary query
+     * @return   \Gekosale\Plugin\Product\Model\ORM\ProductQuery A secondary query class using the current class as primary query
      */
-    public function useVatTranslationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinVatTranslation($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'VatTranslation', '\Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery');
+            ->joinProduct($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Product', '\Gekosale\Plugin\Product\Model\ORM\ProductQuery');
+    }
+
+    /**
+     * Filter the query by a related \Gekosale\Plugin\Shop\Model\ORM\Shop object
+     *
+     * @param \Gekosale\Plugin\Shop\Model\ORM\Shop|ObjectCollection $shop  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildVatQuery The current query, for fluid interface
+     */
+    public function filterByShop($shop, $comparison = null)
+    {
+        if ($shop instanceof \Gekosale\Plugin\Shop\Model\ORM\Shop) {
+            return $this
+                ->addUsingAlias(VatTableMap::COL_ID, $shop->getDefaultVatId(), $comparison);
+        } elseif ($shop instanceof ObjectCollection) {
+            return $this
+                ->useShopQuery()
+                ->filterByPrimaryKeys($shop->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByShop() only accepts arguments of type \Gekosale\Plugin\Shop\Model\ORM\Shop or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Shop relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildVatQuery The current query, for fluid interface
+     */
+    public function joinShop($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Shop');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Shop');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Shop relation Shop object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Shop\Model\ORM\ShopQuery A secondary query class using the current class as primary query
+     */
+    public function useShopQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinShop($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Shop', '\Gekosale\Plugin\Shop\Model\ORM\ShopQuery');
     }
 
     /**
@@ -432,7 +558,7 @@ abstract class VatQuery extends ModelCriteria
     public function prune($vat = null)
     {
         if ($vat) {
-            $this->addUsingAlias(VatTableMap::ID, $vat->getId(), Criteria::NOT_EQUAL);
+            $this->addUsingAlias(VatTableMap::COL_ID, $vat->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;

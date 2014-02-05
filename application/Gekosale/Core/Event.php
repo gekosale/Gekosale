@@ -13,15 +13,16 @@
  */
 namespace Gekosale\Core;
 
-use Gekosale\Core\Event\Listener\TemplateListener;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Symfony\Component\EventDispatcher\Event as BaseEvent;
 
 class Event extends ContainerAwareEventDispatcher
 {
 
     protected $container;
+
 
     public function __construct (ContainerInterface $container)
     {
@@ -32,6 +33,9 @@ class Event extends ContainerAwareEventDispatcher
     public function addSubscribers ()
     {
         $this->addSubscriber(new RouterListener($this->container->get('router')->getMatcher()));
-        $this->addSubscriber(new TemplateListener());
+        
+        $this->addSubscriber(new Event\Subscriber\TemplateSubscriber());
+        
+        $this->addSubscriber(new Event\Subscriber\VatSubscriber());
     }
 }

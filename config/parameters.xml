@@ -35,9 +35,9 @@
             <parameter key="matcher_cache_class">GekosaleUrlMatcher</parameter>
         </parameter>
         
-        <parameter key="languages" type="collection">
-            <parameter key="1">Polski</parameter>
-            <parameter key="2">English</parameter>
+        <parameter key="locales" type="collection">
+            <parameter key="pl_PL">Polski</parameter>
+            <parameter key="en_EN">English</parameter>
         </parameter>
 
         <parameter key="session.config" type="collection">

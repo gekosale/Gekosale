@@ -5,10 +5,14 @@ namespace Gekosale\Plugin\Vat\Model\ORM\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Gekosale\Plugin\Product\Model\ORM\Product as ChildProduct;
+use Gekosale\Plugin\Product\Model\ORM\ProductQuery;
+use Gekosale\Plugin\Product\Model\ORM\Base\Product;
+use Gekosale\Plugin\Shop\Model\ORM\Shop as ChildShop;
+use Gekosale\Plugin\Shop\Model\ORM\ShopQuery;
+use Gekosale\Plugin\Shop\Model\ORM\Base\Shop;
 use Gekosale\Plugin\Vat\Model\ORM\Vat as ChildVat;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery as ChildVatQuery;
-use Gekosale\Plugin\Vat\Model\ORM\VatTranslation as ChildVatTranslation;
-use Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery as ChildVatTranslationQuery;
 use Gekosale\Plugin\Vat\Model\ORM\Map\VatTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -71,17 +75,28 @@ abstract class Vat implements ActiveRecordInterface
     protected $value;
 
     /**
-     * The value for the add_date field.
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * The value for the created_at field.
      * @var        string
      */
-    protected $add_date;
+    protected $created_at;
 
     /**
-     * @var        ObjectCollection|ChildVatTranslation[] Collection to store aggregation of ChildVatTranslation objects.
+     * The value for the updated_at field.
+     * @var        string
      */
-    protected $collVatTranslations;
-    protected $collVatTranslationsPartial;
+    protected $updated_at;
+
+    /**
+     * @var        ObjectCollection|ChildProduct[] Collection to store aggregation of ChildProduct objects.
+     */
+    protected $collProducts;
+    protected $collProductsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildShop[] Collection to store aggregation of ChildShop objects.
+     */
+    protected $collShops;
+    protected $collShopsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -95,7 +110,13 @@ abstract class Vat implements ActiveRecordInterface
      * An array of objects scheduled for deletion.
      * @var ObjectCollection
      */
-    protected $vatTranslationsScheduledForDeletion = null;
+    protected $productsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $shopsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -391,7 +412,7 @@ abstract class Vat implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [add_date] column value.
+     * Get the [optionally formatted] temporal [created_at] column value.
      * 
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -401,12 +422,32 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getAddDate($format = NULL)
+    public function getCreatedAt($format = NULL)
     {
         if ($format === null) {
-            return $this->add_date;
+            return $this->created_at;
         } else {
-            return $this->add_date instanceof \DateTime ? $this->add_date->format($format) : null;
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
         }
     }
 
@@ -424,7 +465,7 @@ abstract class Vat implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[VatTableMap::ID] = true;
+            $this->modifiedColumns[VatTableMap::COL_ID] = true;
         }
 
 
@@ -445,7 +486,7 @@ abstract class Vat implements ActiveRecordInterface
 
         if ($this->value !== $v) {
             $this->value = $v;
-            $this->modifiedColumns[VatTableMap::VALUE] = true;
+            $this->modifiedColumns[VatTableMap::COL_VALUE] = true;
         }
 
 
@@ -453,25 +494,46 @@ abstract class Vat implements ActiveRecordInterface
     } // setValue()
 
     /**
-     * Sets the value of [add_date] column to a normalized version of the date/time value specified.
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      * 
      * @param      mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
      * @return   \Gekosale\Plugin\Vat\Model\ORM\Vat The current object (for fluent API support)
      */
-    public function setAddDate($v)
+    public function setCreatedAt($v)
     {
         $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->add_date !== null || $dt !== null) {
-            if ($dt !== $this->add_date) {
-                $this->add_date = $dt;
-                $this->modifiedColumns[VatTableMap::ADD_DATE] = true;
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[VatTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
 
         return $this;
-    } // setAddDate()
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Vat\Model\ORM\Vat The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[VatTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -520,11 +582,17 @@ abstract class Vat implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : VatTableMap::translateFieldName('Value', TableMap::TYPE_PHPNAME, $indexType)];
             $this->value = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : VatTableMap::translateFieldName('AddDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : VatTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->add_date = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : VatTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -533,7 +601,7 @@ abstract class Vat implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = VatTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = VatTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Vat\Model\ORM\Vat object", 0, $e);
@@ -594,7 +662,9 @@ abstract class Vat implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collVatTranslations = null;
+            $this->collProducts = null;
+
+            $this->collShops = null;
 
         } // if (deep)
     }
@@ -718,17 +788,35 @@ abstract class Vat implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->vatTranslationsScheduledForDeletion !== null) {
-                if (!$this->vatTranslationsScheduledForDeletion->isEmpty()) {
-                    \Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery::create()
-                        ->filterByPrimaryKeys($this->vatTranslationsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->productsScheduledForDeletion !== null) {
+                if (!$this->productsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Product\Model\ORM\ProductQuery::create()
+                        ->filterByPrimaryKeys($this->productsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->vatTranslationsScheduledForDeletion = null;
+                    $this->productsScheduledForDeletion = null;
                 }
             }
 
-                if ($this->collVatTranslations !== null) {
-            foreach ($this->collVatTranslations as $referrerFK) {
+                if ($this->collProducts !== null) {
+            foreach ($this->collProducts as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->shopsScheduledForDeletion !== null) {
+                if (!$this->shopsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->shopsScheduledForDeletion as $shop) {
+                        // need to save related object because we set the relation to null
+                        $shop->save($con);
+                    }
+                    $this->shopsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collShops !== null) {
+            foreach ($this->collShops as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -755,20 +843,23 @@ abstract class Vat implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[VatTableMap::ID] = true;
+        $this->modifiedColumns[VatTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . VatTableMap::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . VatTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(VatTableMap::ID)) {
+        if ($this->isColumnModified(VatTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(VatTableMap::VALUE)) {
+        if ($this->isColumnModified(VatTableMap::COL_VALUE)) {
             $modifiedColumns[':p' . $index++]  = 'VALUE';
         }
-        if ($this->isColumnModified(VatTableMap::ADD_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'ADD_DATE';
+        if ($this->isColumnModified(VatTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(VatTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
@@ -787,8 +878,11 @@ abstract class Vat implements ActiveRecordInterface
                     case 'VALUE':                        
                         $stmt->bindValue($identifier, $this->value, PDO::PARAM_STR);
                         break;
-                    case 'ADD_DATE':                        
-                        $stmt->bindValue($identifier, $this->add_date ? $this->add_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -859,7 +953,10 @@ abstract class Vat implements ActiveRecordInterface
                 return $this->getValue();
                 break;
             case 2:
-                return $this->getAddDate();
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -882,7 +979,7 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = true)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['Vat'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -892,7 +989,8 @@ abstract class Vat implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getValue(),
-            $keys[2] => $this->getAddDate(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -900,8 +998,11 @@ abstract class Vat implements ActiveRecordInterface
         }
         
         if ($includeForeignObjects) {
-            if (null !== $this->collVatTranslations) {
-                $result['VatTranslations'] = $this->collVatTranslations->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collProducts) {
+                $result['Products'] = $this->collProducts->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collShops) {
+                $result['Shops'] = $this->collShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -944,7 +1045,10 @@ abstract class Vat implements ActiveRecordInterface
                 $this->setValue($value);
                 break;
             case 2:
-                $this->setAddDate($value);
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -972,7 +1076,8 @@ abstract class Vat implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setValue($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setAddDate($arr[$keys[2]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -984,9 +1089,10 @@ abstract class Vat implements ActiveRecordInterface
     {
         $criteria = new Criteria(VatTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(VatTableMap::ID)) $criteria->add(VatTableMap::ID, $this->id);
-        if ($this->isColumnModified(VatTableMap::VALUE)) $criteria->add(VatTableMap::VALUE, $this->value);
-        if ($this->isColumnModified(VatTableMap::ADD_DATE)) $criteria->add(VatTableMap::ADD_DATE, $this->add_date);
+        if ($this->isColumnModified(VatTableMap::COL_ID)) $criteria->add(VatTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(VatTableMap::COL_VALUE)) $criteria->add(VatTableMap::COL_VALUE, $this->value);
+        if ($this->isColumnModified(VatTableMap::COL_CREATED_AT)) $criteria->add(VatTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(VatTableMap::COL_UPDATED_AT)) $criteria->add(VatTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -997,12 +1103,14 @@ abstract class Vat implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether or not they have been modified.
      *
+     * @throws LogicException if no primary key is defined
+     *
      * @return Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(VatTableMap::DATABASE_NAME);
-        $criteria->add(VatTableMap::ID, $this->id);
+        $criteria->add(VatTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1051,16 +1159,23 @@ abstract class Vat implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setValue($this->getValue());
-        $copyObj->setAddDate($this->getAddDate());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getVatTranslations() as $relObj) {
+            foreach ($this->getProducts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addVatTranslation($relObj->copy($deepCopy));
+                    $copyObj->addProduct($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getShops() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addShop($relObj->copy($deepCopy));
                 }
             }
 
@@ -1105,37 +1220,40 @@ abstract class Vat implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('VatTranslation' == $relationName) {
-            return $this->initVatTranslations();
+        if ('Product' == $relationName) {
+            return $this->initProducts();
+        }
+        if ('Shop' == $relationName) {
+            return $this->initShops();
         }
     }
 
     /**
-     * Clears out the collVatTranslations collection
+     * Clears out the collProducts collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addVatTranslations()
+     * @see        addProducts()
      */
-    public function clearVatTranslations()
+    public function clearProducts()
     {
-        $this->collVatTranslations = null; // important to set this to NULL since that means it is uninitialized
+        $this->collProducts = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collVatTranslations collection loaded partially.
+     * Reset is the collProducts collection loaded partially.
      */
-    public function resetPartialVatTranslations($v = true)
+    public function resetPartialProducts($v = true)
     {
-        $this->collVatTranslationsPartial = $v;
+        $this->collProductsPartial = $v;
     }
 
     /**
-     * Initializes the collVatTranslations collection.
+     * Initializes the collProducts collection.
      *
-     * By default this just sets the collVatTranslations collection to an empty array (like clearcollVatTranslations());
+     * By default this just sets the collProducts collection to an empty array (like clearcollProducts());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1144,17 +1262,17 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initVatTranslations($overrideExisting = true)
+    public function initProducts($overrideExisting = true)
     {
-        if (null !== $this->collVatTranslations && !$overrideExisting) {
+        if (null !== $this->collProducts && !$overrideExisting) {
             return;
         }
-        $this->collVatTranslations = new ObjectCollection();
-        $this->collVatTranslations->setModel('\Gekosale\Plugin\Vat\Model\ORM\VatTranslation');
+        $this->collProducts = new ObjectCollection();
+        $this->collProducts->setModel('\Gekosale\Plugin\Product\Model\ORM\Product');
     }
 
     /**
-     * Gets an array of ChildVatTranslation objects which contain a foreign key that references this object.
+     * Gets an array of ChildProduct objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1164,109 +1282,109 @@ abstract class Vat implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildVatTranslation[] List of ChildVatTranslation objects
+     * @return Collection|ChildProduct[] List of ChildProduct objects
      * @throws PropelException
      */
-    public function getVatTranslations($criteria = null, ConnectionInterface $con = null)
+    public function getProducts($criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collVatTranslationsPartial && !$this->isNew();
-        if (null === $this->collVatTranslations || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collVatTranslations) {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
                 // return empty collection
-                $this->initVatTranslations();
+                $this->initProducts();
             } else {
-                $collVatTranslations = ChildVatTranslationQuery::create(null, $criteria)
+                $collProducts = ProductQuery::create(null, $criteria)
                     ->filterByVat($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collVatTranslationsPartial && count($collVatTranslations)) {
-                        $this->initVatTranslations(false);
+                    if (false !== $this->collProductsPartial && count($collProducts)) {
+                        $this->initProducts(false);
 
-                        foreach ($collVatTranslations as $obj) {
-                            if (false == $this->collVatTranslations->contains($obj)) {
-                                $this->collVatTranslations->append($obj);
+                        foreach ($collProducts as $obj) {
+                            if (false == $this->collProducts->contains($obj)) {
+                                $this->collProducts->append($obj);
                             }
                         }
 
-                        $this->collVatTranslationsPartial = true;
+                        $this->collProductsPartial = true;
                     }
 
-                    reset($collVatTranslations);
+                    reset($collProducts);
 
-                    return $collVatTranslations;
+                    return $collProducts;
                 }
 
-                if ($partial && $this->collVatTranslations) {
-                    foreach ($this->collVatTranslations as $obj) {
+                if ($partial && $this->collProducts) {
+                    foreach ($this->collProducts as $obj) {
                         if ($obj->isNew()) {
-                            $collVatTranslations[] = $obj;
+                            $collProducts[] = $obj;
                         }
                     }
                 }
 
-                $this->collVatTranslations = $collVatTranslations;
-                $this->collVatTranslationsPartial = false;
+                $this->collProducts = $collProducts;
+                $this->collProductsPartial = false;
             }
         }
 
-        return $this->collVatTranslations;
+        return $this->collProducts;
     }
 
     /**
-     * Sets a collection of VatTranslation objects related by a one-to-many relationship
+     * Sets a collection of Product objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $vatTranslations A Propel collection.
+     * @param      Collection $products A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return   ChildVat The current object (for fluent API support)
      */
-    public function setVatTranslations(Collection $vatTranslations, ConnectionInterface $con = null)
+    public function setProducts(Collection $products, ConnectionInterface $con = null)
     {
-        $vatTranslationsToDelete = $this->getVatTranslations(new Criteria(), $con)->diff($vatTranslations);
+        $productsToDelete = $this->getProducts(new Criteria(), $con)->diff($products);
 
         
-        $this->vatTranslationsScheduledForDeletion = $vatTranslationsToDelete;
+        $this->productsScheduledForDeletion = $productsToDelete;
 
-        foreach ($vatTranslationsToDelete as $vatTranslationRemoved) {
-            $vatTranslationRemoved->setVat(null);
+        foreach ($productsToDelete as $productRemoved) {
+            $productRemoved->setVat(null);
         }
 
-        $this->collVatTranslations = null;
-        foreach ($vatTranslations as $vatTranslation) {
-            $this->addVatTranslation($vatTranslation);
+        $this->collProducts = null;
+        foreach ($products as $product) {
+            $this->addProduct($product);
         }
 
-        $this->collVatTranslations = $vatTranslations;
-        $this->collVatTranslationsPartial = false;
+        $this->collProducts = $products;
+        $this->collProductsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related VatTranslation objects.
+     * Returns the number of related Product objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related VatTranslation objects.
+     * @return int             Count of related Product objects.
      * @throws PropelException
      */
-    public function countVatTranslations(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countProducts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collVatTranslationsPartial && !$this->isNew();
-        if (null === $this->collVatTranslations || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collVatTranslations) {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getVatTranslations());
+                return count($this->getProducts());
             }
 
-            $query = ChildVatTranslationQuery::create(null, $criteria);
+            $query = ProductQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1276,53 +1394,53 @@ abstract class Vat implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collVatTranslations);
+        return count($this->collProducts);
     }
 
     /**
-     * Method called to associate a ChildVatTranslation object to this object
-     * through the ChildVatTranslation foreign key attribute.
+     * Method called to associate a ChildProduct object to this object
+     * through the ChildProduct foreign key attribute.
      *
-     * @param    ChildVatTranslation $l ChildVatTranslation
+     * @param    ChildProduct $l ChildProduct
      * @return   \Gekosale\Plugin\Vat\Model\ORM\Vat The current object (for fluent API support)
      */
-    public function addVatTranslation(ChildVatTranslation $l)
+    public function addProduct(ChildProduct $l)
     {
-        if ($this->collVatTranslations === null) {
-            $this->initVatTranslations();
-            $this->collVatTranslationsPartial = true;
+        if ($this->collProducts === null) {
+            $this->initProducts();
+            $this->collProductsPartial = true;
         }
 
-        if (!in_array($l, $this->collVatTranslations->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddVatTranslation($l);
+        if (!in_array($l, $this->collProducts->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProduct($l);
         }
 
         return $this;
     }
 
     /**
-     * @param VatTranslation $vatTranslation The vatTranslation object to add.
+     * @param Product $product The product object to add.
      */
-    protected function doAddVatTranslation($vatTranslation)
+    protected function doAddProduct($product)
     {
-        $this->collVatTranslations[]= $vatTranslation;
-        $vatTranslation->setVat($this);
+        $this->collProducts[]= $product;
+        $product->setVat($this);
     }
 
     /**
-     * @param  VatTranslation $vatTranslation The vatTranslation object to remove.
+     * @param  Product $product The product object to remove.
      * @return ChildVat The current object (for fluent API support)
      */
-    public function removeVatTranslation($vatTranslation)
+    public function removeProduct($product)
     {
-        if ($this->getVatTranslations()->contains($vatTranslation)) {
-            $this->collVatTranslations->remove($this->collVatTranslations->search($vatTranslation));
-            if (null === $this->vatTranslationsScheduledForDeletion) {
-                $this->vatTranslationsScheduledForDeletion = clone $this->collVatTranslations;
-                $this->vatTranslationsScheduledForDeletion->clear();
+        if ($this->getProducts()->contains($product)) {
+            $this->collProducts->remove($this->collProducts->search($product));
+            if (null === $this->productsScheduledForDeletion) {
+                $this->productsScheduledForDeletion = clone $this->collProducts;
+                $this->productsScheduledForDeletion->clear();
             }
-            $this->vatTranslationsScheduledForDeletion[]= clone $vatTranslation;
-            $vatTranslation->setVat(null);
+            $this->productsScheduledForDeletion[]= clone $product;
+            $product->setVat(null);
         }
 
         return $this;
@@ -1334,7 +1452,7 @@ abstract class Vat implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Vat is new, it will return
      * an empty collection; or if this Vat has previously
-     * been saved, it will retrieve related VatTranslations from storage.
+     * been saved, it will retrieve related Products from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1343,14 +1461,457 @@ abstract class Vat implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildVatTranslation[] List of ChildVatTranslation objects
+     * @return Collection|ChildProduct[] List of ChildProduct objects
      */
-    public function getVatTranslationsJoinLanguage($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProductsJoinAvailability($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildVatTranslationQuery::create(null, $criteria);
-        $query->joinWith('Language', $joinBehavior);
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('Availability', $joinBehavior);
 
-        return $this->getVatTranslations($query, $con);
+        return $this->getProducts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Products from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProductsJoinCurrencyRelatedByBuyCurrencyId($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('CurrencyRelatedByBuyCurrencyId', $joinBehavior);
+
+        return $this->getProducts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Products from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProductsJoinProducer($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('Producer', $joinBehavior);
+
+        return $this->getProducts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Products from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProductsJoinCurrencyRelatedBySellCurrencyId($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('CurrencyRelatedBySellCurrencyId', $joinBehavior);
+
+        return $this->getProducts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Products from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProductsJoinUnitMeasure($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('UnitMeasure', $joinBehavior);
+
+        return $this->getProducts($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Products from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildProduct[] List of ChildProduct objects
+     */
+    public function getProductsJoinTechnicalDataSet($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProductQuery::create(null, $criteria);
+        $query->joinWith('TechnicalDataSet', $joinBehavior);
+
+        return $this->getProducts($query, $con);
+    }
+
+    /**
+     * Clears out the collShops collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addShops()
+     */
+    public function clearShops()
+    {
+        $this->collShops = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collShops collection loaded partially.
+     */
+    public function resetPartialShops($v = true)
+    {
+        $this->collShopsPartial = $v;
+    }
+
+    /**
+     * Initializes the collShops collection.
+     *
+     * By default this just sets the collShops collection to an empty array (like clearcollShops());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initShops($overrideExisting = true)
+    {
+        if (null !== $this->collShops && !$overrideExisting) {
+            return;
+        }
+        $this->collShops = new ObjectCollection();
+        $this->collShops->setModel('\Gekosale\Plugin\Shop\Model\ORM\Shop');
+    }
+
+    /**
+     * Gets an array of ChildShop objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildVat is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildShop[] List of ChildShop objects
+     * @throws PropelException
+     */
+    public function getShops($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collShopsPartial && !$this->isNew();
+        if (null === $this->collShops || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collShops) {
+                // return empty collection
+                $this->initShops();
+            } else {
+                $collShops = ShopQuery::create(null, $criteria)
+                    ->filterByVat($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collShopsPartial && count($collShops)) {
+                        $this->initShops(false);
+
+                        foreach ($collShops as $obj) {
+                            if (false == $this->collShops->contains($obj)) {
+                                $this->collShops->append($obj);
+                            }
+                        }
+
+                        $this->collShopsPartial = true;
+                    }
+
+                    reset($collShops);
+
+                    return $collShops;
+                }
+
+                if ($partial && $this->collShops) {
+                    foreach ($this->collShops as $obj) {
+                        if ($obj->isNew()) {
+                            $collShops[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collShops = $collShops;
+                $this->collShopsPartial = false;
+            }
+        }
+
+        return $this->collShops;
+    }
+
+    /**
+     * Sets a collection of Shop objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $shops A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildVat The current object (for fluent API support)
+     */
+    public function setShops(Collection $shops, ConnectionInterface $con = null)
+    {
+        $shopsToDelete = $this->getShops(new Criteria(), $con)->diff($shops);
+
+        
+        $this->shopsScheduledForDeletion = $shopsToDelete;
+
+        foreach ($shopsToDelete as $shopRemoved) {
+            $shopRemoved->setVat(null);
+        }
+
+        $this->collShops = null;
+        foreach ($shops as $shop) {
+            $this->addShop($shop);
+        }
+
+        $this->collShops = $shops;
+        $this->collShopsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Shop objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Shop objects.
+     * @throws PropelException
+     */
+    public function countShops(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collShopsPartial && !$this->isNew();
+        if (null === $this->collShops || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collShops) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getShops());
+            }
+
+            $query = ShopQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByVat($this)
+                ->count($con);
+        }
+
+        return count($this->collShops);
+    }
+
+    /**
+     * Method called to associate a ChildShop object to this object
+     * through the ChildShop foreign key attribute.
+     *
+     * @param    ChildShop $l ChildShop
+     * @return   \Gekosale\Plugin\Vat\Model\ORM\Vat The current object (for fluent API support)
+     */
+    public function addShop(ChildShop $l)
+    {
+        if ($this->collShops === null) {
+            $this->initShops();
+            $this->collShopsPartial = true;
+        }
+
+        if (!in_array($l, $this->collShops->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddShop($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Shop $shop The shop object to add.
+     */
+    protected function doAddShop($shop)
+    {
+        $this->collShops[]= $shop;
+        $shop->setVat($this);
+    }
+
+    /**
+     * @param  Shop $shop The shop object to remove.
+     * @return ChildVat The current object (for fluent API support)
+     */
+    public function removeShop($shop)
+    {
+        if ($this->getShops()->contains($shop)) {
+            $this->collShops->remove($this->collShops->search($shop));
+            if (null === $this->shopsScheduledForDeletion) {
+                $this->shopsScheduledForDeletion = clone $this->collShops;
+                $this->shopsScheduledForDeletion->clear();
+            }
+            $this->shopsScheduledForDeletion[]= $shop;
+            $shop->setVat(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Shops from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildShop[] List of ChildShop objects
+     */
+    public function getShopsJoinContact($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ShopQuery::create(null, $criteria);
+        $query->joinWith('Contact', $joinBehavior);
+
+        return $this->getShops($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Shops from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildShop[] List of ChildShop objects
+     */
+    public function getShopsJoinCurrency($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ShopQuery::create(null, $criteria);
+        $query->joinWith('Currency', $joinBehavior);
+
+        return $this->getShops($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Shops from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildShop[] List of ChildShop objects
+     */
+    public function getShopsJoinOrderStatusGroups($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ShopQuery::create(null, $criteria);
+        $query->joinWith('OrderStatusGroups', $joinBehavior);
+
+        return $this->getShops($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Vat is new, it will return
+     * an empty collection; or if this Vat has previously
+     * been saved, it will retrieve related Shops from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Vat.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return Collection|ChildShop[] List of ChildShop objects
+     */
+    public function getShopsJoinCompany($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ShopQuery::create(null, $criteria);
+        $query->joinWith('Company', $joinBehavior);
+
+        return $this->getShops($query, $con);
     }
 
     /**
@@ -1360,7 +1921,8 @@ abstract class Vat implements ActiveRecordInterface
     {
         $this->id = null;
         $this->value = null;
-        $this->add_date = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1381,14 +1943,20 @@ abstract class Vat implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collVatTranslations) {
-                foreach ($this->collVatTranslations as $o) {
+            if ($this->collProducts) {
+                foreach ($this->collProducts as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collShops) {
+                foreach ($this->collShops as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collVatTranslations = null;
+        $this->collProducts = null;
+        $this->collShops = null;
     }
 
     /**

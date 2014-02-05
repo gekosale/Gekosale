@@ -25,7 +25,7 @@ class Form extends Component
      * 
      * @param   array   $options
      * 
-     * @return  Form\Element\Form
+     * @return  object  Gekosale\Core\Form\Element\Form
      */
     public function AddForm ($options)
     {
@@ -35,9 +35,9 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Rule\Required
      *
-     * @param   string   $errorMsg
+     * @param   string  $errorMsg
      *
-     * @return  Form\Rule\Required
+     * @return  object  Gekosale\Core\Form\Rule\Required
      */
     public function AddRuleRequired ($errorMsg)
     {
@@ -47,13 +47,13 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Rule\Unique
      *
-     * @param   string   $errorMsg
-     * @param   string   $table
-     * @param   string   $column
-     * @param   string   $valueProcessFunction
-     * @param   string   $exclude
+     * @param   string  $errorMsg
+     * @param   string  $table
+     * @param   string  $column
+     * @param   string  $valueProcessFunction
+     * @param   string  $exclude
      *
-     * @return  Form\Rule\Unique
+     * @return  object  Gekosale\Core\Form\Rule\Unique
      */
     public function AddRuleUnique ($errorMsg, $table, $column, $valueProcessFunction = null, $exclude = null)
     {
@@ -63,7 +63,7 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Filter\CommaToDotChanger
      *
-     * @return  Form\Filter\CommaToDotChanger
+     * @return  object  Gekosale\Core\Form\Filter\CommaToDotChanger
      */
     public function AddFilterCommaToDotChanger ()
     {
@@ -73,7 +73,7 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Filter\NoCode
      *
-     * @return  Form\Filter\NoCode
+     * @return  object  Gekosale\Core\Form\Filter\NoCode
      */
     public function AddFilterNoCode ()
     {
@@ -83,7 +83,7 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Filter\Trim
      *
-     * @return  Form\Filter\Trim
+     * @return  object  Gekosale\Core\Form\Filter\Trim
      */
     public function AddFilterTrim ()
     {
@@ -93,7 +93,7 @@ class Form extends Component
     /**
      * Shortcut for adding new Form\Filter\Secure
      *
-     * @return  Form\Filter\Secure
+     * @return  object  Gekosale\Core\Form\Filter\Secure
      */
     public function AddFilterSecure ()
     {

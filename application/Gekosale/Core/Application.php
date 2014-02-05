@@ -61,27 +61,43 @@ class Application
         $loader = new XmlFileLoader($this->container, new FileLocator(ROOTPATH . 'config'));
         $loader->load('config.xml');
         
-        /*
-         * Init Propel Connection Manager
-         */
+        $this->initPropelContainer();
+        
+        $this->container->set('urlgenerator', $this->container->get('router')->getGenerator());
+    }
+
+    /**
+     * Inits Propel service container and registers new database connection
+     *
+     * @return  void
+     */
+    protected function initPropelContainer ()
+    {
         $serviceContainer = Propel::getServiceContainer();
         $serviceContainer->setAdapterClass('default', 'mysql');
         $manager = new ConnectionManagerSingle();
         $manager->setConfiguration($this->container->getParameter('propel.config'));
         $serviceContainer->setConnectionManager('default', $manager);
+        
         $this->container->set('propel.connection', Propel::getReadConnection('default')->getWrappedConnection());
-        $this->container->set('urlgenerator', $this->container->get('router')->getGenerator());
     }
 
+    /**
+     * Resolves controller and dispatch the application
+     *
+     * @return  void
+     */
     public function run ()
     {
-        /*
-         * Resolve controller and dispatch application
-         */
         $this->response = $this->container->get('kernel')->handle($this->request);
         $this->response->send();
     }
 
+    /**
+     * Stops application and triggers termination events
+     *
+     * @return  void
+     */
     public function stop ()
     {
         $this->container->get('kernel')->terminate($this->request, $this->response);
@@ -89,16 +105,31 @@ class Application
         echo $event->getDuration();
     }
 
+    /**
+     * Initializes and returns new ContainerBuilder instance
+     *
+     * @return  object  Symfony\Component\DependencyInjection\ContainerBuilder
+     */
     protected function getContainerBuilder ()
     {
         return new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
     }
 
+    /**
+     * Returns container instance
+     *
+     * @return  object  $container
+     */
     public function getContainer ()
     {
         return $this->container;
     }
 
+    /**
+     * Returns all globally accessible kernel parameters
+     *
+     * @return  array
+     */
     protected function getKernelParameters ()
     {
         return array(

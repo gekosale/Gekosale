@@ -48,8 +48,7 @@ class Dump extends AbstractCommand
         $dumper = new PhpMatcherDumper($rootCollection);
         $this->getFilesystem()->dumpFile(ROOTPATH . 'var' . DS . 'GekosaleUrlMatcher.php', $dumper->dump(Array(
             'class' => 'GekosaleUrlMatcher'
-        //             'base_class' => 'Symfony\Component\Routing\Matcher\RedirectableUrlMatcher'
-        ));
+        )));
         
         $out = sprintf('%sFinished dumping routes.%s', PHP_EOL, PHP_EOL);
         

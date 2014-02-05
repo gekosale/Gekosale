@@ -20,7 +20,7 @@ class Console extends Application
 
     public function __construct ()
     {
-        parent::__construct('Welcome to WellCommerce CLI Tool', '1.0');
+        parent::__construct('Welcome to Gekosale CLI Tool', '1.0');
         
         $this->addCommands(array(
             new Console\Command\Cache\Clear(),
