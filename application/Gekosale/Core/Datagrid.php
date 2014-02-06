@@ -235,7 +235,7 @@ class Datagrid
         return $objResponse;
     }
 
-    public function deleteRow ($datagridId, $rowId, $deleteFunction, $controllerName, $flushCache = Array())
+    public function deleteRow ($datagridId, $rowId, $deleteFunction, $controllerName)
     {
         $objResponse = new xajaxResponse();
         if ($this->registry->right->checkDeletePermission($controllerName) === FALSE) {

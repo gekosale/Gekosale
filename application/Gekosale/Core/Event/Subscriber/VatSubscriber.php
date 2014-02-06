@@ -19,8 +19,6 @@ class VatSubscriber implements EventSubscriberInterface
             'suffix' => '%'
         ));
         
-        $data = $event->getPopulateData();
-
         $event->setPopulateData(Array(
             'required_data' => Array(
                 'value1' => 'required_data1'
@@ -28,17 +26,10 @@ class VatSubscriber implements EventSubscriberInterface
         ));
     }
 
-    public function onFormSaveAction (Event $event)
-    {
-        $data = $event->getSubmittedData();
-        $id = $event->getId();
-    }
-
     public static function getSubscribedEvents ()
     {
         return array(
             FormEvent::FORM_INIT_EVENT => 'onFormInitAction',
-            'vat.form.save' => 'onFormSaveAction'
         );
     }
 }
