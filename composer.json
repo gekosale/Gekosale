@@ -42,8 +42,7 @@
             "": "application/"
         },
         "classmap": [
-            "lib/xajax/xajax_core/xajax.inc.php",
-            "lib/imageGD/Image.php"
+            "vendor/xajax/xajax_core/xajax.inc.php"
         ]
     }
 }
