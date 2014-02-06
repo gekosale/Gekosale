@@ -36,6 +36,6 @@ class Event extends ContainerAwareEventDispatcher
         
         $this->addSubscriber(new Event\Subscriber\TemplateSubscriber());
         
-        $this->addSubscriber(new Event\Subscriber\VatSubscriber());
+//         $this->addSubscriber(new Event\Subscriber\VatSubscriber());
     }
 }

@@ -1559,10 +1559,10 @@ abstract class Availability implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return Collection|ChildProduct[] List of ChildProduct objects
      */
-    public function getProductsJoinVat($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProductsJoinAvailability($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ProductQuery::create(null, $criteria);
-        $query->joinWith('Vat', $joinBehavior);
+        $query->joinWith('Availability', $joinBehavior);
 
         return $this->getProducts($query, $con);
     }

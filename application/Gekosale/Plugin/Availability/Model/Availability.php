@@ -8,20 +8,20 @@
  *
  * @category    Gekosale
  * @package     Gekosale\Plugin
- * @subpackage  Gekosale\Plugin\Vat
+ * @subpackage  Gekosale\Plugin\Availability
  * @author      Adam Piotrowski <adam@gekosale.com>
  * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
-namespace Gekosale\Plugin\Vat\Model;
+namespace Gekosale\Plugin\Availability\Model;
 
-use Gekosale\Plugin\Vat\Event\ModelEvent;
+use Gekosale\Plugin\Availability\Event\ModelEvent;
 use Gekosale\Core\Model;
 use Gekosale\Core\Datagrid;
-use Gekosale\Plugin\Vat\Model\ORM\VatQuery;
-use Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery;
+use Gekosale\Plugin\Availability\Model\ORM\AvailabilityQuery;
+use Gekosale\Plugin\Availability\Model\ORM\AvailabilityTranslationQuery;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
-class Vat extends Model
+class Availability extends Model
 {
 
     public $datagrid;
@@ -32,26 +32,23 @@ class Vat extends Model
         
         $this->datagrid->setTableData(Array(
             'id' => Array(
-                'source' => 'V.id'
+                'source' => 'A.id'
             ),
             'name' => Array(
-                'source' => 'VT.name'
-            ),
-            'value' => Array(
-                'source' => 'V.value'
+                'source' => 'AT.name'
             ),
             'created_at' => Array(
-                'source' => 'V.created_at'
+                'source' => 'A.created_at'
             )
         ));
         
         $this->datagrid->setFrom('
-            vat V
-        	LEFT JOIN vat_i18n VT ON VT.id = V.id AND VT.locale = \'pl_PL\'
+            availability A
+        	LEFT JOIN availability_i18n AT ON AT.id = A.id AND AT.locale = \'pl_PL\'
         ');
         
         $this->datagrid->setGroupBy('
-        	V.id
+        	A.id
         ');
     }
 
@@ -60,21 +57,21 @@ class Vat extends Model
         return $this->datagrid->getFilterData();
     }
 
-    public function doLoadVat ($request, $processFunction)
+    public function doLoadAvailability ($request, $processFunction)
     {
         return $this->datagrid->getData($request, $processFunction);
     }
 
     /**
-     * Deletes tax rate. Also triggers MODEL_DELETE_EVENT
+     * Deletes availability. Also triggers MODEL_DELETE_EVENT
      *
-     * @param   int     $id         Tax ID to delete
+     * @param   int     $id         Availability ID to delete
      * @param   int     $datagrid   Datagrid instance
      * @see
      *
      * @return  object  \xajaxResponse
      */
-    public function doDeleteVAT ($id, $datagrid)
+    public function doDeleteAvailability ($id, $datagrid)
     {
         return $this->datagrid->deleteRow($datagrid, $id, Array(
             $this,
@@ -83,27 +80,25 @@ class Vat extends Model
     }
 
     /**
-     * Adds or updates tax rate. Also triggers MODEL_SAVE_EVENT
+     * Adds or updates availability. Also triggers MODEL_SAVE_EVENT
      * 
      * @param   array       $Data   Source data. Defaults to form submitted data
-     * @param   int|null    $id     Existent tax ID or NULL if creating a new rate
+     * @param   int|null    $id     Existent availability ID or NULL if creating a new rate
      * 
      * @return  int         $id     Tax rate ID 
      */
     public function save ($Data, $id = null)
     {
-        $vat = VatQuery::create()->filterByPrimaryKey($id)->findOneOrCreate();
-        
-        $vat->setValue($Data['value']);
+        $availability = AvailabilityQuery::create()->filterByPrimaryKey($id)->findOneOrCreate();
         
         foreach ($Data['name'] as $locale => $name) {
-            $vat->setLocale($locale);
-            $vat->setName($name);
+            $availability->setLocale($locale);
+            $availability->setName($name);
         }
         
-        $vat->save();
+        $availability->save();
         
-        $id = $vat->getId();
+        $id = $availability->getId();
         
         $event = new ModelEvent($Data, $id);
         
@@ -113,43 +108,42 @@ class Vat extends Model
     }
 
     /**
-     * Deletes tax rate. Also triggers MODEL_DELETE_EVENT
+     * Deletes availability. Also triggers MODEL_DELETE_EVENT
      *
-     * @param int    $id    Tax ID to delete
+     * @param int    $id    Availability to delete
      * @throws \InvalidArgumentException if the tax rate is not found
      * 
      * @return void
      */
     public function delete ($id)
     {
-        $vat = VatQuery::create()->findById($id);
+        $availability = AvailabilityQuery::create()->findById($id);
         
-        if (null === $vat) {
-            throw new \InvalidArgumentException(sprintf('Tax rate for ID=%s not found.', $id));
+        if (null === $availability) {
+            throw new \InvalidArgumentException(sprintf('Availability record for ID=%s not found.', $id));
         }
         
-        $vat->delete();
+        $availability->delete();
     }
 
     public function getPopulateData ($id)
     {
-        $vat = VatQuery::create()->findOneById($id);
+        $availability = AvailabilityQuery::create()->findOneById($id);
         
-        if (null === $vat) {
-            throw new \InvalidArgumentException(sprintf('Tax rate for ID=%s not found.', $id));
+        if (null === $availability) {
+            throw new \InvalidArgumentException(sprintf('Availability record for ID=%s not found.', $id));
         }
         
         $translations = Array();
         
         foreach ($this->getLocales() as $locale) {
             $translations[$locale] = Array(
-                'name' => $vat->getTranslation($locale)->getName()
+                'name' => $availability->getTranslation($locale)->getName()
             );
         }
         
         $Data = Array(
             'required_data' => Array(
-                'value' => $vat->getValue(),
                 'language_data' => $translations
             )
         );
