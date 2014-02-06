@@ -2,6 +2,7 @@
 
 namespace Gekosale\Plugin\Shop\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Blog\Model\ORM\BlogShopQuery;
@@ -58,6 +59,8 @@ use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases as ChildProductSearchP
 use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesQuery;
 use Gekosale\Plugin\Search\Model\ORM\Base\ProductSearchPhrases;
 use Gekosale\Plugin\Shop\Model\ORM\Shop as ChildShop;
+use Gekosale\Plugin\Shop\Model\ORM\ShopI18n as ChildShopI18n;
+use Gekosale\Plugin\Shop\Model\ORM\ShopI18nQuery as ChildShopI18nQuery;
 use Gekosale\Plugin\Shop\Model\ORM\ShopQuery as ChildShopQuery;
 use Gekosale\Plugin\Shop\Model\ORM\Map\ShopTableMap;
 use Gekosale\Plugin\User\Model\ORM\UserGroupShop as ChildUserGroupShop;
@@ -79,6 +82,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Shop implements ActiveRecordInterface 
 {
@@ -125,12 +129,6 @@ abstract class Shop implements ActiveRecordInterface
      * @var        string
      */
     protected $url;
-
-    /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
 
     /**
      * The value for the company_id field.
@@ -289,6 +287,18 @@ abstract class Shop implements ActiveRecordInterface
     protected $order_status_groups_id;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        Contact
      */
     protected $aContact;
@@ -416,12 +426,32 @@ abstract class Shop implements ActiveRecordInterface
     protected $collWishlistsPartial;
 
     /**
+     * @var        ObjectCollection|ChildShopI18n[] Collection to store aggregation of ChildShopI18n objects.
+     */
+    protected $collShopI18ns;
+    protected $collShopI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildShopI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -524,6 +554,12 @@ abstract class Shop implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $wishlistsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $shopI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -830,17 +866,6 @@ abstract class Shop implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
      * Get the [company_id] column value.
      * 
      * @return   int
@@ -1105,6 +1130,46 @@ abstract class Shop implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -1145,27 +1210,6 @@ abstract class Shop implements ActiveRecordInterface
 
         return $this;
     } // setUrl()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Shop\Model\ORM\Shop The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[ShopTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
 
     /**
      * Set the value of [company_id] column.
@@ -1708,6 +1752,48 @@ abstract class Shop implements ActiveRecordInterface
     } // setOrderStatusGroupsId()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Shop\Model\ORM\Shop The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ShopTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Shop\Model\ORM\Shop The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ShopTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1798,80 +1884,89 @@ abstract class Shop implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ShopTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ShopTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ShopTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ShopTableMap::translateFieldName('CompanyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->company_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ShopTableMap::translateFieldName('PeriodId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ShopTableMap::translateFieldName('PeriodId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->period_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ShopTableMap::translateFieldName('WwwRedirection', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ShopTableMap::translateFieldName('WwwRedirection', TableMap::TYPE_PHPNAME, $indexType)];
             $this->www_redirection = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ShopTableMap::translateFieldName('Taxes', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ShopTableMap::translateFieldName('Taxes', TableMap::TYPE_PHPNAME, $indexType)];
             $this->taxes = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ShopTableMap::translateFieldName('PhotoId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ShopTableMap::translateFieldName('PhotoId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->photo_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ShopTableMap::translateFieldName('Favicon', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ShopTableMap::translateFieldName('Favicon', TableMap::TYPE_PHPNAME, $indexType)];
             $this->favicon = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ShopTableMap::translateFieldName('Offline', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ShopTableMap::translateFieldName('Offline', TableMap::TYPE_PHPNAME, $indexType)];
             $this->offline = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ShopTableMap::translateFieldName('OfflineText', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ShopTableMap::translateFieldName('OfflineText', TableMap::TYPE_PHPNAME, $indexType)];
             $this->offline_text = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ShopTableMap::translateFieldName('CartRedirect', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ShopTableMap::translateFieldName('CartRedirect', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cart_redirect = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ShopTableMap::translateFieldName('MinimumOrderValue', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : ShopTableMap::translateFieldName('MinimumOrderValue', TableMap::TYPE_PHPNAME, $indexType)];
             $this->minimum_order_value = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ShopTableMap::translateFieldName('ShowTax', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ShopTableMap::translateFieldName('ShowTax', TableMap::TYPE_PHPNAME, $indexType)];
             $this->show_tax = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ShopTableMap::translateFieldName('EnableOpinions', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ShopTableMap::translateFieldName('EnableOpinions', TableMap::TYPE_PHPNAME, $indexType)];
             $this->enable_opinions = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ShopTableMap::translateFieldName('EnableTags', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : ShopTableMap::translateFieldName('EnableTags', TableMap::TYPE_PHPNAME, $indexType)];
             $this->enable_tags = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ShopTableMap::translateFieldName('CatalogMode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : ShopTableMap::translateFieldName('CatalogMode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->catalog_mode = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ShopTableMap::translateFieldName('ForceLogin', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : ShopTableMap::translateFieldName('ForceLogin', TableMap::TYPE_PHPNAME, $indexType)];
             $this->force_login = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : ShopTableMap::translateFieldName('EnableRss', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : ShopTableMap::translateFieldName('EnableRss', TableMap::TYPE_PHPNAME, $indexType)];
             $this->enable_rss = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : ShopTableMap::translateFieldName('InvoiceNumerationKind', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : ShopTableMap::translateFieldName('InvoiceNumerationKind', TableMap::TYPE_PHPNAME, $indexType)];
             $this->invoice_numeration_kind = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : ShopTableMap::translateFieldName('InvoiceDefaultPaymentDue', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : ShopTableMap::translateFieldName('InvoiceDefaultPaymentDue', TableMap::TYPE_PHPNAME, $indexType)];
             $this->invoice_default_payment_due = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ShopTableMap::translateFieldName('ConfirmRegistration', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : ShopTableMap::translateFieldName('ConfirmRegistration', TableMap::TYPE_PHPNAME, $indexType)];
             $this->confirm_registration = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ShopTableMap::translateFieldName('EnableRegistration', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ShopTableMap::translateFieldName('EnableRegistration', TableMap::TYPE_PHPNAME, $indexType)];
             $this->enable_registration = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ShopTableMap::translateFieldName('CurrencyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ShopTableMap::translateFieldName('CurrencyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->currency_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ShopTableMap::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ShopTableMap::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->contact_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : ShopTableMap::translateFieldName('DefaultVatId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ShopTableMap::translateFieldName('DefaultVatId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->default_vat_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : ShopTableMap::translateFieldName('OrderStatusGroupsId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : ShopTableMap::translateFieldName('OrderStatusGroupsId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->order_status_groups_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : ShopTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : ShopTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1880,7 +1975,7 @@ abstract class Shop implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 27; // 27 = ShopTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 28; // 28 = ShopTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Shop\Model\ORM\Shop object", 0, $e);
@@ -1995,6 +2090,8 @@ abstract class Shop implements ActiveRecordInterface
 
             $this->collWishlists = null;
 
+            $this->collShopI18ns = null;
+
         } // if (deep)
     }
 
@@ -2065,8 +2162,19 @@ abstract class Shop implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(ShopTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(ShopTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(ShopTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -2447,6 +2555,23 @@ abstract class Shop implements ActiveRecordInterface
                 }
             }
 
+            if ($this->shopI18nsScheduledForDeletion !== null) {
+                if (!$this->shopI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Shop\Model\ORM\ShopI18nQuery::create()
+                        ->filterByPrimaryKeys($this->shopI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->shopI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collShopI18ns !== null) {
+            foreach ($this->collShopI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -2478,9 +2603,6 @@ abstract class Shop implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ShopTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = 'URL';
-        }
-        if ($this->isColumnModified(ShopTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
         }
         if ($this->isColumnModified(ShopTableMap::COL_COMPANY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'COMPANY_ID';
@@ -2554,6 +2676,12 @@ abstract class Shop implements ActiveRecordInterface
         if ($this->isColumnModified(ShopTableMap::COL_ORDER_STATUS_GROUPS_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ORDER_STATUS_GROUPS_ID';
         }
+        if ($this->isColumnModified(ShopTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(ShopTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO shop (%s) VALUES (%s)',
@@ -2570,9 +2698,6 @@ abstract class Shop implements ActiveRecordInterface
                         break;
                     case 'URL':                        
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
-                        break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                     case 'COMPANY_ID':                        
                         $stmt->bindValue($identifier, $this->company_id, PDO::PARAM_INT);
@@ -2646,6 +2771,12 @@ abstract class Shop implements ActiveRecordInterface
                     case 'ORDER_STATUS_GROUPS_ID':                        
                         $stmt->bindValue($identifier, $this->order_status_groups_id, PDO::PARAM_INT);
                         break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
                 }
             }
             $stmt->execute();
@@ -2715,79 +2846,82 @@ abstract class Shop implements ActiveRecordInterface
                 return $this->getUrl();
                 break;
             case 2:
-                return $this->getName();
-                break;
-            case 3:
                 return $this->getCompanyId();
                 break;
-            case 4:
+            case 3:
                 return $this->getPeriodId();
                 break;
-            case 5:
+            case 4:
                 return $this->getWwwRedirection();
                 break;
-            case 6:
+            case 5:
                 return $this->getTaxes();
                 break;
-            case 7:
+            case 6:
                 return $this->getPhotoId();
                 break;
-            case 8:
+            case 7:
                 return $this->getFavicon();
                 break;
-            case 9:
+            case 8:
                 return $this->getOffline();
                 break;
-            case 10:
+            case 9:
                 return $this->getOfflineText();
                 break;
-            case 11:
+            case 10:
                 return $this->getCartRedirect();
                 break;
-            case 12:
+            case 11:
                 return $this->getMinimumOrderValue();
                 break;
-            case 13:
+            case 12:
                 return $this->getShowTax();
                 break;
-            case 14:
+            case 13:
                 return $this->getEnableOpinions();
                 break;
-            case 15:
+            case 14:
                 return $this->getEnableTags();
                 break;
-            case 16:
+            case 15:
                 return $this->getCatalogMode();
                 break;
-            case 17:
+            case 16:
                 return $this->getForceLogin();
                 break;
-            case 18:
+            case 17:
                 return $this->getEnableRss();
                 break;
-            case 19:
+            case 18:
                 return $this->getInvoiceNumerationKind();
                 break;
-            case 20:
+            case 19:
                 return $this->getInvoiceDefaultPaymentDue();
                 break;
-            case 21:
+            case 20:
                 return $this->getConfirmRegistration();
                 break;
-            case 22:
+            case 21:
                 return $this->getEnableRegistration();
                 break;
-            case 23:
+            case 22:
                 return $this->getCurrencyId();
                 break;
-            case 24:
+            case 23:
                 return $this->getContactId();
                 break;
-            case 25:
+            case 24:
                 return $this->getDefaultVatId();
                 break;
-            case 26:
+            case 25:
                 return $this->getOrderStatusGroupsId();
+                break;
+            case 26:
+                return $this->getCreatedAt();
+                break;
+            case 27:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -2820,31 +2954,32 @@ abstract class Shop implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getUrl(),
-            $keys[2] => $this->getName(),
-            $keys[3] => $this->getCompanyId(),
-            $keys[4] => $this->getPeriodId(),
-            $keys[5] => $this->getWwwRedirection(),
-            $keys[6] => $this->getTaxes(),
-            $keys[7] => $this->getPhotoId(),
-            $keys[8] => $this->getFavicon(),
-            $keys[9] => $this->getOffline(),
-            $keys[10] => $this->getOfflineText(),
-            $keys[11] => $this->getCartRedirect(),
-            $keys[12] => $this->getMinimumOrderValue(),
-            $keys[13] => $this->getShowTax(),
-            $keys[14] => $this->getEnableOpinions(),
-            $keys[15] => $this->getEnableTags(),
-            $keys[16] => $this->getCatalogMode(),
-            $keys[17] => $this->getForceLogin(),
-            $keys[18] => $this->getEnableRss(),
-            $keys[19] => $this->getInvoiceNumerationKind(),
-            $keys[20] => $this->getInvoiceDefaultPaymentDue(),
-            $keys[21] => $this->getConfirmRegistration(),
-            $keys[22] => $this->getEnableRegistration(),
-            $keys[23] => $this->getCurrencyId(),
-            $keys[24] => $this->getContactId(),
-            $keys[25] => $this->getDefaultVatId(),
-            $keys[26] => $this->getOrderStatusGroupsId(),
+            $keys[2] => $this->getCompanyId(),
+            $keys[3] => $this->getPeriodId(),
+            $keys[4] => $this->getWwwRedirection(),
+            $keys[5] => $this->getTaxes(),
+            $keys[6] => $this->getPhotoId(),
+            $keys[7] => $this->getFavicon(),
+            $keys[8] => $this->getOffline(),
+            $keys[9] => $this->getOfflineText(),
+            $keys[10] => $this->getCartRedirect(),
+            $keys[11] => $this->getMinimumOrderValue(),
+            $keys[12] => $this->getShowTax(),
+            $keys[13] => $this->getEnableOpinions(),
+            $keys[14] => $this->getEnableTags(),
+            $keys[15] => $this->getCatalogMode(),
+            $keys[16] => $this->getForceLogin(),
+            $keys[17] => $this->getEnableRss(),
+            $keys[18] => $this->getInvoiceNumerationKind(),
+            $keys[19] => $this->getInvoiceDefaultPaymentDue(),
+            $keys[20] => $this->getConfirmRegistration(),
+            $keys[21] => $this->getEnableRegistration(),
+            $keys[22] => $this->getCurrencyId(),
+            $keys[23] => $this->getContactId(),
+            $keys[24] => $this->getDefaultVatId(),
+            $keys[25] => $this->getOrderStatusGroupsId(),
+            $keys[26] => $this->getCreatedAt(),
+            $keys[27] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2918,6 +3053,9 @@ abstract class Shop implements ActiveRecordInterface
             if (null !== $this->collWishlists) {
                 $result['Wishlists'] = $this->collWishlists->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collShopI18ns) {
+                $result['ShopI18ns'] = $this->collShopI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -2959,79 +3097,82 @@ abstract class Shop implements ActiveRecordInterface
                 $this->setUrl($value);
                 break;
             case 2:
-                $this->setName($value);
-                break;
-            case 3:
                 $this->setCompanyId($value);
                 break;
-            case 4:
+            case 3:
                 $this->setPeriodId($value);
                 break;
-            case 5:
+            case 4:
                 $this->setWwwRedirection($value);
                 break;
-            case 6:
+            case 5:
                 $this->setTaxes($value);
                 break;
-            case 7:
+            case 6:
                 $this->setPhotoId($value);
                 break;
-            case 8:
+            case 7:
                 $this->setFavicon($value);
                 break;
-            case 9:
+            case 8:
                 $this->setOffline($value);
                 break;
-            case 10:
+            case 9:
                 $this->setOfflineText($value);
                 break;
-            case 11:
+            case 10:
                 $this->setCartRedirect($value);
                 break;
-            case 12:
+            case 11:
                 $this->setMinimumOrderValue($value);
                 break;
-            case 13:
+            case 12:
                 $this->setShowTax($value);
                 break;
-            case 14:
+            case 13:
                 $this->setEnableOpinions($value);
                 break;
-            case 15:
+            case 14:
                 $this->setEnableTags($value);
                 break;
-            case 16:
+            case 15:
                 $this->setCatalogMode($value);
                 break;
-            case 17:
+            case 16:
                 $this->setForceLogin($value);
                 break;
-            case 18:
+            case 17:
                 $this->setEnableRss($value);
                 break;
-            case 19:
+            case 18:
                 $this->setInvoiceNumerationKind($value);
                 break;
-            case 20:
+            case 19:
                 $this->setInvoiceDefaultPaymentDue($value);
                 break;
-            case 21:
+            case 20:
                 $this->setConfirmRegistration($value);
                 break;
-            case 22:
+            case 21:
                 $this->setEnableRegistration($value);
                 break;
-            case 23:
+            case 22:
                 $this->setCurrencyId($value);
                 break;
-            case 24:
+            case 23:
                 $this->setContactId($value);
                 break;
-            case 25:
+            case 24:
                 $this->setDefaultVatId($value);
                 break;
-            case 26:
+            case 25:
                 $this->setOrderStatusGroupsId($value);
+                break;
+            case 26:
+                $this->setCreatedAt($value);
+                break;
+            case 27:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -3059,31 +3200,32 @@ abstract class Shop implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setUrl($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setCompanyId($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setPeriodId($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setWwwRedirection($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setTaxes($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setPhotoId($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setFavicon($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setOffline($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setOfflineText($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setCartRedirect($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setMinimumOrderValue($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setShowTax($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setEnableOpinions($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setEnableTags($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setCatalogMode($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setForceLogin($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setEnableRss($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setInvoiceNumerationKind($arr[$keys[19]]);
-        if (array_key_exists($keys[20], $arr)) $this->setInvoiceDefaultPaymentDue($arr[$keys[20]]);
-        if (array_key_exists($keys[21], $arr)) $this->setConfirmRegistration($arr[$keys[21]]);
-        if (array_key_exists($keys[22], $arr)) $this->setEnableRegistration($arr[$keys[22]]);
-        if (array_key_exists($keys[23], $arr)) $this->setCurrencyId($arr[$keys[23]]);
-        if (array_key_exists($keys[24], $arr)) $this->setContactId($arr[$keys[24]]);
-        if (array_key_exists($keys[25], $arr)) $this->setDefaultVatId($arr[$keys[25]]);
-        if (array_key_exists($keys[26], $arr)) $this->setOrderStatusGroupsId($arr[$keys[26]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCompanyId($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setPeriodId($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setWwwRedirection($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setTaxes($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setPhotoId($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setFavicon($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setOffline($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setOfflineText($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setCartRedirect($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setMinimumOrderValue($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setShowTax($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setEnableOpinions($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setEnableTags($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setCatalogMode($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setForceLogin($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setEnableRss($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setInvoiceNumerationKind($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setInvoiceDefaultPaymentDue($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setConfirmRegistration($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setEnableRegistration($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setCurrencyId($arr[$keys[22]]);
+        if (array_key_exists($keys[23], $arr)) $this->setContactId($arr[$keys[23]]);
+        if (array_key_exists($keys[24], $arr)) $this->setDefaultVatId($arr[$keys[24]]);
+        if (array_key_exists($keys[25], $arr)) $this->setOrderStatusGroupsId($arr[$keys[25]]);
+        if (array_key_exists($keys[26], $arr)) $this->setCreatedAt($arr[$keys[26]]);
+        if (array_key_exists($keys[27], $arr)) $this->setUpdatedAt($arr[$keys[27]]);
     }
 
     /**
@@ -3097,7 +3239,6 @@ abstract class Shop implements ActiveRecordInterface
 
         if ($this->isColumnModified(ShopTableMap::COL_ID)) $criteria->add(ShopTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(ShopTableMap::COL_URL)) $criteria->add(ShopTableMap::COL_URL, $this->url);
-        if ($this->isColumnModified(ShopTableMap::COL_NAME)) $criteria->add(ShopTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(ShopTableMap::COL_COMPANY_ID)) $criteria->add(ShopTableMap::COL_COMPANY_ID, $this->company_id);
         if ($this->isColumnModified(ShopTableMap::COL_PERIOD_ID)) $criteria->add(ShopTableMap::COL_PERIOD_ID, $this->period_id);
         if ($this->isColumnModified(ShopTableMap::COL_WWW_REDIRECTION)) $criteria->add(ShopTableMap::COL_WWW_REDIRECTION, $this->www_redirection);
@@ -3122,6 +3263,8 @@ abstract class Shop implements ActiveRecordInterface
         if ($this->isColumnModified(ShopTableMap::COL_CONTACT_ID)) $criteria->add(ShopTableMap::COL_CONTACT_ID, $this->contact_id);
         if ($this->isColumnModified(ShopTableMap::COL_DEFAULT_VAT_ID)) $criteria->add(ShopTableMap::COL_DEFAULT_VAT_ID, $this->default_vat_id);
         if ($this->isColumnModified(ShopTableMap::COL_ORDER_STATUS_GROUPS_ID)) $criteria->add(ShopTableMap::COL_ORDER_STATUS_GROUPS_ID, $this->order_status_groups_id);
+        if ($this->isColumnModified(ShopTableMap::COL_CREATED_AT)) $criteria->add(ShopTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ShopTableMap::COL_UPDATED_AT)) $criteria->add(ShopTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -3188,7 +3331,6 @@ abstract class Shop implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setUrl($this->getUrl());
-        $copyObj->setName($this->getName());
         $copyObj->setCompanyId($this->getCompanyId());
         $copyObj->setPeriodId($this->getPeriodId());
         $copyObj->setWwwRedirection($this->getWwwRedirection());
@@ -3213,6 +3355,8 @@ abstract class Shop implements ActiveRecordInterface
         $copyObj->setContactId($this->getContactId());
         $copyObj->setDefaultVatId($this->getDefaultVatId());
         $copyObj->setOrderStatusGroupsId($this->getOrderStatusGroupsId());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -3318,6 +3462,12 @@ abstract class Shop implements ActiveRecordInterface
             foreach ($this->getWishlists() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addWishlist($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getShopI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addShopI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -3667,6 +3817,9 @@ abstract class Shop implements ActiveRecordInterface
         }
         if ('Wishlist' == $relationName) {
             return $this->initWishlists();
+        }
+        if ('ShopI18n' == $relationName) {
+            return $this->initShopI18ns();
         }
     }
 
@@ -7802,13 +7955,237 @@ abstract class Shop implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collShopI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addShopI18ns()
+     */
+    public function clearShopI18ns()
+    {
+        $this->collShopI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collShopI18ns collection loaded partially.
+     */
+    public function resetPartialShopI18ns($v = true)
+    {
+        $this->collShopI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collShopI18ns collection.
+     *
+     * By default this just sets the collShopI18ns collection to an empty array (like clearcollShopI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initShopI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collShopI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collShopI18ns = new ObjectCollection();
+        $this->collShopI18ns->setModel('\Gekosale\Plugin\Shop\Model\ORM\ShopI18n');
+    }
+
+    /**
+     * Gets an array of ChildShopI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildShop is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildShopI18n[] List of ChildShopI18n objects
+     * @throws PropelException
+     */
+    public function getShopI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collShopI18nsPartial && !$this->isNew();
+        if (null === $this->collShopI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collShopI18ns) {
+                // return empty collection
+                $this->initShopI18ns();
+            } else {
+                $collShopI18ns = ChildShopI18nQuery::create(null, $criteria)
+                    ->filterByShop($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collShopI18nsPartial && count($collShopI18ns)) {
+                        $this->initShopI18ns(false);
+
+                        foreach ($collShopI18ns as $obj) {
+                            if (false == $this->collShopI18ns->contains($obj)) {
+                                $this->collShopI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collShopI18nsPartial = true;
+                    }
+
+                    reset($collShopI18ns);
+
+                    return $collShopI18ns;
+                }
+
+                if ($partial && $this->collShopI18ns) {
+                    foreach ($this->collShopI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collShopI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collShopI18ns = $collShopI18ns;
+                $this->collShopI18nsPartial = false;
+            }
+        }
+
+        return $this->collShopI18ns;
+    }
+
+    /**
+     * Sets a collection of ShopI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $shopI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildShop The current object (for fluent API support)
+     */
+    public function setShopI18ns(Collection $shopI18ns, ConnectionInterface $con = null)
+    {
+        $shopI18nsToDelete = $this->getShopI18ns(new Criteria(), $con)->diff($shopI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->shopI18nsScheduledForDeletion = clone $shopI18nsToDelete;
+
+        foreach ($shopI18nsToDelete as $shopI18nRemoved) {
+            $shopI18nRemoved->setShop(null);
+        }
+
+        $this->collShopI18ns = null;
+        foreach ($shopI18ns as $shopI18n) {
+            $this->addShopI18n($shopI18n);
+        }
+
+        $this->collShopI18ns = $shopI18ns;
+        $this->collShopI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ShopI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ShopI18n objects.
+     * @throws PropelException
+     */
+    public function countShopI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collShopI18nsPartial && !$this->isNew();
+        if (null === $this->collShopI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collShopI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getShopI18ns());
+            }
+
+            $query = ChildShopI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByShop($this)
+                ->count($con);
+        }
+
+        return count($this->collShopI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildShopI18n object to this object
+     * through the ChildShopI18n foreign key attribute.
+     *
+     * @param    ChildShopI18n $l ChildShopI18n
+     * @return   \Gekosale\Plugin\Shop\Model\ORM\Shop The current object (for fluent API support)
+     */
+    public function addShopI18n(ChildShopI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collShopI18ns === null) {
+            $this->initShopI18ns();
+            $this->collShopI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collShopI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddShopI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ShopI18n $shopI18n The shopI18n object to add.
+     */
+    protected function doAddShopI18n($shopI18n)
+    {
+        $this->collShopI18ns[]= $shopI18n;
+        $shopI18n->setShop($this);
+    }
+
+    /**
+     * @param  ShopI18n $shopI18n The shopI18n object to remove.
+     * @return ChildShop The current object (for fluent API support)
+     */
+    public function removeShopI18n($shopI18n)
+    {
+        if ($this->getShopI18ns()->contains($shopI18n)) {
+            $this->collShopI18ns->remove($this->collShopI18ns->search($shopI18n));
+            if (null === $this->shopI18nsScheduledForDeletion) {
+                $this->shopI18nsScheduledForDeletion = clone $this->collShopI18ns;
+                $this->shopI18nsScheduledForDeletion->clear();
+            }
+            $this->shopI18nsScheduledForDeletion[]= clone $shopI18n;
+            $shopI18n->setShop(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
         $this->url = null;
-        $this->name = null;
         $this->company_id = null;
         $this->period_id = null;
         $this->www_redirection = null;
@@ -7833,6 +8210,8 @@ abstract class Shop implements ActiveRecordInterface
         $this->contact_id = null;
         $this->default_vat_id = null;
         $this->order_status_groups_id = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -7938,7 +8317,16 @@ abstract class Shop implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collShopI18ns) {
+                foreach ($this->collShopI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collClients = null;
         $this->collMissingCarts = null;
@@ -7957,6 +8345,7 @@ abstract class Shop implements ActiveRecordInterface
         $this->collProducerShops = null;
         $this->collUserGroupShops = null;
         $this->collWishlists = null;
+        $this->collShopI18ns = null;
         $this->aContact = null;
         $this->aCurrency = null;
         $this->aVat = null;
@@ -7972,6 +8361,215 @@ abstract class Shop implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(ShopTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildShop The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildShopI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collShopI18ns) {
+                foreach ($this->collShopI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildShopI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildShopI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addShopI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildShop The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildShopI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collShopI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collShopI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildShopI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Shop\Model\ORM\ShopI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Shop\Model\ORM\ShopI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Shop\Model\ORM\ShopI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Shop\Model\ORM\ShopI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildShop The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[ShopTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

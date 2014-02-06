@@ -41,6 +41,6 @@ class FormInitEvent extends Event
 
     public function setPopulateData ($Data)
     {
-        $this->populateData = array_merge($this->populateData, $Data);
+        $this->populateData = array_merge_recursive($this->populateData, $Data);
     }
 }

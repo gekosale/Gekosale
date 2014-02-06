@@ -2,12 +2,15 @@
 
 namespace Gekosale\Plugin\Category\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Attribute\Model\ORM\CategoryAttributeProductQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\CategoryAttributeProduct as ChildCategoryAttributeProduct;
 use Gekosale\Plugin\Attribute\Model\ORM\Base\CategoryAttributeProduct;
 use Gekosale\Plugin\Category\Model\ORM\Category as ChildCategory;
+use Gekosale\Plugin\Category\Model\ORM\CategoryI18n as ChildCategoryI18n;
+use Gekosale\Plugin\Category\Model\ORM\CategoryI18nQuery as ChildCategoryI18nQuery;
 use Gekosale\Plugin\Category\Model\ORM\CategoryPath as ChildCategoryPath;
 use Gekosale\Plugin\Category\Model\ORM\CategoryPathQuery as ChildCategoryPathQuery;
 use Gekosale\Plugin\Category\Model\ORM\CategoryQuery as ChildCategoryQuery;
@@ -30,6 +33,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Category implements ActiveRecordInterface 
 {
@@ -98,6 +102,18 @@ abstract class Category implements ActiveRecordInterface
     protected $is_enabled;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        Category
      */
     protected $aCategoryRelatedByCategoryId;
@@ -138,12 +154,32 @@ abstract class Category implements ActiveRecordInterface
     protected $collCategoryShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildCategoryI18n[] Collection to store aggregation of ChildCategoryI18n objects.
+     */
+    protected $collCategoryI18ns;
+    protected $collCategoryI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildCategoryI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -174,6 +210,12 @@ abstract class Category implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $categoryShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $categoryI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -503,6 +545,46 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -616,6 +698,48 @@ abstract class Category implements ActiveRecordInterface
     } // setIsEnabled()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Category\Model\ORM\Category The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[CategoryTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Category\Model\ORM\Category The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[CategoryTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -674,6 +798,18 @@ abstract class Category implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CategoryTableMap::translateFieldName('IsEnabled', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_enabled = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CategoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CategoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -682,7 +818,7 @@ abstract class Category implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Category\Model\ORM\Category object", 0, $e);
@@ -761,6 +897,8 @@ abstract class Category implements ActiveRecordInterface
 
             $this->collCategoryShops = null;
 
+            $this->collCategoryI18ns = null;
+
         } // if (deep)
     }
 
@@ -831,8 +969,19 @@ abstract class Category implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -987,6 +1136,23 @@ abstract class Category implements ActiveRecordInterface
                 }
             }
 
+            if ($this->categoryI18nsScheduledForDeletion !== null) {
+                if (!$this->categoryI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Category\Model\ORM\CategoryI18nQuery::create()
+                        ->filterByPrimaryKeys($this->categoryI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->categoryI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collCategoryI18ns !== null) {
+            foreach ($this->collCategoryI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1028,6 +1194,12 @@ abstract class Category implements ActiveRecordInterface
         if ($this->isColumnModified(CategoryTableMap::COL_IS_ENABLED)) {
             $modifiedColumns[':p' . $index++]  = 'IS_ENABLED';
         }
+        if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO category (%s) VALUES (%s)',
@@ -1053,6 +1225,12 @@ abstract class Category implements ActiveRecordInterface
                         break;
                     case 'IS_ENABLED':                        
                         $stmt->bindValue($identifier, $this->is_enabled, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1131,6 +1309,12 @@ abstract class Category implements ActiveRecordInterface
             case 4:
                 return $this->getIsEnabled();
                 break;
+            case 5:
+                return $this->getCreatedAt();
+                break;
+            case 6:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -1165,6 +1349,8 @@ abstract class Category implements ActiveRecordInterface
             $keys[2] => $this->getHierarchy(),
             $keys[3] => $this->getCategoryId(),
             $keys[4] => $this->getIsEnabled(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1192,6 +1378,9 @@ abstract class Category implements ActiveRecordInterface
             }
             if (null !== $this->collCategoryShops) {
                 $result['CategoryShops'] = $this->collCategoryShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collCategoryI18ns) {
+                $result['CategoryI18ns'] = $this->collCategoryI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1242,6 +1431,12 @@ abstract class Category implements ActiveRecordInterface
             case 4:
                 $this->setIsEnabled($value);
                 break;
+            case 5:
+                $this->setCreatedAt($value);
+                break;
+            case 6:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -1271,6 +1466,8 @@ abstract class Category implements ActiveRecordInterface
         if (array_key_exists($keys[2], $arr)) $this->setHierarchy($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setCategoryId($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setIsEnabled($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCreatedAt($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setUpdatedAt($arr[$keys[6]]);
     }
 
     /**
@@ -1287,6 +1484,8 @@ abstract class Category implements ActiveRecordInterface
         if ($this->isColumnModified(CategoryTableMap::COL_HIERARCHY)) $criteria->add(CategoryTableMap::COL_HIERARCHY, $this->hierarchy);
         if ($this->isColumnModified(CategoryTableMap::COL_CATEGORY_ID)) $criteria->add(CategoryTableMap::COL_CATEGORY_ID, $this->category_id);
         if ($this->isColumnModified(CategoryTableMap::COL_IS_ENABLED)) $criteria->add(CategoryTableMap::COL_IS_ENABLED, $this->is_enabled);
+        if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) $criteria->add(CategoryTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) $criteria->add(CategoryTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1356,6 +1555,8 @@ abstract class Category implements ActiveRecordInterface
         $copyObj->setHierarchy($this->getHierarchy());
         $copyObj->setCategoryId($this->getCategoryId());
         $copyObj->setIsEnabled($this->getIsEnabled());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1389,6 +1590,12 @@ abstract class Category implements ActiveRecordInterface
             foreach ($this->getCategoryShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addCategoryShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getCategoryI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCategoryI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1549,6 +1756,9 @@ abstract class Category implements ActiveRecordInterface
         }
         if ('CategoryShop' == $relationName) {
             return $this->initCategoryShops();
+        }
+        if ('CategoryI18n' == $relationName) {
+            return $this->initCategoryI18ns();
         }
     }
 
@@ -2768,6 +2978,231 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collCategoryI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addCategoryI18ns()
+     */
+    public function clearCategoryI18ns()
+    {
+        $this->collCategoryI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collCategoryI18ns collection loaded partially.
+     */
+    public function resetPartialCategoryI18ns($v = true)
+    {
+        $this->collCategoryI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collCategoryI18ns collection.
+     *
+     * By default this just sets the collCategoryI18ns collection to an empty array (like clearcollCategoryI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCategoryI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collCategoryI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collCategoryI18ns = new ObjectCollection();
+        $this->collCategoryI18ns->setModel('\Gekosale\Plugin\Category\Model\ORM\CategoryI18n');
+    }
+
+    /**
+     * Gets an array of ChildCategoryI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildCategory is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildCategoryI18n[] List of ChildCategoryI18n objects
+     * @throws PropelException
+     */
+    public function getCategoryI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCategoryI18nsPartial && !$this->isNew();
+        if (null === $this->collCategoryI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCategoryI18ns) {
+                // return empty collection
+                $this->initCategoryI18ns();
+            } else {
+                $collCategoryI18ns = ChildCategoryI18nQuery::create(null, $criteria)
+                    ->filterByCategory($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collCategoryI18nsPartial && count($collCategoryI18ns)) {
+                        $this->initCategoryI18ns(false);
+
+                        foreach ($collCategoryI18ns as $obj) {
+                            if (false == $this->collCategoryI18ns->contains($obj)) {
+                                $this->collCategoryI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collCategoryI18nsPartial = true;
+                    }
+
+                    reset($collCategoryI18ns);
+
+                    return $collCategoryI18ns;
+                }
+
+                if ($partial && $this->collCategoryI18ns) {
+                    foreach ($this->collCategoryI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collCategoryI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCategoryI18ns = $collCategoryI18ns;
+                $this->collCategoryI18nsPartial = false;
+            }
+        }
+
+        return $this->collCategoryI18ns;
+    }
+
+    /**
+     * Sets a collection of CategoryI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $categoryI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildCategory The current object (for fluent API support)
+     */
+    public function setCategoryI18ns(Collection $categoryI18ns, ConnectionInterface $con = null)
+    {
+        $categoryI18nsToDelete = $this->getCategoryI18ns(new Criteria(), $con)->diff($categoryI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->categoryI18nsScheduledForDeletion = clone $categoryI18nsToDelete;
+
+        foreach ($categoryI18nsToDelete as $categoryI18nRemoved) {
+            $categoryI18nRemoved->setCategory(null);
+        }
+
+        $this->collCategoryI18ns = null;
+        foreach ($categoryI18ns as $categoryI18n) {
+            $this->addCategoryI18n($categoryI18n);
+        }
+
+        $this->collCategoryI18ns = $categoryI18ns;
+        $this->collCategoryI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related CategoryI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related CategoryI18n objects.
+     * @throws PropelException
+     */
+    public function countCategoryI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCategoryI18nsPartial && !$this->isNew();
+        if (null === $this->collCategoryI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCategoryI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getCategoryI18ns());
+            }
+
+            $query = ChildCategoryI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCategory($this)
+                ->count($con);
+        }
+
+        return count($this->collCategoryI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildCategoryI18n object to this object
+     * through the ChildCategoryI18n foreign key attribute.
+     *
+     * @param    ChildCategoryI18n $l ChildCategoryI18n
+     * @return   \Gekosale\Plugin\Category\Model\ORM\Category The current object (for fluent API support)
+     */
+    public function addCategoryI18n(ChildCategoryI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collCategoryI18ns === null) {
+            $this->initCategoryI18ns();
+            $this->collCategoryI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collCategoryI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCategoryI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param CategoryI18n $categoryI18n The categoryI18n object to add.
+     */
+    protected function doAddCategoryI18n($categoryI18n)
+    {
+        $this->collCategoryI18ns[]= $categoryI18n;
+        $categoryI18n->setCategory($this);
+    }
+
+    /**
+     * @param  CategoryI18n $categoryI18n The categoryI18n object to remove.
+     * @return ChildCategory The current object (for fluent API support)
+     */
+    public function removeCategoryI18n($categoryI18n)
+    {
+        if ($this->getCategoryI18ns()->contains($categoryI18n)) {
+            $this->collCategoryI18ns->remove($this->collCategoryI18ns->search($categoryI18n));
+            if (null === $this->categoryI18nsScheduledForDeletion) {
+                $this->categoryI18nsScheduledForDeletion = clone $this->collCategoryI18ns;
+                $this->categoryI18nsScheduledForDeletion->clear();
+            }
+            $this->categoryI18nsScheduledForDeletion[]= clone $categoryI18n;
+            $categoryI18n->setCategory(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -2777,6 +3212,8 @@ abstract class Category implements ActiveRecordInterface
         $this->hierarchy = null;
         $this->category_id = null;
         $this->is_enabled = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2822,13 +3259,23 @@ abstract class Category implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collCategoryI18ns) {
+                foreach ($this->collCategoryI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collCategoriesRelatedById = null;
         $this->collCategoryAttributeProducts = null;
         $this->collCategoryPaths = null;
         $this->collProductCategories = null;
         $this->collCategoryShops = null;
+        $this->collCategoryI18ns = null;
         $this->aCategoryRelatedByCategoryId = null;
         $this->aFile = null;
     }
@@ -2841,6 +3288,263 @@ abstract class Category implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(CategoryTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildCategory The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildCategoryI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collCategoryI18ns) {
+                foreach ($this->collCategoryI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildCategoryI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildCategoryI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addCategoryI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildCategory The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildCategoryI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collCategoryI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collCategoryI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildCategoryI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [short_description] column value.
+         * 
+         * @return   string
+         */
+        public function getShortDescription()
+        {
+        return $this->getCurrentTranslation()->getShortDescription();
+    }
+    
+    
+        /**
+         * Set the value of [short_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setShortDescription($v)
+        {    $this->getCurrentTranslation()->setShortDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [description] column value.
+         * 
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+    
+    
+        /**
+         * Set the value of [description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Category\Model\ORM\CategoryI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildCategory The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[CategoryTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

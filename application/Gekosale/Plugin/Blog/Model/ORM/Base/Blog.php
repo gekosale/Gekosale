@@ -2269,20 +2269,6 @@ abstract class Blog implements ActiveRecordInterface
         return (string) $this->exportTo(BlogTableMap::DEFAULT_STRING_FORMAT);
     }
 
-    // timestampable behavior
-    
-    /**
-     * Mark the current object so that the update date doesn't get updated during next save
-     *
-     * @return     ChildBlog The current object (for fluent API support)
-     */
-    public function keepUpdateDateUnchanged()
-    {
-        $this->modifiedColumns[BlogTableMap::COL_UPDATED_AT] = true;
-    
-        return $this;
-    }
-
     // i18n behavior
     
     /**
@@ -2402,6 +2388,116 @@ abstract class Blog implements ActiveRecordInterface
          */
         public function setName($v)
         {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [description] column value.
+         * 
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+    
+    
+        /**
+         * Set the value of [description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildBlog The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[BlogTableMap::COL_UPDATED_AT] = true;
     
         return $this;
     }

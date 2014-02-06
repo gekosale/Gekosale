@@ -6,6 +6,7 @@ use \Exception;
 use \PDO;
 use Gekosale\Plugin\Controller\Model\ORM\ControllerPermission;
 use Gekosale\Plugin\User\Model\ORM\UserGroup as ChildUserGroup;
+use Gekosale\Plugin\User\Model\ORM\UserGroupI18nQuery as ChildUserGroupI18nQuery;
 use Gekosale\Plugin\User\Model\ORM\UserGroupQuery as ChildUserGroupQuery;
 use Gekosale\Plugin\User\Model\ORM\Map\UserGroupTableMap;
 use Propel\Runtime\Propel;
@@ -23,10 +24,12 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildUserGroupQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildUserGroupQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildUserGroupQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildUserGroupQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildUserGroupQuery groupById() Group by the id column
- * @method     ChildUserGroupQuery groupByName() Group by the name column
+ * @method     ChildUserGroupQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildUserGroupQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildUserGroupQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserGroupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -44,14 +47,20 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserGroupQuery rightJoinUserGroupUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupUser relation
  * @method     ChildUserGroupQuery innerJoinUserGroupUser($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroupUser relation
  *
+ * @method     ChildUserGroupQuery leftJoinUserGroupI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserGroupI18n relation
+ * @method     ChildUserGroupQuery rightJoinUserGroupI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserGroupI18n relation
+ * @method     ChildUserGroupQuery innerJoinUserGroupI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the UserGroupI18n relation
+ *
  * @method     ChildUserGroup findOne(ConnectionInterface $con = null) Return the first ChildUserGroup matching the query
  * @method     ChildUserGroup findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserGroup matching the query, or a new ChildUserGroup object populated from the query conditions when no match is found
  *
  * @method     ChildUserGroup findOneById(int $id) Return the first ChildUserGroup filtered by the id column
- * @method     ChildUserGroup findOneByName(string $name) Return the first ChildUserGroup filtered by the name column
+ * @method     ChildUserGroup findOneByCreatedAt(string $created_at) Return the first ChildUserGroup filtered by the created_at column
+ * @method     ChildUserGroup findOneByUpdatedAt(string $updated_at) Return the first ChildUserGroup filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildUserGroup objects filtered by the id column
- * @method     array findByName(string $name) Return ChildUserGroup objects filtered by the name column
+ * @method     array findByCreatedAt(string $created_at) Return ChildUserGroup objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildUserGroup objects filtered by the updated_at column
  *
  */
 abstract class UserGroupQuery extends ModelCriteria
@@ -140,7 +149,7 @@ abstract class UserGroupQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, NAME FROM user_group WHERE ID = :p0';
+        $sql = 'SELECT ID, CREATED_AT, UPDATED_AT FROM user_group WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -271,32 +280,89 @@ abstract class UserGroupQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the name column
+     * Filter the query on the created_at column
      *
      * Example usage:
      * <code>
-     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
      * </code>
      *
-     * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserGroupQuery The current query, for fluid interface
      */
-    public function filterByName($name = null, $comparison = null)
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($name)) {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(UserGroupTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(UserGroupTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UserGroupTableMap::COL_NAME, $name, $comparison);
+        return $this->addUsingAlias(UserGroupTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(UserGroupTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(UserGroupTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserGroupTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -519,6 +585,79 @@ abstract class UserGroupQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\User\Model\ORM\UserGroupI18n object
+     *
+     * @param \Gekosale\Plugin\User\Model\ORM\UserGroupI18n|ObjectCollection $userGroupI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function filterByUserGroupI18n($userGroupI18n, $comparison = null)
+    {
+        if ($userGroupI18n instanceof \Gekosale\Plugin\User\Model\ORM\UserGroupI18n) {
+            return $this
+                ->addUsingAlias(UserGroupTableMap::COL_ID, $userGroupI18n->getId(), $comparison);
+        } elseif ($userGroupI18n instanceof ObjectCollection) {
+            return $this
+                ->useUserGroupI18nQuery()
+                ->filterByPrimaryKeys($userGroupI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByUserGroupI18n() only accepts arguments of type \Gekosale\Plugin\User\Model\ORM\UserGroupI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UserGroupI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function joinUserGroupI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UserGroupI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UserGroupI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UserGroupI18n relation UserGroupI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\User\Model\ORM\UserGroupI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useUserGroupI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinUserGroupI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserGroupI18n', '\Gekosale\Plugin\User\Model\ORM\UserGroupI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildUserGroup $userGroup Object to remove from the list of results
@@ -607,6 +746,129 @@ abstract class UserGroupQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'UserGroupI18n';
+    
+        return $this
+            ->joinUserGroupI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('UserGroupI18n');
+        $this->with['UserGroupI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUserGroupI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserGroupI18n', '\Gekosale\Plugin\User\Model\ORM\UserGroupI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UserGroupTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UserGroupTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UserGroupTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UserGroupTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UserGroupTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildUserGroupQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UserGroupTableMap::COL_CREATED_AT);
     }
 
 } // UserGroupQuery

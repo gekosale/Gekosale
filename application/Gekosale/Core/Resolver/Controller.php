@@ -60,9 +60,12 @@ class Controller extends BaseControllerResolver
             $controller->setContainer($this->container);
         }
         
-        foreach ($classAnnotations as $annotation) {
+        foreach ($methodAnnotations as $annotation) {
             if ($annotation instanceof \Gekosale\Core\Model) {
                 $controller->setModel($annotation->model, $annotation->alias);
+            }
+            if ($annotation instanceof \Gekosale\Core\Form) {
+                $controller->setForm($annotation->form, $annotation->alias);
             }
         }
         

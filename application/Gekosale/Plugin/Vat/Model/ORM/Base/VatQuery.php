@@ -7,6 +7,7 @@ use \PDO;
 use Gekosale\Plugin\Product\Model\ORM\Product;
 use Gekosale\Plugin\Shop\Model\ORM\Shop;
 use Gekosale\Plugin\Vat\Model\ORM\Vat as ChildVat;
+use Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery as ChildVatI18nQuery;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery as ChildVatQuery;
 use Gekosale\Plugin\Vat\Model\ORM\Map\VatTableMap;
 use Propel\Runtime\Propel;
@@ -44,6 +45,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildVatQuery leftJoinShop($relationAlias = null) Adds a LEFT JOIN clause to the query using the Shop relation
  * @method     ChildVatQuery rightJoinShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Shop relation
  * @method     ChildVatQuery innerJoinShop($relationAlias = null) Adds a INNER JOIN clause to the query using the Shop relation
+ *
+ * @method     ChildVatQuery leftJoinVatI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the VatI18n relation
+ * @method     ChildVatQuery rightJoinVatI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the VatI18n relation
+ * @method     ChildVatQuery innerJoinVatI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the VatI18n relation
  *
  * @method     ChildVat findOne(ConnectionInterface $con = null) Return the first ChildVat matching the query
  * @method     ChildVat findOneOrCreate(ConnectionInterface $con = null) Return the first ChildVat matching the query, or a new ChildVat object populated from the query conditions when no match is found
@@ -549,6 +554,79 @@ abstract class VatQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\Vat\Model\ORM\VatI18n object
+     *
+     * @param \Gekosale\Plugin\Vat\Model\ORM\VatI18n|ObjectCollection $vatI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildVatQuery The current query, for fluid interface
+     */
+    public function filterByVatI18n($vatI18n, $comparison = null)
+    {
+        if ($vatI18n instanceof \Gekosale\Plugin\Vat\Model\ORM\VatI18n) {
+            return $this
+                ->addUsingAlias(VatTableMap::COL_ID, $vatI18n->getId(), $comparison);
+        } elseif ($vatI18n instanceof ObjectCollection) {
+            return $this
+                ->useVatI18nQuery()
+                ->filterByPrimaryKeys($vatI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByVatI18n() only accepts arguments of type \Gekosale\Plugin\Vat\Model\ORM\VatI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the VatI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildVatQuery The current query, for fluid interface
+     */
+    public function joinVatI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('VatI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'VatI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the VatI18n relation VatI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useVatI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinVatI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'VatI18n', '\Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildVat $vat Object to remove from the list of results
@@ -637,6 +715,129 @@ abstract class VatQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildVatQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'VatI18n';
+    
+        return $this
+            ->joinVatI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildVatQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('VatI18n');
+        $this->with['VatI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildVatI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'VatI18n', '\Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(VatTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(VatTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(VatTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(VatTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(VatTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildVatQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(VatTableMap::COL_CREATED_AT);
     }
 
 } // VatQuery

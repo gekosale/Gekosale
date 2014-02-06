@@ -5,6 +5,7 @@ namespace Gekosale\Plugin\Contact\Model\ORM\Base;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Contact\Model\ORM\Contact as ChildContact;
+use Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery as ChildContactI18nQuery;
 use Gekosale\Plugin\Contact\Model\ORM\ContactQuery as ChildContactQuery;
 use Gekosale\Plugin\Contact\Model\ORM\Map\ContactTableMap;
 use Gekosale\Plugin\Shop\Model\ORM\Shop;
@@ -24,9 +25,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildContactQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildContactQuery orderByIsPublished($order = Criteria::ASC) Order by the is_published column
+ * @method     ChildContactQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildContactQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildContactQuery groupById() Group by the id column
  * @method     ChildContactQuery groupByIsPublished() Group by the is_published column
+ * @method     ChildContactQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildContactQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildContactQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildContactQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -40,14 +45,22 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContactQuery rightJoinContactShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactShop relation
  * @method     ChildContactQuery innerJoinContactShop($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactShop relation
  *
+ * @method     ChildContactQuery leftJoinContactI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContactI18n relation
+ * @method     ChildContactQuery rightJoinContactI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactI18n relation
+ * @method     ChildContactQuery innerJoinContactI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactI18n relation
+ *
  * @method     ChildContact findOne(ConnectionInterface $con = null) Return the first ChildContact matching the query
  * @method     ChildContact findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContact matching the query, or a new ChildContact object populated from the query conditions when no match is found
  *
  * @method     ChildContact findOneById(int $id) Return the first ChildContact filtered by the id column
  * @method     ChildContact findOneByIsPublished(int $is_published) Return the first ChildContact filtered by the is_published column
+ * @method     ChildContact findOneByCreatedAt(string $created_at) Return the first ChildContact filtered by the created_at column
+ * @method     ChildContact findOneByUpdatedAt(string $updated_at) Return the first ChildContact filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildContact objects filtered by the id column
  * @method     array findByIsPublished(int $is_published) Return ChildContact objects filtered by the is_published column
+ * @method     array findByCreatedAt(string $created_at) Return ChildContact objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildContact objects filtered by the updated_at column
  *
  */
 abstract class ContactQuery extends ModelCriteria
@@ -136,7 +149,7 @@ abstract class ContactQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, IS_PUBLISHED FROM contact WHERE ID = :p0';
+        $sql = 'SELECT ID, IS_PUBLISHED, CREATED_AT, UPDATED_AT FROM contact WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -308,6 +321,92 @@ abstract class ContactQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContactQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(ContactTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(ContactTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContactTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContactQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(ContactTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(ContactTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContactTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Gekosale\Plugin\Shop\Model\ORM\Shop object
      *
      * @param \Gekosale\Plugin\Shop\Model\ORM\Shop|ObjectCollection $shop  the related object to use as filter
@@ -454,6 +553,79 @@ abstract class ContactQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\Contact\Model\ORM\ContactI18n object
+     *
+     * @param \Gekosale\Plugin\Contact\Model\ORM\ContactI18n|ObjectCollection $contactI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContactQuery The current query, for fluid interface
+     */
+    public function filterByContactI18n($contactI18n, $comparison = null)
+    {
+        if ($contactI18n instanceof \Gekosale\Plugin\Contact\Model\ORM\ContactI18n) {
+            return $this
+                ->addUsingAlias(ContactTableMap::COL_ID, $contactI18n->getId(), $comparison);
+        } elseif ($contactI18n instanceof ObjectCollection) {
+            return $this
+                ->useContactI18nQuery()
+                ->filterByPrimaryKeys($contactI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByContactI18n() only accepts arguments of type \Gekosale\Plugin\Contact\Model\ORM\ContactI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ContactI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildContactQuery The current query, for fluid interface
+     */
+    public function joinContactI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ContactI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ContactI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ContactI18n relation ContactI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useContactI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinContactI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ContactI18n', '\Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildContact $contact Object to remove from the list of results
@@ -542,6 +714,129 @@ abstract class ContactQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildContactQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'ContactI18n';
+    
+        return $this
+            ->joinContactI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildContactQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('ContactI18n');
+        $this->with['ContactI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildContactI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ContactI18n', '\Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ContactTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ContactTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ContactTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ContactTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ContactTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildContactQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ContactTableMap::COL_CREATED_AT);
     }
 
 } // ContactQuery

@@ -60,7 +60,7 @@ class CurrencyTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -70,17 +70,12 @@ class CurrencyTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the ID field
      */
     const COL_ID = 'currency.ID';
-
-    /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'currency.NAME';
 
     /**
      * the column name for the CURRENCY_SYMBOL field
@@ -123,9 +118,28 @@ class CurrencyTableMap extends TableMap
     const COL_DECIMAL_COUNT = 'currency.DECIMAL_COUNT';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'currency.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'currency.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -134,12 +148,12 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'CurrencySymbol', 'DecimalSeparator', 'ThousandSeparator', 'PositivePreffix', 'PositiveSuffix', 'NegativePreffix', 'NegativeSuffix', 'DecimalCount', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', 'currencySymbol', 'decimalSeparator', 'thousandSeparator', 'positivePreffix', 'positiveSuffix', 'negativePreffix', 'negativeSuffix', 'decimalCount', ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID, CurrencyTableMap::COL_NAME, CurrencyTableMap::COL_CURRENCY_SYMBOL, CurrencyTableMap::COL_DECIMAL_SEPARATOR, CurrencyTableMap::COL_THOUSAND_SEPARATOR, CurrencyTableMap::COL_POSITIVE_PREFFIX, CurrencyTableMap::COL_POSITIVE_SUFFIX, CurrencyTableMap::COL_NEGATIVE_PREFFIX, CurrencyTableMap::COL_NEGATIVE_SUFFIX, CurrencyTableMap::COL_DECIMAL_COUNT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_CURRENCY_SYMBOL', 'COL_DECIMAL_SEPARATOR', 'COL_THOUSAND_SEPARATOR', 'COL_POSITIVE_PREFFIX', 'COL_POSITIVE_SUFFIX', 'COL_NEGATIVE_PREFFIX', 'COL_NEGATIVE_SUFFIX', 'COL_DECIMAL_COUNT', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'currency_symbol', 'decimal_separator', 'thousand_separator', 'positive_preffix', 'positive_suffix', 'negative_preffix', 'negative_suffix', 'decimal_count', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'CurrencySymbol', 'DecimalSeparator', 'ThousandSeparator', 'PositivePreffix', 'PositiveSuffix', 'NegativePreffix', 'NegativeSuffix', 'DecimalCount', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'currencySymbol', 'decimalSeparator', 'thousandSeparator', 'positivePreffix', 'positiveSuffix', 'negativePreffix', 'negativeSuffix', 'decimalCount', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID, CurrencyTableMap::COL_CURRENCY_SYMBOL, CurrencyTableMap::COL_DECIMAL_SEPARATOR, CurrencyTableMap::COL_THOUSAND_SEPARATOR, CurrencyTableMap::COL_POSITIVE_PREFFIX, CurrencyTableMap::COL_POSITIVE_SUFFIX, CurrencyTableMap::COL_NEGATIVE_PREFFIX, CurrencyTableMap::COL_NEGATIVE_SUFFIX, CurrencyTableMap::COL_DECIMAL_COUNT, CurrencyTableMap::COL_CREATED_AT, CurrencyTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_CURRENCY_SYMBOL', 'COL_DECIMAL_SEPARATOR', 'COL_THOUSAND_SEPARATOR', 'COL_POSITIVE_PREFFIX', 'COL_POSITIVE_SUFFIX', 'COL_NEGATIVE_PREFFIX', 'COL_NEGATIVE_SUFFIX', 'COL_DECIMAL_COUNT', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'currency_symbol', 'decimal_separator', 'thousand_separator', 'positive_preffix', 'positive_suffix', 'negative_preffix', 'negative_suffix', 'decimal_count', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -149,12 +163,12 @@ class CurrencyTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'CurrencySymbol' => 2, 'DecimalSeparator' => 3, 'ThousandSeparator' => 4, 'PositivePreffix' => 5, 'PositiveSuffix' => 6, 'NegativePreffix' => 7, 'NegativeSuffix' => 8, 'DecimalCount' => 9, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'currencySymbol' => 2, 'decimalSeparator' => 3, 'thousandSeparator' => 4, 'positivePreffix' => 5, 'positiveSuffix' => 6, 'negativePreffix' => 7, 'negativeSuffix' => 8, 'decimalCount' => 9, ),
-        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID => 0, CurrencyTableMap::COL_NAME => 1, CurrencyTableMap::COL_CURRENCY_SYMBOL => 2, CurrencyTableMap::COL_DECIMAL_SEPARATOR => 3, CurrencyTableMap::COL_THOUSAND_SEPARATOR => 4, CurrencyTableMap::COL_POSITIVE_PREFFIX => 5, CurrencyTableMap::COL_POSITIVE_SUFFIX => 6, CurrencyTableMap::COL_NEGATIVE_PREFFIX => 7, CurrencyTableMap::COL_NEGATIVE_SUFFIX => 8, CurrencyTableMap::COL_DECIMAL_COUNT => 9, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_CURRENCY_SYMBOL' => 2, 'COL_DECIMAL_SEPARATOR' => 3, 'COL_THOUSAND_SEPARATOR' => 4, 'COL_POSITIVE_PREFFIX' => 5, 'COL_POSITIVE_SUFFIX' => 6, 'COL_NEGATIVE_PREFFIX' => 7, 'COL_NEGATIVE_SUFFIX' => 8, 'COL_DECIMAL_COUNT' => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'currency_symbol' => 2, 'decimal_separator' => 3, 'thousand_separator' => 4, 'positive_preffix' => 5, 'positive_suffix' => 6, 'negative_preffix' => 7, 'negative_suffix' => 8, 'decimal_count' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'CurrencySymbol' => 1, 'DecimalSeparator' => 2, 'ThousandSeparator' => 3, 'PositivePreffix' => 4, 'PositiveSuffix' => 5, 'NegativePreffix' => 6, 'NegativeSuffix' => 7, 'DecimalCount' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'currencySymbol' => 1, 'decimalSeparator' => 2, 'thousandSeparator' => 3, 'positivePreffix' => 4, 'positiveSuffix' => 5, 'negativePreffix' => 6, 'negativeSuffix' => 7, 'decimalCount' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
+        self::TYPE_COLNAME       => array(CurrencyTableMap::COL_ID => 0, CurrencyTableMap::COL_CURRENCY_SYMBOL => 1, CurrencyTableMap::COL_DECIMAL_SEPARATOR => 2, CurrencyTableMap::COL_THOUSAND_SEPARATOR => 3, CurrencyTableMap::COL_POSITIVE_PREFFIX => 4, CurrencyTableMap::COL_POSITIVE_SUFFIX => 5, CurrencyTableMap::COL_NEGATIVE_PREFFIX => 6, CurrencyTableMap::COL_NEGATIVE_SUFFIX => 7, CurrencyTableMap::COL_DECIMAL_COUNT => 8, CurrencyTableMap::COL_CREATED_AT => 9, CurrencyTableMap::COL_UPDATED_AT => 10, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_CURRENCY_SYMBOL' => 1, 'COL_DECIMAL_SEPARATOR' => 2, 'COL_THOUSAND_SEPARATOR' => 3, 'COL_POSITIVE_PREFFIX' => 4, 'COL_POSITIVE_SUFFIX' => 5, 'COL_NEGATIVE_PREFFIX' => 6, 'COL_NEGATIVE_SUFFIX' => 7, 'COL_DECIMAL_COUNT' => 8, 'COL_CREATED_AT' => 9, 'COL_UPDATED_AT' => 10, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'currency_symbol' => 1, 'decimal_separator' => 2, 'thousand_separator' => 3, 'positive_preffix' => 4, 'positive_suffix' => 5, 'negative_preffix' => 6, 'negative_suffix' => 7, 'decimal_count' => 8, 'created_at' => 9, 'updated_at' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -174,7 +188,6 @@ class CurrencyTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 45, null);
         $this->addColumn('CURRENCY_SYMBOL', 'CurrencySymbol', 'VARCHAR', true, 15, null);
         $this->addColumn('DECIMAL_SEPARATOR', 'DecimalSeparator', 'VARCHAR', false, 10, null);
         $this->addColumn('THOUSAND_SEPARATOR', 'ThousandSeparator', 'VARCHAR', false, 10, null);
@@ -183,6 +196,8 @@ class CurrencyTableMap extends TableMap
         $this->addColumn('NEGATIVE_PREFFIX', 'NegativePreffix', 'VARCHAR', false, 10, null);
         $this->addColumn('NEGATIVE_SUFFIX', 'NegativeSuffix', 'VARCHAR', false, 10, null);
         $this->addColumn('DECIMAL_COUNT', 'DecimalCount', 'INTEGER', false, null, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -195,7 +210,22 @@ class CurrencyTableMap extends TableMap
         $this->addRelation('ProductRelatedBySellCurrencyId', '\\Gekosale\\Plugin\\Product\\Model\\ORM\\Product', RelationMap::ONE_TO_MANY, array('id' => 'sell_currency_id', ), null, null, 'ProductsRelatedBySellCurrencyId');
         $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::ONE_TO_MANY, array('id' => 'currency_id', ), 'SET NULL', null, 'Shops');
         $this->addRelation('CurrencyShop', '\\Gekosale\\Plugin\\Currency\\Model\\ORM\\CurrencyShop', RelationMap::ONE_TO_MANY, array('id' => 'currency_id', ), 'CASCADE', null, 'CurrencyShops');
+        $this->addRelation('CurrencyI18n', '\\Gekosale\\Plugin\\Currency\\Model\\ORM\\CurrencyI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'CurrencyI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to currency     * by a foreign key with ON DELETE CASCADE
      */
@@ -206,6 +236,7 @@ class CurrencyTableMap extends TableMap
                 LocaleTableMap::clearInstancePool();
                 ShopTableMap::clearInstancePool();
                 CurrencyShopTableMap::clearInstancePool();
+                CurrencyI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -347,7 +378,6 @@ class CurrencyTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(CurrencyTableMap::COL_ID);
-            $criteria->addSelectColumn(CurrencyTableMap::COL_NAME);
             $criteria->addSelectColumn(CurrencyTableMap::COL_CURRENCY_SYMBOL);
             $criteria->addSelectColumn(CurrencyTableMap::COL_DECIMAL_SEPARATOR);
             $criteria->addSelectColumn(CurrencyTableMap::COL_THOUSAND_SEPARATOR);
@@ -356,9 +386,10 @@ class CurrencyTableMap extends TableMap
             $criteria->addSelectColumn(CurrencyTableMap::COL_NEGATIVE_PREFFIX);
             $criteria->addSelectColumn(CurrencyTableMap::COL_NEGATIVE_SUFFIX);
             $criteria->addSelectColumn(CurrencyTableMap::COL_DECIMAL_COUNT);
+            $criteria->addSelectColumn(CurrencyTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(CurrencyTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.CURRENCY_SYMBOL');
             $criteria->addSelectColumn($alias . '.DECIMAL_SEPARATOR');
             $criteria->addSelectColumn($alias . '.THOUSAND_SEPARATOR');
@@ -367,6 +398,8 @@ class CurrencyTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.NEGATIVE_PREFFIX');
             $criteria->addSelectColumn($alias . '.NEGATIVE_SUFFIX');
             $criteria->addSelectColumn($alias . '.DECIMAL_COUNT');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

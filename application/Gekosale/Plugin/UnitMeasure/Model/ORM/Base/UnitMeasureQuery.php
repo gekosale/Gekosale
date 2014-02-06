@@ -6,6 +6,7 @@ use \Exception;
 use \PDO;
 use Gekosale\Plugin\Product\Model\ORM\Product;
 use Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasure as ChildUnitMeasure;
+use Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18nQuery as ChildUnitMeasureI18nQuery;
 use Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureQuery as ChildUnitMeasureQuery;
 use Gekosale\Plugin\UnitMeasure\Model\ORM\Map\UnitMeasureTableMap;
 use Propel\Runtime\Propel;
@@ -23,8 +24,12 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildUnitMeasureQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildUnitMeasureQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildUnitMeasureQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildUnitMeasureQuery groupById() Group by the id column
+ * @method     ChildUnitMeasureQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildUnitMeasureQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildUnitMeasureQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUnitMeasureQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,12 +39,20 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUnitMeasureQuery rightJoinProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Product relation
  * @method     ChildUnitMeasureQuery innerJoinProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the Product relation
  *
+ * @method     ChildUnitMeasureQuery leftJoinUnitMeasureI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the UnitMeasureI18n relation
+ * @method     ChildUnitMeasureQuery rightJoinUnitMeasureI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UnitMeasureI18n relation
+ * @method     ChildUnitMeasureQuery innerJoinUnitMeasureI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the UnitMeasureI18n relation
+ *
  * @method     ChildUnitMeasure findOne(ConnectionInterface $con = null) Return the first ChildUnitMeasure matching the query
  * @method     ChildUnitMeasure findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUnitMeasure matching the query, or a new ChildUnitMeasure object populated from the query conditions when no match is found
  *
  * @method     ChildUnitMeasure findOneById(int $id) Return the first ChildUnitMeasure filtered by the id column
+ * @method     ChildUnitMeasure findOneByCreatedAt(string $created_at) Return the first ChildUnitMeasure filtered by the created_at column
+ * @method     ChildUnitMeasure findOneByUpdatedAt(string $updated_at) Return the first ChildUnitMeasure filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildUnitMeasure objects filtered by the id column
+ * @method     array findByCreatedAt(string $created_at) Return ChildUnitMeasure objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildUnitMeasure objects filtered by the updated_at column
  *
  */
 abstract class UnitMeasureQuery extends ModelCriteria
@@ -128,7 +141,7 @@ abstract class UnitMeasureQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID FROM unit_measure WHERE ID = :p0';
+        $sql = 'SELECT ID, CREATED_AT, UPDATED_AT FROM unit_measure WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -259,6 +272,92 @@ abstract class UnitMeasureQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(UnitMeasureTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(UnitMeasureTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UnitMeasureTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(UnitMeasureTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(UnitMeasureTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UnitMeasureTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Gekosale\Plugin\Product\Model\ORM\Product object
      *
      * @param \Gekosale\Plugin\Product\Model\ORM\Product|ObjectCollection $product  the related object to use as filter
@@ -329,6 +428,79 @@ abstract class UnitMeasureQuery extends ModelCriteria
         return $this
             ->joinProduct($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Product', '\Gekosale\Plugin\Product\Model\ORM\ProductQuery');
+    }
+
+    /**
+     * Filter the query by a related \Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18n object
+     *
+     * @param \Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18n|ObjectCollection $unitMeasureI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function filterByUnitMeasureI18n($unitMeasureI18n, $comparison = null)
+    {
+        if ($unitMeasureI18n instanceof \Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18n) {
+            return $this
+                ->addUsingAlias(UnitMeasureTableMap::COL_ID, $unitMeasureI18n->getId(), $comparison);
+        } elseif ($unitMeasureI18n instanceof ObjectCollection) {
+            return $this
+                ->useUnitMeasureI18nQuery()
+                ->filterByPrimaryKeys($unitMeasureI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByUnitMeasureI18n() only accepts arguments of type \Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UnitMeasureI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function joinUnitMeasureI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UnitMeasureI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UnitMeasureI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UnitMeasureI18n relation UnitMeasureI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useUnitMeasureI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinUnitMeasureI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UnitMeasureI18n', '\Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18nQuery');
     }
 
     /**
@@ -420,6 +592,129 @@ abstract class UnitMeasureQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'UnitMeasureI18n';
+    
+        return $this
+            ->joinUnitMeasureI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('UnitMeasureI18n');
+        $this->with['UnitMeasureI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildUnitMeasureI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UnitMeasureI18n', '\Gekosale\Plugin\UnitMeasure\Model\ORM\UnitMeasureI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UnitMeasureTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UnitMeasureTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UnitMeasureTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UnitMeasureTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UnitMeasureTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildUnitMeasureQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UnitMeasureTableMap::COL_CREATED_AT);
     }
 
 } // UnitMeasureQuery

@@ -22,7 +22,7 @@ class ModelSaveEvent extends Event
 
     protected $id;
 
-    public function __construct (Model $model, $submittedData, $id)
+    public function __construct ($submittedData, $id)
     {
         $this->submittedData = $submittedData;
         $this->id = $id;

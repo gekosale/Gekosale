@@ -73,6 +73,30 @@ abstract class BlogI18n implements ActiveRecordInterface
     protected $name;
 
     /**
+     * The value for the description field.
+     * @var        string
+     */
+    protected $description;
+
+    /**
+     * The value for the meta_title field.
+     * @var        string
+     */
+    protected $meta_title;
+
+    /**
+     * The value for the meta_keyword field.
+     * @var        string
+     */
+    protected $meta_keyword;
+
+    /**
+     * The value for the meta_description field.
+     * @var        string
+     */
+    protected $meta_description;
+
+    /**
      * @var        Blog
      */
     protected $aBlog;
@@ -390,6 +414,50 @@ abstract class BlogI18n implements ActiveRecordInterface
     }
 
     /**
+     * Get the [description] column value.
+     * 
+     * @return   string
+     */
+    public function getDescription()
+    {
+
+        return $this->description;
+    }
+
+    /**
+     * Get the [meta_title] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaTitle()
+    {
+
+        return $this->meta_title;
+    }
+
+    /**
+     * Get the [meta_keyword] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaKeyword()
+    {
+
+        return $this->meta_keyword;
+    }
+
+    /**
+     * Get the [meta_description] column value.
+     * 
+     * @return   string
+     */
+    public function getMetaDescription()
+    {
+
+        return $this->meta_description;
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -457,6 +525,90 @@ abstract class BlogI18n implements ActiveRecordInterface
     } // setName()
 
     /**
+     * Set the value of [description] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[BlogI18nTableMap::COL_DESCRIPTION] = true;
+        }
+
+
+        return $this;
+    } // setDescription()
+
+    /**
+     * Set the value of [meta_title] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+     */
+    public function setMetaTitle($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_title !== $v) {
+            $this->meta_title = $v;
+            $this->modifiedColumns[BlogI18nTableMap::COL_META_TITLE] = true;
+        }
+
+
+        return $this;
+    } // setMetaTitle()
+
+    /**
+     * Set the value of [meta_keyword] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+     */
+    public function setMetaKeyword($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_keyword !== $v) {
+            $this->meta_keyword = $v;
+            $this->modifiedColumns[BlogI18nTableMap::COL_META_KEYWORD] = true;
+        }
+
+
+        return $this;
+    } // setMetaKeyword()
+
+    /**
+     * Set the value of [meta_description] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogI18n The current object (for fluent API support)
+     */
+    public function setMetaDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->meta_description !== $v) {
+            $this->meta_description = $v;
+            $this->modifiedColumns[BlogI18nTableMap::COL_META_DESCRIPTION] = true;
+        }
+
+
+        return $this;
+    } // setMetaDescription()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -505,6 +657,18 @@ abstract class BlogI18n implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BlogI18nTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BlogI18nTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BlogI18nTableMap::translateFieldName('MetaTitle', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_title = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BlogI18nTableMap::translateFieldName('MetaKeyword', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_keyword = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BlogI18nTableMap::translateFieldName('MetaDescription', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->meta_description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -513,7 +677,7 @@ abstract class BlogI18n implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = BlogI18nTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = BlogI18nTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Blog\Model\ORM\BlogI18n object", 0, $e);
@@ -743,6 +907,18 @@ abstract class BlogI18n implements ActiveRecordInterface
         if ($this->isColumnModified(BlogI18nTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'NAME';
         }
+        if ($this->isColumnModified(BlogI18nTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+        }
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'META_TITLE';
+        }
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_KEYWORD)) {
+            $modifiedColumns[':p' . $index++]  = 'META_KEYWORD';
+        }
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'META_DESCRIPTION';
+        }
 
         $sql = sprintf(
             'INSERT INTO blog_i18n (%s) VALUES (%s)',
@@ -762,6 +938,18 @@ abstract class BlogI18n implements ActiveRecordInterface
                         break;
                     case 'NAME':                        
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'DESCRIPTION':                        
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'META_TITLE':                        
+                        $stmt->bindValue($identifier, $this->meta_title, PDO::PARAM_STR);
+                        break;
+                    case 'META_KEYWORD':                        
+                        $stmt->bindValue($identifier, $this->meta_keyword, PDO::PARAM_STR);
+                        break;
+                    case 'META_DESCRIPTION':                        
+                        $stmt->bindValue($identifier, $this->meta_description, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -827,6 +1015,18 @@ abstract class BlogI18n implements ActiveRecordInterface
             case 2:
                 return $this->getName();
                 break;
+            case 3:
+                return $this->getDescription();
+                break;
+            case 4:
+                return $this->getMetaTitle();
+                break;
+            case 5:
+                return $this->getMetaKeyword();
+                break;
+            case 6:
+                return $this->getMetaDescription();
+                break;
             default:
                 return null;
                 break;
@@ -859,6 +1059,10 @@ abstract class BlogI18n implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getLocale(),
             $keys[2] => $this->getName(),
+            $keys[3] => $this->getDescription(),
+            $keys[4] => $this->getMetaTitle(),
+            $keys[5] => $this->getMetaKeyword(),
+            $keys[6] => $this->getMetaDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -912,6 +1116,18 @@ abstract class BlogI18n implements ActiveRecordInterface
             case 2:
                 $this->setName($value);
                 break;
+            case 3:
+                $this->setDescription($value);
+                break;
+            case 4:
+                $this->setMetaTitle($value);
+                break;
+            case 5:
+                $this->setMetaKeyword($value);
+                break;
+            case 6:
+                $this->setMetaDescription($value);
+                break;
         } // switch()
     }
 
@@ -939,6 +1155,10 @@ abstract class BlogI18n implements ActiveRecordInterface
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setLocale($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDescription($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setMetaTitle($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setMetaKeyword($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setMetaDescription($arr[$keys[6]]);
     }
 
     /**
@@ -953,6 +1173,10 @@ abstract class BlogI18n implements ActiveRecordInterface
         if ($this->isColumnModified(BlogI18nTableMap::COL_ID)) $criteria->add(BlogI18nTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(BlogI18nTableMap::COL_LOCALE)) $criteria->add(BlogI18nTableMap::COL_LOCALE, $this->locale);
         if ($this->isColumnModified(BlogI18nTableMap::COL_NAME)) $criteria->add(BlogI18nTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(BlogI18nTableMap::COL_DESCRIPTION)) $criteria->add(BlogI18nTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_TITLE)) $criteria->add(BlogI18nTableMap::COL_META_TITLE, $this->meta_title);
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_KEYWORD)) $criteria->add(BlogI18nTableMap::COL_META_KEYWORD, $this->meta_keyword);
+        if ($this->isColumnModified(BlogI18nTableMap::COL_META_DESCRIPTION)) $criteria->add(BlogI18nTableMap::COL_META_DESCRIPTION, $this->meta_description);
 
         return $criteria;
     }
@@ -1028,6 +1252,10 @@ abstract class BlogI18n implements ActiveRecordInterface
         $copyObj->setId($this->getId());
         $copyObj->setLocale($this->getLocale());
         $copyObj->setName($this->getName());
+        $copyObj->setDescription($this->getDescription());
+        $copyObj->setMetaTitle($this->getMetaTitle());
+        $copyObj->setMetaKeyword($this->getMetaKeyword());
+        $copyObj->setMetaDescription($this->getMetaDescription());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1114,6 +1342,10 @@ abstract class BlogI18n implements ActiveRecordInterface
         $this->id = null;
         $this->locale = null;
         $this->name = null;
+        $this->description = null;
+        $this->meta_title = null;
+        $this->meta_keyword = null;
+        $this->meta_description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

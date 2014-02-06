@@ -2363,20 +2363,6 @@ abstract class AttributeGroupName implements ActiveRecordInterface
         return (string) $this->exportTo(AttributeGroupNameTableMap::DEFAULT_STRING_FORMAT);
     }
 
-    // timestampable behavior
-    
-    /**
-     * Mark the current object so that the update date doesn't get updated during next save
-     *
-     * @return     ChildAttributeGroupName The current object (for fluent API support)
-     */
-    public function keepUpdateDateUnchanged()
-    {
-        $this->modifiedColumns[AttributeGroupNameTableMap::COL_UPDATED_AT] = true;
-    
-        return $this;
-    }
-
     // i18n behavior
     
     /**
@@ -2496,6 +2482,20 @@ abstract class AttributeGroupName implements ActiveRecordInterface
          */
         public function setName($v)
         {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildAttributeGroupName The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AttributeGroupNameTableMap::COL_UPDATED_AT] = true;
     
         return $this;
     }

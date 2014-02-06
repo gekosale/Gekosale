@@ -2,6 +2,7 @@
 
 namespace Gekosale\Plugin\Producer\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\File\Model\ORM\File as ChildFile;
@@ -9,6 +10,8 @@ use Gekosale\Plugin\File\Model\ORM\FileQuery;
 use Gekosale\Plugin\Producer\Model\ORM\Producer as ChildProducer;
 use Gekosale\Plugin\Producer\Model\ORM\ProducerDeliverer as ChildProducerDeliverer;
 use Gekosale\Plugin\Producer\Model\ORM\ProducerDelivererQuery as ChildProducerDelivererQuery;
+use Gekosale\Plugin\Producer\Model\ORM\ProducerI18n as ChildProducerI18n;
+use Gekosale\Plugin\Producer\Model\ORM\ProducerI18nQuery as ChildProducerI18nQuery;
 use Gekosale\Plugin\Producer\Model\ORM\ProducerQuery as ChildProducerQuery;
 use Gekosale\Plugin\Producer\Model\ORM\ProducerShop as ChildProducerShop;
 use Gekosale\Plugin\Producer\Model\ORM\ProducerShopQuery as ChildProducerShopQuery;
@@ -27,6 +30,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Producer implements ActiveRecordInterface 
 {
@@ -75,6 +79,18 @@ abstract class Producer implements ActiveRecordInterface
     protected $photo_id;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        File
      */
     protected $aFile;
@@ -98,12 +114,32 @@ abstract class Producer implements ActiveRecordInterface
     protected $collProducerShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildProducerI18n[] Collection to store aggregation of ChildProducerI18n objects.
+     */
+    protected $collProducerI18ns;
+    protected $collProducerI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildProducerI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -122,6 +158,12 @@ abstract class Producer implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $producerShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $producerI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\Producer\Model\ORM\Base\Producer object.
@@ -404,6 +446,46 @@ abstract class Producer implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -450,6 +532,48 @@ abstract class Producer implements ActiveRecordInterface
     } // setPhotoId()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Producer\Model\ORM\Producer The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ProducerTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Producer\Model\ORM\Producer The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ProducerTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -491,6 +615,18 @@ abstract class Producer implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProducerTableMap::translateFieldName('PhotoId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->photo_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProducerTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProducerTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -499,7 +635,7 @@ abstract class Producer implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = ProducerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = ProducerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Producer\Model\ORM\Producer object", 0, $e);
@@ -569,6 +705,8 @@ abstract class Producer implements ActiveRecordInterface
             $this->collProducts = null;
 
             $this->collProducerShops = null;
+
+            $this->collProducerI18ns = null;
 
         } // if (deep)
     }
@@ -640,8 +778,19 @@ abstract class Producer implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(ProducerTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(ProducerTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(ProducerTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -756,6 +905,23 @@ abstract class Producer implements ActiveRecordInterface
                 }
             }
 
+            if ($this->producerI18nsScheduledForDeletion !== null) {
+                if (!$this->producerI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Producer\Model\ORM\ProducerI18nQuery::create()
+                        ->filterByPrimaryKeys($this->producerI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->producerI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collProducerI18ns !== null) {
+            foreach ($this->collProducerI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -788,6 +954,12 @@ abstract class Producer implements ActiveRecordInterface
         if ($this->isColumnModified(ProducerTableMap::COL_PHOTO_ID)) {
             $modifiedColumns[':p' . $index++]  = 'PHOTO_ID';
         }
+        if ($this->isColumnModified(ProducerTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(ProducerTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO producer (%s) VALUES (%s)',
@@ -804,6 +976,12 @@ abstract class Producer implements ActiveRecordInterface
                         break;
                     case 'PHOTO_ID':                        
                         $stmt->bindValue($identifier, $this->photo_id, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -873,6 +1051,12 @@ abstract class Producer implements ActiveRecordInterface
             case 1:
                 return $this->getPhotoId();
                 break;
+            case 2:
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -904,6 +1088,8 @@ abstract class Producer implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getPhotoId(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -922,6 +1108,9 @@ abstract class Producer implements ActiveRecordInterface
             }
             if (null !== $this->collProducerShops) {
                 $result['ProducerShops'] = $this->collProducerShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collProducerI18ns) {
+                $result['ProducerI18ns'] = $this->collProducerI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -963,6 +1152,12 @@ abstract class Producer implements ActiveRecordInterface
             case 1:
                 $this->setPhotoId($value);
                 break;
+            case 2:
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -989,6 +1184,8 @@ abstract class Producer implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setPhotoId($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -1002,6 +1199,8 @@ abstract class Producer implements ActiveRecordInterface
 
         if ($this->isColumnModified(ProducerTableMap::COL_ID)) $criteria->add(ProducerTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(ProducerTableMap::COL_PHOTO_ID)) $criteria->add(ProducerTableMap::COL_PHOTO_ID, $this->photo_id);
+        if ($this->isColumnModified(ProducerTableMap::COL_CREATED_AT)) $criteria->add(ProducerTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ProducerTableMap::COL_UPDATED_AT)) $criteria->add(ProducerTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1068,6 +1267,8 @@ abstract class Producer implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setPhotoId($this->getPhotoId());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1089,6 +1290,12 @@ abstract class Producer implements ActiveRecordInterface
             foreach ($this->getProducerShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProducerShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getProducerI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProducerI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1192,6 +1399,9 @@ abstract class Producer implements ActiveRecordInterface
         }
         if ('ProducerShop' == $relationName) {
             return $this->initProducerShops();
+        }
+        if ('ProducerI18n' == $relationName) {
+            return $this->initProducerI18ns();
         }
     }
 
@@ -2050,12 +2260,239 @@ abstract class Producer implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProducerI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProducerI18ns()
+     */
+    public function clearProducerI18ns()
+    {
+        $this->collProducerI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProducerI18ns collection loaded partially.
+     */
+    public function resetPartialProducerI18ns($v = true)
+    {
+        $this->collProducerI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collProducerI18ns collection.
+     *
+     * By default this just sets the collProducerI18ns collection to an empty array (like clearcollProducerI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProducerI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collProducerI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collProducerI18ns = new ObjectCollection();
+        $this->collProducerI18ns->setModel('\Gekosale\Plugin\Producer\Model\ORM\ProducerI18n');
+    }
+
+    /**
+     * Gets an array of ChildProducerI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProducer is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildProducerI18n[] List of ChildProducerI18n objects
+     * @throws PropelException
+     */
+    public function getProducerI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProducerI18nsPartial && !$this->isNew();
+        if (null === $this->collProducerI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProducerI18ns) {
+                // return empty collection
+                $this->initProducerI18ns();
+            } else {
+                $collProducerI18ns = ChildProducerI18nQuery::create(null, $criteria)
+                    ->filterByProducer($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProducerI18nsPartial && count($collProducerI18ns)) {
+                        $this->initProducerI18ns(false);
+
+                        foreach ($collProducerI18ns as $obj) {
+                            if (false == $this->collProducerI18ns->contains($obj)) {
+                                $this->collProducerI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collProducerI18nsPartial = true;
+                    }
+
+                    reset($collProducerI18ns);
+
+                    return $collProducerI18ns;
+                }
+
+                if ($partial && $this->collProducerI18ns) {
+                    foreach ($this->collProducerI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collProducerI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProducerI18ns = $collProducerI18ns;
+                $this->collProducerI18nsPartial = false;
+            }
+        }
+
+        return $this->collProducerI18ns;
+    }
+
+    /**
+     * Sets a collection of ProducerI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $producerI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildProducer The current object (for fluent API support)
+     */
+    public function setProducerI18ns(Collection $producerI18ns, ConnectionInterface $con = null)
+    {
+        $producerI18nsToDelete = $this->getProducerI18ns(new Criteria(), $con)->diff($producerI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->producerI18nsScheduledForDeletion = clone $producerI18nsToDelete;
+
+        foreach ($producerI18nsToDelete as $producerI18nRemoved) {
+            $producerI18nRemoved->setProducer(null);
+        }
+
+        $this->collProducerI18ns = null;
+        foreach ($producerI18ns as $producerI18n) {
+            $this->addProducerI18n($producerI18n);
+        }
+
+        $this->collProducerI18ns = $producerI18ns;
+        $this->collProducerI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProducerI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProducerI18n objects.
+     * @throws PropelException
+     */
+    public function countProducerI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProducerI18nsPartial && !$this->isNew();
+        if (null === $this->collProducerI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProducerI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProducerI18ns());
+            }
+
+            $query = ChildProducerI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProducer($this)
+                ->count($con);
+        }
+
+        return count($this->collProducerI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildProducerI18n object to this object
+     * through the ChildProducerI18n foreign key attribute.
+     *
+     * @param    ChildProducerI18n $l ChildProducerI18n
+     * @return   \Gekosale\Plugin\Producer\Model\ORM\Producer The current object (for fluent API support)
+     */
+    public function addProducerI18n(ChildProducerI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collProducerI18ns === null) {
+            $this->initProducerI18ns();
+            $this->collProducerI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collProducerI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProducerI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ProducerI18n $producerI18n The producerI18n object to add.
+     */
+    protected function doAddProducerI18n($producerI18n)
+    {
+        $this->collProducerI18ns[]= $producerI18n;
+        $producerI18n->setProducer($this);
+    }
+
+    /**
+     * @param  ProducerI18n $producerI18n The producerI18n object to remove.
+     * @return ChildProducer The current object (for fluent API support)
+     */
+    public function removeProducerI18n($producerI18n)
+    {
+        if ($this->getProducerI18ns()->contains($producerI18n)) {
+            $this->collProducerI18ns->remove($this->collProducerI18ns->search($producerI18n));
+            if (null === $this->producerI18nsScheduledForDeletion) {
+                $this->producerI18nsScheduledForDeletion = clone $this->collProducerI18ns;
+                $this->producerI18nsScheduledForDeletion->clear();
+            }
+            $this->producerI18nsScheduledForDeletion[]= clone $producerI18n;
+            $producerI18n->setProducer(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
         $this->photo_id = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -2090,11 +2527,21 @@ abstract class Producer implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProducerI18ns) {
+                foreach ($this->collProducerI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collProducerDeliverers = null;
         $this->collProducts = null;
         $this->collProducerShops = null;
+        $this->collProducerI18ns = null;
         $this->aFile = null;
     }
 
@@ -2106,6 +2553,215 @@ abstract class Producer implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(ProducerTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildProducer The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProducerI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collProducerI18ns) {
+                foreach ($this->collProducerI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildProducerI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildProducerI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addProducerI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildProducer The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildProducerI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collProducerI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collProducerI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProducerI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Producer\Model\ORM\ProducerI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Producer\Model\ORM\ProducerI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Producer\Model\ORM\ProducerI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Producer\Model\ORM\ProducerI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildProducer The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[ProducerTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

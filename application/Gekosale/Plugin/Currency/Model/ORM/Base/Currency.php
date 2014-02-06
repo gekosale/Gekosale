@@ -2,9 +2,12 @@
 
 namespace Gekosale\Plugin\Currency\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Currency\Model\ORM\Currency as ChildCurrency;
+use Gekosale\Plugin\Currency\Model\ORM\CurrencyI18n as ChildCurrencyI18n;
+use Gekosale\Plugin\Currency\Model\ORM\CurrencyI18nQuery as ChildCurrencyI18nQuery;
 use Gekosale\Plugin\Currency\Model\ORM\CurrencyQuery as ChildCurrencyQuery;
 use Gekosale\Plugin\Currency\Model\ORM\CurrencyShop as ChildCurrencyShop;
 use Gekosale\Plugin\Currency\Model\ORM\CurrencyShopQuery as ChildCurrencyShopQuery;
@@ -29,6 +32,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Currency implements ActiveRecordInterface 
 {
@@ -69,12 +73,6 @@ abstract class Currency implements ActiveRecordInterface
      * @var        int
      */
     protected $id;
-
-    /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
 
     /**
      * The value for the currency_symbol field.
@@ -125,6 +123,18 @@ abstract class Currency implements ActiveRecordInterface
     protected $decimal_count;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildLocale[] Collection to store aggregation of ChildLocale objects.
      */
     protected $collLocales;
@@ -155,12 +165,32 @@ abstract class Currency implements ActiveRecordInterface
     protected $collCurrencyShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildCurrencyI18n[] Collection to store aggregation of ChildCurrencyI18n objects.
+     */
+    protected $collCurrencyI18ns;
+    protected $collCurrencyI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildCurrencyI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -191,6 +221,12 @@ abstract class Currency implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $currencyShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $currencyI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\Currency\Model\ORM\Base\Currency object.
@@ -462,17 +498,6 @@ abstract class Currency implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
      * Get the [currency_symbol] column value.
      * 
      * @return   string
@@ -561,6 +586,46 @@ abstract class Currency implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -580,27 +645,6 @@ abstract class Currency implements ActiveRecordInterface
 
         return $this;
     } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Currency\Model\ORM\Currency The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[CurrencyTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
 
     /**
      * Set the value of [currency_symbol] column.
@@ -771,6 +815,48 @@ abstract class Currency implements ActiveRecordInterface
     } // setDecimalCount()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Currency\Model\ORM\Currency The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[CurrencyTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Currency\Model\ORM\Currency The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[CurrencyTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -810,32 +896,41 @@ abstract class Currency implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CurrencyTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CurrencyTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CurrencyTableMap::translateFieldName('CurrencySymbol', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CurrencyTableMap::translateFieldName('CurrencySymbol', TableMap::TYPE_PHPNAME, $indexType)];
             $this->currency_symbol = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CurrencyTableMap::translateFieldName('DecimalSeparator', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CurrencyTableMap::translateFieldName('DecimalSeparator', TableMap::TYPE_PHPNAME, $indexType)];
             $this->decimal_separator = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CurrencyTableMap::translateFieldName('ThousandSeparator', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CurrencyTableMap::translateFieldName('ThousandSeparator', TableMap::TYPE_PHPNAME, $indexType)];
             $this->thousand_separator = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CurrencyTableMap::translateFieldName('PositivePreffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CurrencyTableMap::translateFieldName('PositivePreffix', TableMap::TYPE_PHPNAME, $indexType)];
             $this->positive_preffix = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CurrencyTableMap::translateFieldName('PositiveSuffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CurrencyTableMap::translateFieldName('PositiveSuffix', TableMap::TYPE_PHPNAME, $indexType)];
             $this->positive_suffix = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CurrencyTableMap::translateFieldName('NegativePreffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CurrencyTableMap::translateFieldName('NegativePreffix', TableMap::TYPE_PHPNAME, $indexType)];
             $this->negative_preffix = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : CurrencyTableMap::translateFieldName('NegativeSuffix', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CurrencyTableMap::translateFieldName('NegativeSuffix', TableMap::TYPE_PHPNAME, $indexType)];
             $this->negative_suffix = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : CurrencyTableMap::translateFieldName('DecimalCount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : CurrencyTableMap::translateFieldName('DecimalCount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->decimal_count = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : CurrencyTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : CurrencyTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -844,7 +939,7 @@ abstract class Currency implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = CurrencyTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = CurrencyTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Currency\Model\ORM\Currency object", 0, $e);
@@ -914,6 +1009,8 @@ abstract class Currency implements ActiveRecordInterface
             $this->collShops = null;
 
             $this->collCurrencyShops = null;
+
+            $this->collCurrencyI18ns = null;
 
         } // if (deep)
     }
@@ -985,8 +1082,19 @@ abstract class Currency implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(CurrencyTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -1126,6 +1234,23 @@ abstract class Currency implements ActiveRecordInterface
                 }
             }
 
+            if ($this->currencyI18nsScheduledForDeletion !== null) {
+                if (!$this->currencyI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Currency\Model\ORM\CurrencyI18nQuery::create()
+                        ->filterByPrimaryKeys($this->currencyI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->currencyI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collCurrencyI18ns !== null) {
+            foreach ($this->collCurrencyI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1155,9 +1280,6 @@ abstract class Currency implements ActiveRecordInterface
         if ($this->isColumnModified(CurrencyTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(CurrencyTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
         if ($this->isColumnModified(CurrencyTableMap::COL_CURRENCY_SYMBOL)) {
             $modifiedColumns[':p' . $index++]  = 'CURRENCY_SYMBOL';
         }
@@ -1182,6 +1304,12 @@ abstract class Currency implements ActiveRecordInterface
         if ($this->isColumnModified(CurrencyTableMap::COL_DECIMAL_COUNT)) {
             $modifiedColumns[':p' . $index++]  = 'DECIMAL_COUNT';
         }
+        if ($this->isColumnModified(CurrencyTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO currency (%s) VALUES (%s)',
@@ -1195,9 +1323,6 @@ abstract class Currency implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-                        break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                     case 'CURRENCY_SYMBOL':                        
                         $stmt->bindValue($identifier, $this->currency_symbol, PDO::PARAM_STR);
@@ -1222,6 +1347,12 @@ abstract class Currency implements ActiveRecordInterface
                         break;
                     case 'DECIMAL_COUNT':                        
                         $stmt->bindValue($identifier, $this->decimal_count, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1289,31 +1420,34 @@ abstract class Currency implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
-                break;
-            case 2:
                 return $this->getCurrencySymbol();
                 break;
-            case 3:
+            case 2:
                 return $this->getDecimalSeparator();
                 break;
-            case 4:
+            case 3:
                 return $this->getThousandSeparator();
                 break;
-            case 5:
+            case 4:
                 return $this->getPositivePreffix();
                 break;
-            case 6:
+            case 5:
                 return $this->getPositiveSuffix();
                 break;
-            case 7:
+            case 6:
                 return $this->getNegativePreffix();
                 break;
-            case 8:
+            case 7:
                 return $this->getNegativeSuffix();
                 break;
-            case 9:
+            case 8:
                 return $this->getDecimalCount();
+                break;
+            case 9:
+                return $this->getCreatedAt();
+                break;
+            case 10:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1345,15 +1479,16 @@ abstract class Currency implements ActiveRecordInterface
         $keys = CurrencyTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getCurrencySymbol(),
-            $keys[3] => $this->getDecimalSeparator(),
-            $keys[4] => $this->getThousandSeparator(),
-            $keys[5] => $this->getPositivePreffix(),
-            $keys[6] => $this->getPositiveSuffix(),
-            $keys[7] => $this->getNegativePreffix(),
-            $keys[8] => $this->getNegativeSuffix(),
-            $keys[9] => $this->getDecimalCount(),
+            $keys[1] => $this->getCurrencySymbol(),
+            $keys[2] => $this->getDecimalSeparator(),
+            $keys[3] => $this->getThousandSeparator(),
+            $keys[4] => $this->getPositivePreffix(),
+            $keys[5] => $this->getPositiveSuffix(),
+            $keys[6] => $this->getNegativePreffix(),
+            $keys[7] => $this->getNegativeSuffix(),
+            $keys[8] => $this->getDecimalCount(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1375,6 +1510,9 @@ abstract class Currency implements ActiveRecordInterface
             }
             if (null !== $this->collCurrencyShops) {
                 $result['CurrencyShops'] = $this->collCurrencyShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collCurrencyI18ns) {
+                $result['CurrencyI18ns'] = $this->collCurrencyI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1414,31 +1552,34 @@ abstract class Currency implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
                 $this->setCurrencySymbol($value);
                 break;
-            case 3:
+            case 2:
                 $this->setDecimalSeparator($value);
                 break;
-            case 4:
+            case 3:
                 $this->setThousandSeparator($value);
                 break;
-            case 5:
+            case 4:
                 $this->setPositivePreffix($value);
                 break;
-            case 6:
+            case 5:
                 $this->setPositiveSuffix($value);
                 break;
-            case 7:
+            case 6:
                 $this->setNegativePreffix($value);
                 break;
-            case 8:
+            case 7:
                 $this->setNegativeSuffix($value);
                 break;
-            case 9:
+            case 8:
                 $this->setDecimalCount($value);
+                break;
+            case 9:
+                $this->setCreatedAt($value);
+                break;
+            case 10:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1465,15 +1606,16 @@ abstract class Currency implements ActiveRecordInterface
         $keys = CurrencyTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setCurrencySymbol($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setDecimalSeparator($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setThousandSeparator($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setPositivePreffix($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setPositiveSuffix($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setNegativePreffix($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setNegativeSuffix($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setDecimalCount($arr[$keys[9]]);
+        if (array_key_exists($keys[1], $arr)) $this->setCurrencySymbol($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setDecimalSeparator($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setThousandSeparator($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setPositivePreffix($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setPositiveSuffix($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setNegativePreffix($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setNegativeSuffix($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setDecimalCount($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
     }
 
     /**
@@ -1486,7 +1628,6 @@ abstract class Currency implements ActiveRecordInterface
         $criteria = new Criteria(CurrencyTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(CurrencyTableMap::COL_ID)) $criteria->add(CurrencyTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(CurrencyTableMap::COL_NAME)) $criteria->add(CurrencyTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(CurrencyTableMap::COL_CURRENCY_SYMBOL)) $criteria->add(CurrencyTableMap::COL_CURRENCY_SYMBOL, $this->currency_symbol);
         if ($this->isColumnModified(CurrencyTableMap::COL_DECIMAL_SEPARATOR)) $criteria->add(CurrencyTableMap::COL_DECIMAL_SEPARATOR, $this->decimal_separator);
         if ($this->isColumnModified(CurrencyTableMap::COL_THOUSAND_SEPARATOR)) $criteria->add(CurrencyTableMap::COL_THOUSAND_SEPARATOR, $this->thousand_separator);
@@ -1495,6 +1636,8 @@ abstract class Currency implements ActiveRecordInterface
         if ($this->isColumnModified(CurrencyTableMap::COL_NEGATIVE_PREFFIX)) $criteria->add(CurrencyTableMap::COL_NEGATIVE_PREFFIX, $this->negative_preffix);
         if ($this->isColumnModified(CurrencyTableMap::COL_NEGATIVE_SUFFIX)) $criteria->add(CurrencyTableMap::COL_NEGATIVE_SUFFIX, $this->negative_suffix);
         if ($this->isColumnModified(CurrencyTableMap::COL_DECIMAL_COUNT)) $criteria->add(CurrencyTableMap::COL_DECIMAL_COUNT, $this->decimal_count);
+        if ($this->isColumnModified(CurrencyTableMap::COL_CREATED_AT)) $criteria->add(CurrencyTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(CurrencyTableMap::COL_UPDATED_AT)) $criteria->add(CurrencyTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1560,7 +1703,6 @@ abstract class Currency implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
         $copyObj->setCurrencySymbol($this->getCurrencySymbol());
         $copyObj->setDecimalSeparator($this->getDecimalSeparator());
         $copyObj->setThousandSeparator($this->getThousandSeparator());
@@ -1569,6 +1711,8 @@ abstract class Currency implements ActiveRecordInterface
         $copyObj->setNegativePreffix($this->getNegativePreffix());
         $copyObj->setNegativeSuffix($this->getNegativeSuffix());
         $copyObj->setDecimalCount($this->getDecimalCount());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1602,6 +1746,12 @@ abstract class Currency implements ActiveRecordInterface
             foreach ($this->getCurrencyShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addCurrencyShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getCurrencyI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCurrencyI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1660,6 +1810,9 @@ abstract class Currency implements ActiveRecordInterface
         }
         if ('CurrencyShop' == $relationName) {
             return $this->initCurrencyShops();
+        }
+        if ('CurrencyI18n' == $relationName) {
+            return $this->initCurrencyI18ns();
         }
     }
 
@@ -3129,12 +3282,236 @@ abstract class Currency implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collCurrencyI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addCurrencyI18ns()
+     */
+    public function clearCurrencyI18ns()
+    {
+        $this->collCurrencyI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collCurrencyI18ns collection loaded partially.
+     */
+    public function resetPartialCurrencyI18ns($v = true)
+    {
+        $this->collCurrencyI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collCurrencyI18ns collection.
+     *
+     * By default this just sets the collCurrencyI18ns collection to an empty array (like clearcollCurrencyI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCurrencyI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collCurrencyI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collCurrencyI18ns = new ObjectCollection();
+        $this->collCurrencyI18ns->setModel('\Gekosale\Plugin\Currency\Model\ORM\CurrencyI18n');
+    }
+
+    /**
+     * Gets an array of ChildCurrencyI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildCurrency is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildCurrencyI18n[] List of ChildCurrencyI18n objects
+     * @throws PropelException
+     */
+    public function getCurrencyI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCurrencyI18nsPartial && !$this->isNew();
+        if (null === $this->collCurrencyI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCurrencyI18ns) {
+                // return empty collection
+                $this->initCurrencyI18ns();
+            } else {
+                $collCurrencyI18ns = ChildCurrencyI18nQuery::create(null, $criteria)
+                    ->filterByCurrency($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collCurrencyI18nsPartial && count($collCurrencyI18ns)) {
+                        $this->initCurrencyI18ns(false);
+
+                        foreach ($collCurrencyI18ns as $obj) {
+                            if (false == $this->collCurrencyI18ns->contains($obj)) {
+                                $this->collCurrencyI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collCurrencyI18nsPartial = true;
+                    }
+
+                    reset($collCurrencyI18ns);
+
+                    return $collCurrencyI18ns;
+                }
+
+                if ($partial && $this->collCurrencyI18ns) {
+                    foreach ($this->collCurrencyI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collCurrencyI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCurrencyI18ns = $collCurrencyI18ns;
+                $this->collCurrencyI18nsPartial = false;
+            }
+        }
+
+        return $this->collCurrencyI18ns;
+    }
+
+    /**
+     * Sets a collection of CurrencyI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $currencyI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildCurrency The current object (for fluent API support)
+     */
+    public function setCurrencyI18ns(Collection $currencyI18ns, ConnectionInterface $con = null)
+    {
+        $currencyI18nsToDelete = $this->getCurrencyI18ns(new Criteria(), $con)->diff($currencyI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->currencyI18nsScheduledForDeletion = clone $currencyI18nsToDelete;
+
+        foreach ($currencyI18nsToDelete as $currencyI18nRemoved) {
+            $currencyI18nRemoved->setCurrency(null);
+        }
+
+        $this->collCurrencyI18ns = null;
+        foreach ($currencyI18ns as $currencyI18n) {
+            $this->addCurrencyI18n($currencyI18n);
+        }
+
+        $this->collCurrencyI18ns = $currencyI18ns;
+        $this->collCurrencyI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related CurrencyI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related CurrencyI18n objects.
+     * @throws PropelException
+     */
+    public function countCurrencyI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCurrencyI18nsPartial && !$this->isNew();
+        if (null === $this->collCurrencyI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCurrencyI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getCurrencyI18ns());
+            }
+
+            $query = ChildCurrencyI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCurrency($this)
+                ->count($con);
+        }
+
+        return count($this->collCurrencyI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildCurrencyI18n object to this object
+     * through the ChildCurrencyI18n foreign key attribute.
+     *
+     * @param    ChildCurrencyI18n $l ChildCurrencyI18n
+     * @return   \Gekosale\Plugin\Currency\Model\ORM\Currency The current object (for fluent API support)
+     */
+    public function addCurrencyI18n(ChildCurrencyI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collCurrencyI18ns === null) {
+            $this->initCurrencyI18ns();
+            $this->collCurrencyI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collCurrencyI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCurrencyI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param CurrencyI18n $currencyI18n The currencyI18n object to add.
+     */
+    protected function doAddCurrencyI18n($currencyI18n)
+    {
+        $this->collCurrencyI18ns[]= $currencyI18n;
+        $currencyI18n->setCurrency($this);
+    }
+
+    /**
+     * @param  CurrencyI18n $currencyI18n The currencyI18n object to remove.
+     * @return ChildCurrency The current object (for fluent API support)
+     */
+    public function removeCurrencyI18n($currencyI18n)
+    {
+        if ($this->getCurrencyI18ns()->contains($currencyI18n)) {
+            $this->collCurrencyI18ns->remove($this->collCurrencyI18ns->search($currencyI18n));
+            if (null === $this->currencyI18nsScheduledForDeletion) {
+                $this->currencyI18nsScheduledForDeletion = clone $this->collCurrencyI18ns;
+                $this->currencyI18nsScheduledForDeletion->clear();
+            }
+            $this->currencyI18nsScheduledForDeletion[]= clone $currencyI18n;
+            $currencyI18n->setCurrency(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
         $this->currency_symbol = null;
         $this->decimal_separator = null;
         $this->thousand_separator = null;
@@ -3143,6 +3520,8 @@ abstract class Currency implements ActiveRecordInterface
         $this->negative_preffix = null;
         $this->negative_suffix = null;
         $this->decimal_count = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -3187,13 +3566,23 @@ abstract class Currency implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collCurrencyI18ns) {
+                foreach ($this->collCurrencyI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collLocales = null;
         $this->collProductsRelatedByBuyCurrencyId = null;
         $this->collProductsRelatedBySellCurrencyId = null;
         $this->collShops = null;
         $this->collCurrencyShops = null;
+        $this->collCurrencyI18ns = null;
     }
 
     /**
@@ -3204,6 +3593,143 @@ abstract class Currency implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(CurrencyTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildCurrency The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildCurrencyI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collCurrencyI18ns) {
+                foreach ($this->collCurrencyI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildCurrencyI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildCurrencyI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addCurrencyI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildCurrency The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildCurrencyI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collCurrencyI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collCurrencyI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildCurrencyI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Currency\Model\ORM\CurrencyI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildCurrency The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[CurrencyTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

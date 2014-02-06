@@ -4,7 +4,7 @@ namespace Gekosale\Core\Event\Subscriber;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Gekosale\Component\Configuration\Vat\Event\FormEvent;
+use Gekosale\Plugin\Vat\Event\FormEvent;
 
 class VatSubscriber implements EventSubscriberInterface
 {
@@ -20,7 +20,7 @@ class VatSubscriber implements EventSubscriberInterface
         ));
         
         $data = $event->getPopulateData();
-        
+
         $event->setPopulateData(Array(
             'required_data' => Array(
                 'value1' => 'required_data1'

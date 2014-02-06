@@ -170,8 +170,8 @@ class AttributeGroupNameTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
             'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
         );
     } // getBehaviors()
     /**

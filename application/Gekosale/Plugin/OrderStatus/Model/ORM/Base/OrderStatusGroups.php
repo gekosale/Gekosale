@@ -2,9 +2,12 @@
 
 namespace Gekosale\Plugin\OrderStatus\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups as ChildOrderStatusGroups;
+use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n as ChildOrderStatusGroupsI18n;
+use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery as ChildOrderStatusGroupsI18nQuery;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsQuery as ChildOrderStatusGroupsQuery;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusOrderStatusGroups as ChildOrderStatusOrderStatusGroups;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusOrderStatusGroupsQuery as ChildOrderStatusOrderStatusGroupsQuery;
@@ -23,6 +26,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class OrderStatusGroups implements ActiveRecordInterface 
 {
@@ -71,6 +75,18 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     protected $colour;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildOrderStatusOrderStatusGroups[] Collection to store aggregation of ChildOrderStatusOrderStatusGroups objects.
      */
     protected $collOrderStatusOrderStatusGroupss;
@@ -83,12 +99,32 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     protected $collShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildOrderStatusGroupsI18n[] Collection to store aggregation of ChildOrderStatusGroupsI18n objects.
+     */
+    protected $collOrderStatusGroupsI18ns;
+    protected $collOrderStatusGroupsI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildOrderStatusGroupsI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -101,6 +137,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $shopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $orderStatusGroupsI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\OrderStatus\Model\ORM\Base\OrderStatusGroups object.
@@ -383,6 +425,46 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -423,6 +505,48 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
 
         return $this;
     } // setColour()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[OrderStatusGroupsTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[OrderStatusGroupsTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -466,6 +590,18 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OrderStatusGroupsTableMap::translateFieldName('Colour', TableMap::TYPE_PHPNAME, $indexType)];
             $this->colour = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OrderStatusGroupsTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OrderStatusGroupsTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -474,7 +610,7 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = OrderStatusGroupsTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = OrderStatusGroupsTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups object", 0, $e);
@@ -538,6 +674,8 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             $this->collOrderStatusOrderStatusGroupss = null;
 
             $this->collShops = null;
+
+            $this->collOrderStatusGroupsI18ns = null;
 
         } // if (deep)
     }
@@ -609,8 +747,19 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(OrderStatusGroupsTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(OrderStatusGroupsTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(OrderStatusGroupsTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -696,6 +845,23 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
                 }
             }
 
+            if ($this->orderStatusGroupsI18nsScheduledForDeletion !== null) {
+                if (!$this->orderStatusGroupsI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery::create()
+                        ->filterByPrimaryKeys($this->orderStatusGroupsI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->orderStatusGroupsI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collOrderStatusGroupsI18ns !== null) {
+            foreach ($this->collOrderStatusGroupsI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -728,6 +894,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
         if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_COLOUR)) {
             $modifiedColumns[':p' . $index++]  = 'COLOUR';
         }
+        if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO order_status_groups (%s) VALUES (%s)',
@@ -744,6 +916,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
                         break;
                     case 'COLOUR':                        
                         $stmt->bindValue($identifier, $this->colour, PDO::PARAM_STR);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -813,6 +991,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             case 1:
                 return $this->getColour();
                 break;
+            case 2:
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -844,6 +1028,8 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getColour(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -856,6 +1042,9 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             }
             if (null !== $this->collShops) {
                 $result['Shops'] = $this->collShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collOrderStatusGroupsI18ns) {
+                $result['OrderStatusGroupsI18ns'] = $this->collOrderStatusGroupsI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -897,6 +1086,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             case 1:
                 $this->setColour($value);
                 break;
+            case 2:
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -923,6 +1118,8 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setColour($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -936,6 +1133,8 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
 
         if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_ID)) $criteria->add(OrderStatusGroupsTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_COLOUR)) $criteria->add(OrderStatusGroupsTableMap::COL_COLOUR, $this->colour);
+        if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_CREATED_AT)) $criteria->add(OrderStatusGroupsTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(OrderStatusGroupsTableMap::COL_UPDATED_AT)) $criteria->add(OrderStatusGroupsTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1002,6 +1201,8 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setColour($this->getColour());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1017,6 +1218,12 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
             foreach ($this->getShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getOrderStatusGroupsI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addOrderStatusGroupsI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1066,6 +1273,9 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
         }
         if ('Shop' == $relationName) {
             return $this->initShops();
+        }
+        if ('OrderStatusGroupsI18n' == $relationName) {
+            return $this->initOrderStatusGroupsI18ns();
         }
     }
 
@@ -1631,12 +1841,239 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collOrderStatusGroupsI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addOrderStatusGroupsI18ns()
+     */
+    public function clearOrderStatusGroupsI18ns()
+    {
+        $this->collOrderStatusGroupsI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collOrderStatusGroupsI18ns collection loaded partially.
+     */
+    public function resetPartialOrderStatusGroupsI18ns($v = true)
+    {
+        $this->collOrderStatusGroupsI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collOrderStatusGroupsI18ns collection.
+     *
+     * By default this just sets the collOrderStatusGroupsI18ns collection to an empty array (like clearcollOrderStatusGroupsI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initOrderStatusGroupsI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collOrderStatusGroupsI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collOrderStatusGroupsI18ns = new ObjectCollection();
+        $this->collOrderStatusGroupsI18ns->setModel('\Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n');
+    }
+
+    /**
+     * Gets an array of ChildOrderStatusGroupsI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildOrderStatusGroups is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildOrderStatusGroupsI18n[] List of ChildOrderStatusGroupsI18n objects
+     * @throws PropelException
+     */
+    public function getOrderStatusGroupsI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collOrderStatusGroupsI18nsPartial && !$this->isNew();
+        if (null === $this->collOrderStatusGroupsI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collOrderStatusGroupsI18ns) {
+                // return empty collection
+                $this->initOrderStatusGroupsI18ns();
+            } else {
+                $collOrderStatusGroupsI18ns = ChildOrderStatusGroupsI18nQuery::create(null, $criteria)
+                    ->filterByOrderStatusGroups($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collOrderStatusGroupsI18nsPartial && count($collOrderStatusGroupsI18ns)) {
+                        $this->initOrderStatusGroupsI18ns(false);
+
+                        foreach ($collOrderStatusGroupsI18ns as $obj) {
+                            if (false == $this->collOrderStatusGroupsI18ns->contains($obj)) {
+                                $this->collOrderStatusGroupsI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collOrderStatusGroupsI18nsPartial = true;
+                    }
+
+                    reset($collOrderStatusGroupsI18ns);
+
+                    return $collOrderStatusGroupsI18ns;
+                }
+
+                if ($partial && $this->collOrderStatusGroupsI18ns) {
+                    foreach ($this->collOrderStatusGroupsI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collOrderStatusGroupsI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collOrderStatusGroupsI18ns = $collOrderStatusGroupsI18ns;
+                $this->collOrderStatusGroupsI18nsPartial = false;
+            }
+        }
+
+        return $this->collOrderStatusGroupsI18ns;
+    }
+
+    /**
+     * Sets a collection of OrderStatusGroupsI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $orderStatusGroupsI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildOrderStatusGroups The current object (for fluent API support)
+     */
+    public function setOrderStatusGroupsI18ns(Collection $orderStatusGroupsI18ns, ConnectionInterface $con = null)
+    {
+        $orderStatusGroupsI18nsToDelete = $this->getOrderStatusGroupsI18ns(new Criteria(), $con)->diff($orderStatusGroupsI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->orderStatusGroupsI18nsScheduledForDeletion = clone $orderStatusGroupsI18nsToDelete;
+
+        foreach ($orderStatusGroupsI18nsToDelete as $orderStatusGroupsI18nRemoved) {
+            $orderStatusGroupsI18nRemoved->setOrderStatusGroups(null);
+        }
+
+        $this->collOrderStatusGroupsI18ns = null;
+        foreach ($orderStatusGroupsI18ns as $orderStatusGroupsI18n) {
+            $this->addOrderStatusGroupsI18n($orderStatusGroupsI18n);
+        }
+
+        $this->collOrderStatusGroupsI18ns = $orderStatusGroupsI18ns;
+        $this->collOrderStatusGroupsI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related OrderStatusGroupsI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related OrderStatusGroupsI18n objects.
+     * @throws PropelException
+     */
+    public function countOrderStatusGroupsI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collOrderStatusGroupsI18nsPartial && !$this->isNew();
+        if (null === $this->collOrderStatusGroupsI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collOrderStatusGroupsI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getOrderStatusGroupsI18ns());
+            }
+
+            $query = ChildOrderStatusGroupsI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByOrderStatusGroups($this)
+                ->count($con);
+        }
+
+        return count($this->collOrderStatusGroupsI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildOrderStatusGroupsI18n object to this object
+     * through the ChildOrderStatusGroupsI18n foreign key attribute.
+     *
+     * @param    ChildOrderStatusGroupsI18n $l ChildOrderStatusGroupsI18n
+     * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups The current object (for fluent API support)
+     */
+    public function addOrderStatusGroupsI18n(ChildOrderStatusGroupsI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collOrderStatusGroupsI18ns === null) {
+            $this->initOrderStatusGroupsI18ns();
+            $this->collOrderStatusGroupsI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collOrderStatusGroupsI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddOrderStatusGroupsI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param OrderStatusGroupsI18n $orderStatusGroupsI18n The orderStatusGroupsI18n object to add.
+     */
+    protected function doAddOrderStatusGroupsI18n($orderStatusGroupsI18n)
+    {
+        $this->collOrderStatusGroupsI18ns[]= $orderStatusGroupsI18n;
+        $orderStatusGroupsI18n->setOrderStatusGroups($this);
+    }
+
+    /**
+     * @param  OrderStatusGroupsI18n $orderStatusGroupsI18n The orderStatusGroupsI18n object to remove.
+     * @return ChildOrderStatusGroups The current object (for fluent API support)
+     */
+    public function removeOrderStatusGroupsI18n($orderStatusGroupsI18n)
+    {
+        if ($this->getOrderStatusGroupsI18ns()->contains($orderStatusGroupsI18n)) {
+            $this->collOrderStatusGroupsI18ns->remove($this->collOrderStatusGroupsI18ns->search($orderStatusGroupsI18n));
+            if (null === $this->orderStatusGroupsI18nsScheduledForDeletion) {
+                $this->orderStatusGroupsI18nsScheduledForDeletion = clone $this->collOrderStatusGroupsI18ns;
+                $this->orderStatusGroupsI18nsScheduledForDeletion->clear();
+            }
+            $this->orderStatusGroupsI18nsScheduledForDeletion[]= clone $orderStatusGroupsI18n;
+            $orderStatusGroupsI18n->setOrderStatusGroups(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
         $this->colour = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1666,10 +2103,20 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collOrderStatusGroupsI18ns) {
+                foreach ($this->collOrderStatusGroupsI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collOrderStatusOrderStatusGroupss = null;
         $this->collShops = null;
+        $this->collOrderStatusGroupsI18ns = null;
     }
 
     /**
@@ -1680,6 +2127,143 @@ abstract class OrderStatusGroups implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(OrderStatusGroupsTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildOrderStatusGroups The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildOrderStatusGroupsI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collOrderStatusGroupsI18ns) {
+                foreach ($this->collOrderStatusGroupsI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildOrderStatusGroupsI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildOrderStatusGroupsI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addOrderStatusGroupsI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildOrderStatusGroups The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildOrderStatusGroupsI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collOrderStatusGroupsI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collOrderStatusGroupsI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildOrderStatusGroupsI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildOrderStatusGroups The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[OrderStatusGroupsTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

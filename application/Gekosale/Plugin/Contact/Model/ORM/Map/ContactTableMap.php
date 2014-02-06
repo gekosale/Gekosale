@@ -59,7 +59,7 @@ class ContactTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ContactTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the ID field
@@ -82,9 +82,28 @@ class ContactTableMap extends TableMap
     const COL_IS_PUBLISHED = 'contact.IS_PUBLISHED';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'contact.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'contact.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -93,12 +112,12 @@ class ContactTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'IsPublished', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'isPublished', ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID, ContactTableMap::COL_IS_PUBLISHED, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_PUBLISHED', ),
-        self::TYPE_FIELDNAME     => array('id', 'is_published', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'IsPublished', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'isPublished', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID, ContactTableMap::COL_IS_PUBLISHED, ContactTableMap::COL_CREATED_AT, ContactTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_PUBLISHED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'is_published', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -108,12 +127,12 @@ class ContactTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'IsPublished' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isPublished' => 1, ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID => 0, ContactTableMap::COL_IS_PUBLISHED => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_PUBLISHED' => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'is_published' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'IsPublished' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isPublished' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID => 0, ContactTableMap::COL_IS_PUBLISHED => 1, ContactTableMap::COL_CREATED_AT => 2, ContactTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_PUBLISHED' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'is_published' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -134,6 +153,8 @@ class ContactTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('IS_PUBLISHED', 'IsPublished', 'INTEGER', false, 10, 1);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -143,7 +164,22 @@ class ContactTableMap extends TableMap
     {
         $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::ONE_TO_MANY, array('id' => 'contact_id', ), 'SET NULL', null, 'Shops');
         $this->addRelation('ContactShop', '\\Gekosale\\Plugin\\Contact\\Model\\ORM\\ContactShop', RelationMap::ONE_TO_MANY, array('id' => 'contact_id', ), 'CASCADE', null, 'ContactShops');
+        $this->addRelation('ContactI18n', '\\Gekosale\\Plugin\\Contact\\Model\\ORM\\ContactI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'ContactI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to contact     * by a foreign key with ON DELETE CASCADE
      */
@@ -153,6 +189,7 @@ class ContactTableMap extends TableMap
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 ShopTableMap::clearInstancePool();
                 ContactShopTableMap::clearInstancePool();
+                ContactI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -295,9 +332,13 @@ class ContactTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(ContactTableMap::COL_ID);
             $criteria->addSelectColumn(ContactTableMap::COL_IS_PUBLISHED);
+            $criteria->addSelectColumn(ContactTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ContactTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.IS_PUBLISHED');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

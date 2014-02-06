@@ -6,6 +6,7 @@ use \Exception;
 use \PDO;
 use Gekosale\Plugin\CartRule\Model\ORM\CartRuleClientGroup;
 use Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroup as ChildClientGroup;
+use Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18nQuery as ChildClientGroupI18nQuery;
 use Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupQuery as ChildClientGroupQuery;
 use Gekosale\Plugin\ClientGroup\Model\ORM\Map\ClientGroupTableMap;
 use Gekosale\Plugin\Client\Model\ORM\ClientData;
@@ -25,8 +26,12 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildClientGroupQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildClientGroupQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildClientGroupQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildClientGroupQuery groupById() Group by the id column
+ * @method     ChildClientGroupQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildClientGroupQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildClientGroupQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildClientGroupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -44,12 +49,20 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientGroupQuery rightJoinProductGroupPrice($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductGroupPrice relation
  * @method     ChildClientGroupQuery innerJoinProductGroupPrice($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductGroupPrice relation
  *
+ * @method     ChildClientGroupQuery leftJoinClientGroupI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the ClientGroupI18n relation
+ * @method     ChildClientGroupQuery rightJoinClientGroupI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ClientGroupI18n relation
+ * @method     ChildClientGroupQuery innerJoinClientGroupI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the ClientGroupI18n relation
+ *
  * @method     ChildClientGroup findOne(ConnectionInterface $con = null) Return the first ChildClientGroup matching the query
  * @method     ChildClientGroup findOneOrCreate(ConnectionInterface $con = null) Return the first ChildClientGroup matching the query, or a new ChildClientGroup object populated from the query conditions when no match is found
  *
  * @method     ChildClientGroup findOneById(int $id) Return the first ChildClientGroup filtered by the id column
+ * @method     ChildClientGroup findOneByCreatedAt(string $created_at) Return the first ChildClientGroup filtered by the created_at column
+ * @method     ChildClientGroup findOneByUpdatedAt(string $updated_at) Return the first ChildClientGroup filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildClientGroup objects filtered by the id column
+ * @method     array findByCreatedAt(string $created_at) Return ChildClientGroup objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildClientGroup objects filtered by the updated_at column
  *
  */
 abstract class ClientGroupQuery extends ModelCriteria
@@ -138,7 +151,7 @@ abstract class ClientGroupQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID FROM client_group WHERE ID = :p0';
+        $sql = 'SELECT ID, CREATED_AT, UPDATED_AT FROM client_group WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -266,6 +279,92 @@ abstract class ClientGroupQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ClientGroupTableMap::COL_ID, $id, $comparison);
+    }
+
+    /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(ClientGroupTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(ClientGroupTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientGroupTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(ClientGroupTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(ClientGroupTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientGroupTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -488,6 +587,79 @@ abstract class ClientGroupQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18n object
+     *
+     * @param \Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18n|ObjectCollection $clientGroupI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function filterByClientGroupI18n($clientGroupI18n, $comparison = null)
+    {
+        if ($clientGroupI18n instanceof \Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18n) {
+            return $this
+                ->addUsingAlias(ClientGroupTableMap::COL_ID, $clientGroupI18n->getId(), $comparison);
+        } elseif ($clientGroupI18n instanceof ObjectCollection) {
+            return $this
+                ->useClientGroupI18nQuery()
+                ->filterByPrimaryKeys($clientGroupI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByClientGroupI18n() only accepts arguments of type \Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ClientGroupI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function joinClientGroupI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ClientGroupI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ClientGroupI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ClientGroupI18n relation ClientGroupI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useClientGroupI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinClientGroupI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ClientGroupI18n', '\Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildClientGroup $clientGroup Object to remove from the list of results
@@ -576,6 +748,129 @@ abstract class ClientGroupQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'ClientGroupI18n';
+    
+        return $this
+            ->joinClientGroupI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('ClientGroupI18n');
+        $this->with['ClientGroupI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildClientGroupI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ClientGroupI18n', '\Gekosale\Plugin\ClientGroup\Model\ORM\ClientGroupI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ClientGroupTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ClientGroupTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ClientGroupTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ClientGroupTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ClientGroupTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildClientGroupQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ClientGroupTableMap::COL_CREATED_AT);
     }
 
 } // ClientGroupQuery

@@ -15,6 +15,7 @@ use Gekosale\Plugin\Producer\Model\ORM\Producer;
 use Gekosale\Plugin\ProductGroupPrice\Model\ORM\ProductGroupPrice;
 use Gekosale\Plugin\ProductNew\Model\ORM\ProductNew;
 use Gekosale\Plugin\Product\Model\ORM\Product as ChildProduct;
+use Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery as ChildProductI18nQuery;
 use Gekosale\Plugin\Product\Model\ORM\ProductQuery as ChildProductQuery;
 use Gekosale\Plugin\Product\Model\ORM\Map\ProductTableMap;
 use Gekosale\Plugin\Similar\Model\ORM\Similar;
@@ -68,6 +69,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery orderByHierarchy($order = Criteria::ASC) Order by the hierarchy column
  * @method     ChildProductQuery orderByPackageSize($order = Criteria::ASC) Order by the package_size column
  * @method     ChildProductQuery orderByDisableAtStockEnabled($order = Criteria::ASC) Order by the disable_at_stock_enabled column
+ * @method     ChildProductQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildProductQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildProductQuery groupById() Group by the id column
  * @method     ChildProductQuery groupByDelivelerCode() Group by the deliveler_code column
@@ -99,6 +102,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery groupByHierarchy() Group by the hierarchy column
  * @method     ChildProductQuery groupByPackageSize() Group by the package_size column
  * @method     ChildProductQuery groupByDisableAtStockEnabled() Group by the disable_at_stock_enabled column
+ * @method     ChildProductQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildProductQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildProductQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProductQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -200,6 +205,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductQuery rightJoinWishlist($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Wishlist relation
  * @method     ChildProductQuery innerJoinWishlist($relationAlias = null) Adds a INNER JOIN clause to the query using the Wishlist relation
  *
+ * @method     ChildProductQuery leftJoinProductI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProductI18n relation
+ * @method     ChildProductQuery rightJoinProductI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductI18n relation
+ * @method     ChildProductQuery innerJoinProductI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductI18n relation
+ *
  * @method     ChildProduct findOne(ConnectionInterface $con = null) Return the first ChildProduct matching the query
  * @method     ChildProduct findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProduct matching the query, or a new ChildProduct object populated from the query conditions when no match is found
  *
@@ -233,6 +242,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProduct findOneByHierarchy(int $hierarchy) Return the first ChildProduct filtered by the hierarchy column
  * @method     ChildProduct findOneByPackageSize(string $package_size) Return the first ChildProduct filtered by the package_size column
  * @method     ChildProduct findOneByDisableAtStockEnabled(int $disable_at_stock_enabled) Return the first ChildProduct filtered by the disable_at_stock_enabled column
+ * @method     ChildProduct findOneByCreatedAt(string $created_at) Return the first ChildProduct filtered by the created_at column
+ * @method     ChildProduct findOneByUpdatedAt(string $updated_at) Return the first ChildProduct filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildProduct objects filtered by the id column
  * @method     array findByDelivelerCode(string $deliveler_code) Return ChildProduct objects filtered by the deliveler_code column
@@ -264,6 +275,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByHierarchy(int $hierarchy) Return ChildProduct objects filtered by the hierarchy column
  * @method     array findByPackageSize(string $package_size) Return ChildProduct objects filtered by the package_size column
  * @method     array findByDisableAtStockEnabled(int $disable_at_stock_enabled) Return ChildProduct objects filtered by the disable_at_stock_enabled column
+ * @method     array findByCreatedAt(string $created_at) Return ChildProduct objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildProduct objects filtered by the updated_at column
  *
  */
 abstract class ProductQuery extends ModelCriteria
@@ -352,7 +365,7 @@ abstract class ProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, DELIVELER_CODE, EAN, BARCODE, BUY_PRICE, SELL_PRICE, PRODUCER_ID, VAT_ID, STOCK, ADD_DATE, WEIGHT, BUY_CURRENCY_ID, SELL_CURRENCY_ID, TECHNICAL_DATA_SET_ID, TRACK_STOCK, ENABLE, PROMOTION, DISCOUNT_PRICE, PROMOTION_START, PROMOTION_END, SHOPED, WIDTH, HEIGHT, DEEPTH, UNIT_MEASURE_ID, DISABLE_AT_STOCK, AVAILABILITY_ID, HIERARCHY, PACKAGE_SIZE, DISABLE_AT_STOCK_ENABLED FROM product WHERE ID = :p0';
+        $sql = 'SELECT ID, DELIVELER_CODE, EAN, BARCODE, BUY_PRICE, SELL_PRICE, PRODUCER_ID, VAT_ID, STOCK, ADD_DATE, WEIGHT, BUY_CURRENCY_ID, SELL_CURRENCY_ID, TECHNICAL_DATA_SET_ID, TRACK_STOCK, ENABLE, PROMOTION, DISCOUNT_PRICE, PROMOTION_START, PROMOTION_END, SHOPED, WIDTH, HEIGHT, DEEPTH, UNIT_MEASURE_ID, DISABLE_AT_STOCK, AVAILABILITY_ID, HIERARCHY, PACKAGE_SIZE, DISABLE_AT_STOCK_ENABLED, CREATED_AT, UPDATED_AT FROM product WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -1653,6 +1666,92 @@ abstract class ProductQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED, $disableAtStockEnabled, $comparison);
+    }
+
+    /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(ProductTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(ProductTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -3422,6 +3521,79 @@ abstract class ProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\Product\Model\ORM\ProductI18n object
+     *
+     * @param \Gekosale\Plugin\Product\Model\ORM\ProductI18n|ObjectCollection $productI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function filterByProductI18n($productI18n, $comparison = null)
+    {
+        if ($productI18n instanceof \Gekosale\Plugin\Product\Model\ORM\ProductI18n) {
+            return $this
+                ->addUsingAlias(ProductTableMap::COL_ID, $productI18n->getId(), $comparison);
+        } elseif ($productI18n instanceof ObjectCollection) {
+            return $this
+                ->useProductI18nQuery()
+                ->filterByPrimaryKeys($productI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProductI18n() only accepts arguments of type \Gekosale\Plugin\Product\Model\ORM\ProductI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProductI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildProductQuery The current query, for fluid interface
+     */
+    public function joinProductI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProductI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProductI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProductI18n relation ProductI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useProductI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinProductI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProductI18n', '\Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildProduct $product Object to remove from the list of results
@@ -3510,6 +3682,129 @@ abstract class ProductQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildProductQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'ProductI18n';
+    
+        return $this
+            ->joinProductI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildProductQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('ProductI18n');
+        $this->with['ProductI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildProductI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProductI18n', '\Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ProductTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(ProductTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ProductTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ProductTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(ProductTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildProductQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(ProductTableMap::COL_CREATED_AT);
     }
 
 } // ProductQuery

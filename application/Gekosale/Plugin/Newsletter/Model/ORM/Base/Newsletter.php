@@ -2,8 +2,12 @@
 
 namespace Gekosale\Plugin\Newsletter\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
+use Gekosale\Plugin\Newsletter\Model\ORM\Newsletter as ChildNewsletter;
+use Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n as ChildNewsletterI18n;
+use Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18nQuery as ChildNewsletterI18nQuery;
 use Gekosale\Plugin\Newsletter\Model\ORM\NewsletterQuery as ChildNewsletterQuery;
 use Gekosale\Plugin\Newsletter\Model\ORM\Map\NewsletterTableMap;
 use Propel\Runtime\Propel;
@@ -11,11 +15,13 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Newsletter implements ActiveRecordInterface 
 {
@@ -58,34 +64,10 @@ abstract class Newsletter implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
-     * The value for the subject field.
-     * @var        string
-     */
-    protected $subject;
-
-    /**
      * The value for the email field.
      * @var        string
      */
     protected $email;
-
-    /**
-     * The value for the html_form field.
-     * @var        string
-     */
-    protected $html_form;
-
-    /**
-     * The value for the text_form field.
-     * @var        string
-     */
-    protected $text_form;
 
     /**
      * The value for the recipients field.
@@ -94,12 +76,50 @@ abstract class Newsletter implements ActiveRecordInterface
     protected $recipients;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
+     * @var        ObjectCollection|ChildNewsletterI18n[] Collection to store aggregation of ChildNewsletterI18n objects.
+     */
+    protected $collNewsletterI18ns;
+    protected $collNewsletterI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildNewsletterI18n]
+     */
+    protected $currentTranslations;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $newsletterI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\Newsletter\Model\ORM\Base\Newsletter object.
@@ -371,28 +391,6 @@ abstract class Newsletter implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
-     * Get the [subject] column value.
-     * 
-     * @return   string
-     */
-    public function getSubject()
-    {
-
-        return $this->subject;
-    }
-
-    /**
      * Get the [email] column value.
      * 
      * @return   string
@@ -404,28 +402,6 @@ abstract class Newsletter implements ActiveRecordInterface
     }
 
     /**
-     * Get the [html_form] column value.
-     * 
-     * @return   string
-     */
-    public function getHtmlForm()
-    {
-
-        return $this->html_form;
-    }
-
-    /**
-     * Get the [text_form] column value.
-     * 
-     * @return   string
-     */
-    public function getTextForm()
-    {
-
-        return $this->text_form;
-    }
-
-    /**
      * Get the [recipients] column value.
      * 
      * @return   string
@@ -434,6 +410,46 @@ abstract class Newsletter implements ActiveRecordInterface
     {
 
         return $this->recipients;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
@@ -458,48 +474,6 @@ abstract class Newsletter implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[NewsletterTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
-
-    /**
-     * Set the value of [subject] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
-     */
-    public function setSubject($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->subject !== $v) {
-            $this->subject = $v;
-            $this->modifiedColumns[NewsletterTableMap::COL_SUBJECT] = true;
-        }
-
-
-        return $this;
-    } // setSubject()
-
-    /**
      * Set the value of [email] column.
      * 
      * @param      string $v new value
@@ -521,48 +495,6 @@ abstract class Newsletter implements ActiveRecordInterface
     } // setEmail()
 
     /**
-     * Set the value of [html_form] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
-     */
-    public function setHtmlForm($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->html_form !== $v) {
-            $this->html_form = $v;
-            $this->modifiedColumns[NewsletterTableMap::COL_HTML_FORM] = true;
-        }
-
-
-        return $this;
-    } // setHtmlForm()
-
-    /**
-     * Set the value of [text_form] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
-     */
-    public function setTextForm($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->text_form !== $v) {
-            $this->text_form = $v;
-            $this->modifiedColumns[NewsletterTableMap::COL_TEXT_FORM] = true;
-        }
-
-
-        return $this;
-    } // setTextForm()
-
-    /**
      * Set the value of [recipients] column.
      * 
      * @param      string $v new value
@@ -582,6 +514,48 @@ abstract class Newsletter implements ActiveRecordInterface
 
         return $this;
     } // setRecipients()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[NewsletterTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[NewsletterTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -623,23 +597,23 @@ abstract class Newsletter implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : NewsletterTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : NewsletterTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : NewsletterTableMap::translateFieldName('Subject', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->subject = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : NewsletterTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : NewsletterTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : NewsletterTableMap::translateFieldName('HtmlForm', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->html_form = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : NewsletterTableMap::translateFieldName('TextForm', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->text_form = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : NewsletterTableMap::translateFieldName('Recipients', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : NewsletterTableMap::translateFieldName('Recipients', TableMap::TYPE_PHPNAME, $indexType)];
             $this->recipients = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : NewsletterTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : NewsletterTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -648,7 +622,7 @@ abstract class Newsletter implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = NewsletterTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = NewsletterTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter object", 0, $e);
@@ -708,6 +682,8 @@ abstract class Newsletter implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->collNewsletterI18ns = null;
 
         } // if (deep)
     }
@@ -779,8 +755,19 @@ abstract class Newsletter implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(NewsletterTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(NewsletterTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(NewsletterTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -831,6 +818,23 @@ abstract class Newsletter implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->newsletterI18nsScheduledForDeletion !== null) {
+                if (!$this->newsletterI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18nQuery::create()
+                        ->filterByPrimaryKeys($this->newsletterI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->newsletterI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collNewsletterI18ns !== null) {
+            foreach ($this->collNewsletterI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -860,23 +864,17 @@ abstract class Newsletter implements ActiveRecordInterface
         if ($this->isColumnModified(NewsletterTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(NewsletterTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
-        if ($this->isColumnModified(NewsletterTableMap::COL_SUBJECT)) {
-            $modifiedColumns[':p' . $index++]  = 'SUBJECT';
-        }
         if ($this->isColumnModified(NewsletterTableMap::COL_EMAIL)) {
             $modifiedColumns[':p' . $index++]  = 'EMAIL';
         }
-        if ($this->isColumnModified(NewsletterTableMap::COL_HTML_FORM)) {
-            $modifiedColumns[':p' . $index++]  = 'HTML_FORM';
-        }
-        if ($this->isColumnModified(NewsletterTableMap::COL_TEXT_FORM)) {
-            $modifiedColumns[':p' . $index++]  = 'TEXT_FORM';
-        }
         if ($this->isColumnModified(NewsletterTableMap::COL_RECIPIENTS)) {
             $modifiedColumns[':p' . $index++]  = 'RECIPIENTS';
+        }
+        if ($this->isColumnModified(NewsletterTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(NewsletterTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
@@ -892,23 +890,17 @@ abstract class Newsletter implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case 'SUBJECT':                        
-                        $stmt->bindValue($identifier, $this->subject, PDO::PARAM_STR);
-                        break;
                     case 'EMAIL':                        
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
-                    case 'HTML_FORM':                        
-                        $stmt->bindValue($identifier, $this->html_form, PDO::PARAM_STR);
-                        break;
-                    case 'TEXT_FORM':                        
-                        $stmt->bindValue($identifier, $this->text_form, PDO::PARAM_STR);
-                        break;
                     case 'RECIPIENTS':                        
                         $stmt->bindValue($identifier, $this->recipients, PDO::PARAM_STR);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -976,22 +968,16 @@ abstract class Newsletter implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
-                break;
-            case 2:
-                return $this->getSubject();
-                break;
-            case 3:
                 return $this->getEmail();
                 break;
-            case 4:
-                return $this->getHtmlForm();
-                break;
-            case 5:
-                return $this->getTextForm();
-                break;
-            case 6:
+            case 2:
                 return $this->getRecipients();
+                break;
+            case 3:
+                return $this->getCreatedAt();
+                break;
+            case 4:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1010,10 +996,11 @@ abstract class Newsletter implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['Newsletter'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -1022,18 +1009,21 @@ abstract class Newsletter implements ActiveRecordInterface
         $keys = NewsletterTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getSubject(),
-            $keys[3] => $this->getEmail(),
-            $keys[4] => $this->getHtmlForm(),
-            $keys[5] => $this->getTextForm(),
-            $keys[6] => $this->getRecipients(),
+            $keys[1] => $this->getEmail(),
+            $keys[2] => $this->getRecipients(),
+            $keys[3] => $this->getCreatedAt(),
+            $keys[4] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
         
+        if ($includeForeignObjects) {
+            if (null !== $this->collNewsletterI18ns) {
+                $result['NewsletterI18ns'] = $this->collNewsletterI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -1071,22 +1061,16 @@ abstract class Newsletter implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
-                $this->setSubject($value);
-                break;
-            case 3:
                 $this->setEmail($value);
                 break;
-            case 4:
-                $this->setHtmlForm($value);
-                break;
-            case 5:
-                $this->setTextForm($value);
-                break;
-            case 6:
+            case 2:
                 $this->setRecipients($value);
+                break;
+            case 3:
+                $this->setCreatedAt($value);
+                break;
+            case 4:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1113,12 +1097,10 @@ abstract class Newsletter implements ActiveRecordInterface
         $keys = NewsletterTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setSubject($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setEmail($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setHtmlForm($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setTextForm($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setRecipients($arr[$keys[6]]);
+        if (array_key_exists($keys[1], $arr)) $this->setEmail($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setRecipients($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
     }
 
     /**
@@ -1131,12 +1113,10 @@ abstract class Newsletter implements ActiveRecordInterface
         $criteria = new Criteria(NewsletterTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(NewsletterTableMap::COL_ID)) $criteria->add(NewsletterTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(NewsletterTableMap::COL_NAME)) $criteria->add(NewsletterTableMap::COL_NAME, $this->name);
-        if ($this->isColumnModified(NewsletterTableMap::COL_SUBJECT)) $criteria->add(NewsletterTableMap::COL_SUBJECT, $this->subject);
         if ($this->isColumnModified(NewsletterTableMap::COL_EMAIL)) $criteria->add(NewsletterTableMap::COL_EMAIL, $this->email);
-        if ($this->isColumnModified(NewsletterTableMap::COL_HTML_FORM)) $criteria->add(NewsletterTableMap::COL_HTML_FORM, $this->html_form);
-        if ($this->isColumnModified(NewsletterTableMap::COL_TEXT_FORM)) $criteria->add(NewsletterTableMap::COL_TEXT_FORM, $this->text_form);
         if ($this->isColumnModified(NewsletterTableMap::COL_RECIPIENTS)) $criteria->add(NewsletterTableMap::COL_RECIPIENTS, $this->recipients);
+        if ($this->isColumnModified(NewsletterTableMap::COL_CREATED_AT)) $criteria->add(NewsletterTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(NewsletterTableMap::COL_UPDATED_AT)) $criteria->add(NewsletterTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1202,12 +1182,24 @@ abstract class Newsletter implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
-        $copyObj->setSubject($this->getSubject());
         $copyObj->setEmail($this->getEmail());
-        $copyObj->setHtmlForm($this->getHtmlForm());
-        $copyObj->setTextForm($this->getTextForm());
         $copyObj->setRecipients($this->getRecipients());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getNewsletterI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addNewsletterI18n($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1236,18 +1228,257 @@ abstract class Newsletter implements ActiveRecordInterface
         return $copyObj;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('NewsletterI18n' == $relationName) {
+            return $this->initNewsletterI18ns();
+        }
+    }
+
+    /**
+     * Clears out the collNewsletterI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addNewsletterI18ns()
+     */
+    public function clearNewsletterI18ns()
+    {
+        $this->collNewsletterI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collNewsletterI18ns collection loaded partially.
+     */
+    public function resetPartialNewsletterI18ns($v = true)
+    {
+        $this->collNewsletterI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collNewsletterI18ns collection.
+     *
+     * By default this just sets the collNewsletterI18ns collection to an empty array (like clearcollNewsletterI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initNewsletterI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collNewsletterI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collNewsletterI18ns = new ObjectCollection();
+        $this->collNewsletterI18ns->setModel('\Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n');
+    }
+
+    /**
+     * Gets an array of ChildNewsletterI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildNewsletter is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildNewsletterI18n[] List of ChildNewsletterI18n objects
+     * @throws PropelException
+     */
+    public function getNewsletterI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collNewsletterI18nsPartial && !$this->isNew();
+        if (null === $this->collNewsletterI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collNewsletterI18ns) {
+                // return empty collection
+                $this->initNewsletterI18ns();
+            } else {
+                $collNewsletterI18ns = ChildNewsletterI18nQuery::create(null, $criteria)
+                    ->filterByNewsletter($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collNewsletterI18nsPartial && count($collNewsletterI18ns)) {
+                        $this->initNewsletterI18ns(false);
+
+                        foreach ($collNewsletterI18ns as $obj) {
+                            if (false == $this->collNewsletterI18ns->contains($obj)) {
+                                $this->collNewsletterI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collNewsletterI18nsPartial = true;
+                    }
+
+                    reset($collNewsletterI18ns);
+
+                    return $collNewsletterI18ns;
+                }
+
+                if ($partial && $this->collNewsletterI18ns) {
+                    foreach ($this->collNewsletterI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collNewsletterI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collNewsletterI18ns = $collNewsletterI18ns;
+                $this->collNewsletterI18nsPartial = false;
+            }
+        }
+
+        return $this->collNewsletterI18ns;
+    }
+
+    /**
+     * Sets a collection of NewsletterI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $newsletterI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildNewsletter The current object (for fluent API support)
+     */
+    public function setNewsletterI18ns(Collection $newsletterI18ns, ConnectionInterface $con = null)
+    {
+        $newsletterI18nsToDelete = $this->getNewsletterI18ns(new Criteria(), $con)->diff($newsletterI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->newsletterI18nsScheduledForDeletion = clone $newsletterI18nsToDelete;
+
+        foreach ($newsletterI18nsToDelete as $newsletterI18nRemoved) {
+            $newsletterI18nRemoved->setNewsletter(null);
+        }
+
+        $this->collNewsletterI18ns = null;
+        foreach ($newsletterI18ns as $newsletterI18n) {
+            $this->addNewsletterI18n($newsletterI18n);
+        }
+
+        $this->collNewsletterI18ns = $newsletterI18ns;
+        $this->collNewsletterI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related NewsletterI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related NewsletterI18n objects.
+     * @throws PropelException
+     */
+    public function countNewsletterI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collNewsletterI18nsPartial && !$this->isNew();
+        if (null === $this->collNewsletterI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collNewsletterI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getNewsletterI18ns());
+            }
+
+            $query = ChildNewsletterI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByNewsletter($this)
+                ->count($con);
+        }
+
+        return count($this->collNewsletterI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildNewsletterI18n object to this object
+     * through the ChildNewsletterI18n foreign key attribute.
+     *
+     * @param    ChildNewsletterI18n $l ChildNewsletterI18n
+     * @return   \Gekosale\Plugin\Newsletter\Model\ORM\Newsletter The current object (for fluent API support)
+     */
+    public function addNewsletterI18n(ChildNewsletterI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collNewsletterI18ns === null) {
+            $this->initNewsletterI18ns();
+            $this->collNewsletterI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collNewsletterI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddNewsletterI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param NewsletterI18n $newsletterI18n The newsletterI18n object to add.
+     */
+    protected function doAddNewsletterI18n($newsletterI18n)
+    {
+        $this->collNewsletterI18ns[]= $newsletterI18n;
+        $newsletterI18n->setNewsletter($this);
+    }
+
+    /**
+     * @param  NewsletterI18n $newsletterI18n The newsletterI18n object to remove.
+     * @return ChildNewsletter The current object (for fluent API support)
+     */
+    public function removeNewsletterI18n($newsletterI18n)
+    {
+        if ($this->getNewsletterI18ns()->contains($newsletterI18n)) {
+            $this->collNewsletterI18ns->remove($this->collNewsletterI18ns->search($newsletterI18n));
+            if (null === $this->newsletterI18nsScheduledForDeletion) {
+                $this->newsletterI18nsScheduledForDeletion = clone $this->collNewsletterI18ns;
+                $this->newsletterI18nsScheduledForDeletion->clear();
+            }
+            $this->newsletterI18nsScheduledForDeletion[]= clone $newsletterI18n;
+            $newsletterI18n->setNewsletter(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
-        $this->subject = null;
         $this->email = null;
-        $this->html_form = null;
-        $this->text_form = null;
         $this->recipients = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1267,8 +1498,18 @@ abstract class Newsletter implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collNewsletterI18ns) {
+                foreach ($this->collNewsletterI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
+
+        $this->collNewsletterI18ns = null;
     }
 
     /**
@@ -1279,6 +1520,215 @@ abstract class Newsletter implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(NewsletterTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildNewsletter The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildNewsletterI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collNewsletterI18ns) {
+                foreach ($this->collNewsletterI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildNewsletterI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildNewsletterI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addNewsletterI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildNewsletter The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildNewsletterI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collNewsletterI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collNewsletterI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildNewsletterI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [subject] column value.
+         * 
+         * @return   string
+         */
+        public function getSubject()
+        {
+        return $this->getCurrentTranslation()->getSubject();
+    }
+    
+    
+        /**
+         * Set the value of [subject] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n The current object (for fluent API support)
+         */
+        public function setSubject($v)
+        {    $this->getCurrentTranslation()->setSubject($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [html_form] column value.
+         * 
+         * @return   string
+         */
+        public function getHtmlForm()
+        {
+        return $this->getCurrentTranslation()->getHtmlForm();
+    }
+    
+    
+        /**
+         * Set the value of [html_form] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n The current object (for fluent API support)
+         */
+        public function setHtmlForm($v)
+        {    $this->getCurrentTranslation()->setHtmlForm($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [text_form] column value.
+         * 
+         * @return   string
+         */
+        public function getTextForm()
+        {
+        return $this->getCurrentTranslation()->getTextForm();
+    }
+    
+    
+        /**
+         * Set the value of [text_form] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Newsletter\Model\ORM\NewsletterI18n The current object (for fluent API support)
+         */
+        public function setTextForm($v)
+        {    $this->getCurrentTranslation()->setTextForm($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildNewsletter The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[NewsletterTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

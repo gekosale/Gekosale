@@ -2,9 +2,12 @@
 
 namespace Gekosale\Plugin\DispatchMethod\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod as ChildDispatchMethod;
+use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18n as ChildDispatchMethodI18n;
+use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18nQuery as ChildDispatchMethodI18nQuery;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodPrice as ChildDispatchMethodPrice;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodPriceQuery as ChildDispatchMethodPriceQuery;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodQuery as ChildDispatchMethodQuery;
@@ -26,6 +29,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class DispatchMethod implements ActiveRecordInterface 
 {
@@ -68,18 +72,6 @@ abstract class DispatchMethod implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
-     * The value for the description field.
-     * @var        string
-     */
-    protected $description;
-
-    /**
      * The value for the type field.
      * Note: this column has a database default value of: 1
      * @var        int
@@ -119,6 +111,18 @@ abstract class DispatchMethod implements ActiveRecordInterface
     protected $hierarchy;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildDispatchMethodPrice[] Collection to store aggregation of ChildDispatchMethodPrice objects.
      */
     protected $collDispatchMethodPrices;
@@ -143,12 +147,32 @@ abstract class DispatchMethod implements ActiveRecordInterface
     protected $collDispatchMethodShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildDispatchMethodI18n[] Collection to store aggregation of ChildDispatchMethodI18n objects.
+     */
+    protected $collDispatchMethodI18ns;
+    protected $collDispatchMethodI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildDispatchMethodI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -173,6 +197,12 @@ abstract class DispatchMethod implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $dispatchMethodShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $dispatchMethodI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -459,28 +489,6 @@ abstract class DispatchMethod implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
-     * Get the [description] column value.
-     * 
-     * @return   string
-     */
-    public function getDescription()
-    {
-
-        return $this->description;
-    }
-
-    /**
      * Get the [type] column value.
      * 
      * @return   int
@@ -547,6 +555,46 @@ abstract class DispatchMethod implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -566,48 +614,6 @@ abstract class DispatchMethod implements ActiveRecordInterface
 
         return $this;
     } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[DispatchMethodTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
-
-    /**
-     * Set the value of [description] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod The current object (for fluent API support)
-     */
-    public function setDescription($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[DispatchMethodTableMap::COL_DESCRIPTION] = true;
-        }
-
-
-        return $this;
-    } // setDescription()
 
     /**
      * Set the value of [type] column.
@@ -736,6 +742,48 @@ abstract class DispatchMethod implements ActiveRecordInterface
     } // setHierarchy()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[DispatchMethodTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[DispatchMethodTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -787,29 +835,35 @@ abstract class DispatchMethod implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DispatchMethodTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DispatchMethodTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DispatchMethodTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DispatchMethodTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DispatchMethodTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
             $this->type = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DispatchMethodTableMap::translateFieldName('MaximumWeight', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DispatchMethodTableMap::translateFieldName('MaximumWeight', TableMap::TYPE_PHPNAME, $indexType)];
             $this->maximum_weight = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DispatchMethodTableMap::translateFieldName('FreeDelivery', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DispatchMethodTableMap::translateFieldName('FreeDelivery', TableMap::TYPE_PHPNAME, $indexType)];
             $this->free_delivery = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DispatchMethodTableMap::translateFieldName('CountryIds', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DispatchMethodTableMap::translateFieldName('CountryIds', TableMap::TYPE_PHPNAME, $indexType)];
             $this->country_ids = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DispatchMethodTableMap::translateFieldName('CurrencyId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DispatchMethodTableMap::translateFieldName('CurrencyId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->currency_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DispatchMethodTableMap::translateFieldName('Hierarchy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DispatchMethodTableMap::translateFieldName('Hierarchy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->hierarchy = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DispatchMethodTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DispatchMethodTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -887,6 +941,8 @@ abstract class DispatchMethod implements ActiveRecordInterface
 
             $this->collDispatchMethodShops = null;
 
+            $this->collDispatchMethodI18ns = null;
+
         } // if (deep)
     }
 
@@ -957,8 +1013,19 @@ abstract class DispatchMethod implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(DispatchMethodTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(DispatchMethodTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(DispatchMethodTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -1077,6 +1144,23 @@ abstract class DispatchMethod implements ActiveRecordInterface
                 }
             }
 
+            if ($this->dispatchMethodI18nsScheduledForDeletion !== null) {
+                if (!$this->dispatchMethodI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18nQuery::create()
+                        ->filterByPrimaryKeys($this->dispatchMethodI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->dispatchMethodI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collDispatchMethodI18ns !== null) {
+            foreach ($this->collDispatchMethodI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1106,12 +1190,6 @@ abstract class DispatchMethod implements ActiveRecordInterface
         if ($this->isColumnModified(DispatchMethodTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(DispatchMethodTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
-        if ($this->isColumnModified(DispatchMethodTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
-        }
         if ($this->isColumnModified(DispatchMethodTableMap::COL_TYPE)) {
             $modifiedColumns[':p' . $index++]  = 'TYPE';
         }
@@ -1130,6 +1208,12 @@ abstract class DispatchMethod implements ActiveRecordInterface
         if ($this->isColumnModified(DispatchMethodTableMap::COL_HIERARCHY)) {
             $modifiedColumns[':p' . $index++]  = 'HIERARCHY';
         }
+        if ($this->isColumnModified(DispatchMethodTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(DispatchMethodTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO dispatch_method (%s) VALUES (%s)',
@@ -1143,12 +1227,6 @@ abstract class DispatchMethod implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-                        break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case 'DESCRIPTION':                        
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'TYPE':                        
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_INT);
@@ -1167,6 +1245,12 @@ abstract class DispatchMethod implements ActiveRecordInterface
                         break;
                     case 'HIERARCHY':                        
                         $stmt->bindValue($identifier, $this->hierarchy, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1234,28 +1318,28 @@ abstract class DispatchMethod implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
-                break;
-            case 2:
-                return $this->getDescription();
-                break;
-            case 3:
                 return $this->getType();
                 break;
-            case 4:
+            case 2:
                 return $this->getMaximumWeight();
                 break;
-            case 5:
+            case 3:
                 return $this->getFreeDelivery();
                 break;
-            case 6:
+            case 4:
                 return $this->getCountryIds();
                 break;
-            case 7:
+            case 5:
                 return $this->getCurrencyId();
                 break;
-            case 8:
+            case 6:
                 return $this->getHierarchy();
+                break;
+            case 7:
+                return $this->getCreatedAt();
+                break;
+            case 8:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1287,14 +1371,14 @@ abstract class DispatchMethod implements ActiveRecordInterface
         $keys = DispatchMethodTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getType(),
-            $keys[4] => $this->getMaximumWeight(),
-            $keys[5] => $this->getFreeDelivery(),
-            $keys[6] => $this->getCountryIds(),
-            $keys[7] => $this->getCurrencyId(),
-            $keys[8] => $this->getHierarchy(),
+            $keys[1] => $this->getType(),
+            $keys[2] => $this->getMaximumWeight(),
+            $keys[3] => $this->getFreeDelivery(),
+            $keys[4] => $this->getCountryIds(),
+            $keys[5] => $this->getCurrencyId(),
+            $keys[6] => $this->getHierarchy(),
+            $keys[7] => $this->getCreatedAt(),
+            $keys[8] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1313,6 +1397,9 @@ abstract class DispatchMethod implements ActiveRecordInterface
             }
             if (null !== $this->collDispatchMethodShops) {
                 $result['DispatchMethodShops'] = $this->collDispatchMethodShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDispatchMethodI18ns) {
+                $result['DispatchMethodI18ns'] = $this->collDispatchMethodI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1352,28 +1439,28 @@ abstract class DispatchMethod implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
-                $this->setDescription($value);
-                break;
-            case 3:
                 $this->setType($value);
                 break;
-            case 4:
+            case 2:
                 $this->setMaximumWeight($value);
                 break;
-            case 5:
+            case 3:
                 $this->setFreeDelivery($value);
                 break;
-            case 6:
+            case 4:
                 $this->setCountryIds($value);
                 break;
-            case 7:
+            case 5:
                 $this->setCurrencyId($value);
                 break;
-            case 8:
+            case 6:
                 $this->setHierarchy($value);
+                break;
+            case 7:
+                $this->setCreatedAt($value);
+                break;
+            case 8:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1400,14 +1487,14 @@ abstract class DispatchMethod implements ActiveRecordInterface
         $keys = DispatchMethodTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDescription($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setType($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setMaximumWeight($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setFreeDelivery($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setCountryIds($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setCurrencyId($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setHierarchy($arr[$keys[8]]);
+        if (array_key_exists($keys[1], $arr)) $this->setType($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setMaximumWeight($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setFreeDelivery($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCountryIds($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCurrencyId($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setHierarchy($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
     }
 
     /**
@@ -1420,14 +1507,14 @@ abstract class DispatchMethod implements ActiveRecordInterface
         $criteria = new Criteria(DispatchMethodTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(DispatchMethodTableMap::COL_ID)) $criteria->add(DispatchMethodTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(DispatchMethodTableMap::COL_NAME)) $criteria->add(DispatchMethodTableMap::COL_NAME, $this->name);
-        if ($this->isColumnModified(DispatchMethodTableMap::COL_DESCRIPTION)) $criteria->add(DispatchMethodTableMap::COL_DESCRIPTION, $this->description);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_TYPE)) $criteria->add(DispatchMethodTableMap::COL_TYPE, $this->type);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_MAXIMUM_WEIGHT)) $criteria->add(DispatchMethodTableMap::COL_MAXIMUM_WEIGHT, $this->maximum_weight);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_FREE_DELIVERY)) $criteria->add(DispatchMethodTableMap::COL_FREE_DELIVERY, $this->free_delivery);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_COUNTRY_IDS)) $criteria->add(DispatchMethodTableMap::COL_COUNTRY_IDS, $this->country_ids);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_CURRENCY_ID)) $criteria->add(DispatchMethodTableMap::COL_CURRENCY_ID, $this->currency_id);
         if ($this->isColumnModified(DispatchMethodTableMap::COL_HIERARCHY)) $criteria->add(DispatchMethodTableMap::COL_HIERARCHY, $this->hierarchy);
+        if ($this->isColumnModified(DispatchMethodTableMap::COL_CREATED_AT)) $criteria->add(DispatchMethodTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(DispatchMethodTableMap::COL_UPDATED_AT)) $criteria->add(DispatchMethodTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1493,14 +1580,14 @@ abstract class DispatchMethod implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
-        $copyObj->setDescription($this->getDescription());
         $copyObj->setType($this->getType());
         $copyObj->setMaximumWeight($this->getMaximumWeight());
         $copyObj->setFreeDelivery($this->getFreeDelivery());
         $copyObj->setCountryIds($this->getCountryIds());
         $copyObj->setCurrencyId($this->getCurrencyId());
         $copyObj->setHierarchy($this->getHierarchy());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1528,6 +1615,12 @@ abstract class DispatchMethod implements ActiveRecordInterface
             foreach ($this->getDispatchMethodShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addDispatchMethodShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDispatchMethodI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDispatchMethodI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1583,6 +1676,9 @@ abstract class DispatchMethod implements ActiveRecordInterface
         }
         if ('DispatchMethodShop' == $relationName) {
             return $this->initDispatchMethodShops();
+        }
+        if ('DispatchMethodI18n' == $relationName) {
+            return $this->initDispatchMethodI18ns();
         }
     }
 
@@ -2509,19 +2605,244 @@ abstract class DispatchMethod implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collDispatchMethodI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addDispatchMethodI18ns()
+     */
+    public function clearDispatchMethodI18ns()
+    {
+        $this->collDispatchMethodI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collDispatchMethodI18ns collection loaded partially.
+     */
+    public function resetPartialDispatchMethodI18ns($v = true)
+    {
+        $this->collDispatchMethodI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collDispatchMethodI18ns collection.
+     *
+     * By default this just sets the collDispatchMethodI18ns collection to an empty array (like clearcollDispatchMethodI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDispatchMethodI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collDispatchMethodI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collDispatchMethodI18ns = new ObjectCollection();
+        $this->collDispatchMethodI18ns->setModel('\Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18n');
+    }
+
+    /**
+     * Gets an array of ChildDispatchMethodI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildDispatchMethod is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildDispatchMethodI18n[] List of ChildDispatchMethodI18n objects
+     * @throws PropelException
+     */
+    public function getDispatchMethodI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDispatchMethodI18nsPartial && !$this->isNew();
+        if (null === $this->collDispatchMethodI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collDispatchMethodI18ns) {
+                // return empty collection
+                $this->initDispatchMethodI18ns();
+            } else {
+                $collDispatchMethodI18ns = ChildDispatchMethodI18nQuery::create(null, $criteria)
+                    ->filterByDispatchMethod($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDispatchMethodI18nsPartial && count($collDispatchMethodI18ns)) {
+                        $this->initDispatchMethodI18ns(false);
+
+                        foreach ($collDispatchMethodI18ns as $obj) {
+                            if (false == $this->collDispatchMethodI18ns->contains($obj)) {
+                                $this->collDispatchMethodI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collDispatchMethodI18nsPartial = true;
+                    }
+
+                    reset($collDispatchMethodI18ns);
+
+                    return $collDispatchMethodI18ns;
+                }
+
+                if ($partial && $this->collDispatchMethodI18ns) {
+                    foreach ($this->collDispatchMethodI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collDispatchMethodI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDispatchMethodI18ns = $collDispatchMethodI18ns;
+                $this->collDispatchMethodI18nsPartial = false;
+            }
+        }
+
+        return $this->collDispatchMethodI18ns;
+    }
+
+    /**
+     * Sets a collection of DispatchMethodI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $dispatchMethodI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildDispatchMethod The current object (for fluent API support)
+     */
+    public function setDispatchMethodI18ns(Collection $dispatchMethodI18ns, ConnectionInterface $con = null)
+    {
+        $dispatchMethodI18nsToDelete = $this->getDispatchMethodI18ns(new Criteria(), $con)->diff($dispatchMethodI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->dispatchMethodI18nsScheduledForDeletion = clone $dispatchMethodI18nsToDelete;
+
+        foreach ($dispatchMethodI18nsToDelete as $dispatchMethodI18nRemoved) {
+            $dispatchMethodI18nRemoved->setDispatchMethod(null);
+        }
+
+        $this->collDispatchMethodI18ns = null;
+        foreach ($dispatchMethodI18ns as $dispatchMethodI18n) {
+            $this->addDispatchMethodI18n($dispatchMethodI18n);
+        }
+
+        $this->collDispatchMethodI18ns = $dispatchMethodI18ns;
+        $this->collDispatchMethodI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DispatchMethodI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related DispatchMethodI18n objects.
+     * @throws PropelException
+     */
+    public function countDispatchMethodI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDispatchMethodI18nsPartial && !$this->isNew();
+        if (null === $this->collDispatchMethodI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDispatchMethodI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDispatchMethodI18ns());
+            }
+
+            $query = ChildDispatchMethodI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByDispatchMethod($this)
+                ->count($con);
+        }
+
+        return count($this->collDispatchMethodI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildDispatchMethodI18n object to this object
+     * through the ChildDispatchMethodI18n foreign key attribute.
+     *
+     * @param    ChildDispatchMethodI18n $l ChildDispatchMethodI18n
+     * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethod The current object (for fluent API support)
+     */
+    public function addDispatchMethodI18n(ChildDispatchMethodI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collDispatchMethodI18ns === null) {
+            $this->initDispatchMethodI18ns();
+            $this->collDispatchMethodI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collDispatchMethodI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddDispatchMethodI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param DispatchMethodI18n $dispatchMethodI18n The dispatchMethodI18n object to add.
+     */
+    protected function doAddDispatchMethodI18n($dispatchMethodI18n)
+    {
+        $this->collDispatchMethodI18ns[]= $dispatchMethodI18n;
+        $dispatchMethodI18n->setDispatchMethod($this);
+    }
+
+    /**
+     * @param  DispatchMethodI18n $dispatchMethodI18n The dispatchMethodI18n object to remove.
+     * @return ChildDispatchMethod The current object (for fluent API support)
+     */
+    public function removeDispatchMethodI18n($dispatchMethodI18n)
+    {
+        if ($this->getDispatchMethodI18ns()->contains($dispatchMethodI18n)) {
+            $this->collDispatchMethodI18ns->remove($this->collDispatchMethodI18ns->search($dispatchMethodI18n));
+            if (null === $this->dispatchMethodI18nsScheduledForDeletion) {
+                $this->dispatchMethodI18nsScheduledForDeletion = clone $this->collDispatchMethodI18ns;
+                $this->dispatchMethodI18nsScheduledForDeletion->clear();
+            }
+            $this->dispatchMethodI18nsScheduledForDeletion[]= clone $dispatchMethodI18n;
+            $dispatchMethodI18n->setDispatchMethod(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
-        $this->description = null;
         $this->type = null;
         $this->maximum_weight = null;
         $this->free_delivery = null;
         $this->country_ids = null;
         $this->currency_id = null;
         $this->hierarchy = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2562,12 +2883,22 @@ abstract class DispatchMethod implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collDispatchMethodI18ns) {
+                foreach ($this->collDispatchMethodI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collDispatchMethodPrices = null;
         $this->collDispatchMethodWeights = null;
         $this->collDispatchMethodpaymentMethods = null;
         $this->collDispatchMethodShops = null;
+        $this->collDispatchMethodI18ns = null;
     }
 
     /**
@@ -2578,6 +2909,167 @@ abstract class DispatchMethod implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(DispatchMethodTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildDispatchMethod The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildDispatchMethodI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collDispatchMethodI18ns) {
+                foreach ($this->collDispatchMethodI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildDispatchMethodI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildDispatchMethodI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addDispatchMethodI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildDispatchMethod The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildDispatchMethodI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collDispatchMethodI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collDispatchMethodI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildDispatchMethodI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [description] column value.
+         * 
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+    
+    
+        /**
+         * Set the value of [description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildDispatchMethod The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[DispatchMethodTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

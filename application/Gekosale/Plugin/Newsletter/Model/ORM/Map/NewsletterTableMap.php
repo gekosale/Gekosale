@@ -58,7 +58,7 @@ class NewsletterTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class NewsletterTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the ID field
@@ -76,29 +76,9 @@ class NewsletterTableMap extends TableMap
     const COL_ID = 'newsletter.ID';
 
     /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'newsletter.NAME';
-
-    /**
-     * the column name for the SUBJECT field
-     */
-    const COL_SUBJECT = 'newsletter.SUBJECT';
-
-    /**
      * the column name for the EMAIL field
      */
     const COL_EMAIL = 'newsletter.EMAIL';
-
-    /**
-     * the column name for the HTML_FORM field
-     */
-    const COL_HTML_FORM = 'newsletter.HTML_FORM';
-
-    /**
-     * the column name for the TEXT_FORM field
-     */
-    const COL_TEXT_FORM = 'newsletter.TEXT_FORM';
 
     /**
      * the column name for the RECIPIENTS field
@@ -106,9 +86,28 @@ class NewsletterTableMap extends TableMap
     const COL_RECIPIENTS = 'newsletter.RECIPIENTS';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'newsletter.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'newsletter.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -117,12 +116,12 @@ class NewsletterTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Subject', 'Email', 'HtmlForm', 'TextForm', 'Recipients', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', 'subject', 'email', 'htmlForm', 'textForm', 'recipients', ),
-        self::TYPE_COLNAME       => array(NewsletterTableMap::COL_ID, NewsletterTableMap::COL_NAME, NewsletterTableMap::COL_SUBJECT, NewsletterTableMap::COL_EMAIL, NewsletterTableMap::COL_HTML_FORM, NewsletterTableMap::COL_TEXT_FORM, NewsletterTableMap::COL_RECIPIENTS, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_SUBJECT', 'COL_EMAIL', 'COL_HTML_FORM', 'COL_TEXT_FORM', 'COL_RECIPIENTS', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'subject', 'email', 'html_form', 'text_form', 'recipients', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Email', 'Recipients', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'email', 'recipients', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(NewsletterTableMap::COL_ID, NewsletterTableMap::COL_EMAIL, NewsletterTableMap::COL_RECIPIENTS, NewsletterTableMap::COL_CREATED_AT, NewsletterTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_EMAIL', 'COL_RECIPIENTS', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'email', 'recipients', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -132,12 +131,12 @@ class NewsletterTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Subject' => 2, 'Email' => 3, 'HtmlForm' => 4, 'TextForm' => 5, 'Recipients' => 6, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'subject' => 2, 'email' => 3, 'htmlForm' => 4, 'textForm' => 5, 'recipients' => 6, ),
-        self::TYPE_COLNAME       => array(NewsletterTableMap::COL_ID => 0, NewsletterTableMap::COL_NAME => 1, NewsletterTableMap::COL_SUBJECT => 2, NewsletterTableMap::COL_EMAIL => 3, NewsletterTableMap::COL_HTML_FORM => 4, NewsletterTableMap::COL_TEXT_FORM => 5, NewsletterTableMap::COL_RECIPIENTS => 6, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_SUBJECT' => 2, 'COL_EMAIL' => 3, 'COL_HTML_FORM' => 4, 'COL_TEXT_FORM' => 5, 'COL_RECIPIENTS' => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'subject' => 2, 'email' => 3, 'html_form' => 4, 'text_form' => 5, 'recipients' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'Recipients' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'email' => 1, 'recipients' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_COLNAME       => array(NewsletterTableMap::COL_ID => 0, NewsletterTableMap::COL_EMAIL => 1, NewsletterTableMap::COL_RECIPIENTS => 2, NewsletterTableMap::COL_CREATED_AT => 3, NewsletterTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_EMAIL' => 1, 'COL_RECIPIENTS' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'recipients' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -157,12 +156,10 @@ class NewsletterTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 128, null);
-        $this->addColumn('SUBJECT', 'Subject', 'VARCHAR', true, 255, null);
         $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
-        $this->addColumn('HTML_FORM', 'HtmlForm', 'CLOB', true, null, null);
-        $this->addColumn('TEXT_FORM', 'TextForm', 'LONGVARCHAR', true, null, null);
         $this->addColumn('RECIPIENTS', 'Recipients', 'VARCHAR', false, 255, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -170,7 +167,31 @@ class NewsletterTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('NewsletterI18n', '\\Gekosale\\Plugin\\Newsletter\\Model\\ORM\\NewsletterI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'NewsletterI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, subject, html_form, text_form', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
+    /**
+     * Method to invalidate the instance pool of all tables related to newsletter     * by a foreign key with ON DELETE CASCADE
+     */
+    public static function clearRelatedInstancePool()
+    {
+        // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+                NewsletterI18nTableMap::clearInstancePool();
+            }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -311,20 +332,16 @@ class NewsletterTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(NewsletterTableMap::COL_ID);
-            $criteria->addSelectColumn(NewsletterTableMap::COL_NAME);
-            $criteria->addSelectColumn(NewsletterTableMap::COL_SUBJECT);
             $criteria->addSelectColumn(NewsletterTableMap::COL_EMAIL);
-            $criteria->addSelectColumn(NewsletterTableMap::COL_HTML_FORM);
-            $criteria->addSelectColumn(NewsletterTableMap::COL_TEXT_FORM);
             $criteria->addSelectColumn(NewsletterTableMap::COL_RECIPIENTS);
+            $criteria->addSelectColumn(NewsletterTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(NewsletterTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.SUBJECT');
             $criteria->addSelectColumn($alias . '.EMAIL');
-            $criteria->addSelectColumn($alias . '.HTML_FORM');
-            $criteria->addSelectColumn($alias . '.TEXT_FORM');
             $criteria->addSelectColumn($alias . '.RECIPIENTS');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

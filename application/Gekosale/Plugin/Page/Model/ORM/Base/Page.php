@@ -2,9 +2,12 @@
 
 namespace Gekosale\Plugin\Page\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Page\Model\ORM\Page as ChildPage;
+use Gekosale\Plugin\Page\Model\ORM\PageI18n as ChildPageI18n;
+use Gekosale\Plugin\Page\Model\ORM\PageI18nQuery as ChildPageI18nQuery;
 use Gekosale\Plugin\Page\Model\ORM\PageQuery as ChildPageQuery;
 use Gekosale\Plugin\Page\Model\ORM\PageShop as ChildPageShop;
 use Gekosale\Plugin\Page\Model\ORM\PageShopQuery as ChildPageShopQuery;
@@ -20,6 +23,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Page implements ActiveRecordInterface 
 {
@@ -114,6 +118,18 @@ abstract class Page implements ActiveRecordInterface
     protected $redirect_url;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        Page
      */
     protected $aPageRelatedByPageId;
@@ -131,12 +147,32 @@ abstract class Page implements ActiveRecordInterface
     protected $collPageShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildPageI18n[] Collection to store aggregation of ChildPageI18n objects.
+     */
+    protected $collPageI18ns;
+    protected $collPageI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildPageI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -149,6 +185,12 @@ abstract class Page implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $pageShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $pageI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -524,6 +566,46 @@ abstract class Page implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -717,6 +799,48 @@ abstract class Page implements ActiveRecordInterface
     } // setRedirectUrl()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Page\Model\ORM\Page The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[PageTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Page\Model\ORM\Page The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[PageTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -795,6 +919,18 @@ abstract class Page implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PageTableMap::translateFieldName('RedirectUrl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->redirect_url = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PageTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PageTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -803,7 +939,7 @@ abstract class Page implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = PageTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = PageTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Page\Model\ORM\Page object", 0, $e);
@@ -871,6 +1007,8 @@ abstract class Page implements ActiveRecordInterface
             $this->collPagesRelatedById = null;
 
             $this->collPageShops = null;
+
+            $this->collPageI18ns = null;
 
         } // if (deep)
     }
@@ -942,8 +1080,19 @@ abstract class Page implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(PageTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(PageTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(PageTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -1040,6 +1189,23 @@ abstract class Page implements ActiveRecordInterface
                 }
             }
 
+            if ($this->pageI18nsScheduledForDeletion !== null) {
+                if (!$this->pageI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Page\Model\ORM\PageI18nQuery::create()
+                        ->filterByPrimaryKeys($this->pageI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->pageI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collPageI18ns !== null) {
+            foreach ($this->collPageI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1093,6 +1259,12 @@ abstract class Page implements ActiveRecordInterface
         if ($this->isColumnModified(PageTableMap::COL_REDIRECT_URL)) {
             $modifiedColumns[':p' . $index++]  = 'REDIRECT_URL';
         }
+        if ($this->isColumnModified(PageTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(PageTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO page (%s) VALUES (%s)',
@@ -1130,6 +1302,12 @@ abstract class Page implements ActiveRecordInterface
                         break;
                     case 'REDIRECT_URL':                        
                         $stmt->bindValue($identifier, $this->redirect_url, PDO::PARAM_STR);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1220,6 +1398,12 @@ abstract class Page implements ActiveRecordInterface
             case 8:
                 return $this->getRedirectUrl();
                 break;
+            case 9:
+                return $this->getCreatedAt();
+                break;
+            case 10:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -1258,6 +1442,8 @@ abstract class Page implements ActiveRecordInterface
             $keys[6] => $this->getRedirect(),
             $keys[7] => $this->getRedirectRoute(),
             $keys[8] => $this->getRedirectUrl(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1273,6 +1459,9 @@ abstract class Page implements ActiveRecordInterface
             }
             if (null !== $this->collPageShops) {
                 $result['PageShops'] = $this->collPageShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPageI18ns) {
+                $result['PageI18ns'] = $this->collPageI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1335,6 +1524,12 @@ abstract class Page implements ActiveRecordInterface
             case 8:
                 $this->setRedirectUrl($value);
                 break;
+            case 9:
+                $this->setCreatedAt($value);
+                break;
+            case 10:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -1368,6 +1563,8 @@ abstract class Page implements ActiveRecordInterface
         if (array_key_exists($keys[6], $arr)) $this->setRedirect($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setRedirectRoute($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setRedirectUrl($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
     }
 
     /**
@@ -1388,6 +1585,8 @@ abstract class Page implements ActiveRecordInterface
         if ($this->isColumnModified(PageTableMap::COL_REDIRECT)) $criteria->add(PageTableMap::COL_REDIRECT, $this->redirect);
         if ($this->isColumnModified(PageTableMap::COL_REDIRECT_ROUTE)) $criteria->add(PageTableMap::COL_REDIRECT_ROUTE, $this->redirect_route);
         if ($this->isColumnModified(PageTableMap::COL_REDIRECT_URL)) $criteria->add(PageTableMap::COL_REDIRECT_URL, $this->redirect_url);
+        if ($this->isColumnModified(PageTableMap::COL_CREATED_AT)) $criteria->add(PageTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(PageTableMap::COL_UPDATED_AT)) $criteria->add(PageTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1461,6 +1660,8 @@ abstract class Page implements ActiveRecordInterface
         $copyObj->setRedirect($this->getRedirect());
         $copyObj->setRedirectRoute($this->getRedirectRoute());
         $copyObj->setRedirectUrl($this->getRedirectUrl());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1476,6 +1677,12 @@ abstract class Page implements ActiveRecordInterface
             foreach ($this->getPageShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPageShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getPageI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPageI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1576,6 +1783,9 @@ abstract class Page implements ActiveRecordInterface
         }
         if ('PageShop' == $relationName) {
             return $this->initPageShops();
+        }
+        if ('PageI18n' == $relationName) {
+            return $this->initPageI18ns();
         }
     }
 
@@ -2041,6 +2251,231 @@ abstract class Page implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPageI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPageI18ns()
+     */
+    public function clearPageI18ns()
+    {
+        $this->collPageI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPageI18ns collection loaded partially.
+     */
+    public function resetPartialPageI18ns($v = true)
+    {
+        $this->collPageI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collPageI18ns collection.
+     *
+     * By default this just sets the collPageI18ns collection to an empty array (like clearcollPageI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPageI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collPageI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collPageI18ns = new ObjectCollection();
+        $this->collPageI18ns->setModel('\Gekosale\Plugin\Page\Model\ORM\PageI18n');
+    }
+
+    /**
+     * Gets an array of ChildPageI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPage is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildPageI18n[] List of ChildPageI18n objects
+     * @throws PropelException
+     */
+    public function getPageI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPageI18nsPartial && !$this->isNew();
+        if (null === $this->collPageI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPageI18ns) {
+                // return empty collection
+                $this->initPageI18ns();
+            } else {
+                $collPageI18ns = ChildPageI18nQuery::create(null, $criteria)
+                    ->filterByPage($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPageI18nsPartial && count($collPageI18ns)) {
+                        $this->initPageI18ns(false);
+
+                        foreach ($collPageI18ns as $obj) {
+                            if (false == $this->collPageI18ns->contains($obj)) {
+                                $this->collPageI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collPageI18nsPartial = true;
+                    }
+
+                    reset($collPageI18ns);
+
+                    return $collPageI18ns;
+                }
+
+                if ($partial && $this->collPageI18ns) {
+                    foreach ($this->collPageI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collPageI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPageI18ns = $collPageI18ns;
+                $this->collPageI18nsPartial = false;
+            }
+        }
+
+        return $this->collPageI18ns;
+    }
+
+    /**
+     * Sets a collection of PageI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $pageI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildPage The current object (for fluent API support)
+     */
+    public function setPageI18ns(Collection $pageI18ns, ConnectionInterface $con = null)
+    {
+        $pageI18nsToDelete = $this->getPageI18ns(new Criteria(), $con)->diff($pageI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->pageI18nsScheduledForDeletion = clone $pageI18nsToDelete;
+
+        foreach ($pageI18nsToDelete as $pageI18nRemoved) {
+            $pageI18nRemoved->setPage(null);
+        }
+
+        $this->collPageI18ns = null;
+        foreach ($pageI18ns as $pageI18n) {
+            $this->addPageI18n($pageI18n);
+        }
+
+        $this->collPageI18ns = $pageI18ns;
+        $this->collPageI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PageI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PageI18n objects.
+     * @throws PropelException
+     */
+    public function countPageI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPageI18nsPartial && !$this->isNew();
+        if (null === $this->collPageI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPageI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPageI18ns());
+            }
+
+            $query = ChildPageI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPage($this)
+                ->count($con);
+        }
+
+        return count($this->collPageI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildPageI18n object to this object
+     * through the ChildPageI18n foreign key attribute.
+     *
+     * @param    ChildPageI18n $l ChildPageI18n
+     * @return   \Gekosale\Plugin\Page\Model\ORM\Page The current object (for fluent API support)
+     */
+    public function addPageI18n(ChildPageI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collPageI18ns === null) {
+            $this->initPageI18ns();
+            $this->collPageI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collPageI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPageI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param PageI18n $pageI18n The pageI18n object to add.
+     */
+    protected function doAddPageI18n($pageI18n)
+    {
+        $this->collPageI18ns[]= $pageI18n;
+        $pageI18n->setPage($this);
+    }
+
+    /**
+     * @param  PageI18n $pageI18n The pageI18n object to remove.
+     * @return ChildPage The current object (for fluent API support)
+     */
+    public function removePageI18n($pageI18n)
+    {
+        if ($this->getPageI18ns()->contains($pageI18n)) {
+            $this->collPageI18ns->remove($this->collPageI18ns->search($pageI18n));
+            if (null === $this->pageI18nsScheduledForDeletion) {
+                $this->pageI18nsScheduledForDeletion = clone $this->collPageI18ns;
+                $this->pageI18nsScheduledForDeletion->clear();
+            }
+            $this->pageI18nsScheduledForDeletion[]= clone $pageI18n;
+            $pageI18n->setPage(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -2054,6 +2489,8 @@ abstract class Page implements ActiveRecordInterface
         $this->redirect = null;
         $this->redirect_route = null;
         $this->redirect_url = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2084,10 +2521,20 @@ abstract class Page implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPageI18ns) {
+                foreach ($this->collPageI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collPagesRelatedById = null;
         $this->collPageShops = null;
+        $this->collPageI18ns = null;
         $this->aPageRelatedByPageId = null;
     }
 
@@ -2099,6 +2546,263 @@ abstract class Page implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(PageTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildPage The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildPageI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collPageI18ns) {
+                foreach ($this->collPageI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildPageI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildPageI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addPageI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildPage The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildPageI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collPageI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collPageI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildPageI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [short_description] column value.
+         * 
+         * @return   string
+         */
+        public function getShortDescription()
+        {
+        return $this->getCurrentTranslation()->getShortDescription();
+    }
+    
+    
+        /**
+         * Set the value of [short_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setShortDescription($v)
+        {    $this->getCurrentTranslation()->setShortDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [description] column value.
+         * 
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+    
+    
+        /**
+         * Set the value of [description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Page\Model\ORM\PageI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildPage The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[PageTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

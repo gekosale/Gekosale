@@ -5,6 +5,7 @@ namespace Gekosale\Plugin\Attribute\Model\ORM\Base;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue as ChildAttributeProductValue;
+use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery as ChildAttributeProductValueI18nQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueQuery as ChildAttributeProductValueQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\Map\AttributeProductValueTableMap;
 use Propel\Runtime\Propel;
@@ -22,12 +23,14 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildAttributeProductValueQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildAttributeProductValueQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildAttributeProductValueQuery orderByAttributeProductId($order = Criteria::ASC) Order by the attribute_product_id column
+ * @method     ChildAttributeProductValueQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildAttributeProductValueQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildAttributeProductValueQuery groupById() Group by the id column
- * @method     ChildAttributeProductValueQuery groupByName() Group by the name column
  * @method     ChildAttributeProductValueQuery groupByAttributeProductId() Group by the attribute_product_id column
+ * @method     ChildAttributeProductValueQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildAttributeProductValueQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildAttributeProductValueQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildAttributeProductValueQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -41,16 +44,22 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAttributeProductValueQuery rightJoinProductAttributeValueSet($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProductAttributeValueSet relation
  * @method     ChildAttributeProductValueQuery innerJoinProductAttributeValueSet($relationAlias = null) Adds a INNER JOIN clause to the query using the ProductAttributeValueSet relation
  *
+ * @method     ChildAttributeProductValueQuery leftJoinAttributeProductValueI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the AttributeProductValueI18n relation
+ * @method     ChildAttributeProductValueQuery rightJoinAttributeProductValueI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AttributeProductValueI18n relation
+ * @method     ChildAttributeProductValueQuery innerJoinAttributeProductValueI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the AttributeProductValueI18n relation
+ *
  * @method     ChildAttributeProductValue findOne(ConnectionInterface $con = null) Return the first ChildAttributeProductValue matching the query
  * @method     ChildAttributeProductValue findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAttributeProductValue matching the query, or a new ChildAttributeProductValue object populated from the query conditions when no match is found
  *
  * @method     ChildAttributeProductValue findOneById(int $id) Return the first ChildAttributeProductValue filtered by the id column
- * @method     ChildAttributeProductValue findOneByName(string $name) Return the first ChildAttributeProductValue filtered by the name column
  * @method     ChildAttributeProductValue findOneByAttributeProductId(int $attribute_product_id) Return the first ChildAttributeProductValue filtered by the attribute_product_id column
+ * @method     ChildAttributeProductValue findOneByCreatedAt(string $created_at) Return the first ChildAttributeProductValue filtered by the created_at column
+ * @method     ChildAttributeProductValue findOneByUpdatedAt(string $updated_at) Return the first ChildAttributeProductValue filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildAttributeProductValue objects filtered by the id column
- * @method     array findByName(string $name) Return ChildAttributeProductValue objects filtered by the name column
  * @method     array findByAttributeProductId(int $attribute_product_id) Return ChildAttributeProductValue objects filtered by the attribute_product_id column
+ * @method     array findByCreatedAt(string $created_at) Return ChildAttributeProductValue objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildAttributeProductValue objects filtered by the updated_at column
  *
  */
 abstract class AttributeProductValueQuery extends ModelCriteria
@@ -139,7 +148,7 @@ abstract class AttributeProductValueQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, NAME, ATTRIBUTE_PRODUCT_ID FROM attribute_product_value WHERE ID = :p0';
+        $sql = 'SELECT ID, ATTRIBUTE_PRODUCT_ID, CREATED_AT, UPDATED_AT FROM attribute_product_value WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -270,35 +279,6 @@ abstract class AttributeProductValueQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the name column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildAttributeProductValueQuery The current query, for fluid interface
-     */
-    public function filterByName($name = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($name)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(AttributeProductValueTableMap::COL_NAME, $name, $comparison);
-    }
-
-    /**
      * Filter the query on the attribute_product_id column
      *
      * Example usage:
@@ -339,6 +319,92 @@ abstract class AttributeProductValueQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID, $attributeProductId, $comparison);
+    }
+
+    /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(AttributeProductValueTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(AttributeProductValueTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AttributeProductValueTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(AttributeProductValueTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(AttributeProductValueTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AttributeProductValueTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -490,6 +556,79 @@ abstract class AttributeProductValueQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n object
+     *
+     * @param \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n|ObjectCollection $attributeProductValueI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function filterByAttributeProductValueI18n($attributeProductValueI18n, $comparison = null)
+    {
+        if ($attributeProductValueI18n instanceof \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n) {
+            return $this
+                ->addUsingAlias(AttributeProductValueTableMap::COL_ID, $attributeProductValueI18n->getId(), $comparison);
+        } elseif ($attributeProductValueI18n instanceof ObjectCollection) {
+            return $this
+                ->useAttributeProductValueI18nQuery()
+                ->filterByPrimaryKeys($attributeProductValueI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAttributeProductValueI18n() only accepts arguments of type \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the AttributeProductValueI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function joinAttributeProductValueI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('AttributeProductValueI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'AttributeProductValueI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the AttributeProductValueI18n relation AttributeProductValueI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useAttributeProductValueI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinAttributeProductValueI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'AttributeProductValueI18n', '\Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildAttributeProductValue $attributeProductValue Object to remove from the list of results
@@ -578,6 +717,129 @@ abstract class AttributeProductValueQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'AttributeProductValueI18n';
+    
+        return $this
+            ->joinAttributeProductValueI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('AttributeProductValueI18n');
+        $this->with['AttributeProductValueI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildAttributeProductValueI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'AttributeProductValueI18n', '\Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(AttributeProductValueTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(AttributeProductValueTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(AttributeProductValueTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(AttributeProductValueTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(AttributeProductValueTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildAttributeProductValueQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(AttributeProductValueTableMap::COL_CREATED_AT);
     }
 
 } // AttributeProductValueQuery

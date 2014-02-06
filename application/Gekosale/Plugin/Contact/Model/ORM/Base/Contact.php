@@ -2,9 +2,12 @@
 
 namespace Gekosale\Plugin\Contact\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Contact\Model\ORM\Contact as ChildContact;
+use Gekosale\Plugin\Contact\Model\ORM\ContactI18n as ChildContactI18n;
+use Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery as ChildContactI18nQuery;
 use Gekosale\Plugin\Contact\Model\ORM\ContactQuery as ChildContactQuery;
 use Gekosale\Plugin\Contact\Model\ORM\ContactShop as ChildContactShop;
 use Gekosale\Plugin\Contact\Model\ORM\ContactShopQuery as ChildContactShopQuery;
@@ -23,6 +26,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Contact implements ActiveRecordInterface 
 {
@@ -72,6 +76,18 @@ abstract class Contact implements ActiveRecordInterface
     protected $is_published;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildShop[] Collection to store aggregation of ChildShop objects.
      */
     protected $collShops;
@@ -84,12 +100,32 @@ abstract class Contact implements ActiveRecordInterface
     protected $collContactShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildContactI18n[] Collection to store aggregation of ChildContactI18n objects.
+     */
+    protected $collContactI18ns;
+    protected $collContactI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildContactI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -102,6 +138,12 @@ abstract class Contact implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $contactShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $contactI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -397,6 +439,46 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -437,6 +519,48 @@ abstract class Contact implements ActiveRecordInterface
 
         return $this;
     } // setIsPublished()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Contact\Model\ORM\Contact The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ContactTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Contact\Model\ORM\Contact The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ContactTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -484,6 +608,18 @@ abstract class Contact implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ContactTableMap::translateFieldName('IsPublished', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_published = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ContactTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ContactTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -492,7 +628,7 @@ abstract class Contact implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = ContactTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = ContactTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Contact\Model\ORM\Contact object", 0, $e);
@@ -556,6 +692,8 @@ abstract class Contact implements ActiveRecordInterface
             $this->collShops = null;
 
             $this->collContactShops = null;
+
+            $this->collContactI18ns = null;
 
         } // if (deep)
     }
@@ -627,8 +765,19 @@ abstract class Contact implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(ContactTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(ContactTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(ContactTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -714,6 +863,23 @@ abstract class Contact implements ActiveRecordInterface
                 }
             }
 
+            if ($this->contactI18nsScheduledForDeletion !== null) {
+                if (!$this->contactI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Contact\Model\ORM\ContactI18nQuery::create()
+                        ->filterByPrimaryKeys($this->contactI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->contactI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collContactI18ns !== null) {
+            foreach ($this->collContactI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -746,6 +912,12 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_IS_PUBLISHED)) {
             $modifiedColumns[':p' . $index++]  = 'IS_PUBLISHED';
         }
+        if ($this->isColumnModified(ContactTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(ContactTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO contact (%s) VALUES (%s)',
@@ -762,6 +934,12 @@ abstract class Contact implements ActiveRecordInterface
                         break;
                     case 'IS_PUBLISHED':                        
                         $stmt->bindValue($identifier, $this->is_published, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -831,6 +1009,12 @@ abstract class Contact implements ActiveRecordInterface
             case 1:
                 return $this->getIsPublished();
                 break;
+            case 2:
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -862,6 +1046,8 @@ abstract class Contact implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getIsPublished(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -874,6 +1060,9 @@ abstract class Contact implements ActiveRecordInterface
             }
             if (null !== $this->collContactShops) {
                 $result['ContactShops'] = $this->collContactShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collContactI18ns) {
+                $result['ContactI18ns'] = $this->collContactI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -915,6 +1104,12 @@ abstract class Contact implements ActiveRecordInterface
             case 1:
                 $this->setIsPublished($value);
                 break;
+            case 2:
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -941,6 +1136,8 @@ abstract class Contact implements ActiveRecordInterface
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setIsPublished($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -954,6 +1151,8 @@ abstract class Contact implements ActiveRecordInterface
 
         if ($this->isColumnModified(ContactTableMap::COL_ID)) $criteria->add(ContactTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(ContactTableMap::COL_IS_PUBLISHED)) $criteria->add(ContactTableMap::COL_IS_PUBLISHED, $this->is_published);
+        if ($this->isColumnModified(ContactTableMap::COL_CREATED_AT)) $criteria->add(ContactTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ContactTableMap::COL_UPDATED_AT)) $criteria->add(ContactTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1020,6 +1219,8 @@ abstract class Contact implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setIsPublished($this->getIsPublished());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1035,6 +1236,12 @@ abstract class Contact implements ActiveRecordInterface
             foreach ($this->getContactShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addContactShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getContactI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addContactI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1084,6 +1291,9 @@ abstract class Contact implements ActiveRecordInterface
         }
         if ('ContactShop' == $relationName) {
             return $this->initContactShops();
+        }
+        if ('ContactI18n' == $relationName) {
+            return $this->initContactI18ns();
         }
     }
 
@@ -1649,12 +1859,239 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collContactI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addContactI18ns()
+     */
+    public function clearContactI18ns()
+    {
+        $this->collContactI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collContactI18ns collection loaded partially.
+     */
+    public function resetPartialContactI18ns($v = true)
+    {
+        $this->collContactI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collContactI18ns collection.
+     *
+     * By default this just sets the collContactI18ns collection to an empty array (like clearcollContactI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initContactI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collContactI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collContactI18ns = new ObjectCollection();
+        $this->collContactI18ns->setModel('\Gekosale\Plugin\Contact\Model\ORM\ContactI18n');
+    }
+
+    /**
+     * Gets an array of ChildContactI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContact is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildContactI18n[] List of ChildContactI18n objects
+     * @throws PropelException
+     */
+    public function getContactI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContactI18nsPartial && !$this->isNew();
+        if (null === $this->collContactI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collContactI18ns) {
+                // return empty collection
+                $this->initContactI18ns();
+            } else {
+                $collContactI18ns = ChildContactI18nQuery::create(null, $criteria)
+                    ->filterByContact($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collContactI18nsPartial && count($collContactI18ns)) {
+                        $this->initContactI18ns(false);
+
+                        foreach ($collContactI18ns as $obj) {
+                            if (false == $this->collContactI18ns->contains($obj)) {
+                                $this->collContactI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collContactI18nsPartial = true;
+                    }
+
+                    reset($collContactI18ns);
+
+                    return $collContactI18ns;
+                }
+
+                if ($partial && $this->collContactI18ns) {
+                    foreach ($this->collContactI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collContactI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collContactI18ns = $collContactI18ns;
+                $this->collContactI18nsPartial = false;
+            }
+        }
+
+        return $this->collContactI18ns;
+    }
+
+    /**
+     * Sets a collection of ContactI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $contactI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildContact The current object (for fluent API support)
+     */
+    public function setContactI18ns(Collection $contactI18ns, ConnectionInterface $con = null)
+    {
+        $contactI18nsToDelete = $this->getContactI18ns(new Criteria(), $con)->diff($contactI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->contactI18nsScheduledForDeletion = clone $contactI18nsToDelete;
+
+        foreach ($contactI18nsToDelete as $contactI18nRemoved) {
+            $contactI18nRemoved->setContact(null);
+        }
+
+        $this->collContactI18ns = null;
+        foreach ($contactI18ns as $contactI18n) {
+            $this->addContactI18n($contactI18n);
+        }
+
+        $this->collContactI18ns = $contactI18ns;
+        $this->collContactI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ContactI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ContactI18n objects.
+     * @throws PropelException
+     */
+    public function countContactI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContactI18nsPartial && !$this->isNew();
+        if (null === $this->collContactI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collContactI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getContactI18ns());
+            }
+
+            $query = ChildContactI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByContact($this)
+                ->count($con);
+        }
+
+        return count($this->collContactI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildContactI18n object to this object
+     * through the ChildContactI18n foreign key attribute.
+     *
+     * @param    ChildContactI18n $l ChildContactI18n
+     * @return   \Gekosale\Plugin\Contact\Model\ORM\Contact The current object (for fluent API support)
+     */
+    public function addContactI18n(ChildContactI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collContactI18ns === null) {
+            $this->initContactI18ns();
+            $this->collContactI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collContactI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddContactI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ContactI18n $contactI18n The contactI18n object to add.
+     */
+    protected function doAddContactI18n($contactI18n)
+    {
+        $this->collContactI18ns[]= $contactI18n;
+        $contactI18n->setContact($this);
+    }
+
+    /**
+     * @param  ContactI18n $contactI18n The contactI18n object to remove.
+     * @return ChildContact The current object (for fluent API support)
+     */
+    public function removeContactI18n($contactI18n)
+    {
+        if ($this->getContactI18ns()->contains($contactI18n)) {
+            $this->collContactI18ns->remove($this->collContactI18ns->search($contactI18n));
+            if (null === $this->contactI18nsScheduledForDeletion) {
+                $this->contactI18nsScheduledForDeletion = clone $this->collContactI18ns;
+                $this->contactI18nsScheduledForDeletion->clear();
+            }
+            $this->contactI18nsScheduledForDeletion[]= clone $contactI18n;
+            $contactI18n->setContact(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
         $this->is_published = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1685,10 +2122,20 @@ abstract class Contact implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collContactI18ns) {
+                foreach ($this->collContactI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collShops = null;
         $this->collContactShops = null;
+        $this->collContactI18ns = null;
     }
 
     /**
@@ -1699,6 +2146,143 @@ abstract class Contact implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(ContactTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildContact The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildContactI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collContactI18ns) {
+                foreach ($this->collContactI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildContactI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildContactI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addContactI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildContact The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildContactI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collContactI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collContactI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildContactI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Contact\Model\ORM\ContactI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildContact The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[ContactTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

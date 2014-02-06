@@ -58,7 +58,7 @@ class BlogI18nTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class BlogI18nTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the ID field
@@ -86,6 +86,26 @@ class BlogI18nTableMap extends TableMap
     const COL_NAME = 'blog_i18n.NAME';
 
     /**
+     * the column name for the DESCRIPTION field
+     */
+    const COL_DESCRIPTION = 'blog_i18n.DESCRIPTION';
+
+    /**
+     * the column name for the META_TITLE field
+     */
+    const COL_META_TITLE = 'blog_i18n.META_TITLE';
+
+    /**
+     * the column name for the META_KEYWORD field
+     */
+    const COL_META_KEYWORD = 'blog_i18n.META_KEYWORD';
+
+    /**
+     * the column name for the META_DESCRIPTION field
+     */
+    const COL_META_DESCRIPTION = 'blog_i18n.META_DESCRIPTION';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -97,12 +117,12 @@ class BlogI18nTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Locale', 'Name', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'locale', 'name', ),
-        self::TYPE_COLNAME       => array(BlogI18nTableMap::COL_ID, BlogI18nTableMap::COL_LOCALE, BlogI18nTableMap::COL_NAME, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOCALE', 'COL_NAME', ),
-        self::TYPE_FIELDNAME     => array('id', 'locale', 'name', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'Locale', 'Name', 'Description', 'MetaTitle', 'MetaKeyword', 'MetaDescription', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'locale', 'name', 'description', 'metaTitle', 'metaKeyword', 'metaDescription', ),
+        self::TYPE_COLNAME       => array(BlogI18nTableMap::COL_ID, BlogI18nTableMap::COL_LOCALE, BlogI18nTableMap::COL_NAME, BlogI18nTableMap::COL_DESCRIPTION, BlogI18nTableMap::COL_META_TITLE, BlogI18nTableMap::COL_META_KEYWORD, BlogI18nTableMap::COL_META_DESCRIPTION, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOCALE', 'COL_NAME', 'COL_DESCRIPTION', 'COL_META_TITLE', 'COL_META_KEYWORD', 'COL_META_DESCRIPTION', ),
+        self::TYPE_FIELDNAME     => array('id', 'locale', 'name', 'description', 'meta_title', 'meta_keyword', 'meta_description', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -112,12 +132,12 @@ class BlogI18nTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Locale' => 1, 'Name' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'locale' => 1, 'name' => 2, ),
-        self::TYPE_COLNAME       => array(BlogI18nTableMap::COL_ID => 0, BlogI18nTableMap::COL_LOCALE => 1, BlogI18nTableMap::COL_NAME => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOCALE' => 1, 'COL_NAME' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'locale' => 1, 'name' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Locale' => 1, 'Name' => 2, 'Description' => 3, 'MetaTitle' => 4, 'MetaKeyword' => 5, 'MetaDescription' => 6, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'locale' => 1, 'name' => 2, 'description' => 3, 'metaTitle' => 4, 'metaKeyword' => 5, 'metaDescription' => 6, ),
+        self::TYPE_COLNAME       => array(BlogI18nTableMap::COL_ID => 0, BlogI18nTableMap::COL_LOCALE => 1, BlogI18nTableMap::COL_NAME => 2, BlogI18nTableMap::COL_DESCRIPTION => 3, BlogI18nTableMap::COL_META_TITLE => 4, BlogI18nTableMap::COL_META_KEYWORD => 5, BlogI18nTableMap::COL_META_DESCRIPTION => 6, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOCALE' => 1, 'COL_NAME' => 2, 'COL_DESCRIPTION' => 3, 'COL_META_TITLE' => 4, 'COL_META_KEYWORD' => 5, 'COL_META_DESCRIPTION' => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'locale' => 1, 'name' => 2, 'description' => 3, 'meta_title' => 4, 'meta_keyword' => 5, 'meta_description' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -139,6 +159,10 @@ class BlogI18nTableMap extends TableMap
         $this->addForeignPrimaryKey('ID', 'Id', 'INTEGER' , 'blog', 'ID', true, 10, null);
         $this->addPrimaryKey('LOCALE', 'Locale', 'VARCHAR', true, 5, 'en_US');
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('DESCRIPTION', 'Description', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('META_TITLE', 'MetaTitle', 'VARCHAR', false, 100, null);
+        $this->addColumn('META_KEYWORD', 'MetaKeyword', 'VARCHAR', false, 255, null);
+        $this->addColumn('META_DESCRIPTION', 'MetaDescription', 'VARCHAR', false, 255, null);
     } // initialize()
 
     /**
@@ -339,10 +363,18 @@ class BlogI18nTableMap extends TableMap
             $criteria->addSelectColumn(BlogI18nTableMap::COL_ID);
             $criteria->addSelectColumn(BlogI18nTableMap::COL_LOCALE);
             $criteria->addSelectColumn(BlogI18nTableMap::COL_NAME);
+            $criteria->addSelectColumn(BlogI18nTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(BlogI18nTableMap::COL_META_TITLE);
+            $criteria->addSelectColumn(BlogI18nTableMap::COL_META_KEYWORD);
+            $criteria->addSelectColumn(BlogI18nTableMap::COL_META_DESCRIPTION);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.LOCALE');
             $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.DESCRIPTION');
+            $criteria->addSelectColumn($alias . '.META_TITLE');
+            $criteria->addSelectColumn($alias . '.META_KEYWORD');
+            $criteria->addSelectColumn($alias . '.META_DESCRIPTION');
         }
     }
 

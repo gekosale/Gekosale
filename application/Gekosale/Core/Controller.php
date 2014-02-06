@@ -56,8 +56,11 @@ class Controller extends Component
         $this->$alias = $this->getModel($class);
     }
 
-    public function setForm ($class)
+    public function setForm ($class, $alias)
     {
-        $this->form = $this->getForm($class);
+        if (NULL == $alias) {
+            $alias = 'form';
+        }
+        $this->$alias = $this->getForm($class);
     }
 }

@@ -61,7 +61,7 @@ class ClientGroupTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 1;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -71,7 +71,7 @@ class ClientGroupTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 1;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the ID field
@@ -79,9 +79,28 @@ class ClientGroupTableMap extends TableMap
     const COL_ID = 'client_group.ID';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'client_group.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'client_group.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -90,12 +109,12 @@ class ClientGroupTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', ),
-        self::TYPE_STUDLYPHPNAME => array('id', ),
-        self::TYPE_COLNAME       => array(ClientGroupTableMap::COL_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', ),
-        self::TYPE_FIELDNAME     => array('id', ),
-        self::TYPE_NUM           => array(0, )
+        self::TYPE_PHPNAME       => array('Id', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ClientGroupTableMap::COL_ID, ClientGroupTableMap::COL_CREATED_AT, ClientGroupTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -105,12 +124,12 @@ class ClientGroupTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, ),
-        self::TYPE_COLNAME       => array(ClientGroupTableMap::COL_ID => 0, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, ),
-        self::TYPE_NUM           => array(0, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'CreatedAt' => 1, 'UpdatedAt' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'createdAt' => 1, 'updatedAt' => 2, ),
+        self::TYPE_COLNAME       => array(ClientGroupTableMap::COL_ID => 0, ClientGroupTableMap::COL_CREATED_AT => 1, ClientGroupTableMap::COL_UPDATED_AT => 2, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_CREATED_AT' => 1, 'COL_UPDATED_AT' => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'created_at' => 1, 'updated_at' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -130,6 +149,8 @@ class ClientGroupTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -140,7 +161,22 @@ class ClientGroupTableMap extends TableMap
         $this->addRelation('CartRuleClientGroup', '\\Gekosale\\Plugin\\CartRule\\Model\\ORM\\CartRuleClientGroup', RelationMap::ONE_TO_MANY, array('id' => 'client_group_id', ), 'CASCADE', null, 'CartRuleClientGroups');
         $this->addRelation('ClientData', '\\Gekosale\\Plugin\\Client\\Model\\ORM\\ClientData', RelationMap::ONE_TO_MANY, array('id' => 'client_group_id', ), 'SET NULL', null, 'ClientDatas');
         $this->addRelation('ProductGroupPrice', '\\Gekosale\\Plugin\\ProductGroupPrice\\Model\\ORM\\ProductGroupPrice', RelationMap::ONE_TO_MANY, array('id' => 'client_group_id', ), 'CASCADE', null, 'ProductGroupPrices');
+        $this->addRelation('ClientGroupI18n', '\\Gekosale\\Plugin\\ClientGroup\\Model\\ORM\\ClientGroupI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'ClientGroupI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to client_group     * by a foreign key with ON DELETE CASCADE
      */
@@ -151,6 +187,7 @@ class ClientGroupTableMap extends TableMap
                 CartRuleClientGroupTableMap::clearInstancePool();
                 ClientDataTableMap::clearInstancePool();
                 ProductGroupPriceTableMap::clearInstancePool();
+                ClientGroupI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -292,8 +329,12 @@ class ClientGroupTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ClientGroupTableMap::COL_ID);
+            $criteria->addSelectColumn(ClientGroupTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ClientGroupTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

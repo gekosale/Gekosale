@@ -59,7 +59,7 @@ class UserGroupTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserGroupTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the ID field
@@ -77,14 +77,28 @@ class UserGroupTableMap extends TableMap
     const COL_ID = 'user_group.ID';
 
     /**
-     * the column name for the NAME field
+     * the column name for the CREATED_AT field
      */
-    const COL_NAME = 'user_group.NAME';
+    const COL_CREATED_AT = 'user_group.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'user_group.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -93,12 +107,12 @@ class UserGroupTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', ),
-        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_ID, UserGroupTableMap::COL_NAME, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_ID, UserGroupTableMap::COL_CREATED_AT, UserGroupTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -108,12 +122,12 @@ class UserGroupTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, ),
-        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_ID => 0, UserGroupTableMap::COL_NAME => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'CreatedAt' => 1, 'UpdatedAt' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'createdAt' => 1, 'updatedAt' => 2, ),
+        self::TYPE_COLNAME       => array(UserGroupTableMap::COL_ID => 0, UserGroupTableMap::COL_CREATED_AT => 1, UserGroupTableMap::COL_UPDATED_AT => 2, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_CREATED_AT' => 1, 'COL_UPDATED_AT' => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'created_at' => 1, 'updated_at' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -133,7 +147,8 @@ class UserGroupTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 128, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -144,7 +159,22 @@ class UserGroupTableMap extends TableMap
         $this->addRelation('ControllerPermission', '\\Gekosale\\Plugin\\Controller\\Model\\ORM\\ControllerPermission', RelationMap::ONE_TO_MANY, array('id' => 'user_group_id', ), 'CASCADE', null, 'ControllerPermissions');
         $this->addRelation('UserGroupShop', '\\Gekosale\\Plugin\\User\\Model\\ORM\\UserGroupShop', RelationMap::ONE_TO_MANY, array('id' => 'user_group_id', ), 'CASCADE', null, 'UserGroupShops');
         $this->addRelation('UserGroupUser', '\\Gekosale\\Plugin\\User\\Model\\ORM\\UserGroupUser', RelationMap::ONE_TO_MANY, array('id' => 'user_group_id', ), 'CASCADE', null, 'UserGroupUsers');
+        $this->addRelation('UserGroupI18n', '\\Gekosale\\Plugin\\User\\Model\\ORM\\UserGroupI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'UserGroupI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to user_group     * by a foreign key with ON DELETE CASCADE
      */
@@ -155,6 +185,7 @@ class UserGroupTableMap extends TableMap
                 ControllerPermissionTableMap::clearInstancePool();
                 UserGroupShopTableMap::clearInstancePool();
                 UserGroupUserTableMap::clearInstancePool();
+                UserGroupI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -296,10 +327,12 @@ class UserGroupTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(UserGroupTableMap::COL_ID);
-            $criteria->addSelectColumn(UserGroupTableMap::COL_NAME);
+            $criteria->addSelectColumn(UserGroupTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(UserGroupTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

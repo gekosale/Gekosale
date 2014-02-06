@@ -2288,20 +2288,6 @@ abstract class AttributeProduct implements ActiveRecordInterface
         return (string) $this->exportTo(AttributeProductTableMap::DEFAULT_STRING_FORMAT);
     }
 
-    // timestampable behavior
-    
-    /**
-     * Mark the current object so that the update date doesn't get updated during next save
-     *
-     * @return     ChildAttributeProduct The current object (for fluent API support)
-     */
-    public function keepUpdateDateUnchanged()
-    {
-        $this->modifiedColumns[AttributeProductTableMap::COL_UPDATED_AT] = true;
-    
-        return $this;
-    }
-
     // i18n behavior
     
     /**
@@ -2421,6 +2407,20 @@ abstract class AttributeProduct implements ActiveRecordInterface
          */
         public function setName($v)
         {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildAttributeProduct The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AttributeProductTableMap::COL_UPDATED_AT] = true;
     
         return $this;
     }

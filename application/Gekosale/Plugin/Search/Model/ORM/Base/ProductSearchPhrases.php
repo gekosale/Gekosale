@@ -2,8 +2,12 @@
 
 namespace Gekosale\Plugin\Search\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
+use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases as ChildProductSearchPhrases;
+use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesI18n as ChildProductSearchPhrasesI18n;
+use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesI18nQuery as ChildProductSearchPhrasesI18nQuery;
 use Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesQuery as ChildProductSearchPhrasesQuery;
 use Gekosale\Plugin\Search\Model\ORM\Map\ProductSearchPhrasesTableMap;
 use Gekosale\Plugin\Shop\Model\ORM\Shop as ChildShop;
@@ -13,11 +17,13 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class ProductSearchPhrases implements ActiveRecordInterface 
 {
@@ -60,12 +66,6 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
      * The value for the text_count field.
      * Note: this column has a database default value of: 1
      * @var        int
@@ -79,9 +79,27 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     protected $shop_id;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        Shop
      */
     protected $aShop;
+
+    /**
+     * @var        ObjectCollection|ChildProductSearchPhrasesI18n[] Collection to store aggregation of ChildProductSearchPhrasesI18n objects.
+     */
+    protected $collProductSearchPhrasesI18ns;
+    protected $collProductSearchPhrasesI18nsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -90,6 +108,26 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildProductSearchPhrasesI18n]
+     */
+    protected $currentTranslations;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $productSearchPhrasesI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -374,17 +412,6 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
      * Get the [text_count] column value.
      * 
      * @return   int
@@ -407,6 +434,46 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -426,27 +493,6 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
 
         return $this;
     } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[ProductSearchPhrasesTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
 
     /**
      * Set the value of [text_count] column.
@@ -495,6 +541,48 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     } // setShopId()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ProductSearchPhrasesTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ProductSearchPhrasesTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -538,14 +626,23 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('TextCount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('TextCount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->text_count = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('ShopId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('ShopId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shop_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductSearchPhrasesTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -554,7 +651,7 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = ProductSearchPhrasesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = ProductSearchPhrasesTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases object", 0, $e);
@@ -619,6 +716,8 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aShop = null;
+            $this->collProductSearchPhrasesI18ns = null;
+
         } // if (deep)
     }
 
@@ -689,8 +788,19 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(ProductSearchPhrasesTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(ProductSearchPhrasesTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(ProductSearchPhrasesTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -753,6 +863,23 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->productSearchPhrasesI18nsScheduledForDeletion !== null) {
+                if (!$this->productSearchPhrasesI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesI18nQuery::create()
+                        ->filterByPrimaryKeys($this->productSearchPhrasesI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->productSearchPhrasesI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collProductSearchPhrasesI18ns !== null) {
+            foreach ($this->collProductSearchPhrasesI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -782,14 +909,17 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_TEXT_COUNT)) {
             $modifiedColumns[':p' . $index++]  = 'TEXT_COUNT';
         }
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_SHOP_ID)) {
             $modifiedColumns[':p' . $index++]  = 'SHOP_ID';
+        }
+        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
@@ -805,14 +935,17 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
                     case 'TEXT_COUNT':                        
                         $stmt->bindValue($identifier, $this->text_count, PDO::PARAM_INT);
                         break;
                     case 'SHOP_ID':                        
                         $stmt->bindValue($identifier, $this->shop_id, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -880,13 +1013,16 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
-                break;
-            case 2:
                 return $this->getTextCount();
                 break;
-            case 3:
+            case 2:
                 return $this->getShopId();
+                break;
+            case 3:
+                return $this->getCreatedAt();
+                break;
+            case 4:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -918,9 +1054,10 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         $keys = ProductSearchPhrasesTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getTextCount(),
-            $keys[3] => $this->getShopId(),
+            $keys[1] => $this->getTextCount(),
+            $keys[2] => $this->getShopId(),
+            $keys[3] => $this->getCreatedAt(),
+            $keys[4] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -930,6 +1067,9 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         if ($includeForeignObjects) {
             if (null !== $this->aShop) {
                 $result['Shop'] = $this->aShop->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collProductSearchPhrasesI18ns) {
+                $result['ProductSearchPhrasesI18ns'] = $this->collProductSearchPhrasesI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -969,13 +1109,16 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
                 $this->setTextCount($value);
                 break;
-            case 3:
+            case 2:
                 $this->setShopId($value);
+                break;
+            case 3:
+                $this->setCreatedAt($value);
+                break;
+            case 4:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1002,9 +1145,10 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         $keys = ProductSearchPhrasesTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setTextCount($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setShopId($arr[$keys[3]]);
+        if (array_key_exists($keys[1], $arr)) $this->setTextCount($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setShopId($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
     }
 
     /**
@@ -1017,9 +1161,10 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         $criteria = new Criteria(ProductSearchPhrasesTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_ID)) $criteria->add(ProductSearchPhrasesTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_NAME)) $criteria->add(ProductSearchPhrasesTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_TEXT_COUNT)) $criteria->add(ProductSearchPhrasesTableMap::COL_TEXT_COUNT, $this->text_count);
         if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_SHOP_ID)) $criteria->add(ProductSearchPhrasesTableMap::COL_SHOP_ID, $this->shop_id);
+        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_CREATED_AT)) $criteria->add(ProductSearchPhrasesTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ProductSearchPhrasesTableMap::COL_UPDATED_AT)) $criteria->add(ProductSearchPhrasesTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1085,9 +1230,24 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
         $copyObj->setTextCount($this->getTextCount());
         $copyObj->setShopId($this->getShopId());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getProductSearchPhrasesI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProductSearchPhrasesI18n($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1167,15 +1327,257 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
         return $this->aShop;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('ProductSearchPhrasesI18n' == $relationName) {
+            return $this->initProductSearchPhrasesI18ns();
+        }
+    }
+
+    /**
+     * Clears out the collProductSearchPhrasesI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProductSearchPhrasesI18ns()
+     */
+    public function clearProductSearchPhrasesI18ns()
+    {
+        $this->collProductSearchPhrasesI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProductSearchPhrasesI18ns collection loaded partially.
+     */
+    public function resetPartialProductSearchPhrasesI18ns($v = true)
+    {
+        $this->collProductSearchPhrasesI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collProductSearchPhrasesI18ns collection.
+     *
+     * By default this just sets the collProductSearchPhrasesI18ns collection to an empty array (like clearcollProductSearchPhrasesI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProductSearchPhrasesI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collProductSearchPhrasesI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collProductSearchPhrasesI18ns = new ObjectCollection();
+        $this->collProductSearchPhrasesI18ns->setModel('\Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesI18n');
+    }
+
+    /**
+     * Gets an array of ChildProductSearchPhrasesI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProductSearchPhrases is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildProductSearchPhrasesI18n[] List of ChildProductSearchPhrasesI18n objects
+     * @throws PropelException
+     */
+    public function getProductSearchPhrasesI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductSearchPhrasesI18nsPartial && !$this->isNew();
+        if (null === $this->collProductSearchPhrasesI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProductSearchPhrasesI18ns) {
+                // return empty collection
+                $this->initProductSearchPhrasesI18ns();
+            } else {
+                $collProductSearchPhrasesI18ns = ChildProductSearchPhrasesI18nQuery::create(null, $criteria)
+                    ->filterByProductSearchPhrases($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProductSearchPhrasesI18nsPartial && count($collProductSearchPhrasesI18ns)) {
+                        $this->initProductSearchPhrasesI18ns(false);
+
+                        foreach ($collProductSearchPhrasesI18ns as $obj) {
+                            if (false == $this->collProductSearchPhrasesI18ns->contains($obj)) {
+                                $this->collProductSearchPhrasesI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collProductSearchPhrasesI18nsPartial = true;
+                    }
+
+                    reset($collProductSearchPhrasesI18ns);
+
+                    return $collProductSearchPhrasesI18ns;
+                }
+
+                if ($partial && $this->collProductSearchPhrasesI18ns) {
+                    foreach ($this->collProductSearchPhrasesI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collProductSearchPhrasesI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProductSearchPhrasesI18ns = $collProductSearchPhrasesI18ns;
+                $this->collProductSearchPhrasesI18nsPartial = false;
+            }
+        }
+
+        return $this->collProductSearchPhrasesI18ns;
+    }
+
+    /**
+     * Sets a collection of ProductSearchPhrasesI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $productSearchPhrasesI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildProductSearchPhrases The current object (for fluent API support)
+     */
+    public function setProductSearchPhrasesI18ns(Collection $productSearchPhrasesI18ns, ConnectionInterface $con = null)
+    {
+        $productSearchPhrasesI18nsToDelete = $this->getProductSearchPhrasesI18ns(new Criteria(), $con)->diff($productSearchPhrasesI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->productSearchPhrasesI18nsScheduledForDeletion = clone $productSearchPhrasesI18nsToDelete;
+
+        foreach ($productSearchPhrasesI18nsToDelete as $productSearchPhrasesI18nRemoved) {
+            $productSearchPhrasesI18nRemoved->setProductSearchPhrases(null);
+        }
+
+        $this->collProductSearchPhrasesI18ns = null;
+        foreach ($productSearchPhrasesI18ns as $productSearchPhrasesI18n) {
+            $this->addProductSearchPhrasesI18n($productSearchPhrasesI18n);
+        }
+
+        $this->collProductSearchPhrasesI18ns = $productSearchPhrasesI18ns;
+        $this->collProductSearchPhrasesI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProductSearchPhrasesI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProductSearchPhrasesI18n objects.
+     * @throws PropelException
+     */
+    public function countProductSearchPhrasesI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductSearchPhrasesI18nsPartial && !$this->isNew();
+        if (null === $this->collProductSearchPhrasesI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProductSearchPhrasesI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProductSearchPhrasesI18ns());
+            }
+
+            $query = ChildProductSearchPhrasesI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProductSearchPhrases($this)
+                ->count($con);
+        }
+
+        return count($this->collProductSearchPhrasesI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildProductSearchPhrasesI18n object to this object
+     * through the ChildProductSearchPhrasesI18n foreign key attribute.
+     *
+     * @param    ChildProductSearchPhrasesI18n $l ChildProductSearchPhrasesI18n
+     * @return   \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrases The current object (for fluent API support)
+     */
+    public function addProductSearchPhrasesI18n(ChildProductSearchPhrasesI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collProductSearchPhrasesI18ns === null) {
+            $this->initProductSearchPhrasesI18ns();
+            $this->collProductSearchPhrasesI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collProductSearchPhrasesI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProductSearchPhrasesI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ProductSearchPhrasesI18n $productSearchPhrasesI18n The productSearchPhrasesI18n object to add.
+     */
+    protected function doAddProductSearchPhrasesI18n($productSearchPhrasesI18n)
+    {
+        $this->collProductSearchPhrasesI18ns[]= $productSearchPhrasesI18n;
+        $productSearchPhrasesI18n->setProductSearchPhrases($this);
+    }
+
+    /**
+     * @param  ProductSearchPhrasesI18n $productSearchPhrasesI18n The productSearchPhrasesI18n object to remove.
+     * @return ChildProductSearchPhrases The current object (for fluent API support)
+     */
+    public function removeProductSearchPhrasesI18n($productSearchPhrasesI18n)
+    {
+        if ($this->getProductSearchPhrasesI18ns()->contains($productSearchPhrasesI18n)) {
+            $this->collProductSearchPhrasesI18ns->remove($this->collProductSearchPhrasesI18ns->search($productSearchPhrasesI18n));
+            if (null === $this->productSearchPhrasesI18nsScheduledForDeletion) {
+                $this->productSearchPhrasesI18nsScheduledForDeletion = clone $this->collProductSearchPhrasesI18ns;
+                $this->productSearchPhrasesI18nsScheduledForDeletion->clear();
+            }
+            $this->productSearchPhrasesI18nsScheduledForDeletion[]= clone $productSearchPhrasesI18n;
+            $productSearchPhrasesI18n->setProductSearchPhrases(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
         $this->text_count = null;
         $this->shop_id = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1196,8 +1598,18 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collProductSearchPhrasesI18ns) {
+                foreach ($this->collProductSearchPhrasesI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
+
+        $this->collProductSearchPhrasesI18ns = null;
         $this->aShop = null;
     }
 
@@ -1209,6 +1621,143 @@ abstract class ProductSearchPhrases implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(ProductSearchPhrasesTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildProductSearchPhrases The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProductSearchPhrasesI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collProductSearchPhrasesI18ns) {
+                foreach ($this->collProductSearchPhrasesI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildProductSearchPhrasesI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildProductSearchPhrasesI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addProductSearchPhrasesI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildProductSearchPhrases The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildProductSearchPhrasesI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collProductSearchPhrasesI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collProductSearchPhrasesI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProductSearchPhrasesI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Search\Model\ORM\ProductSearchPhrasesI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildProductSearchPhrases The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[ProductSearchPhrasesTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

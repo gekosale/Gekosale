@@ -5,6 +5,7 @@ namespace Gekosale\Plugin\OrderStatus\Model\ORM\Base;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroups as ChildOrderStatusGroups;
+use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery as ChildOrderStatusGroupsI18nQuery;
 use Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsQuery as ChildOrderStatusGroupsQuery;
 use Gekosale\Plugin\OrderStatus\Model\ORM\Map\OrderStatusGroupsTableMap;
 use Gekosale\Plugin\Shop\Model\ORM\Shop;
@@ -24,9 +25,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildOrderStatusGroupsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildOrderStatusGroupsQuery orderByColour($order = Criteria::ASC) Order by the colour column
+ * @method     ChildOrderStatusGroupsQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildOrderStatusGroupsQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildOrderStatusGroupsQuery groupById() Group by the id column
  * @method     ChildOrderStatusGroupsQuery groupByColour() Group by the colour column
+ * @method     ChildOrderStatusGroupsQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildOrderStatusGroupsQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildOrderStatusGroupsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildOrderStatusGroupsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -40,14 +45,22 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderStatusGroupsQuery rightJoinShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Shop relation
  * @method     ChildOrderStatusGroupsQuery innerJoinShop($relationAlias = null) Adds a INNER JOIN clause to the query using the Shop relation
  *
+ * @method     ChildOrderStatusGroupsQuery leftJoinOrderStatusGroupsI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the OrderStatusGroupsI18n relation
+ * @method     ChildOrderStatusGroupsQuery rightJoinOrderStatusGroupsI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the OrderStatusGroupsI18n relation
+ * @method     ChildOrderStatusGroupsQuery innerJoinOrderStatusGroupsI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the OrderStatusGroupsI18n relation
+ *
  * @method     ChildOrderStatusGroups findOne(ConnectionInterface $con = null) Return the first ChildOrderStatusGroups matching the query
  * @method     ChildOrderStatusGroups findOneOrCreate(ConnectionInterface $con = null) Return the first ChildOrderStatusGroups matching the query, or a new ChildOrderStatusGroups object populated from the query conditions when no match is found
  *
  * @method     ChildOrderStatusGroups findOneById(int $id) Return the first ChildOrderStatusGroups filtered by the id column
  * @method     ChildOrderStatusGroups findOneByColour(string $colour) Return the first ChildOrderStatusGroups filtered by the colour column
+ * @method     ChildOrderStatusGroups findOneByCreatedAt(string $created_at) Return the first ChildOrderStatusGroups filtered by the created_at column
+ * @method     ChildOrderStatusGroups findOneByUpdatedAt(string $updated_at) Return the first ChildOrderStatusGroups filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildOrderStatusGroups objects filtered by the id column
  * @method     array findByColour(string $colour) Return ChildOrderStatusGroups objects filtered by the colour column
+ * @method     array findByCreatedAt(string $created_at) Return ChildOrderStatusGroups objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildOrderStatusGroups objects filtered by the updated_at column
  *
  */
 abstract class OrderStatusGroupsQuery extends ModelCriteria
@@ -136,7 +149,7 @@ abstract class OrderStatusGroupsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, COLOUR FROM order_status_groups WHERE ID = :p0';
+        $sql = 'SELECT ID, COLOUR, CREATED_AT, UPDATED_AT FROM order_status_groups WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -296,6 +309,92 @@ abstract class OrderStatusGroupsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(OrderStatusGroupsTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(OrderStatusGroupsTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(OrderStatusGroupsTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(OrderStatusGroupsTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(OrderStatusGroupsTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(OrderStatusGroupsTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusOrderStatusGroups object
      *
      * @param \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusOrderStatusGroups|ObjectCollection $orderStatusOrderStatusGroups  the related object to use as filter
@@ -442,6 +541,79 @@ abstract class OrderStatusGroupsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n object
+     *
+     * @param \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n|ObjectCollection $orderStatusGroupsI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function filterByOrderStatusGroupsI18n($orderStatusGroupsI18n, $comparison = null)
+    {
+        if ($orderStatusGroupsI18n instanceof \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n) {
+            return $this
+                ->addUsingAlias(OrderStatusGroupsTableMap::COL_ID, $orderStatusGroupsI18n->getId(), $comparison);
+        } elseif ($orderStatusGroupsI18n instanceof ObjectCollection) {
+            return $this
+                ->useOrderStatusGroupsI18nQuery()
+                ->filterByPrimaryKeys($orderStatusGroupsI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByOrderStatusGroupsI18n() only accepts arguments of type \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the OrderStatusGroupsI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function joinOrderStatusGroupsI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('OrderStatusGroupsI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'OrderStatusGroupsI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the OrderStatusGroupsI18n relation OrderStatusGroupsI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useOrderStatusGroupsI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinOrderStatusGroupsI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'OrderStatusGroupsI18n', '\Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildOrderStatusGroups $orderStatusGroups Object to remove from the list of results
@@ -530,6 +702,129 @@ abstract class OrderStatusGroupsQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'OrderStatusGroupsI18n';
+    
+        return $this
+            ->joinOrderStatusGroupsI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('OrderStatusGroupsI18n');
+        $this->with['OrderStatusGroupsI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildOrderStatusGroupsI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'OrderStatusGroupsI18n', '\Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatusGroupsI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(OrderStatusGroupsTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(OrderStatusGroupsTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(OrderStatusGroupsTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(OrderStatusGroupsTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(OrderStatusGroupsTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildOrderStatusGroupsQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(OrderStatusGroupsTableMap::COL_CREATED_AT);
     }
 
 } // OrderStatusGroupsQuery

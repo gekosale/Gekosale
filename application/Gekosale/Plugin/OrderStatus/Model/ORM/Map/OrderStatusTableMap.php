@@ -58,7 +58,7 @@ class OrderStatusTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class OrderStatusTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the ID field
@@ -86,9 +86,28 @@ class OrderStatusTableMap extends TableMap
     const COL_IS_EDITABLE = 'order_status.IS_EDITABLE';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'order_status.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'order_status.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -97,12 +116,12 @@ class OrderStatusTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'IsDefault', 'IsEditable', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'isDefault', 'isEditable', ),
-        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID, OrderStatusTableMap::COL_IS_DEFAULT, OrderStatusTableMap::COL_IS_EDITABLE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_DEFAULT', 'COL_IS_EDITABLE', ),
-        self::TYPE_FIELDNAME     => array('id', 'is_default', 'is_editable', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'IsDefault', 'IsEditable', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'isDefault', 'isEditable', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID, OrderStatusTableMap::COL_IS_DEFAULT, OrderStatusTableMap::COL_IS_EDITABLE, OrderStatusTableMap::COL_CREATED_AT, OrderStatusTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_DEFAULT', 'COL_IS_EDITABLE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'is_default', 'is_editable', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -112,12 +131,12 @@ class OrderStatusTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'IsDefault' => 1, 'IsEditable' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isDefault' => 1, 'isEditable' => 2, ),
-        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID => 0, OrderStatusTableMap::COL_IS_DEFAULT => 1, OrderStatusTableMap::COL_IS_EDITABLE => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_DEFAULT' => 1, 'COL_IS_EDITABLE' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'is_default' => 1, 'is_editable' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'IsDefault' => 1, 'IsEditable' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isDefault' => 1, 'isEditable' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID => 0, OrderStatusTableMap::COL_IS_DEFAULT => 1, OrderStatusTableMap::COL_IS_EDITABLE => 2, OrderStatusTableMap::COL_CREATED_AT => 3, OrderStatusTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_DEFAULT' => 1, 'COL_IS_EDITABLE' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'is_default' => 1, 'is_editable' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -139,6 +158,8 @@ class OrderStatusTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('IS_DEFAULT', 'IsDefault', 'INTEGER', true, 10, 0);
         $this->addColumn('IS_EDITABLE', 'IsEditable', 'INTEGER', true, 10, 1);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -147,7 +168,22 @@ class OrderStatusTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('OrderStatusOrderStatusGroups', '\\Gekosale\\Plugin\\OrderStatus\\Model\\ORM\\OrderStatusOrderStatusGroups', RelationMap::ONE_TO_MANY, array('id' => 'order_status_id', ), 'CASCADE', null, 'OrderStatusOrderStatusGroupss');
+        $this->addRelation('OrderStatusI18n', '\\Gekosale\\Plugin\\OrderStatus\\Model\\ORM\\OrderStatusI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'OrderStatusI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, default_comment', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to order_status     * by a foreign key with ON DELETE CASCADE
      */
@@ -156,6 +192,7 @@ class OrderStatusTableMap extends TableMap
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 OrderStatusOrderStatusGroupsTableMap::clearInstancePool();
+                OrderStatusI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -299,10 +336,14 @@ class OrderStatusTableMap extends TableMap
             $criteria->addSelectColumn(OrderStatusTableMap::COL_ID);
             $criteria->addSelectColumn(OrderStatusTableMap::COL_IS_DEFAULT);
             $criteria->addSelectColumn(OrderStatusTableMap::COL_IS_EDITABLE);
+            $criteria->addSelectColumn(OrderStatusTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(OrderStatusTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.IS_DEFAULT');
             $criteria->addSelectColumn($alias . '.IS_EDITABLE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

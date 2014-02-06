@@ -6,6 +6,7 @@ use \Exception;
 use \PDO;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodpaymentMethod;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod as ChildPaymentMethod;
+use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery as ChildPaymentMethodI18nQuery;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodQuery as ChildPaymentMethodQuery;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\Map\PaymentMethodTableMap;
 use Propel\Runtime\Propel;
@@ -23,20 +24,22 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildPaymentMethodQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildPaymentMethodQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildPaymentMethodQuery orderByController($order = Criteria::ASC) Order by the controller column
  * @method     ChildPaymentMethodQuery orderByIsOnline($order = Criteria::ASC) Order by the is_online column
  * @method     ChildPaymentMethodQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
  * @method     ChildPaymentMethodQuery orderByMaximumAmount($order = Criteria::ASC) Order by the maximum_amount column
  * @method     ChildPaymentMethodQuery orderByHierarchy($order = Criteria::ASC) Order by the hierarchy column
+ * @method     ChildPaymentMethodQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildPaymentMethodQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildPaymentMethodQuery groupById() Group by the id column
- * @method     ChildPaymentMethodQuery groupByName() Group by the name column
  * @method     ChildPaymentMethodQuery groupByController() Group by the controller column
  * @method     ChildPaymentMethodQuery groupByIsOnline() Group by the is_online column
  * @method     ChildPaymentMethodQuery groupByIsActive() Group by the is_active column
  * @method     ChildPaymentMethodQuery groupByMaximumAmount() Group by the maximum_amount column
  * @method     ChildPaymentMethodQuery groupByHierarchy() Group by the hierarchy column
+ * @method     ChildPaymentMethodQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildPaymentMethodQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildPaymentMethodQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPaymentMethodQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -50,24 +53,30 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPaymentMethodQuery rightJoinPaymentMethodShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PaymentMethodShop relation
  * @method     ChildPaymentMethodQuery innerJoinPaymentMethodShop($relationAlias = null) Adds a INNER JOIN clause to the query using the PaymentMethodShop relation
  *
+ * @method     ChildPaymentMethodQuery leftJoinPaymentMethodI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the PaymentMethodI18n relation
+ * @method     ChildPaymentMethodQuery rightJoinPaymentMethodI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PaymentMethodI18n relation
+ * @method     ChildPaymentMethodQuery innerJoinPaymentMethodI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the PaymentMethodI18n relation
+ *
  * @method     ChildPaymentMethod findOne(ConnectionInterface $con = null) Return the first ChildPaymentMethod matching the query
  * @method     ChildPaymentMethod findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPaymentMethod matching the query, or a new ChildPaymentMethod object populated from the query conditions when no match is found
  *
  * @method     ChildPaymentMethod findOneById(int $id) Return the first ChildPaymentMethod filtered by the id column
- * @method     ChildPaymentMethod findOneByName(string $name) Return the first ChildPaymentMethod filtered by the name column
  * @method     ChildPaymentMethod findOneByController(string $controller) Return the first ChildPaymentMethod filtered by the controller column
  * @method     ChildPaymentMethod findOneByIsOnline(boolean $is_online) Return the first ChildPaymentMethod filtered by the is_online column
  * @method     ChildPaymentMethod findOneByIsActive(boolean $is_active) Return the first ChildPaymentMethod filtered by the is_active column
  * @method     ChildPaymentMethod findOneByMaximumAmount(string $maximum_amount) Return the first ChildPaymentMethod filtered by the maximum_amount column
  * @method     ChildPaymentMethod findOneByHierarchy(int $hierarchy) Return the first ChildPaymentMethod filtered by the hierarchy column
+ * @method     ChildPaymentMethod findOneByCreatedAt(string $created_at) Return the first ChildPaymentMethod filtered by the created_at column
+ * @method     ChildPaymentMethod findOneByUpdatedAt(string $updated_at) Return the first ChildPaymentMethod filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildPaymentMethod objects filtered by the id column
- * @method     array findByName(string $name) Return ChildPaymentMethod objects filtered by the name column
  * @method     array findByController(string $controller) Return ChildPaymentMethod objects filtered by the controller column
  * @method     array findByIsOnline(boolean $is_online) Return ChildPaymentMethod objects filtered by the is_online column
  * @method     array findByIsActive(boolean $is_active) Return ChildPaymentMethod objects filtered by the is_active column
  * @method     array findByMaximumAmount(string $maximum_amount) Return ChildPaymentMethod objects filtered by the maximum_amount column
  * @method     array findByHierarchy(int $hierarchy) Return ChildPaymentMethod objects filtered by the hierarchy column
+ * @method     array findByCreatedAt(string $created_at) Return ChildPaymentMethod objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildPaymentMethod objects filtered by the updated_at column
  *
  */
 abstract class PaymentMethodQuery extends ModelCriteria
@@ -156,7 +165,7 @@ abstract class PaymentMethodQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, NAME, CONTROLLER, IS_ONLINE, IS_ACTIVE, MAXIMUM_AMOUNT, HIERARCHY FROM payment_method WHERE ID = :p0';
+        $sql = 'SELECT ID, CONTROLLER, IS_ONLINE, IS_ACTIVE, MAXIMUM_AMOUNT, HIERARCHY, CREATED_AT, UPDATED_AT FROM payment_method WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -284,35 +293,6 @@ abstract class PaymentMethodQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PaymentMethodTableMap::COL_ID, $id, $comparison);
-    }
-
-    /**
-     * Filter the query on the name column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildPaymentMethodQuery The current query, for fluid interface
-     */
-    public function filterByName($name = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($name)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(PaymentMethodTableMap::COL_NAME, $name, $comparison);
     }
 
     /**
@@ -481,6 +461,92 @@ abstract class PaymentMethodQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(PaymentMethodTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(PaymentMethodTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(PaymentMethodTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(PaymentMethodTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodpaymentMethod object
      *
      * @param \Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodpaymentMethod|ObjectCollection $dispatchMethodpaymentMethod  the related object to use as filter
@@ -627,6 +693,79 @@ abstract class PaymentMethodQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n object
+     *
+     * @param \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n|ObjectCollection $paymentMethodI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function filterByPaymentMethodI18n($paymentMethodI18n, $comparison = null)
+    {
+        if ($paymentMethodI18n instanceof \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n) {
+            return $this
+                ->addUsingAlias(PaymentMethodTableMap::COL_ID, $paymentMethodI18n->getId(), $comparison);
+        } elseif ($paymentMethodI18n instanceof ObjectCollection) {
+            return $this
+                ->usePaymentMethodI18nQuery()
+                ->filterByPrimaryKeys($paymentMethodI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPaymentMethodI18n() only accepts arguments of type \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PaymentMethodI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function joinPaymentMethodI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PaymentMethodI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PaymentMethodI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PaymentMethodI18n relation PaymentMethodI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery A secondary query class using the current class as primary query
+     */
+    public function usePaymentMethodI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinPaymentMethodI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PaymentMethodI18n', '\Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildPaymentMethod $paymentMethod Object to remove from the list of results
@@ -715,6 +854,129 @@ abstract class PaymentMethodQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'PaymentMethodI18n';
+    
+        return $this
+            ->joinPaymentMethodI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('PaymentMethodI18n');
+        $this->with['PaymentMethodI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildPaymentMethodI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PaymentMethodI18n', '\Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(PaymentMethodTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(PaymentMethodTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(PaymentMethodTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildPaymentMethodQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(PaymentMethodTableMap::COL_CREATED_AT);
     }
 
 } // PaymentMethodQuery

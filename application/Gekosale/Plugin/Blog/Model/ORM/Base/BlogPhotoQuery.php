@@ -26,11 +26,15 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogPhotoQuery orderByBlogId($order = Criteria::ASC) Order by the blog_id column
  * @method     ChildBlogPhotoQuery orderByPhotoId($order = Criteria::ASC) Order by the photo_id column
  * @method     ChildBlogPhotoQuery orderByIsMainPhoto($order = Criteria::ASC) Order by the is_main_photo column
+ * @method     ChildBlogPhotoQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildBlogPhotoQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildBlogPhotoQuery groupById() Group by the id column
  * @method     ChildBlogPhotoQuery groupByBlogId() Group by the blog_id column
  * @method     ChildBlogPhotoQuery groupByPhotoId() Group by the photo_id column
  * @method     ChildBlogPhotoQuery groupByIsMainPhoto() Group by the is_main_photo column
+ * @method     ChildBlogPhotoQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildBlogPhotoQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildBlogPhotoQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBlogPhotoQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -51,11 +55,15 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogPhoto findOneByBlogId(int $blog_id) Return the first ChildBlogPhoto filtered by the blog_id column
  * @method     ChildBlogPhoto findOneByPhotoId(int $photo_id) Return the first ChildBlogPhoto filtered by the photo_id column
  * @method     ChildBlogPhoto findOneByIsMainPhoto(int $is_main_photo) Return the first ChildBlogPhoto filtered by the is_main_photo column
+ * @method     ChildBlogPhoto findOneByCreatedAt(string $created_at) Return the first ChildBlogPhoto filtered by the created_at column
+ * @method     ChildBlogPhoto findOneByUpdatedAt(string $updated_at) Return the first ChildBlogPhoto filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildBlogPhoto objects filtered by the id column
  * @method     array findByBlogId(int $blog_id) Return ChildBlogPhoto objects filtered by the blog_id column
  * @method     array findByPhotoId(int $photo_id) Return ChildBlogPhoto objects filtered by the photo_id column
  * @method     array findByIsMainPhoto(int $is_main_photo) Return ChildBlogPhoto objects filtered by the is_main_photo column
+ * @method     array findByCreatedAt(string $created_at) Return ChildBlogPhoto objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildBlogPhoto objects filtered by the updated_at column
  *
  */
 abstract class BlogPhotoQuery extends ModelCriteria
@@ -144,7 +152,7 @@ abstract class BlogPhotoQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, BLOG_ID, PHOTO_ID, IS_MAIN_PHOTO FROM blog_photo WHERE ID = :p0';
+        $sql = 'SELECT ID, BLOG_ID, PHOTO_ID, IS_MAIN_PHOTO, CREATED_AT, UPDATED_AT FROM blog_photo WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -402,6 +410,92 @@ abstract class BlogPhotoQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(BlogPhotoTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(BlogPhotoTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BlogPhotoTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(BlogPhotoTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(BlogPhotoTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BlogPhotoTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Gekosale\Plugin\Blog\Model\ORM\Blog object
      *
      * @param \Gekosale\Plugin\Blog\Model\ORM\Blog|ObjectCollection $blog The related object(s) to use as filter
@@ -640,6 +734,72 @@ abstract class BlogPhotoQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(BlogPhotoTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(BlogPhotoTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(BlogPhotoTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(BlogPhotoTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(BlogPhotoTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildBlogPhotoQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(BlogPhotoTableMap::COL_CREATED_AT);
     }
 
 } // BlogPhotoQuery

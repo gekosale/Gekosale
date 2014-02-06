@@ -76,16 +76,6 @@ class DispatchMethodTableMap extends TableMap
     const COL_ID = 'dispatch_method.ID';
 
     /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'dispatch_method.NAME';
-
-    /**
-     * the column name for the DESCRIPTION field
-     */
-    const COL_DESCRIPTION = 'dispatch_method.DESCRIPTION';
-
-    /**
      * the column name for the TYPE field
      */
     const COL_TYPE = 'dispatch_method.TYPE';
@@ -116,9 +106,28 @@ class DispatchMethodTableMap extends TableMap
     const COL_HIERARCHY = 'dispatch_method.HIERARCHY';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'dispatch_method.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'dispatch_method.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -127,11 +136,11 @@ class DispatchMethodTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Type', 'MaximumWeight', 'FreeDelivery', 'CountryIds', 'CurrencyId', 'Hierarchy', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', 'description', 'type', 'maximumWeight', 'freeDelivery', 'countryIds', 'currencyId', 'hierarchy', ),
-        self::TYPE_COLNAME       => array(DispatchMethodTableMap::COL_ID, DispatchMethodTableMap::COL_NAME, DispatchMethodTableMap::COL_DESCRIPTION, DispatchMethodTableMap::COL_TYPE, DispatchMethodTableMap::COL_MAXIMUM_WEIGHT, DispatchMethodTableMap::COL_FREE_DELIVERY, DispatchMethodTableMap::COL_COUNTRY_IDS, DispatchMethodTableMap::COL_CURRENCY_ID, DispatchMethodTableMap::COL_HIERARCHY, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_DESCRIPTION', 'COL_TYPE', 'COL_MAXIMUM_WEIGHT', 'COL_FREE_DELIVERY', 'COL_COUNTRY_IDS', 'COL_CURRENCY_ID', 'COL_HIERARCHY', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'description', 'type', 'maximum_weight', 'free_delivery', 'country_ids', 'currency_id', 'hierarchy', ),
+        self::TYPE_PHPNAME       => array('Id', 'Type', 'MaximumWeight', 'FreeDelivery', 'CountryIds', 'CurrencyId', 'Hierarchy', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'type', 'maximumWeight', 'freeDelivery', 'countryIds', 'currencyId', 'hierarchy', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(DispatchMethodTableMap::COL_ID, DispatchMethodTableMap::COL_TYPE, DispatchMethodTableMap::COL_MAXIMUM_WEIGHT, DispatchMethodTableMap::COL_FREE_DELIVERY, DispatchMethodTableMap::COL_COUNTRY_IDS, DispatchMethodTableMap::COL_CURRENCY_ID, DispatchMethodTableMap::COL_HIERARCHY, DispatchMethodTableMap::COL_CREATED_AT, DispatchMethodTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_TYPE', 'COL_MAXIMUM_WEIGHT', 'COL_FREE_DELIVERY', 'COL_COUNTRY_IDS', 'COL_CURRENCY_ID', 'COL_HIERARCHY', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'type', 'maximum_weight', 'free_delivery', 'country_ids', 'currency_id', 'hierarchy', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -142,11 +151,11 @@ class DispatchMethodTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Type' => 3, 'MaximumWeight' => 4, 'FreeDelivery' => 5, 'CountryIds' => 6, 'CurrencyId' => 7, 'Hierarchy' => 8, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'description' => 2, 'type' => 3, 'maximumWeight' => 4, 'freeDelivery' => 5, 'countryIds' => 6, 'currencyId' => 7, 'hierarchy' => 8, ),
-        self::TYPE_COLNAME       => array(DispatchMethodTableMap::COL_ID => 0, DispatchMethodTableMap::COL_NAME => 1, DispatchMethodTableMap::COL_DESCRIPTION => 2, DispatchMethodTableMap::COL_TYPE => 3, DispatchMethodTableMap::COL_MAXIMUM_WEIGHT => 4, DispatchMethodTableMap::COL_FREE_DELIVERY => 5, DispatchMethodTableMap::COL_COUNTRY_IDS => 6, DispatchMethodTableMap::COL_CURRENCY_ID => 7, DispatchMethodTableMap::COL_HIERARCHY => 8, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_DESCRIPTION' => 2, 'COL_TYPE' => 3, 'COL_MAXIMUM_WEIGHT' => 4, 'COL_FREE_DELIVERY' => 5, 'COL_COUNTRY_IDS' => 6, 'COL_CURRENCY_ID' => 7, 'COL_HIERARCHY' => 8, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'type' => 3, 'maximum_weight' => 4, 'free_delivery' => 5, 'country_ids' => 6, 'currency_id' => 7, 'hierarchy' => 8, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Type' => 1, 'MaximumWeight' => 2, 'FreeDelivery' => 3, 'CountryIds' => 4, 'CurrencyId' => 5, 'Hierarchy' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'type' => 1, 'maximumWeight' => 2, 'freeDelivery' => 3, 'countryIds' => 4, 'currencyId' => 5, 'hierarchy' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+        self::TYPE_COLNAME       => array(DispatchMethodTableMap::COL_ID => 0, DispatchMethodTableMap::COL_TYPE => 1, DispatchMethodTableMap::COL_MAXIMUM_WEIGHT => 2, DispatchMethodTableMap::COL_FREE_DELIVERY => 3, DispatchMethodTableMap::COL_COUNTRY_IDS => 4, DispatchMethodTableMap::COL_CURRENCY_ID => 5, DispatchMethodTableMap::COL_HIERARCHY => 6, DispatchMethodTableMap::COL_CREATED_AT => 7, DispatchMethodTableMap::COL_UPDATED_AT => 8, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_TYPE' => 1, 'COL_MAXIMUM_WEIGHT' => 2, 'COL_FREE_DELIVERY' => 3, 'COL_COUNTRY_IDS' => 4, 'COL_CURRENCY_ID' => 5, 'COL_HIERARCHY' => 6, 'COL_CREATED_AT' => 7, 'COL_UPDATED_AT' => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'type' => 1, 'maximum_weight' => 2, 'free_delivery' => 3, 'country_ids' => 4, 'currency_id' => 5, 'hierarchy' => 6, 'created_at' => 7, 'updated_at' => 8, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -167,14 +176,14 @@ class DispatchMethodTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 64, null);
-        $this->addColumn('DESCRIPTION', 'Description', 'VARCHAR', false, 5000, null);
         $this->addColumn('TYPE', 'Type', 'INTEGER', true, 10, 1);
         $this->addColumn('MAXIMUM_WEIGHT', 'MaximumWeight', 'DECIMAL', false, 15, null);
         $this->addColumn('FREE_DELIVERY', 'FreeDelivery', 'DECIMAL', false, 15, null);
         $this->addColumn('COUNTRY_IDS', 'CountryIds', 'LONGVARCHAR', true, null, null);
         $this->addColumn('CURRENCY_ID', 'CurrencyId', 'INTEGER', true, null, 28);
         $this->addColumn('HIERARCHY', 'Hierarchy', 'INTEGER', false, null, 0);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -186,7 +195,22 @@ class DispatchMethodTableMap extends TableMap
         $this->addRelation('DispatchMethodWeight', '\\Gekosale\\Plugin\\DispatchMethod\\Model\\ORM\\DispatchMethodWeight', RelationMap::ONE_TO_MANY, array('id' => 'dispatch_method_id', ), 'CASCADE', null, 'DispatchMethodWeights');
         $this->addRelation('DispatchMethodpaymentMethod', '\\Gekosale\\Plugin\\DispatchMethod\\Model\\ORM\\DispatchMethodpaymentMethod', RelationMap::ONE_TO_MANY, array('id' => 'dispatch_method_id', ), 'CASCADE', null, 'DispatchMethodpaymentMethods');
         $this->addRelation('DispatchMethodShop', '\\Gekosale\\Plugin\\DispatchMethod\\Model\\ORM\\DispatchMethodShop', RelationMap::ONE_TO_MANY, array('id' => 'dispatch_method_id', ), 'CASCADE', null, 'DispatchMethodShops');
+        $this->addRelation('DispatchMethodI18n', '\\Gekosale\\Plugin\\DispatchMethod\\Model\\ORM\\DispatchMethodI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'DispatchMethodI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, description', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to dispatch_method     * by a foreign key with ON DELETE CASCADE
      */
@@ -198,6 +222,7 @@ class DispatchMethodTableMap extends TableMap
                 DispatchMethodWeightTableMap::clearInstancePool();
                 DispatchMethodpaymentMethodTableMap::clearInstancePool();
                 DispatchMethodShopTableMap::clearInstancePool();
+                DispatchMethodI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -339,24 +364,24 @@ class DispatchMethodTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_ID);
-            $criteria->addSelectColumn(DispatchMethodTableMap::COL_NAME);
-            $criteria->addSelectColumn(DispatchMethodTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_TYPE);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_MAXIMUM_WEIGHT);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_FREE_DELIVERY);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_COUNTRY_IDS);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_CURRENCY_ID);
             $criteria->addSelectColumn(DispatchMethodTableMap::COL_HIERARCHY);
+            $criteria->addSelectColumn(DispatchMethodTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(DispatchMethodTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.DESCRIPTION');
             $criteria->addSelectColumn($alias . '.TYPE');
             $criteria->addSelectColumn($alias . '.MAXIMUM_WEIGHT');
             $criteria->addSelectColumn($alias . '.FREE_DELIVERY');
             $criteria->addSelectColumn($alias . '.COUNTRY_IDS');
             $criteria->addSelectColumn($alias . '.CURRENCY_ID');
             $criteria->addSelectColumn($alias . '.HIERARCHY');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

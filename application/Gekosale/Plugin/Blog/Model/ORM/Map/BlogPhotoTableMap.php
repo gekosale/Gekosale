@@ -58,7 +58,7 @@ class BlogPhotoTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class BlogPhotoTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the ID field
@@ -91,6 +91,16 @@ class BlogPhotoTableMap extends TableMap
     const COL_IS_MAIN_PHOTO = 'blog_photo.IS_MAIN_PHOTO';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'blog_photo.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'blog_photo.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -102,12 +112,12 @@ class BlogPhotoTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'BlogId', 'PhotoId', 'IsMainPhoto', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'blogId', 'photoId', 'isMainPhoto', ),
-        self::TYPE_COLNAME       => array(BlogPhotoTableMap::COL_ID, BlogPhotoTableMap::COL_BLOG_ID, BlogPhotoTableMap::COL_PHOTO_ID, BlogPhotoTableMap::COL_IS_MAIN_PHOTO, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_BLOG_ID', 'COL_PHOTO_ID', 'COL_IS_MAIN_PHOTO', ),
-        self::TYPE_FIELDNAME     => array('id', 'blog_id', 'photo_id', 'is_main_photo', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'BlogId', 'PhotoId', 'IsMainPhoto', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'blogId', 'photoId', 'isMainPhoto', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(BlogPhotoTableMap::COL_ID, BlogPhotoTableMap::COL_BLOG_ID, BlogPhotoTableMap::COL_PHOTO_ID, BlogPhotoTableMap::COL_IS_MAIN_PHOTO, BlogPhotoTableMap::COL_CREATED_AT, BlogPhotoTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_BLOG_ID', 'COL_PHOTO_ID', 'COL_IS_MAIN_PHOTO', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'blog_id', 'photo_id', 'is_main_photo', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -117,12 +127,12 @@ class BlogPhotoTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'BlogId' => 1, 'PhotoId' => 2, 'IsMainPhoto' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'blogId' => 1, 'photoId' => 2, 'isMainPhoto' => 3, ),
-        self::TYPE_COLNAME       => array(BlogPhotoTableMap::COL_ID => 0, BlogPhotoTableMap::COL_BLOG_ID => 1, BlogPhotoTableMap::COL_PHOTO_ID => 2, BlogPhotoTableMap::COL_IS_MAIN_PHOTO => 3, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_BLOG_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_IS_MAIN_PHOTO' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'blog_id' => 1, 'photo_id' => 2, 'is_main_photo' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'BlogId' => 1, 'PhotoId' => 2, 'IsMainPhoto' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'blogId' => 1, 'photoId' => 2, 'isMainPhoto' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+        self::TYPE_COLNAME       => array(BlogPhotoTableMap::COL_ID => 0, BlogPhotoTableMap::COL_BLOG_ID => 1, BlogPhotoTableMap::COL_PHOTO_ID => 2, BlogPhotoTableMap::COL_IS_MAIN_PHOTO => 3, BlogPhotoTableMap::COL_CREATED_AT => 4, BlogPhotoTableMap::COL_UPDATED_AT => 5, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_BLOG_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_IS_MAIN_PHOTO' => 3, 'COL_CREATED_AT' => 4, 'COL_UPDATED_AT' => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'blog_id' => 1, 'photo_id' => 2, 'is_main_photo' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -145,6 +155,8 @@ class BlogPhotoTableMap extends TableMap
         $this->addForeignKey('BLOG_ID', 'BlogId', 'INTEGER', 'blog', 'ID', true, 10, null);
         $this->addForeignKey('PHOTO_ID', 'PhotoId', 'INTEGER', 'file', 'ID', false, 10, null);
         $this->addColumn('IS_MAIN_PHOTO', 'IsMainPhoto', 'INTEGER', true, 10, 1);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -155,6 +167,19 @@ class BlogPhotoTableMap extends TableMap
         $this->addRelation('Blog', '\\Gekosale\\Plugin\\Blog\\Model\\ORM\\Blog', RelationMap::MANY_TO_ONE, array('blog_id' => 'id', ), 'CASCADE', 'CASCADE');
         $this->addRelation('File', '\\Gekosale\\Plugin\\File\\Model\\ORM\\File', RelationMap::MANY_TO_ONE, array('photo_id' => 'id', ), 'CASCADE', null);
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -298,11 +323,15 @@ class BlogPhotoTableMap extends TableMap
             $criteria->addSelectColumn(BlogPhotoTableMap::COL_BLOG_ID);
             $criteria->addSelectColumn(BlogPhotoTableMap::COL_PHOTO_ID);
             $criteria->addSelectColumn(BlogPhotoTableMap::COL_IS_MAIN_PHOTO);
+            $criteria->addSelectColumn(BlogPhotoTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(BlogPhotoTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.BLOG_ID');
             $criteria->addSelectColumn($alias . '.PHOTO_ID');
             $criteria->addSelectColumn($alias . '.IS_MAIN_PHOTO');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

@@ -2,8 +2,12 @@
 
 namespace Gekosale\Plugin\Translation\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
+use Gekosale\Plugin\Translation\Model\ORM\Translation as ChildTranslation;
+use Gekosale\Plugin\Translation\Model\ORM\TranslationI18n as ChildTranslationI18n;
+use Gekosale\Plugin\Translation\Model\ORM\TranslationI18nQuery as ChildTranslationI18nQuery;
 use Gekosale\Plugin\Translation\Model\ORM\TranslationQuery as ChildTranslationQuery;
 use Gekosale\Plugin\Translation\Model\ORM\Map\TranslationTableMap;
 use Propel\Runtime\Propel;
@@ -11,11 +15,13 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class Translation implements ActiveRecordInterface 
 {
@@ -58,10 +64,28 @@ abstract class Translation implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
+     * The value for the message field.
      * @var        string
      */
-    protected $name;
+    protected $message;
+
+    /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
+     * @var        ObjectCollection|ChildTranslationI18n[] Collection to store aggregation of ChildTranslationI18n objects.
+     */
+    protected $collTranslationI18ns;
+    protected $collTranslationI18nsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -70,6 +94,26 @@ abstract class Translation implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildTranslationI18n]
+     */
+    protected $currentTranslations;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $translationI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\Translation\Model\ORM\Base\Translation object.
@@ -341,14 +385,54 @@ abstract class Translation implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
+     * Get the [message] column value.
      * 
      * @return   string
      */
-    public function getName()
+    public function getMessage()
     {
 
-        return $this->name;
+        return $this->message;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
@@ -373,25 +457,67 @@ abstract class Translation implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [name] column.
+     * Set the value of [message] column.
      * 
      * @param      string $v new value
      * @return   \Gekosale\Plugin\Translation\Model\ORM\Translation The current object (for fluent API support)
      */
-    public function setName($v)
+    public function setMessage($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[TranslationTableMap::COL_NAME] = true;
+        if ($this->message !== $v) {
+            $this->message = $v;
+            $this->modifiedColumns[TranslationTableMap::COL_MESSAGE] = true;
         }
 
 
         return $this;
-    } // setName()
+    } // setMessage()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Translation\Model\ORM\Translation The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[TranslationTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Translation\Model\ORM\Translation The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[TranslationTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -433,8 +559,20 @@ abstract class Translation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : TranslationTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TranslationTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TranslationTableMap::translateFieldName('Message', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->message = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : TranslationTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : TranslationTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -443,7 +581,7 @@ abstract class Translation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = TranslationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = TranslationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Translation\Model\ORM\Translation object", 0, $e);
@@ -503,6 +641,8 @@ abstract class Translation implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->collTranslationI18ns = null;
 
         } // if (deep)
     }
@@ -574,8 +714,19 @@ abstract class Translation implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(TranslationTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(TranslationTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(TranslationTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -626,6 +777,23 @@ abstract class Translation implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->translationI18nsScheduledForDeletion !== null) {
+                if (!$this->translationI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Translation\Model\ORM\TranslationI18nQuery::create()
+                        ->filterByPrimaryKeys($this->translationI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->translationI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collTranslationI18ns !== null) {
+            foreach ($this->collTranslationI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -655,8 +823,14 @@ abstract class Translation implements ActiveRecordInterface
         if ($this->isColumnModified(TranslationTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(TranslationTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
+        if ($this->isColumnModified(TranslationTableMap::COL_MESSAGE)) {
+            $modifiedColumns[':p' . $index++]  = 'MESSAGE';
+        }
+        if ($this->isColumnModified(TranslationTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(TranslationTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
@@ -672,8 +846,14 @@ abstract class Translation implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                    case 'MESSAGE':                        
+                        $stmt->bindValue($identifier, $this->message, PDO::PARAM_STR);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -741,7 +921,13 @@ abstract class Translation implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getMessage();
+                break;
+            case 2:
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -760,10 +946,11 @@ abstract class Translation implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['Translation'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -772,13 +959,20 @@ abstract class Translation implements ActiveRecordInterface
         $keys = TranslationTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
+            $keys[1] => $this->getMessage(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
         
+        if ($includeForeignObjects) {
+            if (null !== $this->collTranslationI18ns) {
+                $result['TranslationI18ns'] = $this->collTranslationI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -816,7 +1010,13 @@ abstract class Translation implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setMessage($value);
+                break;
+            case 2:
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -843,7 +1043,9 @@ abstract class Translation implements ActiveRecordInterface
         $keys = TranslationTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+        if (array_key_exists($keys[1], $arr)) $this->setMessage($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -856,7 +1058,9 @@ abstract class Translation implements ActiveRecordInterface
         $criteria = new Criteria(TranslationTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(TranslationTableMap::COL_ID)) $criteria->add(TranslationTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(TranslationTableMap::COL_NAME)) $criteria->add(TranslationTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(TranslationTableMap::COL_MESSAGE)) $criteria->add(TranslationTableMap::COL_MESSAGE, $this->message);
+        if ($this->isColumnModified(TranslationTableMap::COL_CREATED_AT)) $criteria->add(TranslationTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(TranslationTableMap::COL_UPDATED_AT)) $criteria->add(TranslationTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -922,7 +1126,23 @@ abstract class Translation implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
+        $copyObj->setMessage($this->getMessage());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getTranslationI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addTranslationI18n($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -951,13 +1171,256 @@ abstract class Translation implements ActiveRecordInterface
         return $copyObj;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('TranslationI18n' == $relationName) {
+            return $this->initTranslationI18ns();
+        }
+    }
+
+    /**
+     * Clears out the collTranslationI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addTranslationI18ns()
+     */
+    public function clearTranslationI18ns()
+    {
+        $this->collTranslationI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collTranslationI18ns collection loaded partially.
+     */
+    public function resetPartialTranslationI18ns($v = true)
+    {
+        $this->collTranslationI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collTranslationI18ns collection.
+     *
+     * By default this just sets the collTranslationI18ns collection to an empty array (like clearcollTranslationI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initTranslationI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collTranslationI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collTranslationI18ns = new ObjectCollection();
+        $this->collTranslationI18ns->setModel('\Gekosale\Plugin\Translation\Model\ORM\TranslationI18n');
+    }
+
+    /**
+     * Gets an array of ChildTranslationI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTranslation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildTranslationI18n[] List of ChildTranslationI18n objects
+     * @throws PropelException
+     */
+    public function getTranslationI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTranslationI18nsPartial && !$this->isNew();
+        if (null === $this->collTranslationI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTranslationI18ns) {
+                // return empty collection
+                $this->initTranslationI18ns();
+            } else {
+                $collTranslationI18ns = ChildTranslationI18nQuery::create(null, $criteria)
+                    ->filterByTranslation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collTranslationI18nsPartial && count($collTranslationI18ns)) {
+                        $this->initTranslationI18ns(false);
+
+                        foreach ($collTranslationI18ns as $obj) {
+                            if (false == $this->collTranslationI18ns->contains($obj)) {
+                                $this->collTranslationI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collTranslationI18nsPartial = true;
+                    }
+
+                    reset($collTranslationI18ns);
+
+                    return $collTranslationI18ns;
+                }
+
+                if ($partial && $this->collTranslationI18ns) {
+                    foreach ($this->collTranslationI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collTranslationI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collTranslationI18ns = $collTranslationI18ns;
+                $this->collTranslationI18nsPartial = false;
+            }
+        }
+
+        return $this->collTranslationI18ns;
+    }
+
+    /**
+     * Sets a collection of TranslationI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $translationI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildTranslation The current object (for fluent API support)
+     */
+    public function setTranslationI18ns(Collection $translationI18ns, ConnectionInterface $con = null)
+    {
+        $translationI18nsToDelete = $this->getTranslationI18ns(new Criteria(), $con)->diff($translationI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->translationI18nsScheduledForDeletion = clone $translationI18nsToDelete;
+
+        foreach ($translationI18nsToDelete as $translationI18nRemoved) {
+            $translationI18nRemoved->setTranslation(null);
+        }
+
+        $this->collTranslationI18ns = null;
+        foreach ($translationI18ns as $translationI18n) {
+            $this->addTranslationI18n($translationI18n);
+        }
+
+        $this->collTranslationI18ns = $translationI18ns;
+        $this->collTranslationI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related TranslationI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related TranslationI18n objects.
+     * @throws PropelException
+     */
+    public function countTranslationI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTranslationI18nsPartial && !$this->isNew();
+        if (null === $this->collTranslationI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTranslationI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getTranslationI18ns());
+            }
+
+            $query = ChildTranslationI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByTranslation($this)
+                ->count($con);
+        }
+
+        return count($this->collTranslationI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildTranslationI18n object to this object
+     * through the ChildTranslationI18n foreign key attribute.
+     *
+     * @param    ChildTranslationI18n $l ChildTranslationI18n
+     * @return   \Gekosale\Plugin\Translation\Model\ORM\Translation The current object (for fluent API support)
+     */
+    public function addTranslationI18n(ChildTranslationI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collTranslationI18ns === null) {
+            $this->initTranslationI18ns();
+            $this->collTranslationI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collTranslationI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddTranslationI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TranslationI18n $translationI18n The translationI18n object to add.
+     */
+    protected function doAddTranslationI18n($translationI18n)
+    {
+        $this->collTranslationI18ns[]= $translationI18n;
+        $translationI18n->setTranslation($this);
+    }
+
+    /**
+     * @param  TranslationI18n $translationI18n The translationI18n object to remove.
+     * @return ChildTranslation The current object (for fluent API support)
+     */
+    public function removeTranslationI18n($translationI18n)
+    {
+        if ($this->getTranslationI18ns()->contains($translationI18n)) {
+            $this->collTranslationI18ns->remove($this->collTranslationI18ns->search($translationI18n));
+            if (null === $this->translationI18nsScheduledForDeletion) {
+                $this->translationI18nsScheduledForDeletion = clone $this->collTranslationI18ns;
+                $this->translationI18nsScheduledForDeletion->clear();
+            }
+            $this->translationI18nsScheduledForDeletion[]= clone $translationI18n;
+            $translationI18n->setTranslation(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
+        $this->message = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -977,8 +1440,18 @@ abstract class Translation implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collTranslationI18ns) {
+                foreach ($this->collTranslationI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
+
+        $this->collTranslationI18ns = null;
     }
 
     /**
@@ -989,6 +1462,143 @@ abstract class Translation implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(TranslationTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildTranslation The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildTranslationI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collTranslationI18ns) {
+                foreach ($this->collTranslationI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildTranslationI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildTranslationI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addTranslationI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildTranslation The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildTranslationI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collTranslationI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collTranslationI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildTranslationI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [trans] column value.
+         * 
+         * @return   string
+         */
+        public function getTrans()
+        {
+        return $this->getCurrentTranslation()->getTrans();
+    }
+    
+    
+        /**
+         * Set the value of [trans] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Translation\Model\ORM\TranslationI18n The current object (for fluent API support)
+         */
+        public function setTrans($v)
+        {    $this->getCurrentTranslation()->setTrans($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildTranslation The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[TranslationTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

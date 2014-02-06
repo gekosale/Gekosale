@@ -58,7 +58,7 @@ class TranslationTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class TranslationTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the ID field
@@ -76,14 +76,33 @@ class TranslationTableMap extends TableMap
     const COL_ID = 'translation.ID';
 
     /**
-     * the column name for the NAME field
+     * the column name for the MESSAGE field
      */
-    const COL_NAME = 'translation.NAME';
+    const COL_MESSAGE = 'translation.MESSAGE';
+
+    /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'translation.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'translation.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -92,12 +111,12 @@ class TranslationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', ),
-        self::TYPE_COLNAME       => array(TranslationTableMap::COL_ID, TranslationTableMap::COL_NAME, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'Message', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'message', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(TranslationTableMap::COL_ID, TranslationTableMap::COL_MESSAGE, TranslationTableMap::COL_CREATED_AT, TranslationTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_MESSAGE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'message', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -107,12 +126,12 @@ class TranslationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, ),
-        self::TYPE_COLNAME       => array(TranslationTableMap::COL_ID => 0, TranslationTableMap::COL_NAME => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Message' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'message' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
+        self::TYPE_COLNAME       => array(TranslationTableMap::COL_ID => 0, TranslationTableMap::COL_MESSAGE => 1, TranslationTableMap::COL_CREATED_AT => 2, TranslationTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_MESSAGE' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'message' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -132,7 +151,9 @@ class TranslationTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('MESSAGE', 'Message', 'VARCHAR', true, 255, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -140,7 +161,31 @@ class TranslationTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('TranslationI18n', '\\Gekosale\\Plugin\\Translation\\Model\\ORM\\TranslationI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'TranslationI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'trans', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
+    /**
+     * Method to invalidate the instance pool of all tables related to translation     * by a foreign key with ON DELETE CASCADE
+     */
+    public static function clearRelatedInstancePool()
+    {
+        // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+                TranslationI18nTableMap::clearInstancePool();
+            }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -281,10 +326,14 @@ class TranslationTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(TranslationTableMap::COL_ID);
-            $criteria->addSelectColumn(TranslationTableMap::COL_NAME);
+            $criteria->addSelectColumn(TranslationTableMap::COL_MESSAGE);
+            $criteria->addSelectColumn(TranslationTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(TranslationTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.MESSAGE');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

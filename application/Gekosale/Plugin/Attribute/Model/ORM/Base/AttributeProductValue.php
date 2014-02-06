@@ -2,11 +2,14 @@
 
 namespace Gekosale\Plugin\Attribute\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProduct as ChildAttributeProduct;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductQuery as ChildAttributeProductQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue as ChildAttributeProductValue;
+use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n as ChildAttributeProductValueI18n;
+use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery as ChildAttributeProductValueI18nQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueQuery as ChildAttributeProductValueQuery;
 use Gekosale\Plugin\Attribute\Model\ORM\ProductAttributeValueSet as ChildProductAttributeValueSet;
 use Gekosale\Plugin\Attribute\Model\ORM\ProductAttributeValueSetQuery as ChildProductAttributeValueSetQuery;
@@ -22,6 +25,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class AttributeProductValue implements ActiveRecordInterface 
 {
@@ -64,16 +68,22 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
      * The value for the attribute_product_id field.
      * @var        int
      */
     protected $attribute_product_id;
+
+    /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
 
     /**
      * @var        AttributeProduct
@@ -87,6 +97,12 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     protected $collProductAttributeValueSetsPartial;
 
     /**
+     * @var        ObjectCollection|ChildAttributeProductValueI18n[] Collection to store aggregation of ChildAttributeProductValueI18n objects.
+     */
+    protected $collAttributeProductValueI18ns;
+    protected $collAttributeProductValueI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -94,11 +110,31 @@ abstract class AttributeProductValue implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildAttributeProductValueI18n]
+     */
+    protected $currentTranslations;
+
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection
      */
     protected $productAttributeValueSetsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $attributeProductValueI18nsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Gekosale\Plugin\Attribute\Model\ORM\Base\AttributeProductValue object.
@@ -370,17 +406,6 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
      * Get the [attribute_product_id] column value.
      * 
      * @return   int
@@ -389,6 +414,46 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     {
 
         return $this->attribute_product_id;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
@@ -411,27 +476,6 @@ abstract class AttributeProductValue implements ActiveRecordInterface
 
         return $this;
     } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[AttributeProductValueTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
 
     /**
      * Set the value of [attribute_product_id] column.
@@ -457,6 +501,48 @@ abstract class AttributeProductValue implements ActiveRecordInterface
 
         return $this;
     } // setAttributeProductId()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[AttributeProductValueTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[AttributeProductValueTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -498,11 +584,20 @@ abstract class AttributeProductValue implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AttributeProductValueTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AttributeProductValueTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AttributeProductValueTableMap::translateFieldName('AttributeProductId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AttributeProductValueTableMap::translateFieldName('AttributeProductId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->attribute_product_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AttributeProductValueTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AttributeProductValueTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -511,7 +606,7 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = AttributeProductValueTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = AttributeProductValueTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue object", 0, $e);
@@ -577,6 +672,8 @@ abstract class AttributeProductValue implements ActiveRecordInterface
 
             $this->aAttributeProduct = null;
             $this->collProductAttributeValueSets = null;
+
+            $this->collAttributeProductValueI18ns = null;
 
         } // if (deep)
     }
@@ -648,8 +745,19 @@ abstract class AttributeProductValue implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(AttributeProductValueTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(AttributeProductValueTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(AttributeProductValueTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -729,6 +837,23 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                 }
             }
 
+            if ($this->attributeProductValueI18nsScheduledForDeletion !== null) {
+                if (!$this->attributeProductValueI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18nQuery::create()
+                        ->filterByPrimaryKeys($this->attributeProductValueI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->attributeProductValueI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collAttributeProductValueI18ns !== null) {
+            foreach ($this->collAttributeProductValueI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -758,11 +883,14 @@ abstract class AttributeProductValue implements ActiveRecordInterface
         if ($this->isColumnModified(AttributeProductValueTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(AttributeProductValueTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
         if ($this->isColumnModified(AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ATTRIBUTE_PRODUCT_ID';
+        }
+        if ($this->isColumnModified(AttributeProductValueTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(AttributeProductValueTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
@@ -778,11 +906,14 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
                     case 'ATTRIBUTE_PRODUCT_ID':                        
                         $stmt->bindValue($identifier, $this->attribute_product_id, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -850,10 +981,13 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getAttributeProductId();
                 break;
             case 2:
-                return $this->getAttributeProductId();
+                return $this->getCreatedAt();
+                break;
+            case 3:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -885,8 +1019,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
         $keys = AttributeProductValueTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getAttributeProductId(),
+            $keys[1] => $this->getAttributeProductId(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -899,6 +1034,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
             }
             if (null !== $this->collProductAttributeValueSets) {
                 $result['ProductAttributeValueSets'] = $this->collProductAttributeValueSets->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collAttributeProductValueI18ns) {
+                $result['AttributeProductValueI18ns'] = $this->collAttributeProductValueI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -938,10 +1076,13 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setAttributeProductId($value);
                 break;
             case 2:
-                $this->setAttributeProductId($value);
+                $this->setCreatedAt($value);
+                break;
+            case 3:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -968,8 +1109,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
         $keys = AttributeProductValueTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setAttributeProductId($arr[$keys[2]]);
+        if (array_key_exists($keys[1], $arr)) $this->setAttributeProductId($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreatedAt($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setUpdatedAt($arr[$keys[3]]);
     }
 
     /**
@@ -982,8 +1124,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
         $criteria = new Criteria(AttributeProductValueTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(AttributeProductValueTableMap::COL_ID)) $criteria->add(AttributeProductValueTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(AttributeProductValueTableMap::COL_NAME)) $criteria->add(AttributeProductValueTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID)) $criteria->add(AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID, $this->attribute_product_id);
+        if ($this->isColumnModified(AttributeProductValueTableMap::COL_CREATED_AT)) $criteria->add(AttributeProductValueTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(AttributeProductValueTableMap::COL_UPDATED_AT)) $criteria->add(AttributeProductValueTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1049,8 +1192,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
         $copyObj->setAttributeProductId($this->getAttributeProductId());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1060,6 +1204,12 @@ abstract class AttributeProductValue implements ActiveRecordInterface
             foreach ($this->getProductAttributeValueSets() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addProductAttributeValueSet($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getAttributeProductValueI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addAttributeProductValueI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1157,6 +1307,9 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     {
         if ('ProductAttributeValueSet' == $relationName) {
             return $this->initProductAttributeValueSets();
+        }
+        if ('AttributeProductValueI18n' == $relationName) {
+            return $this->initAttributeProductValueI18ns();
         }
     }
 
@@ -1404,13 +1557,239 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collAttributeProductValueI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addAttributeProductValueI18ns()
+     */
+    public function clearAttributeProductValueI18ns()
+    {
+        $this->collAttributeProductValueI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collAttributeProductValueI18ns collection loaded partially.
+     */
+    public function resetPartialAttributeProductValueI18ns($v = true)
+    {
+        $this->collAttributeProductValueI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collAttributeProductValueI18ns collection.
+     *
+     * By default this just sets the collAttributeProductValueI18ns collection to an empty array (like clearcollAttributeProductValueI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initAttributeProductValueI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collAttributeProductValueI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collAttributeProductValueI18ns = new ObjectCollection();
+        $this->collAttributeProductValueI18ns->setModel('\Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n');
+    }
+
+    /**
+     * Gets an array of ChildAttributeProductValueI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildAttributeProductValue is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildAttributeProductValueI18n[] List of ChildAttributeProductValueI18n objects
+     * @throws PropelException
+     */
+    public function getAttributeProductValueI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAttributeProductValueI18nsPartial && !$this->isNew();
+        if (null === $this->collAttributeProductValueI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collAttributeProductValueI18ns) {
+                // return empty collection
+                $this->initAttributeProductValueI18ns();
+            } else {
+                $collAttributeProductValueI18ns = ChildAttributeProductValueI18nQuery::create(null, $criteria)
+                    ->filterByAttributeProductValue($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collAttributeProductValueI18nsPartial && count($collAttributeProductValueI18ns)) {
+                        $this->initAttributeProductValueI18ns(false);
+
+                        foreach ($collAttributeProductValueI18ns as $obj) {
+                            if (false == $this->collAttributeProductValueI18ns->contains($obj)) {
+                                $this->collAttributeProductValueI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collAttributeProductValueI18nsPartial = true;
+                    }
+
+                    reset($collAttributeProductValueI18ns);
+
+                    return $collAttributeProductValueI18ns;
+                }
+
+                if ($partial && $this->collAttributeProductValueI18ns) {
+                    foreach ($this->collAttributeProductValueI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collAttributeProductValueI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAttributeProductValueI18ns = $collAttributeProductValueI18ns;
+                $this->collAttributeProductValueI18nsPartial = false;
+            }
+        }
+
+        return $this->collAttributeProductValueI18ns;
+    }
+
+    /**
+     * Sets a collection of AttributeProductValueI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $attributeProductValueI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildAttributeProductValue The current object (for fluent API support)
+     */
+    public function setAttributeProductValueI18ns(Collection $attributeProductValueI18ns, ConnectionInterface $con = null)
+    {
+        $attributeProductValueI18nsToDelete = $this->getAttributeProductValueI18ns(new Criteria(), $con)->diff($attributeProductValueI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->attributeProductValueI18nsScheduledForDeletion = clone $attributeProductValueI18nsToDelete;
+
+        foreach ($attributeProductValueI18nsToDelete as $attributeProductValueI18nRemoved) {
+            $attributeProductValueI18nRemoved->setAttributeProductValue(null);
+        }
+
+        $this->collAttributeProductValueI18ns = null;
+        foreach ($attributeProductValueI18ns as $attributeProductValueI18n) {
+            $this->addAttributeProductValueI18n($attributeProductValueI18n);
+        }
+
+        $this->collAttributeProductValueI18ns = $attributeProductValueI18ns;
+        $this->collAttributeProductValueI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related AttributeProductValueI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related AttributeProductValueI18n objects.
+     * @throws PropelException
+     */
+    public function countAttributeProductValueI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAttributeProductValueI18nsPartial && !$this->isNew();
+        if (null === $this->collAttributeProductValueI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAttributeProductValueI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getAttributeProductValueI18ns());
+            }
+
+            $query = ChildAttributeProductValueI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAttributeProductValue($this)
+                ->count($con);
+        }
+
+        return count($this->collAttributeProductValueI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildAttributeProductValueI18n object to this object
+     * through the ChildAttributeProductValueI18n foreign key attribute.
+     *
+     * @param    ChildAttributeProductValueI18n $l ChildAttributeProductValueI18n
+     * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValue The current object (for fluent API support)
+     */
+    public function addAttributeProductValueI18n(ChildAttributeProductValueI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collAttributeProductValueI18ns === null) {
+            $this->initAttributeProductValueI18ns();
+            $this->collAttributeProductValueI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collAttributeProductValueI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddAttributeProductValueI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param AttributeProductValueI18n $attributeProductValueI18n The attributeProductValueI18n object to add.
+     */
+    protected function doAddAttributeProductValueI18n($attributeProductValueI18n)
+    {
+        $this->collAttributeProductValueI18ns[]= $attributeProductValueI18n;
+        $attributeProductValueI18n->setAttributeProductValue($this);
+    }
+
+    /**
+     * @param  AttributeProductValueI18n $attributeProductValueI18n The attributeProductValueI18n object to remove.
+     * @return ChildAttributeProductValue The current object (for fluent API support)
+     */
+    public function removeAttributeProductValueI18n($attributeProductValueI18n)
+    {
+        if ($this->getAttributeProductValueI18ns()->contains($attributeProductValueI18n)) {
+            $this->collAttributeProductValueI18ns->remove($this->collAttributeProductValueI18ns->search($attributeProductValueI18n));
+            if (null === $this->attributeProductValueI18nsScheduledForDeletion) {
+                $this->attributeProductValueI18nsScheduledForDeletion = clone $this->collAttributeProductValueI18ns;
+                $this->attributeProductValueI18nsScheduledForDeletion->clear();
+            }
+            $this->attributeProductValueI18nsScheduledForDeletion[]= clone $attributeProductValueI18n;
+            $attributeProductValueI18n->setAttributeProductValue(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
         $this->attribute_product_id = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1435,9 +1814,19 @@ abstract class AttributeProductValue implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collAttributeProductValueI18ns) {
+                foreach ($this->collAttributeProductValueI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
+
         $this->collProductAttributeValueSets = null;
+        $this->collAttributeProductValueI18ns = null;
         $this->aAttributeProduct = null;
     }
 
@@ -1449,6 +1838,143 @@ abstract class AttributeProductValue implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(AttributeProductValueTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildAttributeProductValue The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildAttributeProductValueI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collAttributeProductValueI18ns) {
+                foreach ($this->collAttributeProductValueI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildAttributeProductValueI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildAttributeProductValueI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addAttributeProductValueI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildAttributeProductValue The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildAttributeProductValueI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collAttributeProductValueI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collAttributeProductValueI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildAttributeProductValueI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Attribute\Model\ORM\AttributeProductValueI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildAttributeProductValue The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AttributeProductValueTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

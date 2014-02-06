@@ -5,6 +5,7 @@ namespace Gekosale\Plugin\Deliverer\Model\ORM\Base;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Deliverer\Model\ORM\Deliverer as ChildDeliverer;
+use Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18nQuery as ChildDelivererI18nQuery;
 use Gekosale\Plugin\Deliverer\Model\ORM\DelivererQuery as ChildDelivererQuery;
 use Gekosale\Plugin\Deliverer\Model\ORM\Map\DelivererTableMap;
 use Gekosale\Plugin\File\Model\ORM\File;
@@ -25,9 +26,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildDelivererQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildDelivererQuery orderByPhotoId($order = Criteria::ASC) Order by the photo_id column
+ * @method     ChildDelivererQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildDelivererQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildDelivererQuery groupById() Group by the id column
  * @method     ChildDelivererQuery groupByPhotoId() Group by the photo_id column
+ * @method     ChildDelivererQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildDelivererQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildDelivererQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildDelivererQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -45,14 +50,22 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDelivererQuery rightJoinDelivererProduct($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DelivererProduct relation
  * @method     ChildDelivererQuery innerJoinDelivererProduct($relationAlias = null) Adds a INNER JOIN clause to the query using the DelivererProduct relation
  *
+ * @method     ChildDelivererQuery leftJoinDelivererI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the DelivererI18n relation
+ * @method     ChildDelivererQuery rightJoinDelivererI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DelivererI18n relation
+ * @method     ChildDelivererQuery innerJoinDelivererI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the DelivererI18n relation
+ *
  * @method     ChildDeliverer findOne(ConnectionInterface $con = null) Return the first ChildDeliverer matching the query
  * @method     ChildDeliverer findOneOrCreate(ConnectionInterface $con = null) Return the first ChildDeliverer matching the query, or a new ChildDeliverer object populated from the query conditions when no match is found
  *
  * @method     ChildDeliverer findOneById(int $id) Return the first ChildDeliverer filtered by the id column
  * @method     ChildDeliverer findOneByPhotoId(int $photo_id) Return the first ChildDeliverer filtered by the photo_id column
+ * @method     ChildDeliverer findOneByCreatedAt(string $created_at) Return the first ChildDeliverer filtered by the created_at column
+ * @method     ChildDeliverer findOneByUpdatedAt(string $updated_at) Return the first ChildDeliverer filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildDeliverer objects filtered by the id column
  * @method     array findByPhotoId(int $photo_id) Return ChildDeliverer objects filtered by the photo_id column
+ * @method     array findByCreatedAt(string $created_at) Return ChildDeliverer objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return ChildDeliverer objects filtered by the updated_at column
  *
  */
 abstract class DelivererQuery extends ModelCriteria
@@ -141,7 +154,7 @@ abstract class DelivererQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, PHOTO_ID FROM deliverer WHERE ID = :p0';
+        $sql = 'SELECT ID, PHOTO_ID, CREATED_AT, UPDATED_AT FROM deliverer WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -312,6 +325,92 @@ abstract class DelivererQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DelivererTableMap::COL_PHOTO_ID, $photoId, $comparison);
+    }
+
+    /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDelivererQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(DelivererTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(DelivererTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(DelivererTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDelivererQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(DelivererTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(DelivererTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(DelivererTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**
@@ -536,6 +635,79 @@ abstract class DelivererQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18n object
+     *
+     * @param \Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18n|ObjectCollection $delivererI18n  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDelivererQuery The current query, for fluid interface
+     */
+    public function filterByDelivererI18n($delivererI18n, $comparison = null)
+    {
+        if ($delivererI18n instanceof \Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18n) {
+            return $this
+                ->addUsingAlias(DelivererTableMap::COL_ID, $delivererI18n->getId(), $comparison);
+        } elseif ($delivererI18n instanceof ObjectCollection) {
+            return $this
+                ->useDelivererI18nQuery()
+                ->filterByPrimaryKeys($delivererI18n->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByDelivererI18n() only accepts arguments of type \Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18n or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the DelivererI18n relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ChildDelivererQuery The current query, for fluid interface
+     */
+    public function joinDelivererI18n($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('DelivererI18n');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'DelivererI18n');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the DelivererI18n relation DelivererI18n object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useDelivererI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
+    {
+        return $this
+            ->joinDelivererI18n($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DelivererI18n', '\Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18nQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildDeliverer $deliverer Object to remove from the list of results
@@ -624,6 +796,129 @@ abstract class DelivererQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
+    }
+
+    // i18n behavior
+    
+    /**
+     * Adds a JOIN clause to the query using the i18n relation
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildDelivererQuery The current query, for fluid interface
+     */
+    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $relationName = $relationAlias ? $relationAlias : 'DelivererI18n';
+    
+        return $this
+            ->joinDelivererI18n($relationAlias, $joinType)
+            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
+    }
+    
+    /**
+     * Adds a JOIN clause to the query and hydrates the related I18n object.
+     * Shortcut for $c->joinI18n($locale)->with()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildDelivererQuery The current query, for fluid interface
+     */
+    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
+    {
+        $this
+            ->joinI18n($locale, null, $joinType)
+            ->with('DelivererI18n');
+        $this->with['DelivererI18n']->setIsWithOneToMany(false);
+    
+        return $this;
+    }
+    
+    /**
+     * Use the I18n relation query object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
+     *
+     * @return    ChildDelivererI18nQuery A secondary query class using the current class as primary query
+     */
+    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinI18n($locale, $relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'DelivererI18n', '\Gekosale\Plugin\Deliverer\Model\ORM\DelivererI18nQuery');
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(DelivererTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(DelivererTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+    
+    /**
+     * Order by update date desc
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(DelivererTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by update date asc
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(DelivererTableMap::COL_UPDATED_AT);
+    }
+    
+    /**
+     * Order by create date desc
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(DelivererTableMap::COL_CREATED_AT);
+    }
+    
+    /**
+     * Order by create date asc
+     *
+     * @return     ChildDelivererQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(DelivererTableMap::COL_CREATED_AT);
     }
 
 } // DelivererQuery

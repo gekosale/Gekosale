@@ -12,6 +12,8 @@ use Gekosale\Plugin\Shop\Model\ORM\Shop as ChildShop;
 use Gekosale\Plugin\Shop\Model\ORM\ShopQuery;
 use Gekosale\Plugin\Shop\Model\ORM\Base\Shop;
 use Gekosale\Plugin\Vat\Model\ORM\Vat as ChildVat;
+use Gekosale\Plugin\Vat\Model\ORM\VatI18n as ChildVatI18n;
+use Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery as ChildVatI18nQuery;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery as ChildVatQuery;
 use Gekosale\Plugin\Vat\Model\ORM\Map\VatTableMap;
 use Propel\Runtime\Propel;
@@ -99,12 +101,32 @@ abstract class Vat implements ActiveRecordInterface
     protected $collShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildVatI18n[] Collection to store aggregation of ChildVatI18n objects.
+     */
+    protected $collVatI18ns;
+    protected $collVatI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildVatI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -117,6 +139,12 @@ abstract class Vat implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $shopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $vatI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -666,6 +694,8 @@ abstract class Vat implements ActiveRecordInterface
 
             $this->collShops = null;
 
+            $this->collVatI18ns = null;
+
         } // if (deep)
     }
 
@@ -736,8 +766,19 @@ abstract class Vat implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(VatTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(VatTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(VatTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -817,6 +858,23 @@ abstract class Vat implements ActiveRecordInterface
 
                 if ($this->collShops !== null) {
             foreach ($this->collShops as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->vatI18nsScheduledForDeletion !== null) {
+                if (!$this->vatI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Vat\Model\ORM\VatI18nQuery::create()
+                        ->filterByPrimaryKeys($this->vatI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->vatI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collVatI18ns !== null) {
+            foreach ($this->collVatI18ns as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1004,6 +1062,9 @@ abstract class Vat implements ActiveRecordInterface
             if (null !== $this->collShops) {
                 $result['Shops'] = $this->collShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collVatI18ns) {
+                $result['VatI18ns'] = $this->collVatI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1179,6 +1240,12 @@ abstract class Vat implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getVatI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addVatI18n($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1225,6 +1292,9 @@ abstract class Vat implements ActiveRecordInterface
         }
         if ('Shop' == $relationName) {
             return $this->initShops();
+        }
+        if ('VatI18n' == $relationName) {
+            return $this->initVatI18ns();
         }
     }
 
@@ -1915,6 +1985,231 @@ abstract class Vat implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collVatI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addVatI18ns()
+     */
+    public function clearVatI18ns()
+    {
+        $this->collVatI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collVatI18ns collection loaded partially.
+     */
+    public function resetPartialVatI18ns($v = true)
+    {
+        $this->collVatI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collVatI18ns collection.
+     *
+     * By default this just sets the collVatI18ns collection to an empty array (like clearcollVatI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initVatI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collVatI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collVatI18ns = new ObjectCollection();
+        $this->collVatI18ns->setModel('\Gekosale\Plugin\Vat\Model\ORM\VatI18n');
+    }
+
+    /**
+     * Gets an array of ChildVatI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildVat is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildVatI18n[] List of ChildVatI18n objects
+     * @throws PropelException
+     */
+    public function getVatI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collVatI18nsPartial && !$this->isNew();
+        if (null === $this->collVatI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collVatI18ns) {
+                // return empty collection
+                $this->initVatI18ns();
+            } else {
+                $collVatI18ns = ChildVatI18nQuery::create(null, $criteria)
+                    ->filterByVat($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collVatI18nsPartial && count($collVatI18ns)) {
+                        $this->initVatI18ns(false);
+
+                        foreach ($collVatI18ns as $obj) {
+                            if (false == $this->collVatI18ns->contains($obj)) {
+                                $this->collVatI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collVatI18nsPartial = true;
+                    }
+
+                    reset($collVatI18ns);
+
+                    return $collVatI18ns;
+                }
+
+                if ($partial && $this->collVatI18ns) {
+                    foreach ($this->collVatI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collVatI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collVatI18ns = $collVatI18ns;
+                $this->collVatI18nsPartial = false;
+            }
+        }
+
+        return $this->collVatI18ns;
+    }
+
+    /**
+     * Sets a collection of VatI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $vatI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildVat The current object (for fluent API support)
+     */
+    public function setVatI18ns(Collection $vatI18ns, ConnectionInterface $con = null)
+    {
+        $vatI18nsToDelete = $this->getVatI18ns(new Criteria(), $con)->diff($vatI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->vatI18nsScheduledForDeletion = clone $vatI18nsToDelete;
+
+        foreach ($vatI18nsToDelete as $vatI18nRemoved) {
+            $vatI18nRemoved->setVat(null);
+        }
+
+        $this->collVatI18ns = null;
+        foreach ($vatI18ns as $vatI18n) {
+            $this->addVatI18n($vatI18n);
+        }
+
+        $this->collVatI18ns = $vatI18ns;
+        $this->collVatI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related VatI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related VatI18n objects.
+     * @throws PropelException
+     */
+    public function countVatI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collVatI18nsPartial && !$this->isNew();
+        if (null === $this->collVatI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collVatI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getVatI18ns());
+            }
+
+            $query = ChildVatI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByVat($this)
+                ->count($con);
+        }
+
+        return count($this->collVatI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildVatI18n object to this object
+     * through the ChildVatI18n foreign key attribute.
+     *
+     * @param    ChildVatI18n $l ChildVatI18n
+     * @return   \Gekosale\Plugin\Vat\Model\ORM\Vat The current object (for fluent API support)
+     */
+    public function addVatI18n(ChildVatI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collVatI18ns === null) {
+            $this->initVatI18ns();
+            $this->collVatI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collVatI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddVatI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param VatI18n $vatI18n The vatI18n object to add.
+     */
+    protected function doAddVatI18n($vatI18n)
+    {
+        $this->collVatI18ns[]= $vatI18n;
+        $vatI18n->setVat($this);
+    }
+
+    /**
+     * @param  VatI18n $vatI18n The vatI18n object to remove.
+     * @return ChildVat The current object (for fluent API support)
+     */
+    public function removeVatI18n($vatI18n)
+    {
+        if ($this->getVatI18ns()->contains($vatI18n)) {
+            $this->collVatI18ns->remove($this->collVatI18ns->search($vatI18n));
+            if (null === $this->vatI18nsScheduledForDeletion) {
+                $this->vatI18nsScheduledForDeletion = clone $this->collVatI18ns;
+                $this->vatI18nsScheduledForDeletion->clear();
+            }
+            $this->vatI18nsScheduledForDeletion[]= clone $vatI18n;
+            $vatI18n->setVat(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1953,10 +2248,20 @@ abstract class Vat implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collVatI18ns) {
+                foreach ($this->collVatI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collProducts = null;
         $this->collShops = null;
+        $this->collVatI18ns = null;
     }
 
     /**
@@ -1967,6 +2272,143 @@ abstract class Vat implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(VatTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildVat The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildVatI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collVatI18ns) {
+                foreach ($this->collVatI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildVatI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildVatI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addVatI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildVat The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildVatI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collVatI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collVatI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildVatI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Vat\Model\ORM\VatI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildVat The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[VatTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

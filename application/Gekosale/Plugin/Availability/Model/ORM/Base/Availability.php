@@ -2173,20 +2173,6 @@ abstract class Availability implements ActiveRecordInterface
         return (string) $this->exportTo(AvailabilityTableMap::DEFAULT_STRING_FORMAT);
     }
 
-    // timestampable behavior
-    
-    /**
-     * Mark the current object so that the update date doesn't get updated during next save
-     *
-     * @return     ChildAvailability The current object (for fluent API support)
-     */
-    public function keepUpdateDateUnchanged()
-    {
-        $this->modifiedColumns[AvailabilityTableMap::COL_UPDATED_AT] = true;
-    
-        return $this;
-    }
-
     // i18n behavior
     
     /**
@@ -2306,6 +2292,20 @@ abstract class Availability implements ActiveRecordInterface
          */
         public function setName($v)
         {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildAvailability The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AvailabilityTableMap::COL_UPDATED_AT] = true;
     
         return $this;
     }

@@ -58,7 +58,7 @@ class ProductSearchPhrasesTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -68,17 +68,12 @@ class ProductSearchPhrasesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the ID field
      */
     const COL_ID = 'product_search_phrases.ID';
-
-    /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'product_search_phrases.NAME';
 
     /**
      * the column name for the TEXT_COUNT field
@@ -91,9 +86,28 @@ class ProductSearchPhrasesTableMap extends TableMap
     const COL_SHOP_ID = 'product_search_phrases.SHOP_ID';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'product_search_phrases.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'product_search_phrases.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -102,12 +116,12 @@ class ProductSearchPhrasesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'TextCount', 'ShopId', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', 'textCount', 'shopId', ),
-        self::TYPE_COLNAME       => array(ProductSearchPhrasesTableMap::COL_ID, ProductSearchPhrasesTableMap::COL_NAME, ProductSearchPhrasesTableMap::COL_TEXT_COUNT, ProductSearchPhrasesTableMap::COL_SHOP_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_TEXT_COUNT', 'COL_SHOP_ID', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'text_count', 'shop_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'TextCount', 'ShopId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'textCount', 'shopId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductSearchPhrasesTableMap::COL_ID, ProductSearchPhrasesTableMap::COL_TEXT_COUNT, ProductSearchPhrasesTableMap::COL_SHOP_ID, ProductSearchPhrasesTableMap::COL_CREATED_AT, ProductSearchPhrasesTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_TEXT_COUNT', 'COL_SHOP_ID', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'text_count', 'shop_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -117,12 +131,12 @@ class ProductSearchPhrasesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'TextCount' => 2, 'ShopId' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'textCount' => 2, 'shopId' => 3, ),
-        self::TYPE_COLNAME       => array(ProductSearchPhrasesTableMap::COL_ID => 0, ProductSearchPhrasesTableMap::COL_NAME => 1, ProductSearchPhrasesTableMap::COL_TEXT_COUNT => 2, ProductSearchPhrasesTableMap::COL_SHOP_ID => 3, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_TEXT_COUNT' => 2, 'COL_SHOP_ID' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'text_count' => 2, 'shop_id' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TextCount' => 1, 'ShopId' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'textCount' => 1, 'shopId' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_COLNAME       => array(ProductSearchPhrasesTableMap::COL_ID => 0, ProductSearchPhrasesTableMap::COL_TEXT_COUNT => 1, ProductSearchPhrasesTableMap::COL_SHOP_ID => 2, ProductSearchPhrasesTableMap::COL_CREATED_AT => 3, ProductSearchPhrasesTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_TEXT_COUNT' => 1, 'COL_SHOP_ID' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'text_count' => 1, 'shop_id' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -142,9 +156,10 @@ class ProductSearchPhrasesTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('TEXT_COUNT', 'TextCount', 'INTEGER', true, 10, 1);
         $this->addForeignKey('SHOP_ID', 'ShopId', 'INTEGER', 'shop', 'ID', true, 10, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -153,7 +168,31 @@ class ProductSearchPhrasesTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::MANY_TO_ONE, array('shop_id' => 'id', ), 'CASCADE', null);
+        $this->addRelation('ProductSearchPhrasesI18n', '\\Gekosale\\Plugin\\Search\\Model\\ORM\\ProductSearchPhrasesI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'ProductSearchPhrasesI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
+    /**
+     * Method to invalidate the instance pool of all tables related to product_search_phrases     * by a foreign key with ON DELETE CASCADE
+     */
+    public static function clearRelatedInstancePool()
+    {
+        // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+                ProductSearchPhrasesI18nTableMap::clearInstancePool();
+            }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -294,14 +333,16 @@ class ProductSearchPhrasesTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_ID);
-            $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_NAME);
             $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_TEXT_COUNT);
             $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_SHOP_ID);
+            $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProductSearchPhrasesTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.TEXT_COUNT');
             $criteria->addSelectColumn($alias . '.SHOP_ID');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

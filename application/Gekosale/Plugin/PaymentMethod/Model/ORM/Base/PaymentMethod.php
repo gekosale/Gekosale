@@ -2,12 +2,15 @@
 
 namespace Gekosale\Plugin\PaymentMethod\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodpaymentMethod as ChildDispatchMethodpaymentMethod;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\DispatchMethodpaymentMethodQuery;
 use Gekosale\Plugin\DispatchMethod\Model\ORM\Base\DispatchMethodpaymentMethod;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod as ChildPaymentMethod;
+use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n as ChildPaymentMethodI18n;
+use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery as ChildPaymentMethodI18nQuery;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodQuery as ChildPaymentMethodQuery;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodShop as ChildPaymentMethodShop;
 use Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodShopQuery as ChildPaymentMethodShopQuery;
@@ -23,6 +26,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class PaymentMethod implements ActiveRecordInterface 
 {
@@ -65,12 +69,6 @@ abstract class PaymentMethod implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
      * The value for the controller field.
      * @var        string
      */
@@ -104,6 +102,18 @@ abstract class PaymentMethod implements ActiveRecordInterface
     protected $hierarchy;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildDispatchMethodpaymentMethod[] Collection to store aggregation of ChildDispatchMethodpaymentMethod objects.
      */
     protected $collDispatchMethodpaymentMethods;
@@ -116,12 +126,32 @@ abstract class PaymentMethod implements ActiveRecordInterface
     protected $collPaymentMethodShopsPartial;
 
     /**
+     * @var        ObjectCollection|ChildPaymentMethodI18n[] Collection to store aggregation of ChildPaymentMethodI18n objects.
+     */
+    protected $collPaymentMethodI18ns;
+    protected $collPaymentMethodI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildPaymentMethodI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -134,6 +164,12 @@ abstract class PaymentMethod implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $paymentMethodShopsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $paymentMethodI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -420,17 +456,6 @@ abstract class PaymentMethod implements ActiveRecordInterface
     }
 
     /**
-     * Get the [name] column value.
-     * 
-     * @return   string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
      * Get the [controller] column value.
      * 
      * @return   string
@@ -486,6 +511,46 @@ abstract class PaymentMethod implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -505,27 +570,6 @@ abstract class PaymentMethod implements ActiveRecordInterface
 
         return $this;
     } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * 
-     * @param      string $v new value
-     * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[PaymentMethodTableMap::COL_NAME] = true;
-        }
-
-
-        return $this;
-    } // setName()
 
     /**
      * Set the value of [controller] column.
@@ -649,6 +693,48 @@ abstract class PaymentMethod implements ActiveRecordInterface
     } // setHierarchy()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[PaymentMethodTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[PaymentMethodTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -700,23 +786,32 @@ abstract class PaymentMethod implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PaymentMethodTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PaymentMethodTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PaymentMethodTableMap::translateFieldName('Controller', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PaymentMethodTableMap::translateFieldName('Controller', TableMap::TYPE_PHPNAME, $indexType)];
             $this->controller = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PaymentMethodTableMap::translateFieldName('IsOnline', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PaymentMethodTableMap::translateFieldName('IsOnline', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_online = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PaymentMethodTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PaymentMethodTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_active = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PaymentMethodTableMap::translateFieldName('MaximumAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PaymentMethodTableMap::translateFieldName('MaximumAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->maximum_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PaymentMethodTableMap::translateFieldName('Hierarchy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PaymentMethodTableMap::translateFieldName('Hierarchy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->hierarchy = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PaymentMethodTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PaymentMethodTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -725,7 +820,7 @@ abstract class PaymentMethod implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = PaymentMethodTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = PaymentMethodTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod object", 0, $e);
@@ -789,6 +884,8 @@ abstract class PaymentMethod implements ActiveRecordInterface
             $this->collDispatchMethodpaymentMethods = null;
 
             $this->collPaymentMethodShops = null;
+
+            $this->collPaymentMethodI18ns = null;
 
         } // if (deep)
     }
@@ -860,8 +957,19 @@ abstract class PaymentMethod implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(PaymentMethodTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(PaymentMethodTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(PaymentMethodTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -946,6 +1054,23 @@ abstract class PaymentMethod implements ActiveRecordInterface
                 }
             }
 
+            if ($this->paymentMethodI18nsScheduledForDeletion !== null) {
+                if (!$this->paymentMethodI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18nQuery::create()
+                        ->filterByPrimaryKeys($this->paymentMethodI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->paymentMethodI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collPaymentMethodI18ns !== null) {
+            foreach ($this->collPaymentMethodI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -975,9 +1100,6 @@ abstract class PaymentMethod implements ActiveRecordInterface
         if ($this->isColumnModified(PaymentMethodTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
         if ($this->isColumnModified(PaymentMethodTableMap::COL_CONTROLLER)) {
             $modifiedColumns[':p' . $index++]  = 'CONTROLLER';
         }
@@ -993,6 +1115,12 @@ abstract class PaymentMethod implements ActiveRecordInterface
         if ($this->isColumnModified(PaymentMethodTableMap::COL_HIERARCHY)) {
             $modifiedColumns[':p' . $index++]  = 'HIERARCHY';
         }
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO payment_method (%s) VALUES (%s)',
@@ -1006,9 +1134,6 @@ abstract class PaymentMethod implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-                        break;
-                    case 'NAME':                        
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                     case 'CONTROLLER':                        
                         $stmt->bindValue($identifier, $this->controller, PDO::PARAM_STR);
@@ -1024,6 +1149,12 @@ abstract class PaymentMethod implements ActiveRecordInterface
                         break;
                     case 'HIERARCHY':                        
                         $stmt->bindValue($identifier, $this->hierarchy, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1091,22 +1222,25 @@ abstract class PaymentMethod implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
-                break;
-            case 2:
                 return $this->getController();
                 break;
-            case 3:
+            case 2:
                 return $this->getIsOnline();
                 break;
-            case 4:
+            case 3:
                 return $this->getIsActive();
                 break;
-            case 5:
+            case 4:
                 return $this->getMaximumAmount();
                 break;
-            case 6:
+            case 5:
                 return $this->getHierarchy();
+                break;
+            case 6:
+                return $this->getCreatedAt();
+                break;
+            case 7:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1138,12 +1272,13 @@ abstract class PaymentMethod implements ActiveRecordInterface
         $keys = PaymentMethodTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getController(),
-            $keys[3] => $this->getIsOnline(),
-            $keys[4] => $this->getIsActive(),
-            $keys[5] => $this->getMaximumAmount(),
-            $keys[6] => $this->getHierarchy(),
+            $keys[1] => $this->getController(),
+            $keys[2] => $this->getIsOnline(),
+            $keys[3] => $this->getIsActive(),
+            $keys[4] => $this->getMaximumAmount(),
+            $keys[5] => $this->getHierarchy(),
+            $keys[6] => $this->getCreatedAt(),
+            $keys[7] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1156,6 +1291,9 @@ abstract class PaymentMethod implements ActiveRecordInterface
             }
             if (null !== $this->collPaymentMethodShops) {
                 $result['PaymentMethodShops'] = $this->collPaymentMethodShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPaymentMethodI18ns) {
+                $result['PaymentMethodI18ns'] = $this->collPaymentMethodI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1195,22 +1333,25 @@ abstract class PaymentMethod implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
                 $this->setController($value);
                 break;
-            case 3:
+            case 2:
                 $this->setIsOnline($value);
                 break;
-            case 4:
+            case 3:
                 $this->setIsActive($value);
                 break;
-            case 5:
+            case 4:
                 $this->setMaximumAmount($value);
                 break;
-            case 6:
+            case 5:
                 $this->setHierarchy($value);
+                break;
+            case 6:
+                $this->setCreatedAt($value);
+                break;
+            case 7:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1237,12 +1378,13 @@ abstract class PaymentMethod implements ActiveRecordInterface
         $keys = PaymentMethodTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setController($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setIsOnline($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setIsActive($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setMaximumAmount($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setHierarchy($arr[$keys[6]]);
+        if (array_key_exists($keys[1], $arr)) $this->setController($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setIsOnline($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setIsActive($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setMaximumAmount($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setHierarchy($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
     }
 
     /**
@@ -1255,12 +1397,13 @@ abstract class PaymentMethod implements ActiveRecordInterface
         $criteria = new Criteria(PaymentMethodTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(PaymentMethodTableMap::COL_ID)) $criteria->add(PaymentMethodTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_NAME)) $criteria->add(PaymentMethodTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_CONTROLLER)) $criteria->add(PaymentMethodTableMap::COL_CONTROLLER, $this->controller);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ONLINE)) $criteria->add(PaymentMethodTableMap::COL_IS_ONLINE, $this->is_online);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ACTIVE)) $criteria->add(PaymentMethodTableMap::COL_IS_ACTIVE, $this->is_active);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT)) $criteria->add(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT, $this->maximum_amount);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_HIERARCHY)) $criteria->add(PaymentMethodTableMap::COL_HIERARCHY, $this->hierarchy);
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_CREATED_AT)) $criteria->add(PaymentMethodTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_UPDATED_AT)) $criteria->add(PaymentMethodTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1326,12 +1469,13 @@ abstract class PaymentMethod implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
         $copyObj->setController($this->getController());
         $copyObj->setIsOnline($this->getIsOnline());
         $copyObj->setIsActive($this->getIsActive());
         $copyObj->setMaximumAmount($this->getMaximumAmount());
         $copyObj->setHierarchy($this->getHierarchy());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1347,6 +1491,12 @@ abstract class PaymentMethod implements ActiveRecordInterface
             foreach ($this->getPaymentMethodShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPaymentMethodShop($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getPaymentMethodI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPaymentMethodI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1396,6 +1546,9 @@ abstract class PaymentMethod implements ActiveRecordInterface
         }
         if ('PaymentMethodShop' == $relationName) {
             return $this->initPaymentMethodShops();
+        }
+        if ('PaymentMethodI18n' == $relationName) {
+            return $this->initPaymentMethodI18ns();
         }
     }
 
@@ -1886,17 +2039,243 @@ abstract class PaymentMethod implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPaymentMethodI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPaymentMethodI18ns()
+     */
+    public function clearPaymentMethodI18ns()
+    {
+        $this->collPaymentMethodI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPaymentMethodI18ns collection loaded partially.
+     */
+    public function resetPartialPaymentMethodI18ns($v = true)
+    {
+        $this->collPaymentMethodI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collPaymentMethodI18ns collection.
+     *
+     * By default this just sets the collPaymentMethodI18ns collection to an empty array (like clearcollPaymentMethodI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPaymentMethodI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collPaymentMethodI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collPaymentMethodI18ns = new ObjectCollection();
+        $this->collPaymentMethodI18ns->setModel('\Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n');
+    }
+
+    /**
+     * Gets an array of ChildPaymentMethodI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPaymentMethod is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildPaymentMethodI18n[] List of ChildPaymentMethodI18n objects
+     * @throws PropelException
+     */
+    public function getPaymentMethodI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPaymentMethodI18nsPartial && !$this->isNew();
+        if (null === $this->collPaymentMethodI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPaymentMethodI18ns) {
+                // return empty collection
+                $this->initPaymentMethodI18ns();
+            } else {
+                $collPaymentMethodI18ns = ChildPaymentMethodI18nQuery::create(null, $criteria)
+                    ->filterByPaymentMethod($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPaymentMethodI18nsPartial && count($collPaymentMethodI18ns)) {
+                        $this->initPaymentMethodI18ns(false);
+
+                        foreach ($collPaymentMethodI18ns as $obj) {
+                            if (false == $this->collPaymentMethodI18ns->contains($obj)) {
+                                $this->collPaymentMethodI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collPaymentMethodI18nsPartial = true;
+                    }
+
+                    reset($collPaymentMethodI18ns);
+
+                    return $collPaymentMethodI18ns;
+                }
+
+                if ($partial && $this->collPaymentMethodI18ns) {
+                    foreach ($this->collPaymentMethodI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collPaymentMethodI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPaymentMethodI18ns = $collPaymentMethodI18ns;
+                $this->collPaymentMethodI18nsPartial = false;
+            }
+        }
+
+        return $this->collPaymentMethodI18ns;
+    }
+
+    /**
+     * Sets a collection of PaymentMethodI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $paymentMethodI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildPaymentMethod The current object (for fluent API support)
+     */
+    public function setPaymentMethodI18ns(Collection $paymentMethodI18ns, ConnectionInterface $con = null)
+    {
+        $paymentMethodI18nsToDelete = $this->getPaymentMethodI18ns(new Criteria(), $con)->diff($paymentMethodI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->paymentMethodI18nsScheduledForDeletion = clone $paymentMethodI18nsToDelete;
+
+        foreach ($paymentMethodI18nsToDelete as $paymentMethodI18nRemoved) {
+            $paymentMethodI18nRemoved->setPaymentMethod(null);
+        }
+
+        $this->collPaymentMethodI18ns = null;
+        foreach ($paymentMethodI18ns as $paymentMethodI18n) {
+            $this->addPaymentMethodI18n($paymentMethodI18n);
+        }
+
+        $this->collPaymentMethodI18ns = $paymentMethodI18ns;
+        $this->collPaymentMethodI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related PaymentMethodI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related PaymentMethodI18n objects.
+     * @throws PropelException
+     */
+    public function countPaymentMethodI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPaymentMethodI18nsPartial && !$this->isNew();
+        if (null === $this->collPaymentMethodI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPaymentMethodI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPaymentMethodI18ns());
+            }
+
+            $query = ChildPaymentMethodI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPaymentMethod($this)
+                ->count($con);
+        }
+
+        return count($this->collPaymentMethodI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildPaymentMethodI18n object to this object
+     * through the ChildPaymentMethodI18n foreign key attribute.
+     *
+     * @param    ChildPaymentMethodI18n $l ChildPaymentMethodI18n
+     * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethod The current object (for fluent API support)
+     */
+    public function addPaymentMethodI18n(ChildPaymentMethodI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collPaymentMethodI18ns === null) {
+            $this->initPaymentMethodI18ns();
+            $this->collPaymentMethodI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collPaymentMethodI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPaymentMethodI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param PaymentMethodI18n $paymentMethodI18n The paymentMethodI18n object to add.
+     */
+    protected function doAddPaymentMethodI18n($paymentMethodI18n)
+    {
+        $this->collPaymentMethodI18ns[]= $paymentMethodI18n;
+        $paymentMethodI18n->setPaymentMethod($this);
+    }
+
+    /**
+     * @param  PaymentMethodI18n $paymentMethodI18n The paymentMethodI18n object to remove.
+     * @return ChildPaymentMethod The current object (for fluent API support)
+     */
+    public function removePaymentMethodI18n($paymentMethodI18n)
+    {
+        if ($this->getPaymentMethodI18ns()->contains($paymentMethodI18n)) {
+            $this->collPaymentMethodI18ns->remove($this->collPaymentMethodI18ns->search($paymentMethodI18n));
+            if (null === $this->paymentMethodI18nsScheduledForDeletion) {
+                $this->paymentMethodI18nsScheduledForDeletion = clone $this->collPaymentMethodI18ns;
+                $this->paymentMethodI18nsScheduledForDeletion->clear();
+            }
+            $this->paymentMethodI18nsScheduledForDeletion[]= clone $paymentMethodI18n;
+            $paymentMethodI18n->setPaymentMethod(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
     {
         $this->id = null;
-        $this->name = null;
         $this->controller = null;
         $this->is_online = null;
         $this->is_active = null;
         $this->maximum_amount = null;
         $this->hierarchy = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1927,10 +2306,20 @@ abstract class PaymentMethod implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPaymentMethodI18ns) {
+                foreach ($this->collPaymentMethodI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collDispatchMethodpaymentMethods = null;
         $this->collPaymentMethodShops = null;
+        $this->collPaymentMethodI18ns = null;
     }
 
     /**
@@ -1941,6 +2330,143 @@ abstract class PaymentMethod implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(PaymentMethodTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildPaymentMethod The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildPaymentMethodI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collPaymentMethodI18ns) {
+                foreach ($this->collPaymentMethodI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildPaymentMethodI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildPaymentMethodI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addPaymentMethodI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildPaymentMethod The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildPaymentMethodI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collPaymentMethodI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collPaymentMethodI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildPaymentMethodI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\PaymentMethod\Model\ORM\PaymentMethodI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildPaymentMethod The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[PaymentMethodTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

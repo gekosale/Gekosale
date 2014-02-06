@@ -24,10 +24,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogI18nQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildBlogI18nQuery orderByLocale($order = Criteria::ASC) Order by the locale column
  * @method     ChildBlogI18nQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildBlogI18nQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildBlogI18nQuery orderByMetaTitle($order = Criteria::ASC) Order by the meta_title column
+ * @method     ChildBlogI18nQuery orderByMetaKeyword($order = Criteria::ASC) Order by the meta_keyword column
+ * @method     ChildBlogI18nQuery orderByMetaDescription($order = Criteria::ASC) Order by the meta_description column
  *
  * @method     ChildBlogI18nQuery groupById() Group by the id column
  * @method     ChildBlogI18nQuery groupByLocale() Group by the locale column
  * @method     ChildBlogI18nQuery groupByName() Group by the name column
+ * @method     ChildBlogI18nQuery groupByDescription() Group by the description column
+ * @method     ChildBlogI18nQuery groupByMetaTitle() Group by the meta_title column
+ * @method     ChildBlogI18nQuery groupByMetaKeyword() Group by the meta_keyword column
+ * @method     ChildBlogI18nQuery groupByMetaDescription() Group by the meta_description column
  *
  * @method     ChildBlogI18nQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBlogI18nQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -43,10 +51,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogI18n findOneById(int $id) Return the first ChildBlogI18n filtered by the id column
  * @method     ChildBlogI18n findOneByLocale(string $locale) Return the first ChildBlogI18n filtered by the locale column
  * @method     ChildBlogI18n findOneByName(string $name) Return the first ChildBlogI18n filtered by the name column
+ * @method     ChildBlogI18n findOneByDescription(string $description) Return the first ChildBlogI18n filtered by the description column
+ * @method     ChildBlogI18n findOneByMetaTitle(string $meta_title) Return the first ChildBlogI18n filtered by the meta_title column
+ * @method     ChildBlogI18n findOneByMetaKeyword(string $meta_keyword) Return the first ChildBlogI18n filtered by the meta_keyword column
+ * @method     ChildBlogI18n findOneByMetaDescription(string $meta_description) Return the first ChildBlogI18n filtered by the meta_description column
  *
  * @method     array findById(int $id) Return ChildBlogI18n objects filtered by the id column
  * @method     array findByLocale(string $locale) Return ChildBlogI18n objects filtered by the locale column
  * @method     array findByName(string $name) Return ChildBlogI18n objects filtered by the name column
+ * @method     array findByDescription(string $description) Return ChildBlogI18n objects filtered by the description column
+ * @method     array findByMetaTitle(string $meta_title) Return ChildBlogI18n objects filtered by the meta_title column
+ * @method     array findByMetaKeyword(string $meta_keyword) Return ChildBlogI18n objects filtered by the meta_keyword column
+ * @method     array findByMetaDescription(string $meta_description) Return ChildBlogI18n objects filtered by the meta_description column
  *
  */
 abstract class BlogI18nQuery extends ModelCriteria
@@ -135,7 +151,7 @@ abstract class BlogI18nQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOCALE, NAME FROM blog_i18n WHERE ID = :p0 AND LOCALE = :p1';
+        $sql = 'SELECT ID, LOCALE, NAME, DESCRIPTION, META_TITLE, META_KEYWORD, META_DESCRIPTION FROM blog_i18n WHERE ID = :p0 AND LOCALE = :p1';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);            
@@ -335,6 +351,122 @@ abstract class BlogI18nQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BlogI18nTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the description column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
+     * $query->filterByDescription('%fooValue%'); // WHERE description LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $description The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogI18nQuery The current query, for fluid interface
+     */
+    public function filterByDescription($description = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($description)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $description)) {
+                $description = str_replace('*', '%', $description);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BlogI18nTableMap::COL_DESCRIPTION, $description, $comparison);
+    }
+
+    /**
+     * Filter the query on the meta_title column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMetaTitle('fooValue');   // WHERE meta_title = 'fooValue'
+     * $query->filterByMetaTitle('%fooValue%'); // WHERE meta_title LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $metaTitle The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogI18nQuery The current query, for fluid interface
+     */
+    public function filterByMetaTitle($metaTitle = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($metaTitle)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $metaTitle)) {
+                $metaTitle = str_replace('*', '%', $metaTitle);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BlogI18nTableMap::COL_META_TITLE, $metaTitle, $comparison);
+    }
+
+    /**
+     * Filter the query on the meta_keyword column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMetaKeyword('fooValue');   // WHERE meta_keyword = 'fooValue'
+     * $query->filterByMetaKeyword('%fooValue%'); // WHERE meta_keyword LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $metaKeyword The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogI18nQuery The current query, for fluid interface
+     */
+    public function filterByMetaKeyword($metaKeyword = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($metaKeyword)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $metaKeyword)) {
+                $metaKeyword = str_replace('*', '%', $metaKeyword);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BlogI18nTableMap::COL_META_KEYWORD, $metaKeyword, $comparison);
+    }
+
+    /**
+     * Filter the query on the meta_description column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMetaDescription('fooValue');   // WHERE meta_description = 'fooValue'
+     * $query->filterByMetaDescription('%fooValue%'); // WHERE meta_description LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $metaDescription The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBlogI18nQuery The current query, for fluid interface
+     */
+    public function filterByMetaDescription($metaDescription = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($metaDescription)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $metaDescription)) {
+                $metaDescription = str_replace('*', '%', $metaDescription);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BlogI18nTableMap::COL_META_DESCRIPTION, $metaDescription, $comparison);
     }
 
     /**

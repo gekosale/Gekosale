@@ -2,9 +2,11 @@
 
 namespace Gekosale\Plugin\Blog\Model\ORM\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Blog\Model\ORM\Blog as ChildBlog;
+use Gekosale\Plugin\Blog\Model\ORM\BlogPhoto as ChildBlogPhoto;
 use Gekosale\Plugin\Blog\Model\ORM\BlogPhotoQuery as ChildBlogPhotoQuery;
 use Gekosale\Plugin\Blog\Model\ORM\BlogQuery as ChildBlogQuery;
 use Gekosale\Plugin\Blog\Model\ORM\Map\BlogPhotoTableMap;
@@ -20,6 +22,7 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 abstract class BlogPhoto implements ActiveRecordInterface 
 {
@@ -79,6 +82,18 @@ abstract class BlogPhoto implements ActiveRecordInterface
      * @var        int
      */
     protected $is_main_photo;
+
+    /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
 
     /**
      * @var        Blog
@@ -414,6 +429,46 @@ abstract class BlogPhoto implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
@@ -506,6 +561,48 @@ abstract class BlogPhoto implements ActiveRecordInterface
     } // setIsMainPhoto()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogPhoto The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[BlogPhotoTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogPhoto The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[BlogPhotoTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -557,6 +654,18 @@ abstract class BlogPhoto implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BlogPhotoTableMap::translateFieldName('IsMainPhoto', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_main_photo = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BlogPhotoTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BlogPhotoTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -565,7 +674,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = BlogPhotoTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = BlogPhotoTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Blog\Model\ORM\BlogPhoto object", 0, $e);
@@ -704,8 +813,19 @@ abstract class BlogPhoto implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(BlogPhotoTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(BlogPhotoTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(BlogPhotoTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -813,6 +933,12 @@ abstract class BlogPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(BlogPhotoTableMap::COL_IS_MAIN_PHOTO)) {
             $modifiedColumns[':p' . $index++]  = 'IS_MAIN_PHOTO';
         }
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO blog_photo (%s) VALUES (%s)',
@@ -835,6 +961,12 @@ abstract class BlogPhoto implements ActiveRecordInterface
                         break;
                     case 'IS_MAIN_PHOTO':                        
                         $stmt->bindValue($identifier, $this->is_main_photo, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -910,6 +1042,12 @@ abstract class BlogPhoto implements ActiveRecordInterface
             case 3:
                 return $this->getIsMainPhoto();
                 break;
+            case 4:
+                return $this->getCreatedAt();
+                break;
+            case 5:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -943,6 +1081,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
             $keys[1] => $this->getBlogId(),
             $keys[2] => $this->getPhotoId(),
             $keys[3] => $this->getIsMainPhoto(),
+            $keys[4] => $this->getCreatedAt(),
+            $keys[5] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1002,6 +1142,12 @@ abstract class BlogPhoto implements ActiveRecordInterface
             case 3:
                 $this->setIsMainPhoto($value);
                 break;
+            case 4:
+                $this->setCreatedAt($value);
+                break;
+            case 5:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -1030,6 +1176,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
         if (array_key_exists($keys[1], $arr)) $this->setBlogId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setPhotoId($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setIsMainPhoto($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
     }
 
     /**
@@ -1045,6 +1193,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(BlogPhotoTableMap::COL_BLOG_ID)) $criteria->add(BlogPhotoTableMap::COL_BLOG_ID, $this->blog_id);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_PHOTO_ID)) $criteria->add(BlogPhotoTableMap::COL_PHOTO_ID, $this->photo_id);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_IS_MAIN_PHOTO)) $criteria->add(BlogPhotoTableMap::COL_IS_MAIN_PHOTO, $this->is_main_photo);
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_CREATED_AT)) $criteria->add(BlogPhotoTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_UPDATED_AT)) $criteria->add(BlogPhotoTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1113,6 +1263,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
         $copyObj->setBlogId($this->getBlogId());
         $copyObj->setPhotoId($this->getPhotoId());
         $copyObj->setIsMainPhoto($this->getIsMainPhoto());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1252,6 +1404,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
         $this->blog_id = null;
         $this->photo_id = null;
         $this->is_main_photo = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1286,6 +1440,20 @@ abstract class BlogPhoto implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(BlogPhotoTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildBlogPhoto The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[BlogPhotoTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

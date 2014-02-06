@@ -58,7 +58,7 @@ class PageTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class PageTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the ID field
@@ -116,9 +116,28 @@ class PageTableMap extends TableMap
     const COL_REDIRECT_URL = 'page.REDIRECT_URL';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'page.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'page.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -127,12 +146,12 @@ class PageTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'PageId', 'Hierarchy', 'Footer', 'Header', 'Alias', 'Redirect', 'RedirectRoute', 'RedirectUrl', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'pageId', 'hierarchy', 'footer', 'header', 'alias', 'redirect', 'redirectRoute', 'redirectUrl', ),
-        self::TYPE_COLNAME       => array(PageTableMap::COL_ID, PageTableMap::COL_PAGE_ID, PageTableMap::COL_HIERARCHY, PageTableMap::COL_FOOTER, PageTableMap::COL_HEADER, PageTableMap::COL_ALIAS, PageTableMap::COL_REDIRECT, PageTableMap::COL_REDIRECT_ROUTE, PageTableMap::COL_REDIRECT_URL, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PAGE_ID', 'COL_HIERARCHY', 'COL_FOOTER', 'COL_HEADER', 'COL_ALIAS', 'COL_REDIRECT', 'COL_REDIRECT_ROUTE', 'COL_REDIRECT_URL', ),
-        self::TYPE_FIELDNAME     => array('id', 'page_id', 'hierarchy', 'footer', 'header', 'alias', 'redirect', 'redirect_route', 'redirect_url', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id', 'PageId', 'Hierarchy', 'Footer', 'Header', 'Alias', 'Redirect', 'RedirectRoute', 'RedirectUrl', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'pageId', 'hierarchy', 'footer', 'header', 'alias', 'redirect', 'redirectRoute', 'redirectUrl', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(PageTableMap::COL_ID, PageTableMap::COL_PAGE_ID, PageTableMap::COL_HIERARCHY, PageTableMap::COL_FOOTER, PageTableMap::COL_HEADER, PageTableMap::COL_ALIAS, PageTableMap::COL_REDIRECT, PageTableMap::COL_REDIRECT_ROUTE, PageTableMap::COL_REDIRECT_URL, PageTableMap::COL_CREATED_AT, PageTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PAGE_ID', 'COL_HIERARCHY', 'COL_FOOTER', 'COL_HEADER', 'COL_ALIAS', 'COL_REDIRECT', 'COL_REDIRECT_ROUTE', 'COL_REDIRECT_URL', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'page_id', 'hierarchy', 'footer', 'header', 'alias', 'redirect', 'redirect_route', 'redirect_url', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -142,12 +161,12 @@ class PageTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'PageId' => 1, 'Hierarchy' => 2, 'Footer' => 3, 'Header' => 4, 'Alias' => 5, 'Redirect' => 6, 'RedirectRoute' => 7, 'RedirectUrl' => 8, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'pageId' => 1, 'hierarchy' => 2, 'footer' => 3, 'header' => 4, 'alias' => 5, 'redirect' => 6, 'redirectRoute' => 7, 'redirectUrl' => 8, ),
-        self::TYPE_COLNAME       => array(PageTableMap::COL_ID => 0, PageTableMap::COL_PAGE_ID => 1, PageTableMap::COL_HIERARCHY => 2, PageTableMap::COL_FOOTER => 3, PageTableMap::COL_HEADER => 4, PageTableMap::COL_ALIAS => 5, PageTableMap::COL_REDIRECT => 6, PageTableMap::COL_REDIRECT_ROUTE => 7, PageTableMap::COL_REDIRECT_URL => 8, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PAGE_ID' => 1, 'COL_HIERARCHY' => 2, 'COL_FOOTER' => 3, 'COL_HEADER' => 4, 'COL_ALIAS' => 5, 'COL_REDIRECT' => 6, 'COL_REDIRECT_ROUTE' => 7, 'COL_REDIRECT_URL' => 8, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'page_id' => 1, 'hierarchy' => 2, 'footer' => 3, 'header' => 4, 'alias' => 5, 'redirect' => 6, 'redirect_route' => 7, 'redirect_url' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'PageId' => 1, 'Hierarchy' => 2, 'Footer' => 3, 'Header' => 4, 'Alias' => 5, 'Redirect' => 6, 'RedirectRoute' => 7, 'RedirectUrl' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'pageId' => 1, 'hierarchy' => 2, 'footer' => 3, 'header' => 4, 'alias' => 5, 'redirect' => 6, 'redirectRoute' => 7, 'redirectUrl' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
+        self::TYPE_COLNAME       => array(PageTableMap::COL_ID => 0, PageTableMap::COL_PAGE_ID => 1, PageTableMap::COL_HIERARCHY => 2, PageTableMap::COL_FOOTER => 3, PageTableMap::COL_HEADER => 4, PageTableMap::COL_ALIAS => 5, PageTableMap::COL_REDIRECT => 6, PageTableMap::COL_REDIRECT_ROUTE => 7, PageTableMap::COL_REDIRECT_URL => 8, PageTableMap::COL_CREATED_AT => 9, PageTableMap::COL_UPDATED_AT => 10, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PAGE_ID' => 1, 'COL_HIERARCHY' => 2, 'COL_FOOTER' => 3, 'COL_HEADER' => 4, 'COL_ALIAS' => 5, 'COL_REDIRECT' => 6, 'COL_REDIRECT_ROUTE' => 7, 'COL_REDIRECT_URL' => 8, 'COL_CREATED_AT' => 9, 'COL_UPDATED_AT' => 10, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'page_id' => 1, 'hierarchy' => 2, 'footer' => 3, 'header' => 4, 'alias' => 5, 'redirect' => 6, 'redirect_route' => 7, 'redirect_url' => 8, 'created_at' => 9, 'updated_at' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -175,6 +194,8 @@ class PageTableMap extends TableMap
         $this->addColumn('REDIRECT', 'Redirect', 'INTEGER', true, null, 0);
         $this->addColumn('REDIRECT_ROUTE', 'RedirectRoute', 'VARCHAR', false, 255, null);
         $this->addColumn('REDIRECT_URL', 'RedirectUrl', 'VARCHAR', false, 255, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -185,7 +206,22 @@ class PageTableMap extends TableMap
         $this->addRelation('PageRelatedByPageId', '\\Gekosale\\Plugin\\Page\\Model\\ORM\\Page', RelationMap::MANY_TO_ONE, array('page_id' => 'id', ), 'CASCADE', null);
         $this->addRelation('PageRelatedById', '\\Gekosale\\Plugin\\Page\\Model\\ORM\\Page', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PagesRelatedById');
         $this->addRelation('PageShop', '\\Gekosale\\Plugin\\Page\\Model\\ORM\\PageShop', RelationMap::ONE_TO_MANY, array('id' => 'page_id', ), 'CASCADE', null, 'PageShops');
+        $this->addRelation('PageI18n', '\\Gekosale\\Plugin\\Page\\Model\\ORM\\PageI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'PageI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, short_description, description, meta_title, meta_keyword, meta_description', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to page     * by a foreign key with ON DELETE CASCADE
      */
@@ -195,6 +231,7 @@ class PageTableMap extends TableMap
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 PageTableMap::clearInstancePool();
                 PageShopTableMap::clearInstancePool();
+                PageI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -344,6 +381,8 @@ class PageTableMap extends TableMap
             $criteria->addSelectColumn(PageTableMap::COL_REDIRECT);
             $criteria->addSelectColumn(PageTableMap::COL_REDIRECT_ROUTE);
             $criteria->addSelectColumn(PageTableMap::COL_REDIRECT_URL);
+            $criteria->addSelectColumn(PageTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(PageTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PAGE_ID');
@@ -354,6 +393,8 @@ class PageTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.REDIRECT');
             $criteria->addSelectColumn($alias . '.REDIRECT_ROUTE');
             $criteria->addSelectColumn($alias . '.REDIRECT_URL');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

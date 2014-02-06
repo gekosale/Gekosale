@@ -37,6 +37,8 @@ use Gekosale\Plugin\Product\Model\ORM\ProductCategory as ChildProductCategory;
 use Gekosale\Plugin\Product\Model\ORM\ProductCategoryQuery as ChildProductCategoryQuery;
 use Gekosale\Plugin\Product\Model\ORM\ProductFile as ChildProductFile;
 use Gekosale\Plugin\Product\Model\ORM\ProductFileQuery as ChildProductFileQuery;
+use Gekosale\Plugin\Product\Model\ORM\ProductI18n as ChildProductI18n;
+use Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery as ChildProductI18nQuery;
 use Gekosale\Plugin\Product\Model\ORM\ProductPhoto as ChildProductPhoto;
 use Gekosale\Plugin\Product\Model\ORM\ProductPhotoQuery as ChildProductPhotoQuery;
 use Gekosale\Plugin\Product\Model\ORM\ProductQuery as ChildProductQuery;
@@ -299,6 +301,18 @@ abstract class Product implements ActiveRecordInterface
     protected $disable_at_stock_enabled;
 
     /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
+
+    /**
      * @var        Availability
      */
     protected $aAvailability;
@@ -436,12 +450,32 @@ abstract class Product implements ActiveRecordInterface
     protected $collWishlistsPartial;
 
     /**
+     * @var        ObjectCollection|ChildProductI18n[] Collection to store aggregation of ChildProductI18n objects.
+     */
+    protected $collProductI18ns;
+    protected $collProductI18nsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    // i18n behavior
+    
+    /**
+     * Current locale
+     * @var        string
+     */
+    protected $currentLocale = 'en_US';
+    
+    /**
+     * Current translation objects
+     * @var        array[ChildProductI18n]
+     */
+    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -544,6 +578,12 @@ abstract class Product implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $wishlistsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection
+     */
+    protected $productI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1181,6 +1221,46 @@ abstract class Product implements ActiveRecordInterface
     {
 
         return $this->disable_at_stock_enabled;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
@@ -1842,6 +1922,48 @@ abstract class Product implements ActiveRecordInterface
     } // setDisableAtStockEnabled()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Product\Model\ORM\Product The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ProductTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \Gekosale\Plugin\Product\Model\ORM\Product The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ProductTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -2020,6 +2142,18 @@ abstract class Product implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 29 + $startcol : ProductTableMap::translateFieldName('DisableAtStockEnabled', TableMap::TYPE_PHPNAME, $indexType)];
             $this->disable_at_stock_enabled = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 30 + $startcol : ProductTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 31 + $startcol : ProductTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -2028,7 +2162,7 @@ abstract class Product implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 30; // 30 = ProductTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 32; // 32 = ProductTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Product\Model\ORM\Product object", 0, $e);
@@ -2151,6 +2285,8 @@ abstract class Product implements ActiveRecordInterface
 
             $this->collWishlists = null;
 
+            $this->collProductI18ns = null;
+
         } // if (deep)
     }
 
@@ -2221,8 +2357,19 @@ abstract class Product implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(ProductTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(ProductTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -2617,6 +2764,23 @@ abstract class Product implements ActiveRecordInterface
                 }
             }
 
+            if ($this->productI18nsScheduledForDeletion !== null) {
+                if (!$this->productI18nsScheduledForDeletion->isEmpty()) {
+                    \Gekosale\Plugin\Product\Model\ORM\ProductI18nQuery::create()
+                        ->filterByPrimaryKeys($this->productI18nsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->productI18nsScheduledForDeletion = null;
+                }
+            }
+
+                if ($this->collProductI18ns !== null) {
+            foreach ($this->collProductI18ns as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -2733,6 +2897,12 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED)) {
             $modifiedColumns[':p' . $index++]  = 'DISABLE_AT_STOCK_ENABLED';
         }
+        if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(ProductTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        }
 
         $sql = sprintf(
             'INSERT INTO product (%s) VALUES (%s)',
@@ -2833,6 +3003,12 @@ abstract class Product implements ActiveRecordInterface
                         break;
                     case 'DISABLE_AT_STOCK_ENABLED':                        
                         $stmt->bindValue($identifier, $this->disable_at_stock_enabled, PDO::PARAM_INT);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -2986,6 +3162,12 @@ abstract class Product implements ActiveRecordInterface
             case 29:
                 return $this->getDisableAtStockEnabled();
                 break;
+            case 30:
+                return $this->getCreatedAt();
+                break;
+            case 31:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -3045,6 +3227,8 @@ abstract class Product implements ActiveRecordInterface
             $keys[27] => $this->getHierarchy(),
             $keys[28] => $this->getPackageSize(),
             $keys[29] => $this->getDisableAtStockEnabled(),
+            $keys[30] => $this->getCreatedAt(),
+            $keys[31] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -3123,6 +3307,9 @@ abstract class Product implements ActiveRecordInterface
             }
             if (null !== $this->collWishlists) {
                 $result['Wishlists'] = $this->collWishlists->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collProductI18ns) {
+                $result['ProductI18ns'] = $this->collProductI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -3248,6 +3435,12 @@ abstract class Product implements ActiveRecordInterface
             case 29:
                 $this->setDisableAtStockEnabled($value);
                 break;
+            case 30:
+                $this->setCreatedAt($value);
+                break;
+            case 31:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
     }
 
@@ -3302,6 +3495,8 @@ abstract class Product implements ActiveRecordInterface
         if (array_key_exists($keys[27], $arr)) $this->setHierarchy($arr[$keys[27]]);
         if (array_key_exists($keys[28], $arr)) $this->setPackageSize($arr[$keys[28]]);
         if (array_key_exists($keys[29], $arr)) $this->setDisableAtStockEnabled($arr[$keys[29]]);
+        if (array_key_exists($keys[30], $arr)) $this->setCreatedAt($arr[$keys[30]]);
+        if (array_key_exists($keys[31], $arr)) $this->setUpdatedAt($arr[$keys[31]]);
     }
 
     /**
@@ -3343,6 +3538,8 @@ abstract class Product implements ActiveRecordInterface
         if ($this->isColumnModified(ProductTableMap::COL_HIERARCHY)) $criteria->add(ProductTableMap::COL_HIERARCHY, $this->hierarchy);
         if ($this->isColumnModified(ProductTableMap::COL_PACKAGE_SIZE)) $criteria->add(ProductTableMap::COL_PACKAGE_SIZE, $this->package_size);
         if ($this->isColumnModified(ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED)) $criteria->add(ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED, $this->disable_at_stock_enabled);
+        if ($this->isColumnModified(ProductTableMap::COL_CREATED_AT)) $criteria->add(ProductTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ProductTableMap::COL_UPDATED_AT)) $criteria->add(ProductTableMap::COL_UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -3437,6 +3634,8 @@ abstract class Product implements ActiveRecordInterface
         $copyObj->setHierarchy($this->getHierarchy());
         $copyObj->setPackageSize($this->getPackageSize());
         $copyObj->setDisableAtStockEnabled($this->getDisableAtStockEnabled());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -3542,6 +3741,12 @@ abstract class Product implements ActiveRecordInterface
             foreach ($this->getWishlists() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addWishlist($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getProductI18ns() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProductI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -3993,6 +4198,9 @@ abstract class Product implements ActiveRecordInterface
         }
         if ('Wishlist' == $relationName) {
             return $this->initWishlists();
+        }
+        if ('ProductI18n' == $relationName) {
+            return $this->initProductI18ns();
         }
     }
 
@@ -8053,6 +8261,231 @@ abstract class Product implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collProductI18ns collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addProductI18ns()
+     */
+    public function clearProductI18ns()
+    {
+        $this->collProductI18ns = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collProductI18ns collection loaded partially.
+     */
+    public function resetPartialProductI18ns($v = true)
+    {
+        $this->collProductI18nsPartial = $v;
+    }
+
+    /**
+     * Initializes the collProductI18ns collection.
+     *
+     * By default this just sets the collProductI18ns collection to an empty array (like clearcollProductI18ns());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProductI18ns($overrideExisting = true)
+    {
+        if (null !== $this->collProductI18ns && !$overrideExisting) {
+            return;
+        }
+        $this->collProductI18ns = new ObjectCollection();
+        $this->collProductI18ns->setModel('\Gekosale\Plugin\Product\Model\ORM\ProductI18n');
+    }
+
+    /**
+     * Gets an array of ChildProductI18n objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildProduct is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return Collection|ChildProductI18n[] List of ChildProductI18n objects
+     * @throws PropelException
+     */
+    public function getProductI18ns($criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductI18nsPartial && !$this->isNew();
+        if (null === $this->collProductI18ns || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProductI18ns) {
+                // return empty collection
+                $this->initProductI18ns();
+            } else {
+                $collProductI18ns = ChildProductI18nQuery::create(null, $criteria)
+                    ->filterByProduct($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collProductI18nsPartial && count($collProductI18ns)) {
+                        $this->initProductI18ns(false);
+
+                        foreach ($collProductI18ns as $obj) {
+                            if (false == $this->collProductI18ns->contains($obj)) {
+                                $this->collProductI18ns->append($obj);
+                            }
+                        }
+
+                        $this->collProductI18nsPartial = true;
+                    }
+
+                    reset($collProductI18ns);
+
+                    return $collProductI18ns;
+                }
+
+                if ($partial && $this->collProductI18ns) {
+                    foreach ($this->collProductI18ns as $obj) {
+                        if ($obj->isNew()) {
+                            $collProductI18ns[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProductI18ns = $collProductI18ns;
+                $this->collProductI18nsPartial = false;
+            }
+        }
+
+        return $this->collProductI18ns;
+    }
+
+    /**
+     * Sets a collection of ProductI18n objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $productI18ns A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return   ChildProduct The current object (for fluent API support)
+     */
+    public function setProductI18ns(Collection $productI18ns, ConnectionInterface $con = null)
+    {
+        $productI18nsToDelete = $this->getProductI18ns(new Criteria(), $con)->diff($productI18ns);
+
+        
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->productI18nsScheduledForDeletion = clone $productI18nsToDelete;
+
+        foreach ($productI18nsToDelete as $productI18nRemoved) {
+            $productI18nRemoved->setProduct(null);
+        }
+
+        $this->collProductI18ns = null;
+        foreach ($productI18ns as $productI18n) {
+            $this->addProductI18n($productI18n);
+        }
+
+        $this->collProductI18ns = $productI18ns;
+        $this->collProductI18nsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProductI18n objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ProductI18n objects.
+     * @throws PropelException
+     */
+    public function countProductI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collProductI18nsPartial && !$this->isNew();
+        if (null === $this->collProductI18ns || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProductI18ns) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProductI18ns());
+            }
+
+            $query = ChildProductI18nQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProduct($this)
+                ->count($con);
+        }
+
+        return count($this->collProductI18ns);
+    }
+
+    /**
+     * Method called to associate a ChildProductI18n object to this object
+     * through the ChildProductI18n foreign key attribute.
+     *
+     * @param    ChildProductI18n $l ChildProductI18n
+     * @return   \Gekosale\Plugin\Product\Model\ORM\Product The current object (for fluent API support)
+     */
+    public function addProductI18n(ChildProductI18n $l)
+    {
+        if ($l && $locale = $l->getLocale()) {
+            $this->setLocale($locale);
+            $this->currentTranslations[$locale] = $l;
+        }
+        if ($this->collProductI18ns === null) {
+            $this->initProductI18ns();
+            $this->collProductI18nsPartial = true;
+        }
+
+        if (!in_array($l, $this->collProductI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProductI18n($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ProductI18n $productI18n The productI18n object to add.
+     */
+    protected function doAddProductI18n($productI18n)
+    {
+        $this->collProductI18ns[]= $productI18n;
+        $productI18n->setProduct($this);
+    }
+
+    /**
+     * @param  ProductI18n $productI18n The productI18n object to remove.
+     * @return ChildProduct The current object (for fluent API support)
+     */
+    public function removeProductI18n($productI18n)
+    {
+        if ($this->getProductI18ns()->contains($productI18n)) {
+            $this->collProductI18ns->remove($this->collProductI18ns->search($productI18n));
+            if (null === $this->productI18nsScheduledForDeletion) {
+                $this->productI18nsScheduledForDeletion = clone $this->collProductI18ns;
+                $this->productI18nsScheduledForDeletion->clear();
+            }
+            $this->productI18nsScheduledForDeletion[]= clone $productI18n;
+            $productI18n->setProduct(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -8087,6 +8520,8 @@ abstract class Product implements ActiveRecordInterface
         $this->hierarchy = null;
         $this->package_size = null;
         $this->disable_at_stock_enabled = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -8192,7 +8627,16 @@ abstract class Product implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collProductI18ns) {
+                foreach ($this->collProductI18ns as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
+
+        // i18n behavior
+        $this->currentLocale = 'en_US';
+        $this->currentTranslations = null;
 
         $this->collMissingCartProducts = null;
         $this->collOrderProducts = null;
@@ -8211,6 +8655,7 @@ abstract class Product implements ActiveRecordInterface
         $this->collUpsellsRelatedByRelatedProductId = null;
         $this->collProductTechnicalDataGroups = null;
         $this->collWishlists = null;
+        $this->collProductI18ns = null;
         $this->aAvailability = null;
         $this->aCurrencyRelatedByBuyCurrencyId = null;
         $this->aProducer = null;
@@ -8228,6 +8673,263 @@ abstract class Product implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(ProductTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // i18n behavior
+    
+    /**
+     * Sets the locale for translations
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     *
+     * @return    ChildProduct The current object (for fluent API support)
+     */
+    public function setLocale($locale = 'en_US')
+    {
+        $this->currentLocale = $locale;
+    
+        return $this;
+    }
+    
+    /**
+     * Gets the locale for translations
+     *
+     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
+     */
+    public function getLocale()
+    {
+        return $this->currentLocale;
+    }
+    
+    /**
+     * Returns the current translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProductI18n */
+    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!isset($this->currentTranslations[$locale])) {
+            if (null !== $this->collProductI18ns) {
+                foreach ($this->collProductI18ns as $translation) {
+                    if ($translation->getLocale() == $locale) {
+                        $this->currentTranslations[$locale] = $translation;
+    
+                        return $translation;
+                    }
+                }
+            }
+            if ($this->isNew()) {
+                $translation = new ChildProductI18n();
+                $translation->setLocale($locale);
+            } else {
+                $translation = ChildProductI18nQuery::create()
+                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                    ->findOneOrCreate($con);
+                $this->currentTranslations[$locale] = $translation;
+            }
+            $this->addProductI18n($translation);
+        }
+    
+        return $this->currentTranslations[$locale];
+    }
+    
+    /**
+     * Remove the translation for a given locale
+     *
+     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return    ChildProduct The current object (for fluent API support)
+     */
+    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
+    {
+        if (!$this->isNew()) {
+            ChildProductI18nQuery::create()
+                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
+                ->delete($con);
+        }
+        if (isset($this->currentTranslations[$locale])) {
+            unset($this->currentTranslations[$locale]);
+        }
+        foreach ($this->collProductI18ns as $key => $translation) {
+            if ($translation->getLocale() == $locale) {
+                unset($this->collProductI18ns[$key]);
+                break;
+            }
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * Returns the current translation
+     *
+     * @param     ConnectionInterface $con an optional connection object
+     *
+     * @return ChildProductI18n */
+    public function getCurrentTranslation(ConnectionInterface $con = null)
+    {
+        return $this->getTranslation($this->getLocale(), $con);
+    }
+    
+    
+        /**
+         * Get the [name] column value.
+         * 
+         * @return   string
+         */
+        public function getName()
+        {
+        return $this->getCurrentTranslation()->getName();
+    }
+    
+    
+        /**
+         * Set the value of [name] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setName($v)
+        {    $this->getCurrentTranslation()->setName($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [short_description] column value.
+         * 
+         * @return   string
+         */
+        public function getShortDescription()
+        {
+        return $this->getCurrentTranslation()->getShortDescription();
+    }
+    
+    
+        /**
+         * Set the value of [short_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setShortDescription($v)
+        {    $this->getCurrentTranslation()->setShortDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [description] column value.
+         * 
+         * @return   string
+         */
+        public function getDescription()
+        {
+        return $this->getCurrentTranslation()->getDescription();
+    }
+    
+    
+        /**
+         * Set the value of [description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setDescription($v)
+        {    $this->getCurrentTranslation()->setDescription($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_title] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaTitle()
+        {
+        return $this->getCurrentTranslation()->getMetaTitle();
+    }
+    
+    
+        /**
+         * Set the value of [meta_title] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setMetaTitle($v)
+        {    $this->getCurrentTranslation()->setMetaTitle($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_keyword] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaKeyword()
+        {
+        return $this->getCurrentTranslation()->getMetaKeyword();
+    }
+    
+    
+        /**
+         * Set the value of [meta_keyword] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setMetaKeyword($v)
+        {    $this->getCurrentTranslation()->setMetaKeyword($v);
+    
+        return $this;
+    }
+    
+    
+        /**
+         * Get the [meta_description] column value.
+         * 
+         * @return   string
+         */
+        public function getMetaDescription()
+        {
+        return $this->getCurrentTranslation()->getMetaDescription();
+    }
+    
+    
+        /**
+         * Set the value of [meta_description] column.
+         * 
+         * @param      string $v new value
+         * @return   \Gekosale\Plugin\Product\Model\ORM\ProductI18n The current object (for fluent API support)
+         */
+        public function setMetaDescription($v)
+        {    $this->getCurrentTranslation()->setMetaDescription($v);
+    
+        return $this;
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildProduct The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[ProductTableMap::COL_UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

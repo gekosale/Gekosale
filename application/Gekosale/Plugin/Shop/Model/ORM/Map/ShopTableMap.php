@@ -74,7 +74,7 @@ class ShopTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 27;
+    const NUM_COLUMNS = 28;
 
     /**
      * The number of lazy-loaded columns
@@ -84,7 +84,7 @@ class ShopTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 27;
+    const NUM_HYDRATE_COLUMNS = 28;
 
     /**
      * the column name for the ID field
@@ -95,11 +95,6 @@ class ShopTableMap extends TableMap
      * the column name for the URL field
      */
     const COL_URL = 'shop.URL';
-
-    /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'shop.NAME';
 
     /**
      * the column name for the COMPANY_ID field
@@ -222,9 +217,28 @@ class ShopTableMap extends TableMap
     const COL_ORDER_STATUS_GROUPS_ID = 'shop.ORDER_STATUS_GROUPS_ID';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'shop.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'shop.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -233,12 +247,12 @@ class ShopTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Url', 'Name', 'CompanyId', 'PeriodId', 'WwwRedirection', 'Taxes', 'PhotoId', 'Favicon', 'Offline', 'OfflineText', 'CartRedirect', 'MinimumOrderValue', 'ShowTax', 'EnableOpinions', 'EnableTags', 'CatalogMode', 'ForceLogin', 'EnableRss', 'InvoiceNumerationKind', 'InvoiceDefaultPaymentDue', 'ConfirmRegistration', 'EnableRegistration', 'CurrencyId', 'ContactId', 'DefaultVatId', 'OrderStatusGroupsId', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'url', 'name', 'companyId', 'periodId', 'wwwRedirection', 'taxes', 'photoId', 'favicon', 'offline', 'offlineText', 'cartRedirect', 'minimumOrderValue', 'showTax', 'enableOpinions', 'enableTags', 'catalogMode', 'forceLogin', 'enableRss', 'invoiceNumerationKind', 'invoiceDefaultPaymentDue', 'confirmRegistration', 'enableRegistration', 'currencyId', 'contactId', 'defaultVatId', 'orderStatusGroupsId', ),
-        self::TYPE_COLNAME       => array(ShopTableMap::COL_ID, ShopTableMap::COL_URL, ShopTableMap::COL_NAME, ShopTableMap::COL_COMPANY_ID, ShopTableMap::COL_PERIOD_ID, ShopTableMap::COL_WWW_REDIRECTION, ShopTableMap::COL_TAXES, ShopTableMap::COL_PHOTO_ID, ShopTableMap::COL_FAVICON, ShopTableMap::COL_OFFLINE, ShopTableMap::COL_OFFLINE_TEXT, ShopTableMap::COL_CART_REDIRECT, ShopTableMap::COL_MINIMUM_ORDER_VALUE, ShopTableMap::COL_SHOW_TAX, ShopTableMap::COL_ENABLE_OPINIONS, ShopTableMap::COL_ENABLE_TAGS, ShopTableMap::COL_CATALOG_MODE, ShopTableMap::COL_FORCE_LOGIN, ShopTableMap::COL_ENABLE_RSS, ShopTableMap::COL_INVOICE_NUMERATION_KIND, ShopTableMap::COL_INVOICE_DEFAULT_PAYMENT_DUE, ShopTableMap::COL_CONFIRM_REGISTRATION, ShopTableMap::COL_ENABLE_REGISTRATION, ShopTableMap::COL_CURRENCY_ID, ShopTableMap::COL_CONTACT_ID, ShopTableMap::COL_DEFAULT_VAT_ID, ShopTableMap::COL_ORDER_STATUS_GROUPS_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_URL', 'COL_NAME', 'COL_COMPANY_ID', 'COL_PERIOD_ID', 'COL_WWW_REDIRECTION', 'COL_TAXES', 'COL_PHOTO_ID', 'COL_FAVICON', 'COL_OFFLINE', 'COL_OFFLINE_TEXT', 'COL_CART_REDIRECT', 'COL_MINIMUM_ORDER_VALUE', 'COL_SHOW_TAX', 'COL_ENABLE_OPINIONS', 'COL_ENABLE_TAGS', 'COL_CATALOG_MODE', 'COL_FORCE_LOGIN', 'COL_ENABLE_RSS', 'COL_INVOICE_NUMERATION_KIND', 'COL_INVOICE_DEFAULT_PAYMENT_DUE', 'COL_CONFIRM_REGISTRATION', 'COL_ENABLE_REGISTRATION', 'COL_CURRENCY_ID', 'COL_CONTACT_ID', 'COL_DEFAULT_VAT_ID', 'COL_ORDER_STATUS_GROUPS_ID', ),
-        self::TYPE_FIELDNAME     => array('id', 'url', 'name', 'company_id', 'period_id', 'www_redirection', 'taxes', 'photo_id', 'favicon', 'offline', 'offline_text', 'cart_redirect', 'minimum_order_value', 'show_tax', 'enable_opinions', 'enable_tags', 'catalog_mode', 'force_login', 'enable_rss', 'invoice_numeration_kind', 'invoice_default_payment_due', 'confirm_registration', 'enable_registration', 'currency_id', 'contact_id', 'default_vat_id', 'order_status_groups_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
+        self::TYPE_PHPNAME       => array('Id', 'Url', 'CompanyId', 'PeriodId', 'WwwRedirection', 'Taxes', 'PhotoId', 'Favicon', 'Offline', 'OfflineText', 'CartRedirect', 'MinimumOrderValue', 'ShowTax', 'EnableOpinions', 'EnableTags', 'CatalogMode', 'ForceLogin', 'EnableRss', 'InvoiceNumerationKind', 'InvoiceDefaultPaymentDue', 'ConfirmRegistration', 'EnableRegistration', 'CurrencyId', 'ContactId', 'DefaultVatId', 'OrderStatusGroupsId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'url', 'companyId', 'periodId', 'wwwRedirection', 'taxes', 'photoId', 'favicon', 'offline', 'offlineText', 'cartRedirect', 'minimumOrderValue', 'showTax', 'enableOpinions', 'enableTags', 'catalogMode', 'forceLogin', 'enableRss', 'invoiceNumerationKind', 'invoiceDefaultPaymentDue', 'confirmRegistration', 'enableRegistration', 'currencyId', 'contactId', 'defaultVatId', 'orderStatusGroupsId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ShopTableMap::COL_ID, ShopTableMap::COL_URL, ShopTableMap::COL_COMPANY_ID, ShopTableMap::COL_PERIOD_ID, ShopTableMap::COL_WWW_REDIRECTION, ShopTableMap::COL_TAXES, ShopTableMap::COL_PHOTO_ID, ShopTableMap::COL_FAVICON, ShopTableMap::COL_OFFLINE, ShopTableMap::COL_OFFLINE_TEXT, ShopTableMap::COL_CART_REDIRECT, ShopTableMap::COL_MINIMUM_ORDER_VALUE, ShopTableMap::COL_SHOW_TAX, ShopTableMap::COL_ENABLE_OPINIONS, ShopTableMap::COL_ENABLE_TAGS, ShopTableMap::COL_CATALOG_MODE, ShopTableMap::COL_FORCE_LOGIN, ShopTableMap::COL_ENABLE_RSS, ShopTableMap::COL_INVOICE_NUMERATION_KIND, ShopTableMap::COL_INVOICE_DEFAULT_PAYMENT_DUE, ShopTableMap::COL_CONFIRM_REGISTRATION, ShopTableMap::COL_ENABLE_REGISTRATION, ShopTableMap::COL_CURRENCY_ID, ShopTableMap::COL_CONTACT_ID, ShopTableMap::COL_DEFAULT_VAT_ID, ShopTableMap::COL_ORDER_STATUS_GROUPS_ID, ShopTableMap::COL_CREATED_AT, ShopTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_URL', 'COL_COMPANY_ID', 'COL_PERIOD_ID', 'COL_WWW_REDIRECTION', 'COL_TAXES', 'COL_PHOTO_ID', 'COL_FAVICON', 'COL_OFFLINE', 'COL_OFFLINE_TEXT', 'COL_CART_REDIRECT', 'COL_MINIMUM_ORDER_VALUE', 'COL_SHOW_TAX', 'COL_ENABLE_OPINIONS', 'COL_ENABLE_TAGS', 'COL_CATALOG_MODE', 'COL_FORCE_LOGIN', 'COL_ENABLE_RSS', 'COL_INVOICE_NUMERATION_KIND', 'COL_INVOICE_DEFAULT_PAYMENT_DUE', 'COL_CONFIRM_REGISTRATION', 'COL_ENABLE_REGISTRATION', 'COL_CURRENCY_ID', 'COL_CONTACT_ID', 'COL_DEFAULT_VAT_ID', 'COL_ORDER_STATUS_GROUPS_ID', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'url', 'company_id', 'period_id', 'www_redirection', 'taxes', 'photo_id', 'favicon', 'offline', 'offline_text', 'cart_redirect', 'minimum_order_value', 'show_tax', 'enable_opinions', 'enable_tags', 'catalog_mode', 'force_login', 'enable_rss', 'invoice_numeration_kind', 'invoice_default_payment_due', 'confirm_registration', 'enable_registration', 'currency_id', 'contact_id', 'default_vat_id', 'order_status_groups_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, )
     );
 
     /**
@@ -248,12 +262,12 @@ class ShopTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Url' => 1, 'Name' => 2, 'CompanyId' => 3, 'PeriodId' => 4, 'WwwRedirection' => 5, 'Taxes' => 6, 'PhotoId' => 7, 'Favicon' => 8, 'Offline' => 9, 'OfflineText' => 10, 'CartRedirect' => 11, 'MinimumOrderValue' => 12, 'ShowTax' => 13, 'EnableOpinions' => 14, 'EnableTags' => 15, 'CatalogMode' => 16, 'ForceLogin' => 17, 'EnableRss' => 18, 'InvoiceNumerationKind' => 19, 'InvoiceDefaultPaymentDue' => 20, 'ConfirmRegistration' => 21, 'EnableRegistration' => 22, 'CurrencyId' => 23, 'ContactId' => 24, 'DefaultVatId' => 25, 'OrderStatusGroupsId' => 26, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'url' => 1, 'name' => 2, 'companyId' => 3, 'periodId' => 4, 'wwwRedirection' => 5, 'taxes' => 6, 'photoId' => 7, 'favicon' => 8, 'offline' => 9, 'offlineText' => 10, 'cartRedirect' => 11, 'minimumOrderValue' => 12, 'showTax' => 13, 'enableOpinions' => 14, 'enableTags' => 15, 'catalogMode' => 16, 'forceLogin' => 17, 'enableRss' => 18, 'invoiceNumerationKind' => 19, 'invoiceDefaultPaymentDue' => 20, 'confirmRegistration' => 21, 'enableRegistration' => 22, 'currencyId' => 23, 'contactId' => 24, 'defaultVatId' => 25, 'orderStatusGroupsId' => 26, ),
-        self::TYPE_COLNAME       => array(ShopTableMap::COL_ID => 0, ShopTableMap::COL_URL => 1, ShopTableMap::COL_NAME => 2, ShopTableMap::COL_COMPANY_ID => 3, ShopTableMap::COL_PERIOD_ID => 4, ShopTableMap::COL_WWW_REDIRECTION => 5, ShopTableMap::COL_TAXES => 6, ShopTableMap::COL_PHOTO_ID => 7, ShopTableMap::COL_FAVICON => 8, ShopTableMap::COL_OFFLINE => 9, ShopTableMap::COL_OFFLINE_TEXT => 10, ShopTableMap::COL_CART_REDIRECT => 11, ShopTableMap::COL_MINIMUM_ORDER_VALUE => 12, ShopTableMap::COL_SHOW_TAX => 13, ShopTableMap::COL_ENABLE_OPINIONS => 14, ShopTableMap::COL_ENABLE_TAGS => 15, ShopTableMap::COL_CATALOG_MODE => 16, ShopTableMap::COL_FORCE_LOGIN => 17, ShopTableMap::COL_ENABLE_RSS => 18, ShopTableMap::COL_INVOICE_NUMERATION_KIND => 19, ShopTableMap::COL_INVOICE_DEFAULT_PAYMENT_DUE => 20, ShopTableMap::COL_CONFIRM_REGISTRATION => 21, ShopTableMap::COL_ENABLE_REGISTRATION => 22, ShopTableMap::COL_CURRENCY_ID => 23, ShopTableMap::COL_CONTACT_ID => 24, ShopTableMap::COL_DEFAULT_VAT_ID => 25, ShopTableMap::COL_ORDER_STATUS_GROUPS_ID => 26, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_URL' => 1, 'COL_NAME' => 2, 'COL_COMPANY_ID' => 3, 'COL_PERIOD_ID' => 4, 'COL_WWW_REDIRECTION' => 5, 'COL_TAXES' => 6, 'COL_PHOTO_ID' => 7, 'COL_FAVICON' => 8, 'COL_OFFLINE' => 9, 'COL_OFFLINE_TEXT' => 10, 'COL_CART_REDIRECT' => 11, 'COL_MINIMUM_ORDER_VALUE' => 12, 'COL_SHOW_TAX' => 13, 'COL_ENABLE_OPINIONS' => 14, 'COL_ENABLE_TAGS' => 15, 'COL_CATALOG_MODE' => 16, 'COL_FORCE_LOGIN' => 17, 'COL_ENABLE_RSS' => 18, 'COL_INVOICE_NUMERATION_KIND' => 19, 'COL_INVOICE_DEFAULT_PAYMENT_DUE' => 20, 'COL_CONFIRM_REGISTRATION' => 21, 'COL_ENABLE_REGISTRATION' => 22, 'COL_CURRENCY_ID' => 23, 'COL_CONTACT_ID' => 24, 'COL_DEFAULT_VAT_ID' => 25, 'COL_ORDER_STATUS_GROUPS_ID' => 26, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'url' => 1, 'name' => 2, 'company_id' => 3, 'period_id' => 4, 'www_redirection' => 5, 'taxes' => 6, 'photo_id' => 7, 'favicon' => 8, 'offline' => 9, 'offline_text' => 10, 'cart_redirect' => 11, 'minimum_order_value' => 12, 'show_tax' => 13, 'enable_opinions' => 14, 'enable_tags' => 15, 'catalog_mode' => 16, 'force_login' => 17, 'enable_rss' => 18, 'invoice_numeration_kind' => 19, 'invoice_default_payment_due' => 20, 'confirm_registration' => 21, 'enable_registration' => 22, 'currency_id' => 23, 'contact_id' => 24, 'default_vat_id' => 25, 'order_status_groups_id' => 26, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Url' => 1, 'CompanyId' => 2, 'PeriodId' => 3, 'WwwRedirection' => 4, 'Taxes' => 5, 'PhotoId' => 6, 'Favicon' => 7, 'Offline' => 8, 'OfflineText' => 9, 'CartRedirect' => 10, 'MinimumOrderValue' => 11, 'ShowTax' => 12, 'EnableOpinions' => 13, 'EnableTags' => 14, 'CatalogMode' => 15, 'ForceLogin' => 16, 'EnableRss' => 17, 'InvoiceNumerationKind' => 18, 'InvoiceDefaultPaymentDue' => 19, 'ConfirmRegistration' => 20, 'EnableRegistration' => 21, 'CurrencyId' => 22, 'ContactId' => 23, 'DefaultVatId' => 24, 'OrderStatusGroupsId' => 25, 'CreatedAt' => 26, 'UpdatedAt' => 27, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'url' => 1, 'companyId' => 2, 'periodId' => 3, 'wwwRedirection' => 4, 'taxes' => 5, 'photoId' => 6, 'favicon' => 7, 'offline' => 8, 'offlineText' => 9, 'cartRedirect' => 10, 'minimumOrderValue' => 11, 'showTax' => 12, 'enableOpinions' => 13, 'enableTags' => 14, 'catalogMode' => 15, 'forceLogin' => 16, 'enableRss' => 17, 'invoiceNumerationKind' => 18, 'invoiceDefaultPaymentDue' => 19, 'confirmRegistration' => 20, 'enableRegistration' => 21, 'currencyId' => 22, 'contactId' => 23, 'defaultVatId' => 24, 'orderStatusGroupsId' => 25, 'createdAt' => 26, 'updatedAt' => 27, ),
+        self::TYPE_COLNAME       => array(ShopTableMap::COL_ID => 0, ShopTableMap::COL_URL => 1, ShopTableMap::COL_COMPANY_ID => 2, ShopTableMap::COL_PERIOD_ID => 3, ShopTableMap::COL_WWW_REDIRECTION => 4, ShopTableMap::COL_TAXES => 5, ShopTableMap::COL_PHOTO_ID => 6, ShopTableMap::COL_FAVICON => 7, ShopTableMap::COL_OFFLINE => 8, ShopTableMap::COL_OFFLINE_TEXT => 9, ShopTableMap::COL_CART_REDIRECT => 10, ShopTableMap::COL_MINIMUM_ORDER_VALUE => 11, ShopTableMap::COL_SHOW_TAX => 12, ShopTableMap::COL_ENABLE_OPINIONS => 13, ShopTableMap::COL_ENABLE_TAGS => 14, ShopTableMap::COL_CATALOG_MODE => 15, ShopTableMap::COL_FORCE_LOGIN => 16, ShopTableMap::COL_ENABLE_RSS => 17, ShopTableMap::COL_INVOICE_NUMERATION_KIND => 18, ShopTableMap::COL_INVOICE_DEFAULT_PAYMENT_DUE => 19, ShopTableMap::COL_CONFIRM_REGISTRATION => 20, ShopTableMap::COL_ENABLE_REGISTRATION => 21, ShopTableMap::COL_CURRENCY_ID => 22, ShopTableMap::COL_CONTACT_ID => 23, ShopTableMap::COL_DEFAULT_VAT_ID => 24, ShopTableMap::COL_ORDER_STATUS_GROUPS_ID => 25, ShopTableMap::COL_CREATED_AT => 26, ShopTableMap::COL_UPDATED_AT => 27, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_URL' => 1, 'COL_COMPANY_ID' => 2, 'COL_PERIOD_ID' => 3, 'COL_WWW_REDIRECTION' => 4, 'COL_TAXES' => 5, 'COL_PHOTO_ID' => 6, 'COL_FAVICON' => 7, 'COL_OFFLINE' => 8, 'COL_OFFLINE_TEXT' => 9, 'COL_CART_REDIRECT' => 10, 'COL_MINIMUM_ORDER_VALUE' => 11, 'COL_SHOW_TAX' => 12, 'COL_ENABLE_OPINIONS' => 13, 'COL_ENABLE_TAGS' => 14, 'COL_CATALOG_MODE' => 15, 'COL_FORCE_LOGIN' => 16, 'COL_ENABLE_RSS' => 17, 'COL_INVOICE_NUMERATION_KIND' => 18, 'COL_INVOICE_DEFAULT_PAYMENT_DUE' => 19, 'COL_CONFIRM_REGISTRATION' => 20, 'COL_ENABLE_REGISTRATION' => 21, 'COL_CURRENCY_ID' => 22, 'COL_CONTACT_ID' => 23, 'COL_DEFAULT_VAT_ID' => 24, 'COL_ORDER_STATUS_GROUPS_ID' => 25, 'COL_CREATED_AT' => 26, 'COL_UPDATED_AT' => 27, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'url' => 1, 'company_id' => 2, 'period_id' => 3, 'www_redirection' => 4, 'taxes' => 5, 'photo_id' => 6, 'favicon' => 7, 'offline' => 8, 'offline_text' => 9, 'cart_redirect' => 10, 'minimum_order_value' => 11, 'show_tax' => 12, 'enable_opinions' => 13, 'enable_tags' => 14, 'catalog_mode' => 15, 'force_login' => 16, 'enable_rss' => 17, 'invoice_numeration_kind' => 18, 'invoice_default_payment_due' => 19, 'confirm_registration' => 20, 'enable_registration' => 21, 'currency_id' => 22, 'contact_id' => 23, 'default_vat_id' => 24, 'order_status_groups_id' => 25, 'created_at' => 26, 'updated_at' => 27, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, )
     );
 
     /**
@@ -274,7 +288,6 @@ class ShopTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('URL', 'Url', 'VARCHAR', true, 255, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 64, null);
         $this->addForeignKey('COMPANY_ID', 'CompanyId', 'INTEGER', 'company', 'ID', true, 10, null);
         $this->addColumn('PERIOD_ID', 'PeriodId', 'INTEGER', false, 10, null);
         $this->addColumn('WWW_REDIRECTION', 'WwwRedirection', 'SMALLINT', false, 1, null);
@@ -299,6 +312,8 @@ class ShopTableMap extends TableMap
         $this->addForeignKey('CONTACT_ID', 'ContactId', 'INTEGER', 'contact', 'ID', false, null, null);
         $this->addForeignKey('DEFAULT_VAT_ID', 'DefaultVatId', 'INTEGER', 'vat', 'ID', false, 10, null);
         $this->addForeignKey('ORDER_STATUS_GROUPS_ID', 'OrderStatusGroupsId', 'INTEGER', 'order_status_groups', 'ID', false, 10, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -328,7 +343,22 @@ class ShopTableMap extends TableMap
         $this->addRelation('ProducerShop', '\\Gekosale\\Plugin\\Producer\\Model\\ORM\\ProducerShop', RelationMap::ONE_TO_MANY, array('id' => 'shop_id', ), 'CASCADE', null, 'ProducerShops');
         $this->addRelation('UserGroupShop', '\\Gekosale\\Plugin\\User\\Model\\ORM\\UserGroupShop', RelationMap::ONE_TO_MANY, array('id' => 'shop_id', ), 'CASCADE', null, 'UserGroupShops');
         $this->addRelation('Wishlist', '\\Gekosale\\Plugin\\Wishlist\\Model\\ORM\\Wishlist', RelationMap::ONE_TO_MANY, array('id' => 'shop_id', ), 'CASCADE', null, 'Wishlists');
+        $this->addRelation('ShopI18n', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\ShopI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'ShopI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, meta_title, meta_keyword, meta_description', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to shop     * by a foreign key with ON DELETE CASCADE
      */
@@ -352,6 +382,7 @@ class ShopTableMap extends TableMap
                 ProducerShopTableMap::clearInstancePool();
                 UserGroupShopTableMap::clearInstancePool();
                 WishlistTableMap::clearInstancePool();
+                ShopI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -494,7 +525,6 @@ class ShopTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(ShopTableMap::COL_ID);
             $criteria->addSelectColumn(ShopTableMap::COL_URL);
-            $criteria->addSelectColumn(ShopTableMap::COL_NAME);
             $criteria->addSelectColumn(ShopTableMap::COL_COMPANY_ID);
             $criteria->addSelectColumn(ShopTableMap::COL_PERIOD_ID);
             $criteria->addSelectColumn(ShopTableMap::COL_WWW_REDIRECTION);
@@ -519,10 +549,11 @@ class ShopTableMap extends TableMap
             $criteria->addSelectColumn(ShopTableMap::COL_CONTACT_ID);
             $criteria->addSelectColumn(ShopTableMap::COL_DEFAULT_VAT_ID);
             $criteria->addSelectColumn(ShopTableMap::COL_ORDER_STATUS_GROUPS_ID);
+            $criteria->addSelectColumn(ShopTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ShopTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.URL');
-            $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.COMPANY_ID');
             $criteria->addSelectColumn($alias . '.PERIOD_ID');
             $criteria->addSelectColumn($alias . '.WWW_REDIRECTION');
@@ -547,6 +578,8 @@ class ShopTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.CONTACT_ID');
             $criteria->addSelectColumn($alias . '.DEFAULT_VAT_ID');
             $criteria->addSelectColumn($alias . '.ORDER_STATUS_GROUPS_ID');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

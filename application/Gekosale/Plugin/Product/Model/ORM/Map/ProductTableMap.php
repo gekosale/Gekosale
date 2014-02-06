@@ -69,7 +69,7 @@ class ProductTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 30;
+    const NUM_COLUMNS = 32;
 
     /**
      * The number of lazy-loaded columns
@@ -79,7 +79,7 @@ class ProductTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 30;
+    const NUM_HYDRATE_COLUMNS = 32;
 
     /**
      * the column name for the ID field
@@ -232,9 +232,28 @@ class ProductTableMap extends TableMap
     const COL_DISABLE_AT_STOCK_ENABLED = 'product.DISABLE_AT_STOCK_ENABLED';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'product.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'product.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -243,12 +262,12 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'DelivelerCode', 'Ean', 'Barcode', 'BuyPrice', 'SellPrice', 'ProducerId', 'VatId', 'Stock', 'AddDate', 'Weight', 'BuyCurrencyId', 'SellCurrencyId', 'TechnicalDataSetId', 'TrackStock', 'Enable', 'Promotion', 'DiscountPrice', 'PromotionStart', 'PromotionEnd', 'Shoped', 'Width', 'Height', 'Deepth', 'UnitMeasureId', 'DisableAtStock', 'AvailabilityId', 'Hierarchy', 'PackageSize', 'DisableAtStockEnabled', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'delivelerCode', 'ean', 'barcode', 'buyPrice', 'sellPrice', 'producerId', 'vatId', 'stock', 'addDate', 'weight', 'buyCurrencyId', 'sellCurrencyId', 'technicalDataSetId', 'trackStock', 'enable', 'promotion', 'discountPrice', 'promotionStart', 'promotionEnd', 'shoped', 'width', 'height', 'deepth', 'unitMeasureId', 'disableAtStock', 'availabilityId', 'hierarchy', 'packageSize', 'disableAtStockEnabled', ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_DELIVELER_CODE, ProductTableMap::COL_EAN, ProductTableMap::COL_BARCODE, ProductTableMap::COL_BUY_PRICE, ProductTableMap::COL_SELL_PRICE, ProductTableMap::COL_PRODUCER_ID, ProductTableMap::COL_VAT_ID, ProductTableMap::COL_STOCK, ProductTableMap::COL_ADD_DATE, ProductTableMap::COL_WEIGHT, ProductTableMap::COL_BUY_CURRENCY_ID, ProductTableMap::COL_SELL_CURRENCY_ID, ProductTableMap::COL_TECHNICAL_DATA_SET_ID, ProductTableMap::COL_TRACK_STOCK, ProductTableMap::COL_ENABLE, ProductTableMap::COL_PROMOTION, ProductTableMap::COL_DISCOUNT_PRICE, ProductTableMap::COL_PROMOTION_START, ProductTableMap::COL_PROMOTION_END, ProductTableMap::COL_SHOPED, ProductTableMap::COL_WIDTH, ProductTableMap::COL_HEIGHT, ProductTableMap::COL_DEEPTH, ProductTableMap::COL_UNIT_MEASURE_ID, ProductTableMap::COL_DISABLE_AT_STOCK, ProductTableMap::COL_AVAILABILITY_ID, ProductTableMap::COL_HIERARCHY, ProductTableMap::COL_PACKAGE_SIZE, ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_DELIVELER_CODE', 'COL_EAN', 'COL_BARCODE', 'COL_BUY_PRICE', 'COL_SELL_PRICE', 'COL_PRODUCER_ID', 'COL_VAT_ID', 'COL_STOCK', 'COL_ADD_DATE', 'COL_WEIGHT', 'COL_BUY_CURRENCY_ID', 'COL_SELL_CURRENCY_ID', 'COL_TECHNICAL_DATA_SET_ID', 'COL_TRACK_STOCK', 'COL_ENABLE', 'COL_PROMOTION', 'COL_DISCOUNT_PRICE', 'COL_PROMOTION_START', 'COL_PROMOTION_END', 'COL_SHOPED', 'COL_WIDTH', 'COL_HEIGHT', 'COL_DEEPTH', 'COL_UNIT_MEASURE_ID', 'COL_DISABLE_AT_STOCK', 'COL_AVAILABILITY_ID', 'COL_HIERARCHY', 'COL_PACKAGE_SIZE', 'COL_DISABLE_AT_STOCK_ENABLED', ),
-        self::TYPE_FIELDNAME     => array('id', 'deliveler_code', 'ean', 'barcode', 'buy_price', 'sell_price', 'producer_id', 'vat_id', 'stock', 'add_date', 'weight', 'buy_currency_id', 'sell_currency_id', 'technical_data_set_id', 'track_stock', 'enable', 'promotion', 'discount_price', 'promotion_start', 'promotion_end', 'shoped', 'width', 'height', 'deepth', 'unit_measure_id', 'disable_at_stock', 'availability_id', 'hierarchy', 'package_size', 'disable_at_stock_enabled', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, )
+        self::TYPE_PHPNAME       => array('Id', 'DelivelerCode', 'Ean', 'Barcode', 'BuyPrice', 'SellPrice', 'ProducerId', 'VatId', 'Stock', 'AddDate', 'Weight', 'BuyCurrencyId', 'SellCurrencyId', 'TechnicalDataSetId', 'TrackStock', 'Enable', 'Promotion', 'DiscountPrice', 'PromotionStart', 'PromotionEnd', 'Shoped', 'Width', 'Height', 'Deepth', 'UnitMeasureId', 'DisableAtStock', 'AvailabilityId', 'Hierarchy', 'PackageSize', 'DisableAtStockEnabled', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'delivelerCode', 'ean', 'barcode', 'buyPrice', 'sellPrice', 'producerId', 'vatId', 'stock', 'addDate', 'weight', 'buyCurrencyId', 'sellCurrencyId', 'technicalDataSetId', 'trackStock', 'enable', 'promotion', 'discountPrice', 'promotionStart', 'promotionEnd', 'shoped', 'width', 'height', 'deepth', 'unitMeasureId', 'disableAtStock', 'availabilityId', 'hierarchy', 'packageSize', 'disableAtStockEnabled', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID, ProductTableMap::COL_DELIVELER_CODE, ProductTableMap::COL_EAN, ProductTableMap::COL_BARCODE, ProductTableMap::COL_BUY_PRICE, ProductTableMap::COL_SELL_PRICE, ProductTableMap::COL_PRODUCER_ID, ProductTableMap::COL_VAT_ID, ProductTableMap::COL_STOCK, ProductTableMap::COL_ADD_DATE, ProductTableMap::COL_WEIGHT, ProductTableMap::COL_BUY_CURRENCY_ID, ProductTableMap::COL_SELL_CURRENCY_ID, ProductTableMap::COL_TECHNICAL_DATA_SET_ID, ProductTableMap::COL_TRACK_STOCK, ProductTableMap::COL_ENABLE, ProductTableMap::COL_PROMOTION, ProductTableMap::COL_DISCOUNT_PRICE, ProductTableMap::COL_PROMOTION_START, ProductTableMap::COL_PROMOTION_END, ProductTableMap::COL_SHOPED, ProductTableMap::COL_WIDTH, ProductTableMap::COL_HEIGHT, ProductTableMap::COL_DEEPTH, ProductTableMap::COL_UNIT_MEASURE_ID, ProductTableMap::COL_DISABLE_AT_STOCK, ProductTableMap::COL_AVAILABILITY_ID, ProductTableMap::COL_HIERARCHY, ProductTableMap::COL_PACKAGE_SIZE, ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED, ProductTableMap::COL_CREATED_AT, ProductTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_DELIVELER_CODE', 'COL_EAN', 'COL_BARCODE', 'COL_BUY_PRICE', 'COL_SELL_PRICE', 'COL_PRODUCER_ID', 'COL_VAT_ID', 'COL_STOCK', 'COL_ADD_DATE', 'COL_WEIGHT', 'COL_BUY_CURRENCY_ID', 'COL_SELL_CURRENCY_ID', 'COL_TECHNICAL_DATA_SET_ID', 'COL_TRACK_STOCK', 'COL_ENABLE', 'COL_PROMOTION', 'COL_DISCOUNT_PRICE', 'COL_PROMOTION_START', 'COL_PROMOTION_END', 'COL_SHOPED', 'COL_WIDTH', 'COL_HEIGHT', 'COL_DEEPTH', 'COL_UNIT_MEASURE_ID', 'COL_DISABLE_AT_STOCK', 'COL_AVAILABILITY_ID', 'COL_HIERARCHY', 'COL_PACKAGE_SIZE', 'COL_DISABLE_AT_STOCK_ENABLED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'deliveler_code', 'ean', 'barcode', 'buy_price', 'sell_price', 'producer_id', 'vat_id', 'stock', 'add_date', 'weight', 'buy_currency_id', 'sell_currency_id', 'technical_data_set_id', 'track_stock', 'enable', 'promotion', 'discount_price', 'promotion_start', 'promotion_end', 'shoped', 'width', 'height', 'deepth', 'unit_measure_id', 'disable_at_stock', 'availability_id', 'hierarchy', 'package_size', 'disable_at_stock_enabled', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, )
     );
 
     /**
@@ -258,12 +277,12 @@ class ProductTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'DelivelerCode' => 1, 'Ean' => 2, 'Barcode' => 3, 'BuyPrice' => 4, 'SellPrice' => 5, 'ProducerId' => 6, 'VatId' => 7, 'Stock' => 8, 'AddDate' => 9, 'Weight' => 10, 'BuyCurrencyId' => 11, 'SellCurrencyId' => 12, 'TechnicalDataSetId' => 13, 'TrackStock' => 14, 'Enable' => 15, 'Promotion' => 16, 'DiscountPrice' => 17, 'PromotionStart' => 18, 'PromotionEnd' => 19, 'Shoped' => 20, 'Width' => 21, 'Height' => 22, 'Deepth' => 23, 'UnitMeasureId' => 24, 'DisableAtStock' => 25, 'AvailabilityId' => 26, 'Hierarchy' => 27, 'PackageSize' => 28, 'DisableAtStockEnabled' => 29, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'delivelerCode' => 1, 'ean' => 2, 'barcode' => 3, 'buyPrice' => 4, 'sellPrice' => 5, 'producerId' => 6, 'vatId' => 7, 'stock' => 8, 'addDate' => 9, 'weight' => 10, 'buyCurrencyId' => 11, 'sellCurrencyId' => 12, 'technicalDataSetId' => 13, 'trackStock' => 14, 'enable' => 15, 'promotion' => 16, 'discountPrice' => 17, 'promotionStart' => 18, 'promotionEnd' => 19, 'shoped' => 20, 'width' => 21, 'height' => 22, 'deepth' => 23, 'unitMeasureId' => 24, 'disableAtStock' => 25, 'availabilityId' => 26, 'hierarchy' => 27, 'packageSize' => 28, 'disableAtStockEnabled' => 29, ),
-        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_DELIVELER_CODE => 1, ProductTableMap::COL_EAN => 2, ProductTableMap::COL_BARCODE => 3, ProductTableMap::COL_BUY_PRICE => 4, ProductTableMap::COL_SELL_PRICE => 5, ProductTableMap::COL_PRODUCER_ID => 6, ProductTableMap::COL_VAT_ID => 7, ProductTableMap::COL_STOCK => 8, ProductTableMap::COL_ADD_DATE => 9, ProductTableMap::COL_WEIGHT => 10, ProductTableMap::COL_BUY_CURRENCY_ID => 11, ProductTableMap::COL_SELL_CURRENCY_ID => 12, ProductTableMap::COL_TECHNICAL_DATA_SET_ID => 13, ProductTableMap::COL_TRACK_STOCK => 14, ProductTableMap::COL_ENABLE => 15, ProductTableMap::COL_PROMOTION => 16, ProductTableMap::COL_DISCOUNT_PRICE => 17, ProductTableMap::COL_PROMOTION_START => 18, ProductTableMap::COL_PROMOTION_END => 19, ProductTableMap::COL_SHOPED => 20, ProductTableMap::COL_WIDTH => 21, ProductTableMap::COL_HEIGHT => 22, ProductTableMap::COL_DEEPTH => 23, ProductTableMap::COL_UNIT_MEASURE_ID => 24, ProductTableMap::COL_DISABLE_AT_STOCK => 25, ProductTableMap::COL_AVAILABILITY_ID => 26, ProductTableMap::COL_HIERARCHY => 27, ProductTableMap::COL_PACKAGE_SIZE => 28, ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED => 29, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_DELIVELER_CODE' => 1, 'COL_EAN' => 2, 'COL_BARCODE' => 3, 'COL_BUY_PRICE' => 4, 'COL_SELL_PRICE' => 5, 'COL_PRODUCER_ID' => 6, 'COL_VAT_ID' => 7, 'COL_STOCK' => 8, 'COL_ADD_DATE' => 9, 'COL_WEIGHT' => 10, 'COL_BUY_CURRENCY_ID' => 11, 'COL_SELL_CURRENCY_ID' => 12, 'COL_TECHNICAL_DATA_SET_ID' => 13, 'COL_TRACK_STOCK' => 14, 'COL_ENABLE' => 15, 'COL_PROMOTION' => 16, 'COL_DISCOUNT_PRICE' => 17, 'COL_PROMOTION_START' => 18, 'COL_PROMOTION_END' => 19, 'COL_SHOPED' => 20, 'COL_WIDTH' => 21, 'COL_HEIGHT' => 22, 'COL_DEEPTH' => 23, 'COL_UNIT_MEASURE_ID' => 24, 'COL_DISABLE_AT_STOCK' => 25, 'COL_AVAILABILITY_ID' => 26, 'COL_HIERARCHY' => 27, 'COL_PACKAGE_SIZE' => 28, 'COL_DISABLE_AT_STOCK_ENABLED' => 29, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'deliveler_code' => 1, 'ean' => 2, 'barcode' => 3, 'buy_price' => 4, 'sell_price' => 5, 'producer_id' => 6, 'vat_id' => 7, 'stock' => 8, 'add_date' => 9, 'weight' => 10, 'buy_currency_id' => 11, 'sell_currency_id' => 12, 'technical_data_set_id' => 13, 'track_stock' => 14, 'enable' => 15, 'promotion' => 16, 'discount_price' => 17, 'promotion_start' => 18, 'promotion_end' => 19, 'shoped' => 20, 'width' => 21, 'height' => 22, 'deepth' => 23, 'unit_measure_id' => 24, 'disable_at_stock' => 25, 'availability_id' => 26, 'hierarchy' => 27, 'package_size' => 28, 'disable_at_stock_enabled' => 29, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'DelivelerCode' => 1, 'Ean' => 2, 'Barcode' => 3, 'BuyPrice' => 4, 'SellPrice' => 5, 'ProducerId' => 6, 'VatId' => 7, 'Stock' => 8, 'AddDate' => 9, 'Weight' => 10, 'BuyCurrencyId' => 11, 'SellCurrencyId' => 12, 'TechnicalDataSetId' => 13, 'TrackStock' => 14, 'Enable' => 15, 'Promotion' => 16, 'DiscountPrice' => 17, 'PromotionStart' => 18, 'PromotionEnd' => 19, 'Shoped' => 20, 'Width' => 21, 'Height' => 22, 'Deepth' => 23, 'UnitMeasureId' => 24, 'DisableAtStock' => 25, 'AvailabilityId' => 26, 'Hierarchy' => 27, 'PackageSize' => 28, 'DisableAtStockEnabled' => 29, 'CreatedAt' => 30, 'UpdatedAt' => 31, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'delivelerCode' => 1, 'ean' => 2, 'barcode' => 3, 'buyPrice' => 4, 'sellPrice' => 5, 'producerId' => 6, 'vatId' => 7, 'stock' => 8, 'addDate' => 9, 'weight' => 10, 'buyCurrencyId' => 11, 'sellCurrencyId' => 12, 'technicalDataSetId' => 13, 'trackStock' => 14, 'enable' => 15, 'promotion' => 16, 'discountPrice' => 17, 'promotionStart' => 18, 'promotionEnd' => 19, 'shoped' => 20, 'width' => 21, 'height' => 22, 'deepth' => 23, 'unitMeasureId' => 24, 'disableAtStock' => 25, 'availabilityId' => 26, 'hierarchy' => 27, 'packageSize' => 28, 'disableAtStockEnabled' => 29, 'createdAt' => 30, 'updatedAt' => 31, ),
+        self::TYPE_COLNAME       => array(ProductTableMap::COL_ID => 0, ProductTableMap::COL_DELIVELER_CODE => 1, ProductTableMap::COL_EAN => 2, ProductTableMap::COL_BARCODE => 3, ProductTableMap::COL_BUY_PRICE => 4, ProductTableMap::COL_SELL_PRICE => 5, ProductTableMap::COL_PRODUCER_ID => 6, ProductTableMap::COL_VAT_ID => 7, ProductTableMap::COL_STOCK => 8, ProductTableMap::COL_ADD_DATE => 9, ProductTableMap::COL_WEIGHT => 10, ProductTableMap::COL_BUY_CURRENCY_ID => 11, ProductTableMap::COL_SELL_CURRENCY_ID => 12, ProductTableMap::COL_TECHNICAL_DATA_SET_ID => 13, ProductTableMap::COL_TRACK_STOCK => 14, ProductTableMap::COL_ENABLE => 15, ProductTableMap::COL_PROMOTION => 16, ProductTableMap::COL_DISCOUNT_PRICE => 17, ProductTableMap::COL_PROMOTION_START => 18, ProductTableMap::COL_PROMOTION_END => 19, ProductTableMap::COL_SHOPED => 20, ProductTableMap::COL_WIDTH => 21, ProductTableMap::COL_HEIGHT => 22, ProductTableMap::COL_DEEPTH => 23, ProductTableMap::COL_UNIT_MEASURE_ID => 24, ProductTableMap::COL_DISABLE_AT_STOCK => 25, ProductTableMap::COL_AVAILABILITY_ID => 26, ProductTableMap::COL_HIERARCHY => 27, ProductTableMap::COL_PACKAGE_SIZE => 28, ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED => 29, ProductTableMap::COL_CREATED_AT => 30, ProductTableMap::COL_UPDATED_AT => 31, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_DELIVELER_CODE' => 1, 'COL_EAN' => 2, 'COL_BARCODE' => 3, 'COL_BUY_PRICE' => 4, 'COL_SELL_PRICE' => 5, 'COL_PRODUCER_ID' => 6, 'COL_VAT_ID' => 7, 'COL_STOCK' => 8, 'COL_ADD_DATE' => 9, 'COL_WEIGHT' => 10, 'COL_BUY_CURRENCY_ID' => 11, 'COL_SELL_CURRENCY_ID' => 12, 'COL_TECHNICAL_DATA_SET_ID' => 13, 'COL_TRACK_STOCK' => 14, 'COL_ENABLE' => 15, 'COL_PROMOTION' => 16, 'COL_DISCOUNT_PRICE' => 17, 'COL_PROMOTION_START' => 18, 'COL_PROMOTION_END' => 19, 'COL_SHOPED' => 20, 'COL_WIDTH' => 21, 'COL_HEIGHT' => 22, 'COL_DEEPTH' => 23, 'COL_UNIT_MEASURE_ID' => 24, 'COL_DISABLE_AT_STOCK' => 25, 'COL_AVAILABILITY_ID' => 26, 'COL_HIERARCHY' => 27, 'COL_PACKAGE_SIZE' => 28, 'COL_DISABLE_AT_STOCK_ENABLED' => 29, 'COL_CREATED_AT' => 30, 'COL_UPDATED_AT' => 31, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'deliveler_code' => 1, 'ean' => 2, 'barcode' => 3, 'buy_price' => 4, 'sell_price' => 5, 'producer_id' => 6, 'vat_id' => 7, 'stock' => 8, 'add_date' => 9, 'weight' => 10, 'buy_currency_id' => 11, 'sell_currency_id' => 12, 'technical_data_set_id' => 13, 'track_stock' => 14, 'enable' => 15, 'promotion' => 16, 'discount_price' => 17, 'promotion_start' => 18, 'promotion_end' => 19, 'shoped' => 20, 'width' => 21, 'height' => 22, 'deepth' => 23, 'unit_measure_id' => 24, 'disable_at_stock' => 25, 'availability_id' => 26, 'hierarchy' => 27, 'package_size' => 28, 'disable_at_stock_enabled' => 29, 'created_at' => 30, 'updated_at' => 31, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, )
     );
 
     /**
@@ -312,6 +331,8 @@ class ProductTableMap extends TableMap
         $this->addColumn('HIERARCHY', 'Hierarchy', 'INTEGER', true, null, 0);
         $this->addColumn('PACKAGE_SIZE', 'PackageSize', 'DECIMAL', true, 15, 1);
         $this->addColumn('DISABLE_AT_STOCK_ENABLED', 'DisableAtStockEnabled', 'INTEGER', true, null, 0);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -343,7 +364,22 @@ class ProductTableMap extends TableMap
         $this->addRelation('UpsellRelatedByRelatedProductId', '\\Gekosale\\Plugin\\Upsell\\Model\\ORM\\Upsell', RelationMap::ONE_TO_MANY, array('id' => 'related_product_id', ), 'CASCADE', null, 'UpsellsRelatedByRelatedProductId');
         $this->addRelation('ProductTechnicalDataGroup', '\\Gekosale\\Plugin\\TechnicalData\\Model\\ORM\\ProductTechnicalDataGroup', RelationMap::ONE_TO_MANY, array('id' => 'product_id', ), 'CASCADE', 'CASCADE', 'ProductTechnicalDataGroups');
         $this->addRelation('Wishlist', '\\Gekosale\\Plugin\\Wishlist\\Model\\ORM\\Wishlist', RelationMap::ONE_TO_MANY, array('id' => 'product_id', ), 'CASCADE', null, 'Wishlists');
+        $this->addRelation('ProductI18n', '\\Gekosale\\Plugin\\Product\\Model\\ORM\\ProductI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'ProductI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name, short_description, description, meta_title, meta_keyword, meta_description', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to product     * by a foreign key with ON DELETE CASCADE
      */
@@ -365,6 +401,7 @@ class ProductTableMap extends TableMap
                 UpsellTableMap::clearInstancePool();
                 ProductTechnicalDataGroupTableMap::clearInstancePool();
                 WishlistTableMap::clearInstancePool();
+                ProductI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -535,6 +572,8 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn(ProductTableMap::COL_HIERARCHY);
             $criteria->addSelectColumn(ProductTableMap::COL_PACKAGE_SIZE);
             $criteria->addSelectColumn(ProductTableMap::COL_DISABLE_AT_STOCK_ENABLED);
+            $criteria->addSelectColumn(ProductTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProductTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.DELIVELER_CODE');
@@ -566,6 +605,8 @@ class ProductTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.HIERARCHY');
             $criteria->addSelectColumn($alias . '.PACKAGE_SIZE');
             $criteria->addSelectColumn($alias . '.DISABLE_AT_STOCK_ENABLED');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

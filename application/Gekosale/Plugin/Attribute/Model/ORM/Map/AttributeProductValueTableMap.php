@@ -58,7 +58,7 @@ class AttributeProductValueTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class AttributeProductValueTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the ID field
@@ -76,19 +76,33 @@ class AttributeProductValueTableMap extends TableMap
     const COL_ID = 'attribute_product_value.ID';
 
     /**
-     * the column name for the NAME field
-     */
-    const COL_NAME = 'attribute_product_value.NAME';
-
-    /**
      * the column name for the ATTRIBUTE_PRODUCT_ID field
      */
     const COL_ATTRIBUTE_PRODUCT_ID = 'attribute_product_value.ATTRIBUTE_PRODUCT_ID';
 
     /**
+     * the column name for the CREATED_AT field
+     */
+    const COL_CREATED_AT = 'attribute_product_value.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const COL_UPDATED_AT = 'attribute_product_value.UPDATED_AT';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
+
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * holds an array of fieldnames
@@ -97,12 +111,12 @@ class AttributeProductValueTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'AttributeProductId', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'name', 'attributeProductId', ),
-        self::TYPE_COLNAME       => array(AttributeProductValueTableMap::COL_ID, AttributeProductValueTableMap::COL_NAME, AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_ATTRIBUTE_PRODUCT_ID', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'attribute_product_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'AttributeProductId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'attributeProductId', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(AttributeProductValueTableMap::COL_ID, AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID, AttributeProductValueTableMap::COL_CREATED_AT, AttributeProductValueTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_ATTRIBUTE_PRODUCT_ID', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'attribute_product_id', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,12 +126,12 @@ class AttributeProductValueTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'AttributeProductId' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'attributeProductId' => 2, ),
-        self::TYPE_COLNAME       => array(AttributeProductValueTableMap::COL_ID => 0, AttributeProductValueTableMap::COL_NAME => 1, AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_ATTRIBUTE_PRODUCT_ID' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'attribute_product_id' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'AttributeProductId' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'attributeProductId' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
+        self::TYPE_COLNAME       => array(AttributeProductValueTableMap::COL_ID => 0, AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID => 1, AttributeProductValueTableMap::COL_CREATED_AT => 2, AttributeProductValueTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_ATTRIBUTE_PRODUCT_ID' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'attribute_product_id' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -137,8 +151,9 @@ class AttributeProductValueTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
         $this->addForeignKey('ATTRIBUTE_PRODUCT_ID', 'AttributeProductId', 'INTEGER', 'attribute_product', 'ID', true, 10, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -148,7 +163,22 @@ class AttributeProductValueTableMap extends TableMap
     {
         $this->addRelation('AttributeProduct', '\\Gekosale\\Plugin\\Attribute\\Model\\ORM\\AttributeProduct', RelationMap::MANY_TO_ONE, array('attribute_product_id' => 'id', ), 'CASCADE', null);
         $this->addRelation('ProductAttributeValueSet', '\\Gekosale\\Plugin\\Attribute\\Model\\ORM\\ProductAttributeValueSet', RelationMap::ONE_TO_MANY, array('id' => 'attribute_product_value_id', ), 'CASCADE', null, 'ProductAttributeValueSets');
+        $this->addRelation('AttributeProductValueI18n', '\\Gekosale\\Plugin\\Attribute\\Model\\ORM\\AttributeProductValueI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'AttributeProductValueI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to attribute_product_value     * by a foreign key with ON DELETE CASCADE
      */
@@ -157,6 +187,7 @@ class AttributeProductValueTableMap extends TableMap
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 ProductAttributeValueSetTableMap::clearInstancePool();
+                AttributeProductValueI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -298,12 +329,14 @@ class AttributeProductValueTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(AttributeProductValueTableMap::COL_ID);
-            $criteria->addSelectColumn(AttributeProductValueTableMap::COL_NAME);
             $criteria->addSelectColumn(AttributeProductValueTableMap::COL_ATTRIBUTE_PRODUCT_ID);
+            $criteria->addSelectColumn(AttributeProductValueTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(AttributeProductValueTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.ATTRIBUTE_PRODUCT_ID');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 

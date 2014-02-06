@@ -96,6 +96,15 @@ class VatTableMap extends TableMap
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
+    // i18n behavior
+    
+    /**
+     * The default locale to use for translations.
+     *
+     * @var string
+     */
+    const DEFAULT_LOCALE = 'en_US';
+
     /**
      * holds an array of fieldnames
      *
@@ -155,7 +164,22 @@ class VatTableMap extends TableMap
     {
         $this->addRelation('Product', '\\Gekosale\\Plugin\\Product\\Model\\ORM\\Product', RelationMap::ONE_TO_MANY, array('id' => 'vat_id', ), null, null, 'Products');
         $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::ONE_TO_MANY, array('id' => 'default_vat_id', ), 'SET NULL', null, 'Shops');
+        $this->addRelation('VatI18n', '\\Gekosale\\Plugin\\Vat\\Model\\ORM\\VatI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'VatI18ns');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to vat     * by a foreign key with ON DELETE CASCADE
      */
@@ -164,6 +188,7 @@ class VatTableMap extends TableMap
         // Invalidate objects in ".$this->getClassNameFromBuilder($joinedTableTableMapBuilder)." instance pool,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 ShopTableMap::clearInstancePool();
+                VatI18nTableMap::clearInstancePool();
             }
 
     /**
