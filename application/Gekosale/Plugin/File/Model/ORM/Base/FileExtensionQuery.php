@@ -20,11 +20,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildFileExtensionQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildFileExtensionQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildFileExtensionQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
+ * @method     ChildFileExtensionQuery orderByIsActive($order = Criteria::ASC) Order by the active column
  *
  * @method     ChildFileExtensionQuery groupById() Group by the id column
  * @method     ChildFileExtensionQuery groupByName() Group by the name column
- * @method     ChildFileExtensionQuery groupByIsActive() Group by the is_active column
+ * @method     ChildFileExtensionQuery groupByIsActive() Group by the active column
  *
  * @method     ChildFileExtensionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildFileExtensionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -35,11 +35,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildFileExtension findOneById(int $id) Return the first ChildFileExtension filtered by the id column
  * @method     ChildFileExtension findOneByName(string $name) Return the first ChildFileExtension filtered by the name column
- * @method     ChildFileExtension findOneByIsActive(int $is_active) Return the first ChildFileExtension filtered by the is_active column
+ * @method     ChildFileExtension findOneByIsActive(int $active) Return the first ChildFileExtension filtered by the active column
  *
  * @method     array findById(int $id) Return ChildFileExtension objects filtered by the id column
  * @method     array findByName(string $name) Return ChildFileExtension objects filtered by the name column
- * @method     array findByIsActive(int $is_active) Return ChildFileExtension objects filtered by the is_active column
+ * @method     array findByIsActive(int $active) Return ChildFileExtension objects filtered by the active column
  *
  */
 abstract class FileExtensionQuery extends ModelCriteria
@@ -128,7 +128,7 @@ abstract class FileExtensionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, NAME, IS_ACTIVE FROM file_extension WHERE ID = :p0';
+        $sql = 'SELECT ID, NAME, ACTIVE FROM file_extension WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -288,13 +288,13 @@ abstract class FileExtensionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_active column
+     * Filter the query on the active column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsActive(1234); // WHERE is_active = 1234
-     * $query->filterByIsActive(array(12, 34)); // WHERE is_active IN (12, 34)
-     * $query->filterByIsActive(array('min' => 12)); // WHERE is_active > 12
+     * $query->filterByIsActive(1234); // WHERE active = 1234
+     * $query->filterByIsActive(array(12, 34)); // WHERE active IN (12, 34)
+     * $query->filterByIsActive(array('min' => 12)); // WHERE active > 12
      * </code>
      *
      * @param     mixed $isActive The value to use as filter.
@@ -310,11 +310,11 @@ abstract class FileExtensionQuery extends ModelCriteria
         if (is_array($isActive)) {
             $useMinMax = false;
             if (isset($isActive['min'])) {
-                $this->addUsingAlias(FileExtensionTableMap::COL_IS_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(FileExtensionTableMap::COL_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isActive['max'])) {
-                $this->addUsingAlias(FileExtensionTableMap::COL_IS_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(FileExtensionTableMap::COL_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -325,7 +325,7 @@ abstract class FileExtensionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(FileExtensionTableMap::COL_IS_ACTIVE, $isActive, $comparison);
+        return $this->addUsingAlias(FileExtensionTableMap::COL_ACTIVE, $isActive, $comparison);
     }
 
     /**

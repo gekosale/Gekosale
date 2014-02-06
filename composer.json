@@ -31,9 +31,10 @@
         "symfony/twig-bridge": "2.4.x-dev",
         "kriswallsmith/assetic": "v1.1.2",
         "twig/extensions": "1.0.x-dev",
-        "propel/propel": "dev-master",
+        "propel/propel": "2.0.x-dev",
         "doctrine/common": "*",
-        "apigen/apigen": "2.8.0"
+        "apigen/apigen": "2.8.0",
+        "swiftmailer/swiftmailer": "5.1.*@dev"
     },
     "autoload": {
         "psr-0": {

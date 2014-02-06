@@ -68,17 +68,17 @@ abstract class Blog implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the is_published field.
+     * The value for the published field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_published;
+    protected $published;
 
     /**
-     * The value for the is_featured field.
+     * The value for the featured field.
      * @var        int
      */
-    protected $is_featured;
+    protected $featured;
 
     /**
      * The value for the start_date field.
@@ -170,7 +170,7 @@ abstract class Blog implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_published = 1;
+        $this->published = 1;
     }
 
     /**
@@ -445,25 +445,25 @@ abstract class Blog implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_published] column value.
+     * Get the [published] column value.
      * 
      * @return   int
      */
     public function getIsPublished()
     {
 
-        return $this->is_published;
+        return $this->published;
     }
 
     /**
-     * Get the [is_featured] column value.
+     * Get the [featured] column value.
      * 
      * @return   int
      */
     public function getIsFeatured()
     {
 
-        return $this->is_featured;
+        return $this->featured;
     }
 
     /**
@@ -568,7 +568,7 @@ abstract class Blog implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [is_published] column.
+     * Set the value of [published] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Blog\Model\ORM\Blog The current object (for fluent API support)
@@ -579,9 +579,9 @@ abstract class Blog implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_published !== $v) {
-            $this->is_published = $v;
-            $this->modifiedColumns[BlogTableMap::COL_IS_PUBLISHED] = true;
+        if ($this->published !== $v) {
+            $this->published = $v;
+            $this->modifiedColumns[BlogTableMap::COL_PUBLISHED] = true;
         }
 
 
@@ -589,7 +589,7 @@ abstract class Blog implements ActiveRecordInterface
     } // setIsPublished()
 
     /**
-     * Set the value of [is_featured] column.
+     * Set the value of [featured] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Blog\Model\ORM\Blog The current object (for fluent API support)
@@ -600,9 +600,9 @@ abstract class Blog implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_featured !== $v) {
-            $this->is_featured = $v;
-            $this->modifiedColumns[BlogTableMap::COL_IS_FEATURED] = true;
+        if ($this->featured !== $v) {
+            $this->featured = $v;
+            $this->modifiedColumns[BlogTableMap::COL_FEATURED] = true;
         }
 
 
@@ -703,7 +703,7 @@ abstract class Blog implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_published !== 1) {
+            if ($this->published !== 1) {
                 return false;
             }
 
@@ -738,10 +738,10 @@ abstract class Blog implements ActiveRecordInterface
             $this->id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BlogTableMap::translateFieldName('IsPublished', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_published = (null !== $col) ? (int) $col : null;
+            $this->published = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BlogTableMap::translateFieldName('IsFeatured', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_featured = (null !== $col) ? (int) $col : null;
+            $this->featured = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BlogTableMap::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -1054,11 +1054,11 @@ abstract class Blog implements ActiveRecordInterface
         if ($this->isColumnModified(BlogTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(BlogTableMap::COL_IS_PUBLISHED)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_PUBLISHED';
+        if ($this->isColumnModified(BlogTableMap::COL_PUBLISHED)) {
+            $modifiedColumns[':p' . $index++]  = 'PUBLISHED';
         }
-        if ($this->isColumnModified(BlogTableMap::COL_IS_FEATURED)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_FEATURED';
+        if ($this->isColumnModified(BlogTableMap::COL_FEATURED)) {
+            $modifiedColumns[':p' . $index++]  = 'FEATURED';
         }
         if ($this->isColumnModified(BlogTableMap::COL_START_DATE)) {
             $modifiedColumns[':p' . $index++]  = 'START_DATE';
@@ -1086,11 +1086,11 @@ abstract class Blog implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'IS_PUBLISHED':                        
-                        $stmt->bindValue($identifier, $this->is_published, PDO::PARAM_INT);
+                    case 'PUBLISHED':                        
+                        $stmt->bindValue($identifier, $this->published, PDO::PARAM_INT);
                         break;
-                    case 'IS_FEATURED':                        
-                        $stmt->bindValue($identifier, $this->is_featured, PDO::PARAM_INT);
+                    case 'FEATURED':                        
+                        $stmt->bindValue($identifier, $this->featured, PDO::PARAM_INT);
                         break;
                     case 'START_DATE':                        
                         $stmt->bindValue($identifier, $this->start_date ? $this->start_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1337,8 +1337,8 @@ abstract class Blog implements ActiveRecordInterface
         $criteria = new Criteria(BlogTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(BlogTableMap::COL_ID)) $criteria->add(BlogTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(BlogTableMap::COL_IS_PUBLISHED)) $criteria->add(BlogTableMap::COL_IS_PUBLISHED, $this->is_published);
-        if ($this->isColumnModified(BlogTableMap::COL_IS_FEATURED)) $criteria->add(BlogTableMap::COL_IS_FEATURED, $this->is_featured);
+        if ($this->isColumnModified(BlogTableMap::COL_PUBLISHED)) $criteria->add(BlogTableMap::COL_PUBLISHED, $this->published);
+        if ($this->isColumnModified(BlogTableMap::COL_FEATURED)) $criteria->add(BlogTableMap::COL_FEATURED, $this->featured);
         if ($this->isColumnModified(BlogTableMap::COL_START_DATE)) $criteria->add(BlogTableMap::COL_START_DATE, $this->start_date);
         if ($this->isColumnModified(BlogTableMap::COL_END_DATE)) $criteria->add(BlogTableMap::COL_END_DATE, $this->end_date);
         if ($this->isColumnModified(BlogTableMap::COL_CREATED_AT)) $criteria->add(BlogTableMap::COL_CREATED_AT, $this->created_at);
@@ -2207,8 +2207,8 @@ abstract class Blog implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->is_published = null;
-        $this->is_featured = null;
+        $this->published = null;
+        $this->featured = null;
         $this->start_date = null;
         $this->end_date = null;
         $this->created_at = null;

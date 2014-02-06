@@ -34,7 +34,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientAddressQuery orderByRegon($order = Criteria::ASC) Order by the regon column
  * @method     ChildClientAddressQuery orderByTaxId($order = Criteria::ASC) Order by the tax_id column
  * @method     ChildClientAddressQuery orderByCity($order = Criteria::ASC) Order by the city column
- * @method     ChildClientAddressQuery orderByIsMain($order = Criteria::ASC) Order by the is_main column
+ * @method     ChildClientAddressQuery orderByIsMain($order = Criteria::ASC) Order by the main column
  * @method     ChildClientAddressQuery orderByCountryId($order = Criteria::ASC) Order by the country_id column
  * @method     ChildClientAddressQuery orderByClientType($order = Criteria::ASC) Order by the client_type column
  *
@@ -50,7 +50,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientAddressQuery groupByRegon() Group by the regon column
  * @method     ChildClientAddressQuery groupByTaxId() Group by the tax_id column
  * @method     ChildClientAddressQuery groupByCity() Group by the city column
- * @method     ChildClientAddressQuery groupByIsMain() Group by the is_main column
+ * @method     ChildClientAddressQuery groupByIsMain() Group by the main column
  * @method     ChildClientAddressQuery groupByCountryId() Group by the country_id column
  * @method     ChildClientAddressQuery groupByClientType() Group by the client_type column
  *
@@ -81,7 +81,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientAddress findOneByRegon(resource $regon) Return the first ChildClientAddress filtered by the regon column
  * @method     ChildClientAddress findOneByTaxId(resource $tax_id) Return the first ChildClientAddress filtered by the tax_id column
  * @method     ChildClientAddress findOneByCity(resource $city) Return the first ChildClientAddress filtered by the city column
- * @method     ChildClientAddress findOneByIsMain(int $is_main) Return the first ChildClientAddress filtered by the is_main column
+ * @method     ChildClientAddress findOneByIsMain(int $main) Return the first ChildClientAddress filtered by the main column
  * @method     ChildClientAddress findOneByCountryId(int $country_id) Return the first ChildClientAddress filtered by the country_id column
  * @method     ChildClientAddress findOneByClientType(int $client_type) Return the first ChildClientAddress filtered by the client_type column
  *
@@ -97,7 +97,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByRegon(resource $regon) Return ChildClientAddress objects filtered by the regon column
  * @method     array findByTaxId(resource $tax_id) Return ChildClientAddress objects filtered by the tax_id column
  * @method     array findByCity(resource $city) Return ChildClientAddress objects filtered by the city column
- * @method     array findByIsMain(int $is_main) Return ChildClientAddress objects filtered by the is_main column
+ * @method     array findByIsMain(int $main) Return ChildClientAddress objects filtered by the main column
  * @method     array findByCountryId(int $country_id) Return ChildClientAddress objects filtered by the country_id column
  * @method     array findByClientType(int $client_type) Return ChildClientAddress objects filtered by the client_type column
  *
@@ -188,7 +188,7 @@ abstract class ClientAddressQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, STREET, STREET_NO, PLACE_NO, POST_CODE, COMPANY_NAME, FIRSTNAME, SURNAME, CLIENT_ID, REGON, TAX_ID, CITY, IS_MAIN, COUNTRY_ID, CLIENT_TYPE FROM client_address WHERE ID = :p0';
+        $sql = 'SELECT ID, STREET, STREET_NO, PLACE_NO, POST_CODE, COMPANY_NAME, FIRSTNAME, SURNAME, CLIENT_ID, REGON, TAX_ID, CITY, MAIN, COUNTRY_ID, CLIENT_TYPE FROM client_address WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -502,13 +502,13 @@ abstract class ClientAddressQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_main column
+     * Filter the query on the main column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsMain(1234); // WHERE is_main = 1234
-     * $query->filterByIsMain(array(12, 34)); // WHERE is_main IN (12, 34)
-     * $query->filterByIsMain(array('min' => 12)); // WHERE is_main > 12
+     * $query->filterByIsMain(1234); // WHERE main = 1234
+     * $query->filterByIsMain(array(12, 34)); // WHERE main IN (12, 34)
+     * $query->filterByIsMain(array('min' => 12)); // WHERE main > 12
      * </code>
      *
      * @param     mixed $isMain The value to use as filter.
@@ -524,11 +524,11 @@ abstract class ClientAddressQuery extends ModelCriteria
         if (is_array($isMain)) {
             $useMinMax = false;
             if (isset($isMain['min'])) {
-                $this->addUsingAlias(ClientAddressTableMap::COL_IS_MAIN, $isMain['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ClientAddressTableMap::COL_MAIN, $isMain['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isMain['max'])) {
-                $this->addUsingAlias(ClientAddressTableMap::COL_IS_MAIN, $isMain['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ClientAddressTableMap::COL_MAIN, $isMain['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -539,7 +539,7 @@ abstract class ClientAddressQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ClientAddressTableMap::COL_IS_MAIN, $isMain, $comparison);
+        return $this->addUsingAlias(ClientAddressTableMap::COL_MAIN, $isMain, $comparison);
     }
 
     /**

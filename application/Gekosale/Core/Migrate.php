@@ -83,10 +83,10 @@ abstract class Migrate
 
     public function save ()
     {
-        //         $sql = 'INSERT INTO migration SET migrationclass = :migrationclass';
-        //         $stmt = $this->getDb()->getConnection()->prepare($sql);
-        //         $stmt->bindValue('migrationclass', $this->migrationClass);
-        //         $stmt->execute();
+        $sql = 'INSERT INTO migration SET migrationclass = :migrationclass';
+        $stmt = $this->getDb()->getConnection()->prepare($sql);
+        $stmt->bindValue('migrationclass', $this->migrationClass);
+        $stmt->execute();
     }
 
     abstract function up ();

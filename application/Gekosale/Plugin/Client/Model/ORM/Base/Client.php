@@ -84,11 +84,11 @@ abstract class Client implements ActiveRecordInterface
     protected $password;
 
     /**
-     * The value for the is_disabled field.
+     * The value for the disabled field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_disabled;
+    protected $disabled;
 
     /**
      * The value for the shop_id field.
@@ -185,7 +185,7 @@ abstract class Client implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_disabled = 1;
+        $this->disabled = 1;
         $this->client_type = 1;
         $this->auto_assign = 1;
     }
@@ -484,14 +484,14 @@ abstract class Client implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_disabled] column value.
+     * Get the [disabled] column value.
      * 
      * @return   int
      */
     public function getIsDisabled()
     {
 
-        return $this->is_disabled;
+        return $this->disabled;
     }
 
     /**
@@ -602,7 +602,7 @@ abstract class Client implements ActiveRecordInterface
     } // setPassword()
 
     /**
-     * Set the value of [is_disabled] column.
+     * Set the value of [disabled] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Client\Model\ORM\Client The current object (for fluent API support)
@@ -613,9 +613,9 @@ abstract class Client implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_disabled !== $v) {
-            $this->is_disabled = $v;
-            $this->modifiedColumns[ClientTableMap::COL_IS_DISABLED] = true;
+        if ($this->disabled !== $v) {
+            $this->disabled = $v;
+            $this->modifiedColumns[ClientTableMap::COL_DISABLED] = true;
         }
 
 
@@ -720,7 +720,7 @@ abstract class Client implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_disabled !== 1) {
+            if ($this->disabled !== 1) {
                 return false;
             }
 
@@ -769,7 +769,7 @@ abstract class Client implements ActiveRecordInterface
             $this->password = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ClientTableMap::translateFieldName('IsDisabled', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_disabled = (null !== $col) ? (int) $col : null;
+            $this->disabled = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ClientTableMap::translateFieldName('ShopId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shop_id = (null !== $col) ? (int) $col : null;
@@ -1100,8 +1100,8 @@ abstract class Client implements ActiveRecordInterface
         if ($this->isColumnModified(ClientTableMap::COL_PASSWORD)) {
             $modifiedColumns[':p' . $index++]  = 'PASSWORD';
         }
-        if ($this->isColumnModified(ClientTableMap::COL_IS_DISABLED)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_DISABLED';
+        if ($this->isColumnModified(ClientTableMap::COL_DISABLED)) {
+            $modifiedColumns[':p' . $index++]  = 'DISABLED';
         }
         if ($this->isColumnModified(ClientTableMap::COL_SHOP_ID)) {
             $modifiedColumns[':p' . $index++]  = 'SHOP_ID';
@@ -1135,8 +1135,8 @@ abstract class Client implements ActiveRecordInterface
                     case 'PASSWORD':                        
                         $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
                         break;
-                    case 'IS_DISABLED':                        
-                        $stmt->bindValue($identifier, $this->is_disabled, PDO::PARAM_INT);
+                    case 'DISABLED':                        
+                        $stmt->bindValue($identifier, $this->disabled, PDO::PARAM_INT);
                         break;
                     case 'SHOP_ID':                        
                         $stmt->bindValue($identifier, $this->shop_id, PDO::PARAM_INT);
@@ -1399,7 +1399,7 @@ abstract class Client implements ActiveRecordInterface
         if ($this->isColumnModified(ClientTableMap::COL_ID)) $criteria->add(ClientTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(ClientTableMap::COL_LOGIN)) $criteria->add(ClientTableMap::COL_LOGIN, $this->login);
         if ($this->isColumnModified(ClientTableMap::COL_PASSWORD)) $criteria->add(ClientTableMap::COL_PASSWORD, $this->password);
-        if ($this->isColumnModified(ClientTableMap::COL_IS_DISABLED)) $criteria->add(ClientTableMap::COL_IS_DISABLED, $this->is_disabled);
+        if ($this->isColumnModified(ClientTableMap::COL_DISABLED)) $criteria->add(ClientTableMap::COL_DISABLED, $this->disabled);
         if ($this->isColumnModified(ClientTableMap::COL_SHOP_ID)) $criteria->add(ClientTableMap::COL_SHOP_ID, $this->shop_id);
         if ($this->isColumnModified(ClientTableMap::COL_ACTIVE_LINK)) $criteria->add(ClientTableMap::COL_ACTIVE_LINK, $this->active_link);
         if ($this->isColumnModified(ClientTableMap::COL_CLIENT_TYPE)) $criteria->add(ClientTableMap::COL_CLIENT_TYPE, $this->client_type);
@@ -2617,7 +2617,7 @@ abstract class Client implements ActiveRecordInterface
         $this->id = null;
         $this->login = null;
         $this->password = null;
-        $this->is_disabled = null;
+        $this->disabled = null;
         $this->shop_id = null;
         $this->active_link = null;
         $this->client_type = null;

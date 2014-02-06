@@ -4,7 +4,6 @@
 
 *.pydevproject
 .project
-.metadata
 bin/
 tmp/
 *.tmp
@@ -179,7 +178,6 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # Mac crap
-.DS_Store
 
 
 #############

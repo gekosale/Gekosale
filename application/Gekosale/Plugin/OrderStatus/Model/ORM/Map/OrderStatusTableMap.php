@@ -76,14 +76,14 @@ class OrderStatusTableMap extends TableMap
     const COL_ID = 'order_status.ID';
 
     /**
-     * the column name for the IS_DEFAULT field
+     * the column name for the DEFAULT field
      */
-    const COL_IS_DEFAULT = 'order_status.IS_DEFAULT';
+    const COL_DEFAULT = 'order_status.DEFAULT';
 
     /**
-     * the column name for the IS_EDITABLE field
+     * the column name for the EDITABLE field
      */
-    const COL_IS_EDITABLE = 'order_status.IS_EDITABLE';
+    const COL_EDITABLE = 'order_status.EDITABLE';
 
     /**
      * the column name for the CREATED_AT field
@@ -118,9 +118,9 @@ class OrderStatusTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'IsDefault', 'IsEditable', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'isDefault', 'isEditable', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID, OrderStatusTableMap::COL_IS_DEFAULT, OrderStatusTableMap::COL_IS_EDITABLE, OrderStatusTableMap::COL_CREATED_AT, OrderStatusTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_DEFAULT', 'COL_IS_EDITABLE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'is_default', 'is_editable', 'created_at', 'updated_at', ),
+        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID, OrderStatusTableMap::COL_DEFAULT, OrderStatusTableMap::COL_EDITABLE, OrderStatusTableMap::COL_CREATED_AT, OrderStatusTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_DEFAULT', 'COL_EDITABLE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'default', 'editable', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -133,9 +133,9 @@ class OrderStatusTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'IsDefault' => 1, 'IsEditable' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isDefault' => 1, 'isEditable' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
-        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID => 0, OrderStatusTableMap::COL_IS_DEFAULT => 1, OrderStatusTableMap::COL_IS_EDITABLE => 2, OrderStatusTableMap::COL_CREATED_AT => 3, OrderStatusTableMap::COL_UPDATED_AT => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_DEFAULT' => 1, 'COL_IS_EDITABLE' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'is_default' => 1, 'is_editable' => 2, 'created_at' => 3, 'updated_at' => 4, ),
+        self::TYPE_COLNAME       => array(OrderStatusTableMap::COL_ID => 0, OrderStatusTableMap::COL_DEFAULT => 1, OrderStatusTableMap::COL_EDITABLE => 2, OrderStatusTableMap::COL_CREATED_AT => 3, OrderStatusTableMap::COL_UPDATED_AT => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_DEFAULT' => 1, 'COL_EDITABLE' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'default' => 1, 'editable' => 2, 'created_at' => 3, 'updated_at' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -156,8 +156,8 @@ class OrderStatusTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('IS_DEFAULT', 'IsDefault', 'INTEGER', true, 10, 0);
-        $this->addColumn('IS_EDITABLE', 'IsEditable', 'INTEGER', true, 10, 1);
+        $this->addColumn('DEFAULT', 'IsDefault', 'INTEGER', true, 10, 0);
+        $this->addColumn('EDITABLE', 'IsEditable', 'INTEGER', true, 10, 1);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -334,14 +334,14 @@ class OrderStatusTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(OrderStatusTableMap::COL_ID);
-            $criteria->addSelectColumn(OrderStatusTableMap::COL_IS_DEFAULT);
-            $criteria->addSelectColumn(OrderStatusTableMap::COL_IS_EDITABLE);
+            $criteria->addSelectColumn(OrderStatusTableMap::COL_DEFAULT);
+            $criteria->addSelectColumn(OrderStatusTableMap::COL_EDITABLE);
             $criteria->addSelectColumn(OrderStatusTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(OrderStatusTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.IS_DEFAULT');
-            $criteria->addSelectColumn($alias . '.IS_EDITABLE');
+            $criteria->addSelectColumn($alias . '.DEFAULT');
+            $criteria->addSelectColumn($alias . '.EDITABLE');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }

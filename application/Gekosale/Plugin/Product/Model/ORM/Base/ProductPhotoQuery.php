@@ -25,14 +25,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPhotoQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildProductPhotoQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductPhotoQuery orderByPhotoId($order = Criteria::ASC) Order by the photo_id column
- * @method     ChildProductPhotoQuery orderByIsMainPhoto($order = Criteria::ASC) Order by the is_main_photo column
- * @method     ChildProductPhotoQuery orderByIsVisible($order = Criteria::ASC) Order by the is_visible column
+ * @method     ChildProductPhotoQuery orderByIsMainPhoto($order = Criteria::ASC) Order by the main_photo column
+ * @method     ChildProductPhotoQuery orderByIsVisible($order = Criteria::ASC) Order by the visible column
  *
  * @method     ChildProductPhotoQuery groupById() Group by the id column
  * @method     ChildProductPhotoQuery groupByProductId() Group by the product_id column
  * @method     ChildProductPhotoQuery groupByPhotoId() Group by the photo_id column
- * @method     ChildProductPhotoQuery groupByIsMainPhoto() Group by the is_main_photo column
- * @method     ChildProductPhotoQuery groupByIsVisible() Group by the is_visible column
+ * @method     ChildProductPhotoQuery groupByIsMainPhoto() Group by the main_photo column
+ * @method     ChildProductPhotoQuery groupByIsVisible() Group by the visible column
  *
  * @method     ChildProductPhotoQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProductPhotoQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -52,14 +52,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductPhoto findOneById(int $id) Return the first ChildProductPhoto filtered by the id column
  * @method     ChildProductPhoto findOneByProductId(int $product_id) Return the first ChildProductPhoto filtered by the product_id column
  * @method     ChildProductPhoto findOneByPhotoId(int $photo_id) Return the first ChildProductPhoto filtered by the photo_id column
- * @method     ChildProductPhoto findOneByIsMainPhoto(int $is_main_photo) Return the first ChildProductPhoto filtered by the is_main_photo column
- * @method     ChildProductPhoto findOneByIsVisible(int $is_visible) Return the first ChildProductPhoto filtered by the is_visible column
+ * @method     ChildProductPhoto findOneByIsMainPhoto(int $main_photo) Return the first ChildProductPhoto filtered by the main_photo column
+ * @method     ChildProductPhoto findOneByIsVisible(int $visible) Return the first ChildProductPhoto filtered by the visible column
  *
  * @method     array findById(int $id) Return ChildProductPhoto objects filtered by the id column
  * @method     array findByProductId(int $product_id) Return ChildProductPhoto objects filtered by the product_id column
  * @method     array findByPhotoId(int $photo_id) Return ChildProductPhoto objects filtered by the photo_id column
- * @method     array findByIsMainPhoto(int $is_main_photo) Return ChildProductPhoto objects filtered by the is_main_photo column
- * @method     array findByIsVisible(int $is_visible) Return ChildProductPhoto objects filtered by the is_visible column
+ * @method     array findByIsMainPhoto(int $main_photo) Return ChildProductPhoto objects filtered by the main_photo column
+ * @method     array findByIsVisible(int $visible) Return ChildProductPhoto objects filtered by the visible column
  *
  */
 abstract class ProductPhotoQuery extends ModelCriteria
@@ -148,7 +148,7 @@ abstract class ProductPhotoQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, PRODUCT_ID, PHOTO_ID, IS_MAIN_PHOTO, IS_VISIBLE FROM product_photo WHERE ID = :p0';
+        $sql = 'SELECT ID, PRODUCT_ID, PHOTO_ID, MAIN_PHOTO, VISIBLE FROM product_photo WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -365,13 +365,13 @@ abstract class ProductPhotoQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_main_photo column
+     * Filter the query on the main_photo column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsMainPhoto(1234); // WHERE is_main_photo = 1234
-     * $query->filterByIsMainPhoto(array(12, 34)); // WHERE is_main_photo IN (12, 34)
-     * $query->filterByIsMainPhoto(array('min' => 12)); // WHERE is_main_photo > 12
+     * $query->filterByIsMainPhoto(1234); // WHERE main_photo = 1234
+     * $query->filterByIsMainPhoto(array(12, 34)); // WHERE main_photo IN (12, 34)
+     * $query->filterByIsMainPhoto(array('min' => 12)); // WHERE main_photo > 12
      * </code>
      *
      * @param     mixed $isMainPhoto The value to use as filter.
@@ -387,11 +387,11 @@ abstract class ProductPhotoQuery extends ModelCriteria
         if (is_array($isMainPhoto)) {
             $useMinMax = false;
             if (isset($isMainPhoto['min'])) {
-                $this->addUsingAlias(ProductPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isMainPhoto['max'])) {
-                $this->addUsingAlias(ProductPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -402,17 +402,17 @@ abstract class ProductPhotoQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto, $comparison);
+        return $this->addUsingAlias(ProductPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto, $comparison);
     }
 
     /**
-     * Filter the query on the is_visible column
+     * Filter the query on the visible column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsVisible(1234); // WHERE is_visible = 1234
-     * $query->filterByIsVisible(array(12, 34)); // WHERE is_visible IN (12, 34)
-     * $query->filterByIsVisible(array('min' => 12)); // WHERE is_visible > 12
+     * $query->filterByIsVisible(1234); // WHERE visible = 1234
+     * $query->filterByIsVisible(array(12, 34)); // WHERE visible IN (12, 34)
+     * $query->filterByIsVisible(array('min' => 12)); // WHERE visible > 12
      * </code>
      *
      * @param     mixed $isVisible The value to use as filter.
@@ -428,11 +428,11 @@ abstract class ProductPhotoQuery extends ModelCriteria
         if (is_array($isVisible)) {
             $useMinMax = false;
             if (isset($isVisible['min'])) {
-                $this->addUsingAlias(ProductPhotoTableMap::COL_IS_VISIBLE, $isVisible['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductPhotoTableMap::COL_VISIBLE, $isVisible['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isVisible['max'])) {
-                $this->addUsingAlias(ProductPhotoTableMap::COL_IS_VISIBLE, $isVisible['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductPhotoTableMap::COL_VISIBLE, $isVisible['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -443,7 +443,7 @@ abstract class ProductPhotoQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductPhotoTableMap::COL_IS_VISIBLE, $isVisible, $comparison);
+        return $this->addUsingAlias(ProductPhotoTableMap::COL_VISIBLE, $isVisible, $comparison);
     }
 
     /**

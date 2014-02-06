@@ -131,9 +131,9 @@ class ClientAddressTableMap extends TableMap
     const COL_CITY = 'client_address.CITY';
 
     /**
-     * the column name for the IS_MAIN field
+     * the column name for the MAIN field
      */
-    const COL_IS_MAIN = 'client_address.IS_MAIN';
+    const COL_MAIN = 'client_address.MAIN';
 
     /**
      * the column name for the COUNTRY_ID field
@@ -159,9 +159,9 @@ class ClientAddressTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Street', 'StreetNo', 'PlaceNo', 'PostCode', 'CompanyName', 'Firstname', 'Surname', 'ClientId', 'Regon', 'TaxId', 'City', 'IsMain', 'CountryId', 'ClientType', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'street', 'streetNo', 'placeNo', 'postCode', 'companyName', 'firstname', 'surname', 'clientId', 'regon', 'taxId', 'city', 'isMain', 'countryId', 'clientType', ),
-        self::TYPE_COLNAME       => array(ClientAddressTableMap::COL_ID, ClientAddressTableMap::COL_STREET, ClientAddressTableMap::COL_STREET_NO, ClientAddressTableMap::COL_PLACE_NO, ClientAddressTableMap::COL_POST_CODE, ClientAddressTableMap::COL_COMPANY_NAME, ClientAddressTableMap::COL_FIRSTNAME, ClientAddressTableMap::COL_SURNAME, ClientAddressTableMap::COL_CLIENT_ID, ClientAddressTableMap::COL_REGON, ClientAddressTableMap::COL_TAX_ID, ClientAddressTableMap::COL_CITY, ClientAddressTableMap::COL_IS_MAIN, ClientAddressTableMap::COL_COUNTRY_ID, ClientAddressTableMap::COL_CLIENT_TYPE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_STREET', 'COL_STREET_NO', 'COL_PLACE_NO', 'COL_POST_CODE', 'COL_COMPANY_NAME', 'COL_FIRSTNAME', 'COL_SURNAME', 'COL_CLIENT_ID', 'COL_REGON', 'COL_TAX_ID', 'COL_CITY', 'COL_IS_MAIN', 'COL_COUNTRY_ID', 'COL_CLIENT_TYPE', ),
-        self::TYPE_FIELDNAME     => array('id', 'street', 'street_no', 'place_no', 'post_code', 'company_name', 'firstname', 'surname', 'client_id', 'regon', 'tax_id', 'city', 'is_main', 'country_id', 'client_type', ),
+        self::TYPE_COLNAME       => array(ClientAddressTableMap::COL_ID, ClientAddressTableMap::COL_STREET, ClientAddressTableMap::COL_STREET_NO, ClientAddressTableMap::COL_PLACE_NO, ClientAddressTableMap::COL_POST_CODE, ClientAddressTableMap::COL_COMPANY_NAME, ClientAddressTableMap::COL_FIRSTNAME, ClientAddressTableMap::COL_SURNAME, ClientAddressTableMap::COL_CLIENT_ID, ClientAddressTableMap::COL_REGON, ClientAddressTableMap::COL_TAX_ID, ClientAddressTableMap::COL_CITY, ClientAddressTableMap::COL_MAIN, ClientAddressTableMap::COL_COUNTRY_ID, ClientAddressTableMap::COL_CLIENT_TYPE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_STREET', 'COL_STREET_NO', 'COL_PLACE_NO', 'COL_POST_CODE', 'COL_COMPANY_NAME', 'COL_FIRSTNAME', 'COL_SURNAME', 'COL_CLIENT_ID', 'COL_REGON', 'COL_TAX_ID', 'COL_CITY', 'COL_MAIN', 'COL_COUNTRY_ID', 'COL_CLIENT_TYPE', ),
+        self::TYPE_FIELDNAME     => array('id', 'street', 'street_no', 'place_no', 'post_code', 'company_name', 'firstname', 'surname', 'client_id', 'regon', 'tax_id', 'city', 'main', 'country_id', 'client_type', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
@@ -174,9 +174,9 @@ class ClientAddressTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Street' => 1, 'StreetNo' => 2, 'PlaceNo' => 3, 'PostCode' => 4, 'CompanyName' => 5, 'Firstname' => 6, 'Surname' => 7, 'ClientId' => 8, 'Regon' => 9, 'TaxId' => 10, 'City' => 11, 'IsMain' => 12, 'CountryId' => 13, 'ClientType' => 14, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'street' => 1, 'streetNo' => 2, 'placeNo' => 3, 'postCode' => 4, 'companyName' => 5, 'firstname' => 6, 'surname' => 7, 'clientId' => 8, 'regon' => 9, 'taxId' => 10, 'city' => 11, 'isMain' => 12, 'countryId' => 13, 'clientType' => 14, ),
-        self::TYPE_COLNAME       => array(ClientAddressTableMap::COL_ID => 0, ClientAddressTableMap::COL_STREET => 1, ClientAddressTableMap::COL_STREET_NO => 2, ClientAddressTableMap::COL_PLACE_NO => 3, ClientAddressTableMap::COL_POST_CODE => 4, ClientAddressTableMap::COL_COMPANY_NAME => 5, ClientAddressTableMap::COL_FIRSTNAME => 6, ClientAddressTableMap::COL_SURNAME => 7, ClientAddressTableMap::COL_CLIENT_ID => 8, ClientAddressTableMap::COL_REGON => 9, ClientAddressTableMap::COL_TAX_ID => 10, ClientAddressTableMap::COL_CITY => 11, ClientAddressTableMap::COL_IS_MAIN => 12, ClientAddressTableMap::COL_COUNTRY_ID => 13, ClientAddressTableMap::COL_CLIENT_TYPE => 14, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_STREET' => 1, 'COL_STREET_NO' => 2, 'COL_PLACE_NO' => 3, 'COL_POST_CODE' => 4, 'COL_COMPANY_NAME' => 5, 'COL_FIRSTNAME' => 6, 'COL_SURNAME' => 7, 'COL_CLIENT_ID' => 8, 'COL_REGON' => 9, 'COL_TAX_ID' => 10, 'COL_CITY' => 11, 'COL_IS_MAIN' => 12, 'COL_COUNTRY_ID' => 13, 'COL_CLIENT_TYPE' => 14, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'street' => 1, 'street_no' => 2, 'place_no' => 3, 'post_code' => 4, 'company_name' => 5, 'firstname' => 6, 'surname' => 7, 'client_id' => 8, 'regon' => 9, 'tax_id' => 10, 'city' => 11, 'is_main' => 12, 'country_id' => 13, 'client_type' => 14, ),
+        self::TYPE_COLNAME       => array(ClientAddressTableMap::COL_ID => 0, ClientAddressTableMap::COL_STREET => 1, ClientAddressTableMap::COL_STREET_NO => 2, ClientAddressTableMap::COL_PLACE_NO => 3, ClientAddressTableMap::COL_POST_CODE => 4, ClientAddressTableMap::COL_COMPANY_NAME => 5, ClientAddressTableMap::COL_FIRSTNAME => 6, ClientAddressTableMap::COL_SURNAME => 7, ClientAddressTableMap::COL_CLIENT_ID => 8, ClientAddressTableMap::COL_REGON => 9, ClientAddressTableMap::COL_TAX_ID => 10, ClientAddressTableMap::COL_CITY => 11, ClientAddressTableMap::COL_MAIN => 12, ClientAddressTableMap::COL_COUNTRY_ID => 13, ClientAddressTableMap::COL_CLIENT_TYPE => 14, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_STREET' => 1, 'COL_STREET_NO' => 2, 'COL_PLACE_NO' => 3, 'COL_POST_CODE' => 4, 'COL_COMPANY_NAME' => 5, 'COL_FIRSTNAME' => 6, 'COL_SURNAME' => 7, 'COL_CLIENT_ID' => 8, 'COL_REGON' => 9, 'COL_TAX_ID' => 10, 'COL_CITY' => 11, 'COL_MAIN' => 12, 'COL_COUNTRY_ID' => 13, 'COL_CLIENT_TYPE' => 14, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'street' => 1, 'street_no' => 2, 'place_no' => 3, 'post_code' => 4, 'company_name' => 5, 'firstname' => 6, 'surname' => 7, 'client_id' => 8, 'regon' => 9, 'tax_id' => 10, 'city' => 11, 'main' => 12, 'country_id' => 13, 'client_type' => 14, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
@@ -208,7 +208,7 @@ class ClientAddressTableMap extends TableMap
         $this->addColumn('REGON', 'Regon', 'BLOB', false, null, null);
         $this->addColumn('TAX_ID', 'TaxId', 'BLOB', false, null, null);
         $this->addColumn('CITY', 'City', 'BLOB', true, null, null);
-        $this->addColumn('IS_MAIN', 'IsMain', 'INTEGER', true, 10, 1);
+        $this->addColumn('MAIN', 'IsMain', 'INTEGER', true, 10, 1);
         $this->addForeignKey('COUNTRY_ID', 'CountryId', 'INTEGER', 'country', 'ID', false, 10, null);
         $this->addColumn('CLIENT_TYPE', 'ClientType', 'INTEGER', true, 10, 1);
     } // initialize()
@@ -372,7 +372,7 @@ class ClientAddressTableMap extends TableMap
             $criteria->addSelectColumn(ClientAddressTableMap::COL_REGON);
             $criteria->addSelectColumn(ClientAddressTableMap::COL_TAX_ID);
             $criteria->addSelectColumn(ClientAddressTableMap::COL_CITY);
-            $criteria->addSelectColumn(ClientAddressTableMap::COL_IS_MAIN);
+            $criteria->addSelectColumn(ClientAddressTableMap::COL_MAIN);
             $criteria->addSelectColumn(ClientAddressTableMap::COL_COUNTRY_ID);
             $criteria->addSelectColumn(ClientAddressTableMap::COL_CLIENT_TYPE);
         } else {
@@ -388,7 +388,7 @@ class ClientAddressTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.REGON');
             $criteria->addSelectColumn($alias . '.TAX_ID');
             $criteria->addSelectColumn($alias . '.CITY');
-            $criteria->addSelectColumn($alias . '.IS_MAIN');
+            $criteria->addSelectColumn($alias . '.MAIN');
             $criteria->addSelectColumn($alias . '.COUNTRY_ID');
             $criteria->addSelectColumn($alias . '.CLIENT_TYPE');
         }

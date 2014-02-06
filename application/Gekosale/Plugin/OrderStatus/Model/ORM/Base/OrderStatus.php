@@ -66,18 +66,18 @@ abstract class OrderStatus implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the is_default field.
+     * The value for the default field.
      * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $is_default;
+    protected $default;
 
     /**
-     * The value for the is_editable field.
+     * The value for the editable field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_editable;
+    protected $editable;
 
     /**
      * The value for the created_at field.
@@ -145,8 +145,8 @@ abstract class OrderStatus implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_default = 0;
-        $this->is_editable = 1;
+        $this->default = 0;
+        $this->editable = 1;
     }
 
     /**
@@ -421,25 +421,25 @@ abstract class OrderStatus implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_default] column value.
+     * Get the [default] column value.
      * 
      * @return   int
      */
     public function getIsDefault()
     {
 
-        return $this->is_default;
+        return $this->default;
     }
 
     /**
-     * Get the [is_editable] column value.
+     * Get the [editable] column value.
      * 
      * @return   int
      */
     public function getIsEditable()
     {
 
-        return $this->is_editable;
+        return $this->editable;
     }
 
     /**
@@ -504,7 +504,7 @@ abstract class OrderStatus implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [is_default] column.
+     * Set the value of [default] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatus The current object (for fluent API support)
@@ -515,9 +515,9 @@ abstract class OrderStatus implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_default !== $v) {
-            $this->is_default = $v;
-            $this->modifiedColumns[OrderStatusTableMap::COL_IS_DEFAULT] = true;
+        if ($this->default !== $v) {
+            $this->default = $v;
+            $this->modifiedColumns[OrderStatusTableMap::COL_DEFAULT] = true;
         }
 
 
@@ -525,7 +525,7 @@ abstract class OrderStatus implements ActiveRecordInterface
     } // setIsDefault()
 
     /**
-     * Set the value of [is_editable] column.
+     * Set the value of [editable] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\OrderStatus\Model\ORM\OrderStatus The current object (for fluent API support)
@@ -536,9 +536,9 @@ abstract class OrderStatus implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_editable !== $v) {
-            $this->is_editable = $v;
-            $this->modifiedColumns[OrderStatusTableMap::COL_IS_EDITABLE] = true;
+        if ($this->editable !== $v) {
+            $this->editable = $v;
+            $this->modifiedColumns[OrderStatusTableMap::COL_EDITABLE] = true;
         }
 
 
@@ -597,11 +597,11 @@ abstract class OrderStatus implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_default !== 0) {
+            if ($this->default !== 0) {
                 return false;
             }
 
-            if ($this->is_editable !== 1) {
+            if ($this->editable !== 1) {
                 return false;
             }
 
@@ -636,10 +636,10 @@ abstract class OrderStatus implements ActiveRecordInterface
             $this->id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OrderStatusTableMap::translateFieldName('IsDefault', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_default = (null !== $col) ? (int) $col : null;
+            $this->default = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OrderStatusTableMap::translateFieldName('IsEditable', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_editable = (null !== $col) ? (int) $col : null;
+            $this->editable = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OrderStatusTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -921,11 +921,11 @@ abstract class OrderStatus implements ActiveRecordInterface
         if ($this->isColumnModified(OrderStatusTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(OrderStatusTableMap::COL_IS_DEFAULT)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_DEFAULT';
+        if ($this->isColumnModified(OrderStatusTableMap::COL_DEFAULT)) {
+            $modifiedColumns[':p' . $index++]  = 'DEFAULT';
         }
-        if ($this->isColumnModified(OrderStatusTableMap::COL_IS_EDITABLE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_EDITABLE';
+        if ($this->isColumnModified(OrderStatusTableMap::COL_EDITABLE)) {
+            $modifiedColumns[':p' . $index++]  = 'EDITABLE';
         }
         if ($this->isColumnModified(OrderStatusTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
@@ -947,11 +947,11 @@ abstract class OrderStatus implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'IS_DEFAULT':                        
-                        $stmt->bindValue($identifier, $this->is_default, PDO::PARAM_INT);
+                    case 'DEFAULT':                        
+                        $stmt->bindValue($identifier, $this->default, PDO::PARAM_INT);
                         break;
-                    case 'IS_EDITABLE':                        
-                        $stmt->bindValue($identifier, $this->is_editable, PDO::PARAM_INT);
+                    case 'EDITABLE':                        
+                        $stmt->bindValue($identifier, $this->editable, PDO::PARAM_INT);
                         break;
                     case 'CREATED_AT':                        
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1173,8 +1173,8 @@ abstract class OrderStatus implements ActiveRecordInterface
         $criteria = new Criteria(OrderStatusTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(OrderStatusTableMap::COL_ID)) $criteria->add(OrderStatusTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(OrderStatusTableMap::COL_IS_DEFAULT)) $criteria->add(OrderStatusTableMap::COL_IS_DEFAULT, $this->is_default);
-        if ($this->isColumnModified(OrderStatusTableMap::COL_IS_EDITABLE)) $criteria->add(OrderStatusTableMap::COL_IS_EDITABLE, $this->is_editable);
+        if ($this->isColumnModified(OrderStatusTableMap::COL_DEFAULT)) $criteria->add(OrderStatusTableMap::COL_DEFAULT, $this->default);
+        if ($this->isColumnModified(OrderStatusTableMap::COL_EDITABLE)) $criteria->add(OrderStatusTableMap::COL_EDITABLE, $this->editable);
         if ($this->isColumnModified(OrderStatusTableMap::COL_CREATED_AT)) $criteria->add(OrderStatusTableMap::COL_CREATED_AT, $this->created_at);
         if ($this->isColumnModified(OrderStatusTableMap::COL_UPDATED_AT)) $criteria->add(OrderStatusTableMap::COL_UPDATED_AT, $this->updated_at);
 
@@ -1787,8 +1787,8 @@ abstract class OrderStatus implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->is_default = null;
-        $this->is_editable = null;
+        $this->default = null;
+        $this->editable = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

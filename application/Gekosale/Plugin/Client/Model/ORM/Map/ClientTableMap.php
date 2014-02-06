@@ -88,9 +88,9 @@ class ClientTableMap extends TableMap
     const COL_PASSWORD = 'client.PASSWORD';
 
     /**
-     * the column name for the IS_DISABLED field
+     * the column name for the DISABLED field
      */
-    const COL_IS_DISABLED = 'client.IS_DISABLED';
+    const COL_DISABLED = 'client.DISABLED';
 
     /**
      * the column name for the SHOP_ID field
@@ -126,9 +126,9 @@ class ClientTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Login', 'Password', 'IsDisabled', 'ShopId', 'ActiveLink', 'ClientType', 'AutoAssign', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'login', 'password', 'isDisabled', 'shopId', 'activeLink', 'clientType', 'autoAssign', ),
-        self::TYPE_COLNAME       => array(ClientTableMap::COL_ID, ClientTableMap::COL_LOGIN, ClientTableMap::COL_PASSWORD, ClientTableMap::COL_IS_DISABLED, ClientTableMap::COL_SHOP_ID, ClientTableMap::COL_ACTIVE_LINK, ClientTableMap::COL_CLIENT_TYPE, ClientTableMap::COL_AUTO_ASSIGN, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOGIN', 'COL_PASSWORD', 'COL_IS_DISABLED', 'COL_SHOP_ID', 'COL_ACTIVE_LINK', 'COL_CLIENT_TYPE', 'COL_AUTO_ASSIGN', ),
-        self::TYPE_FIELDNAME     => array('id', 'login', 'password', 'is_disabled', 'shop_id', 'active_link', 'client_type', 'auto_assign', ),
+        self::TYPE_COLNAME       => array(ClientTableMap::COL_ID, ClientTableMap::COL_LOGIN, ClientTableMap::COL_PASSWORD, ClientTableMap::COL_DISABLED, ClientTableMap::COL_SHOP_ID, ClientTableMap::COL_ACTIVE_LINK, ClientTableMap::COL_CLIENT_TYPE, ClientTableMap::COL_AUTO_ASSIGN, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOGIN', 'COL_PASSWORD', 'COL_DISABLED', 'COL_SHOP_ID', 'COL_ACTIVE_LINK', 'COL_CLIENT_TYPE', 'COL_AUTO_ASSIGN', ),
+        self::TYPE_FIELDNAME     => array('id', 'login', 'password', 'disabled', 'shop_id', 'active_link', 'client_type', 'auto_assign', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -141,9 +141,9 @@ class ClientTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Login' => 1, 'Password' => 2, 'IsDisabled' => 3, 'ShopId' => 4, 'ActiveLink' => 5, 'ClientType' => 6, 'AutoAssign' => 7, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'login' => 1, 'password' => 2, 'isDisabled' => 3, 'shopId' => 4, 'activeLink' => 5, 'clientType' => 6, 'autoAssign' => 7, ),
-        self::TYPE_COLNAME       => array(ClientTableMap::COL_ID => 0, ClientTableMap::COL_LOGIN => 1, ClientTableMap::COL_PASSWORD => 2, ClientTableMap::COL_IS_DISABLED => 3, ClientTableMap::COL_SHOP_ID => 4, ClientTableMap::COL_ACTIVE_LINK => 5, ClientTableMap::COL_CLIENT_TYPE => 6, ClientTableMap::COL_AUTO_ASSIGN => 7, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOGIN' => 1, 'COL_PASSWORD' => 2, 'COL_IS_DISABLED' => 3, 'COL_SHOP_ID' => 4, 'COL_ACTIVE_LINK' => 5, 'COL_CLIENT_TYPE' => 6, 'COL_AUTO_ASSIGN' => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'login' => 1, 'password' => 2, 'is_disabled' => 3, 'shop_id' => 4, 'active_link' => 5, 'client_type' => 6, 'auto_assign' => 7, ),
+        self::TYPE_COLNAME       => array(ClientTableMap::COL_ID => 0, ClientTableMap::COL_LOGIN => 1, ClientTableMap::COL_PASSWORD => 2, ClientTableMap::COL_DISABLED => 3, ClientTableMap::COL_SHOP_ID => 4, ClientTableMap::COL_ACTIVE_LINK => 5, ClientTableMap::COL_CLIENT_TYPE => 6, ClientTableMap::COL_AUTO_ASSIGN => 7, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOGIN' => 1, 'COL_PASSWORD' => 2, 'COL_DISABLED' => 3, 'COL_SHOP_ID' => 4, 'COL_ACTIVE_LINK' => 5, 'COL_CLIENT_TYPE' => 6, 'COL_AUTO_ASSIGN' => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'login' => 1, 'password' => 2, 'disabled' => 3, 'shop_id' => 4, 'active_link' => 5, 'client_type' => 6, 'auto_assign' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -166,7 +166,7 @@ class ClientTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('LOGIN', 'Login', 'VARCHAR', true, 128, null);
         $this->addColumn('PASSWORD', 'Password', 'VARCHAR', true, 128, null);
-        $this->addColumn('IS_DISABLED', 'IsDisabled', 'INTEGER', true, 10, 1);
+        $this->addColumn('DISABLED', 'IsDisabled', 'INTEGER', true, 10, 1);
         $this->addForeignKey('SHOP_ID', 'ShopId', 'INTEGER', 'shop', 'ID', false, 10, null);
         $this->addColumn('ACTIVE_LINK', 'ActiveLink', 'VARCHAR', false, 255, null);
         $this->addColumn('CLIENT_TYPE', 'ClientType', 'INTEGER', false, null, 1);
@@ -338,7 +338,7 @@ class ClientTableMap extends TableMap
             $criteria->addSelectColumn(ClientTableMap::COL_ID);
             $criteria->addSelectColumn(ClientTableMap::COL_LOGIN);
             $criteria->addSelectColumn(ClientTableMap::COL_PASSWORD);
-            $criteria->addSelectColumn(ClientTableMap::COL_IS_DISABLED);
+            $criteria->addSelectColumn(ClientTableMap::COL_DISABLED);
             $criteria->addSelectColumn(ClientTableMap::COL_SHOP_ID);
             $criteria->addSelectColumn(ClientTableMap::COL_ACTIVE_LINK);
             $criteria->addSelectColumn(ClientTableMap::COL_CLIENT_TYPE);
@@ -347,7 +347,7 @@ class ClientTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.LOGIN');
             $criteria->addSelectColumn($alias . '.PASSWORD');
-            $criteria->addSelectColumn($alias . '.IS_DISABLED');
+            $criteria->addSelectColumn($alias . '.DISABLED');
             $criteria->addSelectColumn($alias . '.SHOP_ID');
             $criteria->addSelectColumn($alias . '.ACTIVE_LINK');
             $criteria->addSelectColumn($alias . '.CLIENT_TYPE');

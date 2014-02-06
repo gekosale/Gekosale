@@ -77,9 +77,9 @@ class ContactTableMap extends TableMap
     const COL_ID = 'contact.ID';
 
     /**
-     * the column name for the IS_PUBLISHED field
+     * the column name for the PUBLISHED field
      */
-    const COL_IS_PUBLISHED = 'contact.IS_PUBLISHED';
+    const COL_PUBLISHED = 'contact.PUBLISHED';
 
     /**
      * the column name for the CREATED_AT field
@@ -114,9 +114,9 @@ class ContactTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'IsPublished', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'isPublished', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID, ContactTableMap::COL_IS_PUBLISHED, ContactTableMap::COL_CREATED_AT, ContactTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_PUBLISHED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'is_published', 'created_at', 'updated_at', ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID, ContactTableMap::COL_PUBLISHED, ContactTableMap::COL_CREATED_AT, ContactTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PUBLISHED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'published', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -129,9 +129,9 @@ class ContactTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'IsPublished' => 1, 'CreatedAt' => 2, 'UpdatedAt' => 3, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isPublished' => 1, 'createdAt' => 2, 'updatedAt' => 3, ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID => 0, ContactTableMap::COL_IS_PUBLISHED => 1, ContactTableMap::COL_CREATED_AT => 2, ContactTableMap::COL_UPDATED_AT => 3, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_PUBLISHED' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'is_published' => 1, 'created_at' => 2, 'updated_at' => 3, ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_ID => 0, ContactTableMap::COL_PUBLISHED => 1, ContactTableMap::COL_CREATED_AT => 2, ContactTableMap::COL_UPDATED_AT => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PUBLISHED' => 1, 'COL_CREATED_AT' => 2, 'COL_UPDATED_AT' => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'published' => 1, 'created_at' => 2, 'updated_at' => 3, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -152,7 +152,7 @@ class ContactTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('IS_PUBLISHED', 'IsPublished', 'INTEGER', false, 10, 1);
+        $this->addColumn('PUBLISHED', 'IsPublished', 'INTEGER', false, 10, 1);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -331,12 +331,12 @@ class ContactTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ContactTableMap::COL_ID);
-            $criteria->addSelectColumn(ContactTableMap::COL_IS_PUBLISHED);
+            $criteria->addSelectColumn(ContactTableMap::COL_PUBLISHED);
             $criteria->addSelectColumn(ContactTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ContactTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.IS_PUBLISHED');
+            $criteria->addSelectColumn($alias . '.PUBLISHED');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }

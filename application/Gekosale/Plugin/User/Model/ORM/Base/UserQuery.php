@@ -24,14 +24,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildUserQuery orderByLogin($order = Criteria::ASC) Order by the login column
  * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
- * @method     ChildUserQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
- * @method     ChildUserQuery orderByIsGlobal($order = Criteria::ASC) Order by the is_global column
+ * @method     ChildUserQuery orderByIsActive($order = Criteria::ASC) Order by the active column
+ * @method     ChildUserQuery orderByIsGlobal($order = Criteria::ASC) Order by the global column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByLogin() Group by the login column
  * @method     ChildUserQuery groupByPassword() Group by the password column
- * @method     ChildUserQuery groupByIsActive() Group by the is_active column
- * @method     ChildUserQuery groupByIsGlobal() Group by the is_global column
+ * @method     ChildUserQuery groupByIsActive() Group by the active column
+ * @method     ChildUserQuery groupByIsGlobal() Group by the global column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -55,14 +55,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
  * @method     ChildUser findOneByLogin(string $login) Return the first ChildUser filtered by the login column
  * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
- * @method     ChildUser findOneByIsActive(int $is_active) Return the first ChildUser filtered by the is_active column
- * @method     ChildUser findOneByIsGlobal(int $is_global) Return the first ChildUser filtered by the is_global column
+ * @method     ChildUser findOneByIsActive(int $active) Return the first ChildUser filtered by the active column
+ * @method     ChildUser findOneByIsGlobal(int $global) Return the first ChildUser filtered by the global column
  *
  * @method     array findById(int $id) Return ChildUser objects filtered by the id column
  * @method     array findByLogin(string $login) Return ChildUser objects filtered by the login column
  * @method     array findByPassword(string $password) Return ChildUser objects filtered by the password column
- * @method     array findByIsActive(int $is_active) Return ChildUser objects filtered by the is_active column
- * @method     array findByIsGlobal(int $is_global) Return ChildUser objects filtered by the is_global column
+ * @method     array findByIsActive(int $active) Return ChildUser objects filtered by the active column
+ * @method     array findByIsGlobal(int $global) Return ChildUser objects filtered by the global column
  *
  */
 abstract class UserQuery extends ModelCriteria
@@ -151,7 +151,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOGIN, PASSWORD, IS_ACTIVE, IS_GLOBAL FROM user WHERE ID = :p0';
+        $sql = 'SELECT ID, LOGIN, PASSWORD, ACTIVE, GLOBAL FROM user WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -340,13 +340,13 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_active column
+     * Filter the query on the active column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsActive(1234); // WHERE is_active = 1234
-     * $query->filterByIsActive(array(12, 34)); // WHERE is_active IN (12, 34)
-     * $query->filterByIsActive(array('min' => 12)); // WHERE is_active > 12
+     * $query->filterByIsActive(1234); // WHERE active = 1234
+     * $query->filterByIsActive(array(12, 34)); // WHERE active IN (12, 34)
+     * $query->filterByIsActive(array('min' => 12)); // WHERE active > 12
      * </code>
      *
      * @param     mixed $isActive The value to use as filter.
@@ -362,11 +362,11 @@ abstract class UserQuery extends ModelCriteria
         if (is_array($isActive)) {
             $useMinMax = false;
             if (isset($isActive['min'])) {
-                $this->addUsingAlias(UserTableMap::COL_IS_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UserTableMap::COL_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isActive['max'])) {
-                $this->addUsingAlias(UserTableMap::COL_IS_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UserTableMap::COL_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -377,17 +377,17 @@ abstract class UserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_IS_ACTIVE, $isActive, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_ACTIVE, $isActive, $comparison);
     }
 
     /**
-     * Filter the query on the is_global column
+     * Filter the query on the global column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsGlobal(1234); // WHERE is_global = 1234
-     * $query->filterByIsGlobal(array(12, 34)); // WHERE is_global IN (12, 34)
-     * $query->filterByIsGlobal(array('min' => 12)); // WHERE is_global > 12
+     * $query->filterByIsGlobal(1234); // WHERE global = 1234
+     * $query->filterByIsGlobal(array(12, 34)); // WHERE global IN (12, 34)
+     * $query->filterByIsGlobal(array('min' => 12)); // WHERE global > 12
      * </code>
      *
      * @param     mixed $isGlobal The value to use as filter.
@@ -403,11 +403,11 @@ abstract class UserQuery extends ModelCriteria
         if (is_array($isGlobal)) {
             $useMinMax = false;
             if (isset($isGlobal['min'])) {
-                $this->addUsingAlias(UserTableMap::COL_IS_GLOBAL, $isGlobal['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UserTableMap::COL_GLOBAL, $isGlobal['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isGlobal['max'])) {
-                $this->addUsingAlias(UserTableMap::COL_IS_GLOBAL, $isGlobal['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UserTableMap::COL_GLOBAL, $isGlobal['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -418,7 +418,7 @@ abstract class UserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_IS_GLOBAL, $isGlobal, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_GLOBAL, $isGlobal, $comparison);
     }
 
     /**

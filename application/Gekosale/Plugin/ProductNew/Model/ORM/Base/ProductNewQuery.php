@@ -26,13 +26,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductNewQuery orderByProductId($order = Criteria::ASC) Order by the product_id column
  * @method     ChildProductNewQuery orderByStartDate($order = Criteria::ASC) Order by the start_date column
  * @method     ChildProductNewQuery orderByEndDate($order = Criteria::ASC) Order by the end_date column
- * @method     ChildProductNewQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
+ * @method     ChildProductNewQuery orderByIsActive($order = Criteria::ASC) Order by the active column
  *
  * @method     ChildProductNewQuery groupById() Group by the id column
  * @method     ChildProductNewQuery groupByProductId() Group by the product_id column
  * @method     ChildProductNewQuery groupByStartDate() Group by the start_date column
  * @method     ChildProductNewQuery groupByEndDate() Group by the end_date column
- * @method     ChildProductNewQuery groupByIsActive() Group by the is_active column
+ * @method     ChildProductNewQuery groupByIsActive() Group by the active column
  *
  * @method     ChildProductNewQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProductNewQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -49,13 +49,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProductNew findOneByProductId(int $product_id) Return the first ChildProductNew filtered by the product_id column
  * @method     ChildProductNew findOneByStartDate(string $start_date) Return the first ChildProductNew filtered by the start_date column
  * @method     ChildProductNew findOneByEndDate(string $end_date) Return the first ChildProductNew filtered by the end_date column
- * @method     ChildProductNew findOneByIsActive(int $is_active) Return the first ChildProductNew filtered by the is_active column
+ * @method     ChildProductNew findOneByIsActive(int $active) Return the first ChildProductNew filtered by the active column
  *
  * @method     array findById(int $id) Return ChildProductNew objects filtered by the id column
  * @method     array findByProductId(int $product_id) Return ChildProductNew objects filtered by the product_id column
  * @method     array findByStartDate(string $start_date) Return ChildProductNew objects filtered by the start_date column
  * @method     array findByEndDate(string $end_date) Return ChildProductNew objects filtered by the end_date column
- * @method     array findByIsActive(int $is_active) Return ChildProductNew objects filtered by the is_active column
+ * @method     array findByIsActive(int $active) Return ChildProductNew objects filtered by the active column
  *
  */
 abstract class ProductNewQuery extends ModelCriteria
@@ -144,7 +144,7 @@ abstract class ProductNewQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, PRODUCT_ID, START_DATE, END_DATE, IS_ACTIVE FROM product_new WHERE ID = :p0';
+        $sql = 'SELECT ID, PRODUCT_ID, START_DATE, END_DATE, ACTIVE FROM product_new WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -404,13 +404,13 @@ abstract class ProductNewQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_active column
+     * Filter the query on the active column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsActive(1234); // WHERE is_active = 1234
-     * $query->filterByIsActive(array(12, 34)); // WHERE is_active IN (12, 34)
-     * $query->filterByIsActive(array('min' => 12)); // WHERE is_active > 12
+     * $query->filterByIsActive(1234); // WHERE active = 1234
+     * $query->filterByIsActive(array(12, 34)); // WHERE active IN (12, 34)
+     * $query->filterByIsActive(array('min' => 12)); // WHERE active > 12
      * </code>
      *
      * @param     mixed $isActive The value to use as filter.
@@ -426,11 +426,11 @@ abstract class ProductNewQuery extends ModelCriteria
         if (is_array($isActive)) {
             $useMinMax = false;
             if (isset($isActive['min'])) {
-                $this->addUsingAlias(ProductNewTableMap::COL_IS_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ProductNewTableMap::COL_ACTIVE, $isActive['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isActive['max'])) {
-                $this->addUsingAlias(ProductNewTableMap::COL_IS_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ProductNewTableMap::COL_ACTIVE, $isActive['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -441,7 +441,7 @@ abstract class ProductNewQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ProductNewTableMap::COL_IS_ACTIVE, $isActive, $comparison);
+        return $this->addUsingAlias(ProductNewTableMap::COL_ACTIVE, $isActive, $comparison);
     }
 
     /**

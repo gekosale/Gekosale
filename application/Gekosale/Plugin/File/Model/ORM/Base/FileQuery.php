@@ -34,13 +34,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFileQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildFileQuery orderByFileTypeId($order = Criteria::ASC) Order by the file_type_id column
  * @method     ChildFileQuery orderByFileExtensionId($order = Criteria::ASC) Order by the file_extension_id column
- * @method     ChildFileQuery orderByIsVisible($order = Criteria::ASC) Order by the is_visible column
+ * @method     ChildFileQuery orderByIsVisible($order = Criteria::ASC) Order by the visible column
  *
  * @method     ChildFileQuery groupById() Group by the id column
  * @method     ChildFileQuery groupByName() Group by the name column
  * @method     ChildFileQuery groupByFileTypeId() Group by the file_type_id column
  * @method     ChildFileQuery groupByFileExtensionId() Group by the file_extension_id column
- * @method     ChildFileQuery groupByIsVisible() Group by the is_visible column
+ * @method     ChildFileQuery groupByIsVisible() Group by the visible column
  *
  * @method     ChildFileQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildFileQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -89,13 +89,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFile findOneByName(string $name) Return the first ChildFile filtered by the name column
  * @method     ChildFile findOneByFileTypeId(int $file_type_id) Return the first ChildFile filtered by the file_type_id column
  * @method     ChildFile findOneByFileExtensionId(int $file_extension_id) Return the first ChildFile filtered by the file_extension_id column
- * @method     ChildFile findOneByIsVisible(int $is_visible) Return the first ChildFile filtered by the is_visible column
+ * @method     ChildFile findOneByIsVisible(int $visible) Return the first ChildFile filtered by the visible column
  *
  * @method     array findById(int $id) Return ChildFile objects filtered by the id column
  * @method     array findByName(string $name) Return ChildFile objects filtered by the name column
  * @method     array findByFileTypeId(int $file_type_id) Return ChildFile objects filtered by the file_type_id column
  * @method     array findByFileExtensionId(int $file_extension_id) Return ChildFile objects filtered by the file_extension_id column
- * @method     array findByIsVisible(int $is_visible) Return ChildFile objects filtered by the is_visible column
+ * @method     array findByIsVisible(int $visible) Return ChildFile objects filtered by the visible column
  *
  */
 abstract class FileQuery extends ModelCriteria
@@ -184,7 +184,7 @@ abstract class FileQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, NAME, FILE_TYPE_ID, FILE_EXTENSION_ID, IS_VISIBLE FROM file WHERE ID = :p0';
+        $sql = 'SELECT ID, NAME, FILE_TYPE_ID, FILE_EXTENSION_ID, VISIBLE FROM file WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -426,13 +426,13 @@ abstract class FileQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_visible column
+     * Filter the query on the visible column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsVisible(1234); // WHERE is_visible = 1234
-     * $query->filterByIsVisible(array(12, 34)); // WHERE is_visible IN (12, 34)
-     * $query->filterByIsVisible(array('min' => 12)); // WHERE is_visible > 12
+     * $query->filterByIsVisible(1234); // WHERE visible = 1234
+     * $query->filterByIsVisible(array(12, 34)); // WHERE visible IN (12, 34)
+     * $query->filterByIsVisible(array('min' => 12)); // WHERE visible > 12
      * </code>
      *
      * @param     mixed $isVisible The value to use as filter.
@@ -448,11 +448,11 @@ abstract class FileQuery extends ModelCriteria
         if (is_array($isVisible)) {
             $useMinMax = false;
             if (isset($isVisible['min'])) {
-                $this->addUsingAlias(FileTableMap::COL_IS_VISIBLE, $isVisible['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(FileTableMap::COL_VISIBLE, $isVisible['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isVisible['max'])) {
-                $this->addUsingAlias(FileTableMap::COL_IS_VISIBLE, $isVisible['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(FileTableMap::COL_VISIBLE, $isVisible['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -463,7 +463,7 @@ abstract class FileQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(FileTableMap::COL_IS_VISIBLE, $isVisible, $comparison);
+        return $this->addUsingAlias(FileTableMap::COL_VISIBLE, $isVisible, $comparison);
     }
 
     /**

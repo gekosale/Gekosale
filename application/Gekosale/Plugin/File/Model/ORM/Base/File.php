@@ -105,11 +105,11 @@ abstract class File implements ActiveRecordInterface
     protected $file_extension_id;
 
     /**
-     * The value for the is_visible field.
+     * The value for the visible field.
      * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $is_visible;
+    protected $visible;
 
     /**
      * @var        ObjectCollection|ChildBlogPhoto[] Collection to store aggregation of ChildBlogPhoto objects.
@@ -235,7 +235,7 @@ abstract class File implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_visible = 0;
+        $this->visible = 0;
     }
 
     /**
@@ -543,14 +543,14 @@ abstract class File implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_visible] column value.
+     * Get the [visible] column value.
      * 
      * @return   int
      */
     public function getIsVisible()
     {
 
-        return $this->is_visible;
+        return $this->visible;
     }
 
     /**
@@ -638,7 +638,7 @@ abstract class File implements ActiveRecordInterface
     } // setFileExtensionId()
 
     /**
-     * Set the value of [is_visible] column.
+     * Set the value of [visible] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\File\Model\ORM\File The current object (for fluent API support)
@@ -649,9 +649,9 @@ abstract class File implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_visible !== $v) {
-            $this->is_visible = $v;
-            $this->modifiedColumns[FileTableMap::COL_IS_VISIBLE] = true;
+        if ($this->visible !== $v) {
+            $this->visible = $v;
+            $this->modifiedColumns[FileTableMap::COL_VISIBLE] = true;
         }
 
 
@@ -668,7 +668,7 @@ abstract class File implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_visible !== 0) {
+            if ($this->visible !== 0) {
                 return false;
             }
 
@@ -712,7 +712,7 @@ abstract class File implements ActiveRecordInterface
             $this->file_extension_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FileTableMap::translateFieldName('IsVisible', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_visible = (null !== $col) ? (int) $col : null;
+            $this->visible = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1119,8 +1119,8 @@ abstract class File implements ActiveRecordInterface
         if ($this->isColumnModified(FileTableMap::COL_FILE_EXTENSION_ID)) {
             $modifiedColumns[':p' . $index++]  = 'FILE_EXTENSION_ID';
         }
-        if ($this->isColumnModified(FileTableMap::COL_IS_VISIBLE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_VISIBLE';
+        if ($this->isColumnModified(FileTableMap::COL_VISIBLE)) {
+            $modifiedColumns[':p' . $index++]  = 'VISIBLE';
         }
 
         $sql = sprintf(
@@ -1145,8 +1145,8 @@ abstract class File implements ActiveRecordInterface
                     case 'FILE_EXTENSION_ID':                        
                         $stmt->bindValue($identifier, $this->file_extension_id, PDO::PARAM_INT);
                         break;
-                    case 'IS_VISIBLE':                        
-                        $stmt->bindValue($identifier, $this->is_visible, PDO::PARAM_INT);
+                    case 'VISIBLE':                        
+                        $stmt->bindValue($identifier, $this->visible, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1386,7 +1386,7 @@ abstract class File implements ActiveRecordInterface
         if ($this->isColumnModified(FileTableMap::COL_NAME)) $criteria->add(FileTableMap::COL_NAME, $this->name);
         if ($this->isColumnModified(FileTableMap::COL_FILE_TYPE_ID)) $criteria->add(FileTableMap::COL_FILE_TYPE_ID, $this->file_type_id);
         if ($this->isColumnModified(FileTableMap::COL_FILE_EXTENSION_ID)) $criteria->add(FileTableMap::COL_FILE_EXTENSION_ID, $this->file_extension_id);
-        if ($this->isColumnModified(FileTableMap::COL_IS_VISIBLE)) $criteria->add(FileTableMap::COL_IS_VISIBLE, $this->is_visible);
+        if ($this->isColumnModified(FileTableMap::COL_VISIBLE)) $criteria->add(FileTableMap::COL_VISIBLE, $this->visible);
 
         return $criteria;
     }
@@ -3782,7 +3782,7 @@ abstract class File implements ActiveRecordInterface
         $this->name = null;
         $this->file_type_id = null;
         $this->file_extension_id = null;
-        $this->is_visible = null;
+        $this->visible = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

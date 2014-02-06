@@ -75,18 +75,18 @@ abstract class PaymentMethod implements ActiveRecordInterface
     protected $controller;
 
     /**
-     * The value for the is_online field.
+     * The value for the online field.
      * Note: this column has a database default value of: true
      * @var        boolean
      */
-    protected $is_online;
+    protected $online;
 
     /**
-     * The value for the is_active field.
+     * The value for the active field.
      * Note: this column has a database default value of: true
      * @var        boolean
      */
-    protected $is_active;
+    protected $active;
 
     /**
      * The value for the maximum_amount field.
@@ -179,8 +179,8 @@ abstract class PaymentMethod implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_online = true;
-        $this->is_active = true;
+        $this->online = true;
+        $this->active = true;
         $this->hierarchy = 0;
     }
 
@@ -467,25 +467,25 @@ abstract class PaymentMethod implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_online] column value.
+     * Get the [online] column value.
      * 
      * @return   boolean
      */
     public function getIsOnline()
     {
 
-        return $this->is_online;
+        return $this->online;
     }
 
     /**
-     * Get the [is_active] column value.
+     * Get the [active] column value.
      * 
      * @return   boolean
      */
     public function getIsActive()
     {
 
-        return $this->is_active;
+        return $this->active;
     }
 
     /**
@@ -593,7 +593,7 @@ abstract class PaymentMethod implements ActiveRecordInterface
     } // setController()
 
     /**
-     * Sets the value of the [is_online] column.
+     * Sets the value of the [online] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -612,9 +612,9 @@ abstract class PaymentMethod implements ActiveRecordInterface
             }
         }
 
-        if ($this->is_online !== $v) {
-            $this->is_online = $v;
-            $this->modifiedColumns[PaymentMethodTableMap::COL_IS_ONLINE] = true;
+        if ($this->online !== $v) {
+            $this->online = $v;
+            $this->modifiedColumns[PaymentMethodTableMap::COL_ONLINE] = true;
         }
 
 
@@ -622,7 +622,7 @@ abstract class PaymentMethod implements ActiveRecordInterface
     } // setIsOnline()
 
     /**
-     * Sets the value of the [is_active] column.
+     * Sets the value of the [active] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -641,9 +641,9 @@ abstract class PaymentMethod implements ActiveRecordInterface
             }
         }
 
-        if ($this->is_active !== $v) {
-            $this->is_active = $v;
-            $this->modifiedColumns[PaymentMethodTableMap::COL_IS_ACTIVE] = true;
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[PaymentMethodTableMap::COL_ACTIVE] = true;
         }
 
 
@@ -744,11 +744,11 @@ abstract class PaymentMethod implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_online !== true) {
+            if ($this->online !== true) {
                 return false;
             }
 
-            if ($this->is_active !== true) {
+            if ($this->active !== true) {
                 return false;
             }
 
@@ -790,10 +790,10 @@ abstract class PaymentMethod implements ActiveRecordInterface
             $this->controller = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PaymentMethodTableMap::translateFieldName('IsOnline', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_online = (null !== $col) ? (boolean) $col : null;
+            $this->online = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PaymentMethodTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_active = (null !== $col) ? (boolean) $col : null;
+            $this->active = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PaymentMethodTableMap::translateFieldName('MaximumAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->maximum_amount = (null !== $col) ? (string) $col : null;
@@ -1103,11 +1103,11 @@ abstract class PaymentMethod implements ActiveRecordInterface
         if ($this->isColumnModified(PaymentMethodTableMap::COL_CONTROLLER)) {
             $modifiedColumns[':p' . $index++]  = 'CONTROLLER';
         }
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ONLINE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ONLINE';
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_ONLINE)) {
+            $modifiedColumns[':p' . $index++]  = 'ONLINE';
         }
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ACTIVE';
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'ACTIVE';
         }
         if ($this->isColumnModified(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT)) {
             $modifiedColumns[':p' . $index++]  = 'MAXIMUM_AMOUNT';
@@ -1138,11 +1138,11 @@ abstract class PaymentMethod implements ActiveRecordInterface
                     case 'CONTROLLER':                        
                         $stmt->bindValue($identifier, $this->controller, PDO::PARAM_STR);
                         break;
-                    case 'IS_ONLINE':
-                        $stmt->bindValue($identifier, (int) $this->is_online, PDO::PARAM_INT);
+                    case 'ONLINE':
+                        $stmt->bindValue($identifier, (int) $this->online, PDO::PARAM_INT);
                         break;
-                    case 'IS_ACTIVE':
-                        $stmt->bindValue($identifier, (int) $this->is_active, PDO::PARAM_INT);
+                    case 'ACTIVE':
+                        $stmt->bindValue($identifier, (int) $this->active, PDO::PARAM_INT);
                         break;
                     case 'MAXIMUM_AMOUNT':                        
                         $stmt->bindValue($identifier, $this->maximum_amount, PDO::PARAM_STR);
@@ -1398,8 +1398,8 @@ abstract class PaymentMethod implements ActiveRecordInterface
 
         if ($this->isColumnModified(PaymentMethodTableMap::COL_ID)) $criteria->add(PaymentMethodTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_CONTROLLER)) $criteria->add(PaymentMethodTableMap::COL_CONTROLLER, $this->controller);
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ONLINE)) $criteria->add(PaymentMethodTableMap::COL_IS_ONLINE, $this->is_online);
-        if ($this->isColumnModified(PaymentMethodTableMap::COL_IS_ACTIVE)) $criteria->add(PaymentMethodTableMap::COL_IS_ACTIVE, $this->is_active);
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_ONLINE)) $criteria->add(PaymentMethodTableMap::COL_ONLINE, $this->online);
+        if ($this->isColumnModified(PaymentMethodTableMap::COL_ACTIVE)) $criteria->add(PaymentMethodTableMap::COL_ACTIVE, $this->active);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT)) $criteria->add(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT, $this->maximum_amount);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_HIERARCHY)) $criteria->add(PaymentMethodTableMap::COL_HIERARCHY, $this->hierarchy);
         if ($this->isColumnModified(PaymentMethodTableMap::COL_CREATED_AT)) $criteria->add(PaymentMethodTableMap::COL_CREATED_AT, $this->created_at);
@@ -2270,8 +2270,8 @@ abstract class PaymentMethod implements ActiveRecordInterface
     {
         $this->id = null;
         $this->controller = null;
-        $this->is_online = null;
-        $this->is_active = null;
+        $this->online = null;
+        $this->active = null;
         $this->maximum_amount = null;
         $this->hierarchy = null;
         $this->created_at = null;

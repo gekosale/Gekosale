@@ -3,8 +3,6 @@
 namespace Gekosale\Core\Console\Command\Cache;
 
 use Gekosale\Core\Console\Command\AbstractCommand;
-use Gekosale\Core\Db;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

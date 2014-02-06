@@ -82,14 +82,14 @@ class PaymentMethodTableMap extends TableMap
     const COL_CONTROLLER = 'payment_method.CONTROLLER';
 
     /**
-     * the column name for the IS_ONLINE field
+     * the column name for the ONLINE field
      */
-    const COL_IS_ONLINE = 'payment_method.IS_ONLINE';
+    const COL_ONLINE = 'payment_method.ONLINE';
 
     /**
-     * the column name for the IS_ACTIVE field
+     * the column name for the ACTIVE field
      */
-    const COL_IS_ACTIVE = 'payment_method.IS_ACTIVE';
+    const COL_ACTIVE = 'payment_method.ACTIVE';
 
     /**
      * the column name for the MAXIMUM_AMOUNT field
@@ -134,9 +134,9 @@ class PaymentMethodTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Controller', 'IsOnline', 'IsActive', 'MaximumAmount', 'Hierarchy', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'controller', 'isOnline', 'isActive', 'maximumAmount', 'hierarchy', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(PaymentMethodTableMap::COL_ID, PaymentMethodTableMap::COL_CONTROLLER, PaymentMethodTableMap::COL_IS_ONLINE, PaymentMethodTableMap::COL_IS_ACTIVE, PaymentMethodTableMap::COL_MAXIMUM_AMOUNT, PaymentMethodTableMap::COL_HIERARCHY, PaymentMethodTableMap::COL_CREATED_AT, PaymentMethodTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_CONTROLLER', 'COL_IS_ONLINE', 'COL_IS_ACTIVE', 'COL_MAXIMUM_AMOUNT', 'COL_HIERARCHY', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'controller', 'is_online', 'is_active', 'maximum_amount', 'hierarchy', 'created_at', 'updated_at', ),
+        self::TYPE_COLNAME       => array(PaymentMethodTableMap::COL_ID, PaymentMethodTableMap::COL_CONTROLLER, PaymentMethodTableMap::COL_ONLINE, PaymentMethodTableMap::COL_ACTIVE, PaymentMethodTableMap::COL_MAXIMUM_AMOUNT, PaymentMethodTableMap::COL_HIERARCHY, PaymentMethodTableMap::COL_CREATED_AT, PaymentMethodTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_CONTROLLER', 'COL_ONLINE', 'COL_ACTIVE', 'COL_MAXIMUM_AMOUNT', 'COL_HIERARCHY', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'controller', 'online', 'active', 'maximum_amount', 'hierarchy', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -149,9 +149,9 @@ class PaymentMethodTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Controller' => 1, 'IsOnline' => 2, 'IsActive' => 3, 'MaximumAmount' => 4, 'Hierarchy' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'controller' => 1, 'isOnline' => 2, 'isActive' => 3, 'maximumAmount' => 4, 'hierarchy' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(PaymentMethodTableMap::COL_ID => 0, PaymentMethodTableMap::COL_CONTROLLER => 1, PaymentMethodTableMap::COL_IS_ONLINE => 2, PaymentMethodTableMap::COL_IS_ACTIVE => 3, PaymentMethodTableMap::COL_MAXIMUM_AMOUNT => 4, PaymentMethodTableMap::COL_HIERARCHY => 5, PaymentMethodTableMap::COL_CREATED_AT => 6, PaymentMethodTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_CONTROLLER' => 1, 'COL_IS_ONLINE' => 2, 'COL_IS_ACTIVE' => 3, 'COL_MAXIMUM_AMOUNT' => 4, 'COL_HIERARCHY' => 5, 'COL_CREATED_AT' => 6, 'COL_UPDATED_AT' => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'controller' => 1, 'is_online' => 2, 'is_active' => 3, 'maximum_amount' => 4, 'hierarchy' => 5, 'created_at' => 6, 'updated_at' => 7, ),
+        self::TYPE_COLNAME       => array(PaymentMethodTableMap::COL_ID => 0, PaymentMethodTableMap::COL_CONTROLLER => 1, PaymentMethodTableMap::COL_ONLINE => 2, PaymentMethodTableMap::COL_ACTIVE => 3, PaymentMethodTableMap::COL_MAXIMUM_AMOUNT => 4, PaymentMethodTableMap::COL_HIERARCHY => 5, PaymentMethodTableMap::COL_CREATED_AT => 6, PaymentMethodTableMap::COL_UPDATED_AT => 7, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_CONTROLLER' => 1, 'COL_ONLINE' => 2, 'COL_ACTIVE' => 3, 'COL_MAXIMUM_AMOUNT' => 4, 'COL_HIERARCHY' => 5, 'COL_CREATED_AT' => 6, 'COL_UPDATED_AT' => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'controller' => 1, 'online' => 2, 'active' => 3, 'maximum_amount' => 4, 'hierarchy' => 5, 'created_at' => 6, 'updated_at' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -173,8 +173,8 @@ class PaymentMethodTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('CONTROLLER', 'Controller', 'VARCHAR', true, 64, null);
-        $this->addColumn('IS_ONLINE', 'IsOnline', 'BOOLEAN', true, 1, true);
-        $this->addColumn('IS_ACTIVE', 'IsActive', 'BOOLEAN', true, 1, true);
+        $this->addColumn('ONLINE', 'IsOnline', 'BOOLEAN', true, 1, true);
+        $this->addColumn('ACTIVE', 'IsActive', 'BOOLEAN', true, 1, true);
         $this->addColumn('MAXIMUM_AMOUNT', 'MaximumAmount', 'DECIMAL', false, 15, null);
         $this->addColumn('HIERARCHY', 'Hierarchy', 'INTEGER', false, null, 0);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
@@ -356,8 +356,8 @@ class PaymentMethodTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(PaymentMethodTableMap::COL_ID);
             $criteria->addSelectColumn(PaymentMethodTableMap::COL_CONTROLLER);
-            $criteria->addSelectColumn(PaymentMethodTableMap::COL_IS_ONLINE);
-            $criteria->addSelectColumn(PaymentMethodTableMap::COL_IS_ACTIVE);
+            $criteria->addSelectColumn(PaymentMethodTableMap::COL_ONLINE);
+            $criteria->addSelectColumn(PaymentMethodTableMap::COL_ACTIVE);
             $criteria->addSelectColumn(PaymentMethodTableMap::COL_MAXIMUM_AMOUNT);
             $criteria->addSelectColumn(PaymentMethodTableMap::COL_HIERARCHY);
             $criteria->addSelectColumn(PaymentMethodTableMap::COL_CREATED_AT);
@@ -365,8 +365,8 @@ class PaymentMethodTableMap extends TableMap
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.CONTROLLER');
-            $criteria->addSelectColumn($alias . '.IS_ONLINE');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
+            $criteria->addSelectColumn($alias . '.ONLINE');
+            $criteria->addSelectColumn($alias . '.ACTIVE');
             $criteria->addSelectColumn($alias . '.MAXIMUM_AMOUNT');
             $criteria->addSelectColumn($alias . '.HIERARCHY');
             $criteria->addSelectColumn($alias . '.CREATED_AT');

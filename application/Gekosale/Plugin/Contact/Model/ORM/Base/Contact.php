@@ -69,11 +69,11 @@ abstract class Contact implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the is_published field.
+     * The value for the published field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_published;
+    protected $published;
 
     /**
      * The value for the created_at field.
@@ -153,7 +153,7 @@ abstract class Contact implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_published = 1;
+        $this->published = 1;
     }
 
     /**
@@ -428,14 +428,14 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_published] column value.
+     * Get the [published] column value.
      * 
      * @return   int
      */
     public function getIsPublished()
     {
 
-        return $this->is_published;
+        return $this->published;
     }
 
     /**
@@ -500,7 +500,7 @@ abstract class Contact implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [is_published] column.
+     * Set the value of [published] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Contact\Model\ORM\Contact The current object (for fluent API support)
@@ -511,9 +511,9 @@ abstract class Contact implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_published !== $v) {
-            $this->is_published = $v;
-            $this->modifiedColumns[ContactTableMap::COL_IS_PUBLISHED] = true;
+        if ($this->published !== $v) {
+            $this->published = $v;
+            $this->modifiedColumns[ContactTableMap::COL_PUBLISHED] = true;
         }
 
 
@@ -572,7 +572,7 @@ abstract class Contact implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_published !== 1) {
+            if ($this->published !== 1) {
                 return false;
             }
 
@@ -607,7 +607,7 @@ abstract class Contact implements ActiveRecordInterface
             $this->id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ContactTableMap::translateFieldName('IsPublished', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_published = (null !== $col) ? (int) $col : null;
+            $this->published = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ContactTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -909,8 +909,8 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(ContactTableMap::COL_IS_PUBLISHED)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_PUBLISHED';
+        if ($this->isColumnModified(ContactTableMap::COL_PUBLISHED)) {
+            $modifiedColumns[':p' . $index++]  = 'PUBLISHED';
         }
         if ($this->isColumnModified(ContactTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
@@ -932,8 +932,8 @@ abstract class Contact implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'IS_PUBLISHED':                        
-                        $stmt->bindValue($identifier, $this->is_published, PDO::PARAM_INT);
+                    case 'PUBLISHED':                        
+                        $stmt->bindValue($identifier, $this->published, PDO::PARAM_INT);
                         break;
                     case 'CREATED_AT':                        
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1150,7 +1150,7 @@ abstract class Contact implements ActiveRecordInterface
         $criteria = new Criteria(ContactTableMap::DATABASE_NAME);
 
         if ($this->isColumnModified(ContactTableMap::COL_ID)) $criteria->add(ContactTableMap::COL_ID, $this->id);
-        if ($this->isColumnModified(ContactTableMap::COL_IS_PUBLISHED)) $criteria->add(ContactTableMap::COL_IS_PUBLISHED, $this->is_published);
+        if ($this->isColumnModified(ContactTableMap::COL_PUBLISHED)) $criteria->add(ContactTableMap::COL_PUBLISHED, $this->published);
         if ($this->isColumnModified(ContactTableMap::COL_CREATED_AT)) $criteria->add(ContactTableMap::COL_CREATED_AT, $this->created_at);
         if ($this->isColumnModified(ContactTableMap::COL_UPDATED_AT)) $criteria->add(ContactTableMap::COL_UPDATED_AT, $this->updated_at);
 
@@ -2089,7 +2089,7 @@ abstract class Contact implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->is_published = null;
+        $this->published = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

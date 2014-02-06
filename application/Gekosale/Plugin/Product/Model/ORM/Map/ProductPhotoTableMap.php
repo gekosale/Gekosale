@@ -86,14 +86,14 @@ class ProductPhotoTableMap extends TableMap
     const COL_PHOTO_ID = 'product_photo.PHOTO_ID';
 
     /**
-     * the column name for the IS_MAIN_PHOTO field
+     * the column name for the MAIN_PHOTO field
      */
-    const COL_IS_MAIN_PHOTO = 'product_photo.IS_MAIN_PHOTO';
+    const COL_MAIN_PHOTO = 'product_photo.MAIN_PHOTO';
 
     /**
-     * the column name for the IS_VISIBLE field
+     * the column name for the VISIBLE field
      */
-    const COL_IS_VISIBLE = 'product_photo.IS_VISIBLE';
+    const COL_VISIBLE = 'product_photo.VISIBLE';
 
     /**
      * The default string format for model objects of the related table
@@ -109,9 +109,9 @@ class ProductPhotoTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'ProductId', 'PhotoId', 'IsMainPhoto', 'IsVisible', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'productId', 'photoId', 'isMainPhoto', 'isVisible', ),
-        self::TYPE_COLNAME       => array(ProductPhotoTableMap::COL_ID, ProductPhotoTableMap::COL_PRODUCT_ID, ProductPhotoTableMap::COL_PHOTO_ID, ProductPhotoTableMap::COL_IS_MAIN_PHOTO, ProductPhotoTableMap::COL_IS_VISIBLE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PRODUCT_ID', 'COL_PHOTO_ID', 'COL_IS_MAIN_PHOTO', 'COL_IS_VISIBLE', ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'photo_id', 'is_main_photo', 'is_visible', ),
+        self::TYPE_COLNAME       => array(ProductPhotoTableMap::COL_ID, ProductPhotoTableMap::COL_PRODUCT_ID, ProductPhotoTableMap::COL_PHOTO_ID, ProductPhotoTableMap::COL_MAIN_PHOTO, ProductPhotoTableMap::COL_VISIBLE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PRODUCT_ID', 'COL_PHOTO_ID', 'COL_MAIN_PHOTO', 'COL_VISIBLE', ),
+        self::TYPE_FIELDNAME     => array('id', 'product_id', 'photo_id', 'main_photo', 'visible', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -124,9 +124,9 @@ class ProductPhotoTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'PhotoId' => 2, 'IsMainPhoto' => 3, 'IsVisible' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'productId' => 1, 'photoId' => 2, 'isMainPhoto' => 3, 'isVisible' => 4, ),
-        self::TYPE_COLNAME       => array(ProductPhotoTableMap::COL_ID => 0, ProductPhotoTableMap::COL_PRODUCT_ID => 1, ProductPhotoTableMap::COL_PHOTO_ID => 2, ProductPhotoTableMap::COL_IS_MAIN_PHOTO => 3, ProductPhotoTableMap::COL_IS_VISIBLE => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PRODUCT_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_IS_MAIN_PHOTO' => 3, 'COL_IS_VISIBLE' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'photo_id' => 2, 'is_main_photo' => 3, 'is_visible' => 4, ),
+        self::TYPE_COLNAME       => array(ProductPhotoTableMap::COL_ID => 0, ProductPhotoTableMap::COL_PRODUCT_ID => 1, ProductPhotoTableMap::COL_PHOTO_ID => 2, ProductPhotoTableMap::COL_MAIN_PHOTO => 3, ProductPhotoTableMap::COL_VISIBLE => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PRODUCT_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_MAIN_PHOTO' => 3, 'COL_VISIBLE' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'photo_id' => 2, 'main_photo' => 3, 'visible' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -149,8 +149,8 @@ class ProductPhotoTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addForeignKey('PRODUCT_ID', 'ProductId', 'INTEGER', 'product', 'ID', true, 10, null);
         $this->addForeignKey('PHOTO_ID', 'PhotoId', 'INTEGER', 'file', 'ID', false, 10, null);
-        $this->addColumn('IS_MAIN_PHOTO', 'IsMainPhoto', 'INTEGER', true, 10, 1);
-        $this->addColumn('IS_VISIBLE', 'IsVisible', 'INTEGER', true, null, 1);
+        $this->addColumn('MAIN_PHOTO', 'IsMainPhoto', 'INTEGER', true, 10, 1);
+        $this->addColumn('VISIBLE', 'IsVisible', 'INTEGER', true, null, 1);
     } // initialize()
 
     /**
@@ -303,14 +303,14 @@ class ProductPhotoTableMap extends TableMap
             $criteria->addSelectColumn(ProductPhotoTableMap::COL_ID);
             $criteria->addSelectColumn(ProductPhotoTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductPhotoTableMap::COL_PHOTO_ID);
-            $criteria->addSelectColumn(ProductPhotoTableMap::COL_IS_MAIN_PHOTO);
-            $criteria->addSelectColumn(ProductPhotoTableMap::COL_IS_VISIBLE);
+            $criteria->addSelectColumn(ProductPhotoTableMap::COL_MAIN_PHOTO);
+            $criteria->addSelectColumn(ProductPhotoTableMap::COL_VISIBLE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PRODUCT_ID');
             $criteria->addSelectColumn($alias . '.PHOTO_ID');
-            $criteria->addSelectColumn($alias . '.IS_MAIN_PHOTO');
-            $criteria->addSelectColumn($alias . '.IS_VISIBLE');
+            $criteria->addSelectColumn($alias . '.MAIN_PHOTO');
+            $criteria->addSelectColumn($alias . '.VISIBLE');
         }
     }
 

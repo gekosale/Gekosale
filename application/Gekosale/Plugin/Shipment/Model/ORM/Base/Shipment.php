@@ -100,11 +100,11 @@ abstract class Shipment implements ActiveRecordInterface
     protected $model;
 
     /**
-     * The value for the is_sent field.
+     * The value for the sent field.
      * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $is_sent;
+    protected $sent;
 
     /**
      * The value for the envelope_id field.
@@ -128,7 +128,7 @@ abstract class Shipment implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_sent = 0;
+        $this->sent = 0;
     }
 
     /**
@@ -480,14 +480,14 @@ abstract class Shipment implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_sent] column value.
+     * Get the [sent] column value.
      * 
      * @return   int
      */
     public function getIsSent()
     {
 
-        return $this->is_sent;
+        return $this->sent;
     }
 
     /**
@@ -673,7 +673,7 @@ abstract class Shipment implements ActiveRecordInterface
     } // setModel()
 
     /**
-     * Set the value of [is_sent] column.
+     * Set the value of [sent] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Shipment\Model\ORM\Shipment The current object (for fluent API support)
@@ -684,9 +684,9 @@ abstract class Shipment implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_sent !== $v) {
-            $this->is_sent = $v;
-            $this->modifiedColumns[ShipmentTableMap::COL_IS_SENT] = true;
+        if ($this->sent !== $v) {
+            $this->sent = $v;
+            $this->modifiedColumns[ShipmentTableMap::COL_SENT] = true;
         }
 
 
@@ -724,7 +724,7 @@ abstract class Shipment implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_sent !== 0) {
+            if ($this->sent !== 0) {
                 return false;
             }
 
@@ -786,7 +786,7 @@ abstract class Shipment implements ActiveRecordInterface
             $this->model = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ShipmentTableMap::translateFieldName('IsSent', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_sent = (null !== $col) ? (int) $col : null;
+            $this->sent = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ShipmentTableMap::translateFieldName('EnvelopeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->envelope_id = (null !== $col) ? (string) $col : null;
@@ -1036,8 +1036,8 @@ abstract class Shipment implements ActiveRecordInterface
         if ($this->isColumnModified(ShipmentTableMap::COL_MODEL)) {
             $modifiedColumns[':p' . $index++]  = 'MODEL';
         }
-        if ($this->isColumnModified(ShipmentTableMap::COL_IS_SENT)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_SENT';
+        if ($this->isColumnModified(ShipmentTableMap::COL_SENT)) {
+            $modifiedColumns[':p' . $index++]  = 'SENT';
         }
         if ($this->isColumnModified(ShipmentTableMap::COL_ENVELOPE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'ENVELOPE_ID';
@@ -1080,8 +1080,8 @@ abstract class Shipment implements ActiveRecordInterface
                     case 'MODEL':                        
                         $stmt->bindValue($identifier, $this->model, PDO::PARAM_STR);
                         break;
-                    case 'IS_SENT':                        
-                        $stmt->bindValue($identifier, $this->is_sent, PDO::PARAM_INT);
+                    case 'SENT':                        
+                        $stmt->bindValue($identifier, $this->sent, PDO::PARAM_INT);
                         break;
                     case 'ENVELOPE_ID':                        
                         $stmt->bindValue($identifier, $this->envelope_id, PDO::PARAM_STR);
@@ -1338,7 +1338,7 @@ abstract class Shipment implements ActiveRecordInterface
         if ($this->isColumnModified(ShipmentTableMap::COL_ORDER_DATA)) $criteria->add(ShipmentTableMap::COL_ORDER_DATA, $this->order_data);
         if ($this->isColumnModified(ShipmentTableMap::COL_FORM_DATA)) $criteria->add(ShipmentTableMap::COL_FORM_DATA, $this->form_data);
         if ($this->isColumnModified(ShipmentTableMap::COL_MODEL)) $criteria->add(ShipmentTableMap::COL_MODEL, $this->model);
-        if ($this->isColumnModified(ShipmentTableMap::COL_IS_SENT)) $criteria->add(ShipmentTableMap::COL_IS_SENT, $this->is_sent);
+        if ($this->isColumnModified(ShipmentTableMap::COL_SENT)) $criteria->add(ShipmentTableMap::COL_SENT, $this->sent);
         if ($this->isColumnModified(ShipmentTableMap::COL_ENVELOPE_ID)) $criteria->add(ShipmentTableMap::COL_ENVELOPE_ID, $this->envelope_id);
 
         return $criteria;
@@ -1455,7 +1455,7 @@ abstract class Shipment implements ActiveRecordInterface
         $this->order_data = null;
         $this->form_data = null;
         $this->model = null;
-        $this->is_sent = null;
+        $this->sent = null;
         $this->envelope_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

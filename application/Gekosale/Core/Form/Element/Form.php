@@ -14,7 +14,6 @@
  */
 namespace Gekosale\Core\Form\Element;
 
-use Gekosale\Core\Form\FE;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Form extends Container

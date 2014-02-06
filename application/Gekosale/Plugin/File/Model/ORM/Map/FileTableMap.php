@@ -100,9 +100,9 @@ class FileTableMap extends TableMap
     const COL_FILE_EXTENSION_ID = 'file.FILE_EXTENSION_ID';
 
     /**
-     * the column name for the IS_VISIBLE field
+     * the column name for the VISIBLE field
      */
-    const COL_IS_VISIBLE = 'file.IS_VISIBLE';
+    const COL_VISIBLE = 'file.VISIBLE';
 
     /**
      * The default string format for model objects of the related table
@@ -118,9 +118,9 @@ class FileTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Name', 'FileTypeId', 'FileExtensionId', 'IsVisible', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'name', 'fileTypeId', 'fileExtensionId', 'isVisible', ),
-        self::TYPE_COLNAME       => array(FileTableMap::COL_ID, FileTableMap::COL_NAME, FileTableMap::COL_FILE_TYPE_ID, FileTableMap::COL_FILE_EXTENSION_ID, FileTableMap::COL_IS_VISIBLE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_FILE_TYPE_ID', 'COL_FILE_EXTENSION_ID', 'COL_IS_VISIBLE', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'file_type_id', 'file_extension_id', 'is_visible', ),
+        self::TYPE_COLNAME       => array(FileTableMap::COL_ID, FileTableMap::COL_NAME, FileTableMap::COL_FILE_TYPE_ID, FileTableMap::COL_FILE_EXTENSION_ID, FileTableMap::COL_VISIBLE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_FILE_TYPE_ID', 'COL_FILE_EXTENSION_ID', 'COL_VISIBLE', ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'file_type_id', 'file_extension_id', 'visible', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -133,9 +133,9 @@ class FileTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'FileTypeId' => 2, 'FileExtensionId' => 3, 'IsVisible' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'fileTypeId' => 2, 'fileExtensionId' => 3, 'isVisible' => 4, ),
-        self::TYPE_COLNAME       => array(FileTableMap::COL_ID => 0, FileTableMap::COL_NAME => 1, FileTableMap::COL_FILE_TYPE_ID => 2, FileTableMap::COL_FILE_EXTENSION_ID => 3, FileTableMap::COL_IS_VISIBLE => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_FILE_TYPE_ID' => 2, 'COL_FILE_EXTENSION_ID' => 3, 'COL_IS_VISIBLE' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'file_type_id' => 2, 'file_extension_id' => 3, 'is_visible' => 4, ),
+        self::TYPE_COLNAME       => array(FileTableMap::COL_ID => 0, FileTableMap::COL_NAME => 1, FileTableMap::COL_FILE_TYPE_ID => 2, FileTableMap::COL_FILE_EXTENSION_ID => 3, FileTableMap::COL_VISIBLE => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_FILE_TYPE_ID' => 2, 'COL_FILE_EXTENSION_ID' => 3, 'COL_VISIBLE' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'file_type_id' => 2, 'file_extension_id' => 3, 'visible' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -159,7 +159,7 @@ class FileTableMap extends TableMap
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 128, null);
         $this->addColumn('FILE_TYPE_ID', 'FileTypeId', 'INTEGER', true, 10, null);
         $this->addColumn('FILE_EXTENSION_ID', 'FileExtensionId', 'INTEGER', true, 10, null);
-        $this->addColumn('IS_VISIBLE', 'IsVisible', 'INTEGER', false, 10, 0);
+        $this->addColumn('VISIBLE', 'IsVisible', 'INTEGER', false, 10, 0);
     } // initialize()
 
     /**
@@ -337,13 +337,13 @@ class FileTableMap extends TableMap
             $criteria->addSelectColumn(FileTableMap::COL_NAME);
             $criteria->addSelectColumn(FileTableMap::COL_FILE_TYPE_ID);
             $criteria->addSelectColumn(FileTableMap::COL_FILE_EXTENSION_ID);
-            $criteria->addSelectColumn(FileTableMap::COL_IS_VISIBLE);
+            $criteria->addSelectColumn(FileTableMap::COL_VISIBLE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.NAME');
             $criteria->addSelectColumn($alias . '.FILE_TYPE_ID');
             $criteria->addSelectColumn($alias . '.FILE_EXTENSION_ID');
-            $criteria->addSelectColumn($alias . '.IS_VISIBLE');
+            $criteria->addSelectColumn($alias . '.VISIBLE');
         }
     }
 

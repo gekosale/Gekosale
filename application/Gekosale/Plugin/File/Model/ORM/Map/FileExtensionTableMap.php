@@ -81,9 +81,9 @@ class FileExtensionTableMap extends TableMap
     const COL_NAME = 'file_extension.NAME';
 
     /**
-     * the column name for the IS_ACTIVE field
+     * the column name for the ACTIVE field
      */
-    const COL_IS_ACTIVE = 'file_extension.IS_ACTIVE';
+    const COL_ACTIVE = 'file_extension.ACTIVE';
 
     /**
      * The default string format for model objects of the related table
@@ -99,9 +99,9 @@ class FileExtensionTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Name', 'IsActive', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'name', 'isActive', ),
-        self::TYPE_COLNAME       => array(FileExtensionTableMap::COL_ID, FileExtensionTableMap::COL_NAME, FileExtensionTableMap::COL_IS_ACTIVE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_IS_ACTIVE', ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'is_active', ),
+        self::TYPE_COLNAME       => array(FileExtensionTableMap::COL_ID, FileExtensionTableMap::COL_NAME, FileExtensionTableMap::COL_ACTIVE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_NAME', 'COL_ACTIVE', ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'active', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -114,9 +114,9 @@ class FileExtensionTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'IsActive' => 2, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'name' => 1, 'isActive' => 2, ),
-        self::TYPE_COLNAME       => array(FileExtensionTableMap::COL_ID => 0, FileExtensionTableMap::COL_NAME => 1, FileExtensionTableMap::COL_IS_ACTIVE => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_IS_ACTIVE' => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'is_active' => 2, ),
+        self::TYPE_COLNAME       => array(FileExtensionTableMap::COL_ID => 0, FileExtensionTableMap::COL_NAME => 1, FileExtensionTableMap::COL_ACTIVE => 2, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_NAME' => 1, 'COL_ACTIVE' => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'active' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -138,7 +138,7 @@ class FileExtensionTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 128, null);
-        $this->addColumn('IS_ACTIVE', 'IsActive', 'INTEGER', true, 10, 1);
+        $this->addColumn('ACTIVE', 'IsActive', 'INTEGER', true, 10, 1);
     } // initialize()
 
     /**
@@ -288,11 +288,11 @@ class FileExtensionTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(FileExtensionTableMap::COL_ID);
             $criteria->addSelectColumn(FileExtensionTableMap::COL_NAME);
-            $criteria->addSelectColumn(FileExtensionTableMap::COL_IS_ACTIVE);
+            $criteria->addSelectColumn(FileExtensionTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.NAME');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
+            $criteria->addSelectColumn($alias . '.ACTIVE');
         }
     }
 

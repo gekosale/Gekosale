@@ -91,9 +91,9 @@ class ProductNewTableMap extends TableMap
     const COL_END_DATE = 'product_new.END_DATE';
 
     /**
-     * the column name for the IS_ACTIVE field
+     * the column name for the ACTIVE field
      */
-    const COL_IS_ACTIVE = 'product_new.IS_ACTIVE';
+    const COL_ACTIVE = 'product_new.ACTIVE';
 
     /**
      * The default string format for model objects of the related table
@@ -109,9 +109,9 @@ class ProductNewTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'ProductId', 'StartDate', 'EndDate', 'IsActive', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'productId', 'startDate', 'endDate', 'isActive', ),
-        self::TYPE_COLNAME       => array(ProductNewTableMap::COL_ID, ProductNewTableMap::COL_PRODUCT_ID, ProductNewTableMap::COL_START_DATE, ProductNewTableMap::COL_END_DATE, ProductNewTableMap::COL_IS_ACTIVE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PRODUCT_ID', 'COL_START_DATE', 'COL_END_DATE', 'COL_IS_ACTIVE', ),
-        self::TYPE_FIELDNAME     => array('id', 'product_id', 'start_date', 'end_date', 'is_active', ),
+        self::TYPE_COLNAME       => array(ProductNewTableMap::COL_ID, ProductNewTableMap::COL_PRODUCT_ID, ProductNewTableMap::COL_START_DATE, ProductNewTableMap::COL_END_DATE, ProductNewTableMap::COL_ACTIVE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PRODUCT_ID', 'COL_START_DATE', 'COL_END_DATE', 'COL_ACTIVE', ),
+        self::TYPE_FIELDNAME     => array('id', 'product_id', 'start_date', 'end_date', 'active', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -124,9 +124,9 @@ class ProductNewTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'ProductId' => 1, 'StartDate' => 2, 'EndDate' => 3, 'IsActive' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'productId' => 1, 'startDate' => 2, 'endDate' => 3, 'isActive' => 4, ),
-        self::TYPE_COLNAME       => array(ProductNewTableMap::COL_ID => 0, ProductNewTableMap::COL_PRODUCT_ID => 1, ProductNewTableMap::COL_START_DATE => 2, ProductNewTableMap::COL_END_DATE => 3, ProductNewTableMap::COL_IS_ACTIVE => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PRODUCT_ID' => 1, 'COL_START_DATE' => 2, 'COL_END_DATE' => 3, 'COL_IS_ACTIVE' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'start_date' => 2, 'end_date' => 3, 'is_active' => 4, ),
+        self::TYPE_COLNAME       => array(ProductNewTableMap::COL_ID => 0, ProductNewTableMap::COL_PRODUCT_ID => 1, ProductNewTableMap::COL_START_DATE => 2, ProductNewTableMap::COL_END_DATE => 3, ProductNewTableMap::COL_ACTIVE => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PRODUCT_ID' => 1, 'COL_START_DATE' => 2, 'COL_END_DATE' => 3, 'COL_ACTIVE' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'product_id' => 1, 'start_date' => 2, 'end_date' => 3, 'active' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -150,7 +150,7 @@ class ProductNewTableMap extends TableMap
         $this->addForeignKey('PRODUCT_ID', 'ProductId', 'INTEGER', 'product', 'ID', true, 10, null);
         $this->addColumn('START_DATE', 'StartDate', 'TIMESTAMP', false, null, null);
         $this->addColumn('END_DATE', 'EndDate', 'TIMESTAMP', false, null, null);
-        $this->addColumn('IS_ACTIVE', 'IsActive', 'INTEGER', false, 10, 1);
+        $this->addColumn('ACTIVE', 'IsActive', 'INTEGER', false, 10, 1);
     } // initialize()
 
     /**
@@ -303,13 +303,13 @@ class ProductNewTableMap extends TableMap
             $criteria->addSelectColumn(ProductNewTableMap::COL_PRODUCT_ID);
             $criteria->addSelectColumn(ProductNewTableMap::COL_START_DATE);
             $criteria->addSelectColumn(ProductNewTableMap::COL_END_DATE);
-            $criteria->addSelectColumn(ProductNewTableMap::COL_IS_ACTIVE);
+            $criteria->addSelectColumn(ProductNewTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PRODUCT_ID');
             $criteria->addSelectColumn($alias . '.START_DATE');
             $criteria->addSelectColumn($alias . '.END_DATE');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
+            $criteria->addSelectColumn($alias . '.ACTIVE');
         }
     }
 

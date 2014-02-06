@@ -95,11 +95,11 @@ abstract class Category implements ActiveRecordInterface
     protected $category_id;
 
     /**
-     * The value for the is_enabled field.
+     * The value for the enabled field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_enabled;
+    protected $enabled;
 
     /**
      * The value for the created_at field.
@@ -226,7 +226,7 @@ abstract class Category implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->hierarchy = 0;
-        $this->is_enabled = 1;
+        $this->enabled = 1;
     }
 
     /**
@@ -534,14 +534,14 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_enabled] column value.
+     * Get the [enabled] column value.
      * 
      * @return   int
      */
     public function getIsEnabled()
     {
 
-        return $this->is_enabled;
+        return $this->enabled;
     }
 
     /**
@@ -677,7 +677,7 @@ abstract class Category implements ActiveRecordInterface
     } // setCategoryId()
 
     /**
-     * Set the value of [is_enabled] column.
+     * Set the value of [enabled] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Category\Model\ORM\Category The current object (for fluent API support)
@@ -688,9 +688,9 @@ abstract class Category implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_enabled !== $v) {
-            $this->is_enabled = $v;
-            $this->modifiedColumns[CategoryTableMap::COL_IS_ENABLED] = true;
+        if ($this->enabled !== $v) {
+            $this->enabled = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_ENABLED] = true;
         }
 
 
@@ -753,7 +753,7 @@ abstract class Category implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->is_enabled !== 1) {
+            if ($this->enabled !== 1) {
                 return false;
             }
 
@@ -797,7 +797,7 @@ abstract class Category implements ActiveRecordInterface
             $this->category_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CategoryTableMap::translateFieldName('IsEnabled', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_enabled = (null !== $col) ? (int) $col : null;
+            $this->enabled = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CategoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -1191,8 +1191,8 @@ abstract class Category implements ActiveRecordInterface
         if ($this->isColumnModified(CategoryTableMap::COL_CATEGORY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'CATEGORY_ID';
         }
-        if ($this->isColumnModified(CategoryTableMap::COL_IS_ENABLED)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ENABLED';
+        if ($this->isColumnModified(CategoryTableMap::COL_ENABLED)) {
+            $modifiedColumns[':p' . $index++]  = 'ENABLED';
         }
         if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
@@ -1223,8 +1223,8 @@ abstract class Category implements ActiveRecordInterface
                     case 'CATEGORY_ID':                        
                         $stmt->bindValue($identifier, $this->category_id, PDO::PARAM_INT);
                         break;
-                    case 'IS_ENABLED':                        
-                        $stmt->bindValue($identifier, $this->is_enabled, PDO::PARAM_INT);
+                    case 'ENABLED':                        
+                        $stmt->bindValue($identifier, $this->enabled, PDO::PARAM_INT);
                         break;
                     case 'CREATED_AT':                        
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1483,7 +1483,7 @@ abstract class Category implements ActiveRecordInterface
         if ($this->isColumnModified(CategoryTableMap::COL_PHOTO_ID)) $criteria->add(CategoryTableMap::COL_PHOTO_ID, $this->photo_id);
         if ($this->isColumnModified(CategoryTableMap::COL_HIERARCHY)) $criteria->add(CategoryTableMap::COL_HIERARCHY, $this->hierarchy);
         if ($this->isColumnModified(CategoryTableMap::COL_CATEGORY_ID)) $criteria->add(CategoryTableMap::COL_CATEGORY_ID, $this->category_id);
-        if ($this->isColumnModified(CategoryTableMap::COL_IS_ENABLED)) $criteria->add(CategoryTableMap::COL_IS_ENABLED, $this->is_enabled);
+        if ($this->isColumnModified(CategoryTableMap::COL_ENABLED)) $criteria->add(CategoryTableMap::COL_ENABLED, $this->enabled);
         if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) $criteria->add(CategoryTableMap::COL_CREATED_AT, $this->created_at);
         if ($this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) $criteria->add(CategoryTableMap::COL_UPDATED_AT, $this->updated_at);
 
@@ -3211,7 +3211,7 @@ abstract class Category implements ActiveRecordInterface
         $this->photo_id = null;
         $this->hierarchy = null;
         $this->category_id = null;
-        $this->is_enabled = null;
+        $this->enabled = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

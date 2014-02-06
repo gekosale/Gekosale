@@ -25,14 +25,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogPhotoQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildBlogPhotoQuery orderByBlogId($order = Criteria::ASC) Order by the blog_id column
  * @method     ChildBlogPhotoQuery orderByPhotoId($order = Criteria::ASC) Order by the photo_id column
- * @method     ChildBlogPhotoQuery orderByIsMainPhoto($order = Criteria::ASC) Order by the is_main_photo column
+ * @method     ChildBlogPhotoQuery orderByIsMainPhoto($order = Criteria::ASC) Order by the main_photo column
  * @method     ChildBlogPhotoQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildBlogPhotoQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildBlogPhotoQuery groupById() Group by the id column
  * @method     ChildBlogPhotoQuery groupByBlogId() Group by the blog_id column
  * @method     ChildBlogPhotoQuery groupByPhotoId() Group by the photo_id column
- * @method     ChildBlogPhotoQuery groupByIsMainPhoto() Group by the is_main_photo column
+ * @method     ChildBlogPhotoQuery groupByIsMainPhoto() Group by the main_photo column
  * @method     ChildBlogPhotoQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildBlogPhotoQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -54,14 +54,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlogPhoto findOneById(int $id) Return the first ChildBlogPhoto filtered by the id column
  * @method     ChildBlogPhoto findOneByBlogId(int $blog_id) Return the first ChildBlogPhoto filtered by the blog_id column
  * @method     ChildBlogPhoto findOneByPhotoId(int $photo_id) Return the first ChildBlogPhoto filtered by the photo_id column
- * @method     ChildBlogPhoto findOneByIsMainPhoto(int $is_main_photo) Return the first ChildBlogPhoto filtered by the is_main_photo column
+ * @method     ChildBlogPhoto findOneByIsMainPhoto(int $main_photo) Return the first ChildBlogPhoto filtered by the main_photo column
  * @method     ChildBlogPhoto findOneByCreatedAt(string $created_at) Return the first ChildBlogPhoto filtered by the created_at column
  * @method     ChildBlogPhoto findOneByUpdatedAt(string $updated_at) Return the first ChildBlogPhoto filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildBlogPhoto objects filtered by the id column
  * @method     array findByBlogId(int $blog_id) Return ChildBlogPhoto objects filtered by the blog_id column
  * @method     array findByPhotoId(int $photo_id) Return ChildBlogPhoto objects filtered by the photo_id column
- * @method     array findByIsMainPhoto(int $is_main_photo) Return ChildBlogPhoto objects filtered by the is_main_photo column
+ * @method     array findByIsMainPhoto(int $main_photo) Return ChildBlogPhoto objects filtered by the main_photo column
  * @method     array findByCreatedAt(string $created_at) Return ChildBlogPhoto objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildBlogPhoto objects filtered by the updated_at column
  *
@@ -152,7 +152,7 @@ abstract class BlogPhotoQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, BLOG_ID, PHOTO_ID, IS_MAIN_PHOTO, CREATED_AT, UPDATED_AT FROM blog_photo WHERE ID = :p0';
+        $sql = 'SELECT ID, BLOG_ID, PHOTO_ID, MAIN_PHOTO, CREATED_AT, UPDATED_AT FROM blog_photo WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -369,13 +369,13 @@ abstract class BlogPhotoQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_main_photo column
+     * Filter the query on the main_photo column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsMainPhoto(1234); // WHERE is_main_photo = 1234
-     * $query->filterByIsMainPhoto(array(12, 34)); // WHERE is_main_photo IN (12, 34)
-     * $query->filterByIsMainPhoto(array('min' => 12)); // WHERE is_main_photo > 12
+     * $query->filterByIsMainPhoto(1234); // WHERE main_photo = 1234
+     * $query->filterByIsMainPhoto(array(12, 34)); // WHERE main_photo IN (12, 34)
+     * $query->filterByIsMainPhoto(array('min' => 12)); // WHERE main_photo > 12
      * </code>
      *
      * @param     mixed $isMainPhoto The value to use as filter.
@@ -391,11 +391,11 @@ abstract class BlogPhotoQuery extends ModelCriteria
         if (is_array($isMainPhoto)) {
             $useMinMax = false;
             if (isset($isMainPhoto['min'])) {
-                $this->addUsingAlias(BlogPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(BlogPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isMainPhoto['max'])) {
-                $this->addUsingAlias(BlogPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(BlogPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -406,7 +406,7 @@ abstract class BlogPhotoQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BlogPhotoTableMap::COL_IS_MAIN_PHOTO, $isMainPhoto, $comparison);
+        return $this->addUsingAlias(BlogPhotoTableMap::COL_MAIN_PHOTO, $isMainPhoto, $comparison);
     }
 
     /**

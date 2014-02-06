@@ -77,11 +77,11 @@ abstract class BlogPhoto implements ActiveRecordInterface
     protected $photo_id;
 
     /**
-     * The value for the is_main_photo field.
+     * The value for the main_photo field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_main_photo;
+    protected $main_photo;
 
     /**
      * The value for the created_at field.
@@ -121,7 +121,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_main_photo = 1;
+        $this->main_photo = 1;
     }
 
     /**
@@ -418,14 +418,14 @@ abstract class BlogPhoto implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_main_photo] column value.
+     * Get the [main_photo] column value.
      * 
      * @return   int
      */
     public function getIsMainPhoto()
     {
 
-        return $this->is_main_photo;
+        return $this->main_photo;
     }
 
     /**
@@ -540,7 +540,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
     } // setPhotoId()
 
     /**
-     * Set the value of [is_main_photo] column.
+     * Set the value of [main_photo] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Blog\Model\ORM\BlogPhoto The current object (for fluent API support)
@@ -551,9 +551,9 @@ abstract class BlogPhoto implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_main_photo !== $v) {
-            $this->is_main_photo = $v;
-            $this->modifiedColumns[BlogPhotoTableMap::COL_IS_MAIN_PHOTO] = true;
+        if ($this->main_photo !== $v) {
+            $this->main_photo = $v;
+            $this->modifiedColumns[BlogPhotoTableMap::COL_MAIN_PHOTO] = true;
         }
 
 
@@ -612,7 +612,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_main_photo !== 1) {
+            if ($this->main_photo !== 1) {
                 return false;
             }
 
@@ -653,7 +653,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
             $this->photo_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BlogPhotoTableMap::translateFieldName('IsMainPhoto', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_main_photo = (null !== $col) ? (int) $col : null;
+            $this->main_photo = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BlogPhotoTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -930,8 +930,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(BlogPhotoTableMap::COL_PHOTO_ID)) {
             $modifiedColumns[':p' . $index++]  = 'PHOTO_ID';
         }
-        if ($this->isColumnModified(BlogPhotoTableMap::COL_IS_MAIN_PHOTO)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_MAIN_PHOTO';
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_MAIN_PHOTO)) {
+            $modifiedColumns[':p' . $index++]  = 'MAIN_PHOTO';
         }
         if ($this->isColumnModified(BlogPhotoTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
@@ -959,8 +959,8 @@ abstract class BlogPhoto implements ActiveRecordInterface
                     case 'PHOTO_ID':                        
                         $stmt->bindValue($identifier, $this->photo_id, PDO::PARAM_INT);
                         break;
-                    case 'IS_MAIN_PHOTO':                        
-                        $stmt->bindValue($identifier, $this->is_main_photo, PDO::PARAM_INT);
+                    case 'MAIN_PHOTO':                        
+                        $stmt->bindValue($identifier, $this->main_photo, PDO::PARAM_INT);
                         break;
                     case 'CREATED_AT':                        
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1192,7 +1192,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(BlogPhotoTableMap::COL_ID)) $criteria->add(BlogPhotoTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_BLOG_ID)) $criteria->add(BlogPhotoTableMap::COL_BLOG_ID, $this->blog_id);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_PHOTO_ID)) $criteria->add(BlogPhotoTableMap::COL_PHOTO_ID, $this->photo_id);
-        if ($this->isColumnModified(BlogPhotoTableMap::COL_IS_MAIN_PHOTO)) $criteria->add(BlogPhotoTableMap::COL_IS_MAIN_PHOTO, $this->is_main_photo);
+        if ($this->isColumnModified(BlogPhotoTableMap::COL_MAIN_PHOTO)) $criteria->add(BlogPhotoTableMap::COL_MAIN_PHOTO, $this->main_photo);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_CREATED_AT)) $criteria->add(BlogPhotoTableMap::COL_CREATED_AT, $this->created_at);
         if ($this->isColumnModified(BlogPhotoTableMap::COL_UPDATED_AT)) $criteria->add(BlogPhotoTableMap::COL_UPDATED_AT, $this->updated_at);
 
@@ -1403,7 +1403,7 @@ abstract class BlogPhoto implements ActiveRecordInterface
         $this->id = null;
         $this->blog_id = null;
         $this->photo_id = null;
-        $this->is_main_photo = null;
+        $this->main_photo = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;

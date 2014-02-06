@@ -29,7 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCategoryQuery orderByPhotoId($order = Criteria::ASC) Order by the photo_id column
  * @method     ChildCategoryQuery orderByHierarchy($order = Criteria::ASC) Order by the hierarchy column
  * @method     ChildCategoryQuery orderByCategoryId($order = Criteria::ASC) Order by the category_id column
- * @method     ChildCategoryQuery orderByIsEnabled($order = Criteria::ASC) Order by the is_enabled column
+ * @method     ChildCategoryQuery orderByIsEnabled($order = Criteria::ASC) Order by the enabled column
  * @method     ChildCategoryQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildCategoryQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -37,7 +37,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCategoryQuery groupByPhotoId() Group by the photo_id column
  * @method     ChildCategoryQuery groupByHierarchy() Group by the hierarchy column
  * @method     ChildCategoryQuery groupByCategoryId() Group by the category_id column
- * @method     ChildCategoryQuery groupByIsEnabled() Group by the is_enabled column
+ * @method     ChildCategoryQuery groupByIsEnabled() Group by the enabled column
  * @method     ChildCategoryQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildCategoryQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -84,7 +84,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCategory findOneByPhotoId(int $photo_id) Return the first ChildCategory filtered by the photo_id column
  * @method     ChildCategory findOneByHierarchy(int $hierarchy) Return the first ChildCategory filtered by the hierarchy column
  * @method     ChildCategory findOneByCategoryId(int $category_id) Return the first ChildCategory filtered by the category_id column
- * @method     ChildCategory findOneByIsEnabled(int $is_enabled) Return the first ChildCategory filtered by the is_enabled column
+ * @method     ChildCategory findOneByIsEnabled(int $enabled) Return the first ChildCategory filtered by the enabled column
  * @method     ChildCategory findOneByCreatedAt(string $created_at) Return the first ChildCategory filtered by the created_at column
  * @method     ChildCategory findOneByUpdatedAt(string $updated_at) Return the first ChildCategory filtered by the updated_at column
  *
@@ -92,7 +92,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByPhotoId(int $photo_id) Return ChildCategory objects filtered by the photo_id column
  * @method     array findByHierarchy(int $hierarchy) Return ChildCategory objects filtered by the hierarchy column
  * @method     array findByCategoryId(int $category_id) Return ChildCategory objects filtered by the category_id column
- * @method     array findByIsEnabled(int $is_enabled) Return ChildCategory objects filtered by the is_enabled column
+ * @method     array findByIsEnabled(int $enabled) Return ChildCategory objects filtered by the enabled column
  * @method     array findByCreatedAt(string $created_at) Return ChildCategory objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildCategory objects filtered by the updated_at column
  *
@@ -183,7 +183,7 @@ abstract class CategoryQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, PHOTO_ID, HIERARCHY, CATEGORY_ID, IS_ENABLED, CREATED_AT, UPDATED_AT FROM category WHERE ID = :p0';
+        $sql = 'SELECT ID, PHOTO_ID, HIERARCHY, CATEGORY_ID, ENABLED, CREATED_AT, UPDATED_AT FROM category WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -441,13 +441,13 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_enabled column
+     * Filter the query on the enabled column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsEnabled(1234); // WHERE is_enabled = 1234
-     * $query->filterByIsEnabled(array(12, 34)); // WHERE is_enabled IN (12, 34)
-     * $query->filterByIsEnabled(array('min' => 12)); // WHERE is_enabled > 12
+     * $query->filterByIsEnabled(1234); // WHERE enabled = 1234
+     * $query->filterByIsEnabled(array(12, 34)); // WHERE enabled IN (12, 34)
+     * $query->filterByIsEnabled(array('min' => 12)); // WHERE enabled > 12
      * </code>
      *
      * @param     mixed $isEnabled The value to use as filter.
@@ -463,11 +463,11 @@ abstract class CategoryQuery extends ModelCriteria
         if (is_array($isEnabled)) {
             $useMinMax = false;
             if (isset($isEnabled['min'])) {
-                $this->addUsingAlias(CategoryTableMap::COL_IS_ENABLED, $isEnabled['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(CategoryTableMap::COL_ENABLED, $isEnabled['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isEnabled['max'])) {
-                $this->addUsingAlias(CategoryTableMap::COL_IS_ENABLED, $isEnabled['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(CategoryTableMap::COL_ENABLED, $isEnabled['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -478,7 +478,7 @@ abstract class CategoryQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(CategoryTableMap::COL_IS_ENABLED, $isEnabled, $comparison);
+        return $this->addUsingAlias(CategoryTableMap::COL_ENABLED, $isEnabled, $comparison);
     }
 
     /**

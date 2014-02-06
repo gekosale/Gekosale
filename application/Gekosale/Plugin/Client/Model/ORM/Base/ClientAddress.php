@@ -128,11 +128,11 @@ abstract class ClientAddress implements ActiveRecordInterface
     protected $city;
 
     /**
-     * The value for the is_main field.
+     * The value for the main field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_main;
+    protected $main;
 
     /**
      * The value for the country_id field.
@@ -173,7 +173,7 @@ abstract class ClientAddress implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_main = 1;
+        $this->main = 1;
         $this->client_type = 1;
     }
 
@@ -570,14 +570,14 @@ abstract class ClientAddress implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_main] column value.
+     * Get the [main] column value.
      * 
      * @return   int
      */
     public function getIsMain()
     {
 
-        return $this->is_main;
+        return $this->main;
     }
 
     /**
@@ -889,7 +889,7 @@ abstract class ClientAddress implements ActiveRecordInterface
     } // setCity()
 
     /**
-     * Set the value of [is_main] column.
+     * Set the value of [main] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Client\Model\ORM\ClientAddress The current object (for fluent API support)
@@ -900,9 +900,9 @@ abstract class ClientAddress implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_main !== $v) {
-            $this->is_main = $v;
-            $this->modifiedColumns[ClientAddressTableMap::COL_IS_MAIN] = true;
+        if ($this->main !== $v) {
+            $this->main = $v;
+            $this->modifiedColumns[ClientAddressTableMap::COL_MAIN] = true;
         }
 
 
@@ -965,7 +965,7 @@ abstract class ClientAddress implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_main !== 1) {
+            if ($this->main !== 1) {
                 return false;
             }
 
@@ -1097,7 +1097,7 @@ abstract class ClientAddress implements ActiveRecordInterface
             }
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : ClientAddressTableMap::translateFieldName('IsMain', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_main = (null !== $col) ? (int) $col : null;
+            $this->main = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : ClientAddressTableMap::translateFieldName('CountryId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->country_id = (null !== $col) ? (int) $col : null;
@@ -1434,8 +1434,8 @@ abstract class ClientAddress implements ActiveRecordInterface
         if ($this->isColumnModified(ClientAddressTableMap::COL_CITY)) {
             $modifiedColumns[':p' . $index++]  = 'CITY';
         }
-        if ($this->isColumnModified(ClientAddressTableMap::COL_IS_MAIN)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_MAIN';
+        if ($this->isColumnModified(ClientAddressTableMap::COL_MAIN)) {
+            $modifiedColumns[':p' . $index++]  = 'MAIN';
         }
         if ($this->isColumnModified(ClientAddressTableMap::COL_COUNTRY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'COUNTRY_ID';
@@ -1520,8 +1520,8 @@ abstract class ClientAddress implements ActiveRecordInterface
                         }
                         $stmt->bindValue($identifier, $this->city, PDO::PARAM_LOB);
                         break;
-                    case 'IS_MAIN':                        
-                        $stmt->bindValue($identifier, $this->is_main, PDO::PARAM_INT);
+                    case 'MAIN':                        
+                        $stmt->bindValue($identifier, $this->main, PDO::PARAM_INT);
                         break;
                     case 'COUNTRY_ID':                        
                         $stmt->bindValue($identifier, $this->country_id, PDO::PARAM_INT);
@@ -1834,7 +1834,7 @@ abstract class ClientAddress implements ActiveRecordInterface
         if ($this->isColumnModified(ClientAddressTableMap::COL_REGON)) $criteria->add(ClientAddressTableMap::COL_REGON, $this->regon);
         if ($this->isColumnModified(ClientAddressTableMap::COL_TAX_ID)) $criteria->add(ClientAddressTableMap::COL_TAX_ID, $this->tax_id);
         if ($this->isColumnModified(ClientAddressTableMap::COL_CITY)) $criteria->add(ClientAddressTableMap::COL_CITY, $this->city);
-        if ($this->isColumnModified(ClientAddressTableMap::COL_IS_MAIN)) $criteria->add(ClientAddressTableMap::COL_IS_MAIN, $this->is_main);
+        if ($this->isColumnModified(ClientAddressTableMap::COL_MAIN)) $criteria->add(ClientAddressTableMap::COL_MAIN, $this->main);
         if ($this->isColumnModified(ClientAddressTableMap::COL_COUNTRY_ID)) $criteria->add(ClientAddressTableMap::COL_COUNTRY_ID, $this->country_id);
         if ($this->isColumnModified(ClientAddressTableMap::COL_CLIENT_TYPE)) $criteria->add(ClientAddressTableMap::COL_CLIENT_TYPE, $this->client_type);
 
@@ -2063,7 +2063,7 @@ abstract class ClientAddress implements ActiveRecordInterface
         $this->regon = null;
         $this->tax_id = null;
         $this->city = null;
-        $this->is_main = null;
+        $this->main = null;
         $this->country_id = null;
         $this->client_type = null;
         $this->alreadyInSave = false;

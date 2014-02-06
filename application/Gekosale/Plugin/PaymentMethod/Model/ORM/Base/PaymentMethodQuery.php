@@ -25,8 +25,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPaymentMethodQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPaymentMethodQuery orderByController($order = Criteria::ASC) Order by the controller column
- * @method     ChildPaymentMethodQuery orderByIsOnline($order = Criteria::ASC) Order by the is_online column
- * @method     ChildPaymentMethodQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
+ * @method     ChildPaymentMethodQuery orderByIsOnline($order = Criteria::ASC) Order by the online column
+ * @method     ChildPaymentMethodQuery orderByIsActive($order = Criteria::ASC) Order by the active column
  * @method     ChildPaymentMethodQuery orderByMaximumAmount($order = Criteria::ASC) Order by the maximum_amount column
  * @method     ChildPaymentMethodQuery orderByHierarchy($order = Criteria::ASC) Order by the hierarchy column
  * @method     ChildPaymentMethodQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
@@ -34,8 +34,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPaymentMethodQuery groupById() Group by the id column
  * @method     ChildPaymentMethodQuery groupByController() Group by the controller column
- * @method     ChildPaymentMethodQuery groupByIsOnline() Group by the is_online column
- * @method     ChildPaymentMethodQuery groupByIsActive() Group by the is_active column
+ * @method     ChildPaymentMethodQuery groupByIsOnline() Group by the online column
+ * @method     ChildPaymentMethodQuery groupByIsActive() Group by the active column
  * @method     ChildPaymentMethodQuery groupByMaximumAmount() Group by the maximum_amount column
  * @method     ChildPaymentMethodQuery groupByHierarchy() Group by the hierarchy column
  * @method     ChildPaymentMethodQuery groupByCreatedAt() Group by the created_at column
@@ -62,8 +62,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPaymentMethod findOneById(int $id) Return the first ChildPaymentMethod filtered by the id column
  * @method     ChildPaymentMethod findOneByController(string $controller) Return the first ChildPaymentMethod filtered by the controller column
- * @method     ChildPaymentMethod findOneByIsOnline(boolean $is_online) Return the first ChildPaymentMethod filtered by the is_online column
- * @method     ChildPaymentMethod findOneByIsActive(boolean $is_active) Return the first ChildPaymentMethod filtered by the is_active column
+ * @method     ChildPaymentMethod findOneByIsOnline(boolean $online) Return the first ChildPaymentMethod filtered by the online column
+ * @method     ChildPaymentMethod findOneByIsActive(boolean $active) Return the first ChildPaymentMethod filtered by the active column
  * @method     ChildPaymentMethod findOneByMaximumAmount(string $maximum_amount) Return the first ChildPaymentMethod filtered by the maximum_amount column
  * @method     ChildPaymentMethod findOneByHierarchy(int $hierarchy) Return the first ChildPaymentMethod filtered by the hierarchy column
  * @method     ChildPaymentMethod findOneByCreatedAt(string $created_at) Return the first ChildPaymentMethod filtered by the created_at column
@@ -71,8 +71,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     array findById(int $id) Return ChildPaymentMethod objects filtered by the id column
  * @method     array findByController(string $controller) Return ChildPaymentMethod objects filtered by the controller column
- * @method     array findByIsOnline(boolean $is_online) Return ChildPaymentMethod objects filtered by the is_online column
- * @method     array findByIsActive(boolean $is_active) Return ChildPaymentMethod objects filtered by the is_active column
+ * @method     array findByIsOnline(boolean $online) Return ChildPaymentMethod objects filtered by the online column
+ * @method     array findByIsActive(boolean $active) Return ChildPaymentMethod objects filtered by the active column
  * @method     array findByMaximumAmount(string $maximum_amount) Return ChildPaymentMethod objects filtered by the maximum_amount column
  * @method     array findByHierarchy(int $hierarchy) Return ChildPaymentMethod objects filtered by the hierarchy column
  * @method     array findByCreatedAt(string $created_at) Return ChildPaymentMethod objects filtered by the created_at column
@@ -165,7 +165,7 @@ abstract class PaymentMethodQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, CONTROLLER, IS_ONLINE, IS_ACTIVE, MAXIMUM_AMOUNT, HIERARCHY, CREATED_AT, UPDATED_AT FROM payment_method WHERE ID = :p0';
+        $sql = 'SELECT ID, CONTROLLER, ONLINE, ACTIVE, MAXIMUM_AMOUNT, HIERARCHY, CREATED_AT, UPDATED_AT FROM payment_method WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -325,12 +325,12 @@ abstract class PaymentMethodQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_online column
+     * Filter the query on the online column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsOnline(true); // WHERE is_online = true
-     * $query->filterByIsOnline('yes'); // WHERE is_online = true
+     * $query->filterByIsOnline(true); // WHERE online = true
+     * $query->filterByIsOnline('yes'); // WHERE online = true
      * </code>
      *
      * @param     boolean|string $isOnline The value to use as filter.
@@ -345,19 +345,19 @@ abstract class PaymentMethodQuery extends ModelCriteria
     public function filterByIsOnline($isOnline = null, $comparison = null)
     {
         if (is_string($isOnline)) {
-            $is_online = in_array(strtolower($isOnline), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $online = in_array(strtolower($isOnline), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(PaymentMethodTableMap::COL_IS_ONLINE, $isOnline, $comparison);
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_ONLINE, $isOnline, $comparison);
     }
 
     /**
-     * Filter the query on the is_active column
+     * Filter the query on the active column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsActive(true); // WHERE is_active = true
-     * $query->filterByIsActive('yes'); // WHERE is_active = true
+     * $query->filterByIsActive(true); // WHERE active = true
+     * $query->filterByIsActive('yes'); // WHERE active = true
      * </code>
      *
      * @param     boolean|string $isActive The value to use as filter.
@@ -372,10 +372,10 @@ abstract class PaymentMethodQuery extends ModelCriteria
     public function filterByIsActive($isActive = null, $comparison = null)
     {
         if (is_string($isActive)) {
-            $is_active = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $active = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(PaymentMethodTableMap::COL_IS_ACTIVE, $isActive, $comparison);
+        return $this->addUsingAlias(PaymentMethodTableMap::COL_ACTIVE, $isActive, $comparison);
     }
 
     /**

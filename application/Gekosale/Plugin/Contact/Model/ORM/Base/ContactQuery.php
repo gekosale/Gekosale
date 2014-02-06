@@ -24,12 +24,12 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildContactQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildContactQuery orderByIsPublished($order = Criteria::ASC) Order by the is_published column
+ * @method     ChildContactQuery orderByIsPublished($order = Criteria::ASC) Order by the published column
  * @method     ChildContactQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildContactQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildContactQuery groupById() Group by the id column
- * @method     ChildContactQuery groupByIsPublished() Group by the is_published column
+ * @method     ChildContactQuery groupByIsPublished() Group by the published column
  * @method     ChildContactQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildContactQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -53,12 +53,12 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContact findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContact matching the query, or a new ChildContact object populated from the query conditions when no match is found
  *
  * @method     ChildContact findOneById(int $id) Return the first ChildContact filtered by the id column
- * @method     ChildContact findOneByIsPublished(int $is_published) Return the first ChildContact filtered by the is_published column
+ * @method     ChildContact findOneByIsPublished(int $published) Return the first ChildContact filtered by the published column
  * @method     ChildContact findOneByCreatedAt(string $created_at) Return the first ChildContact filtered by the created_at column
  * @method     ChildContact findOneByUpdatedAt(string $updated_at) Return the first ChildContact filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildContact objects filtered by the id column
- * @method     array findByIsPublished(int $is_published) Return ChildContact objects filtered by the is_published column
+ * @method     array findByIsPublished(int $published) Return ChildContact objects filtered by the published column
  * @method     array findByCreatedAt(string $created_at) Return ChildContact objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildContact objects filtered by the updated_at column
  *
@@ -149,7 +149,7 @@ abstract class ContactQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, IS_PUBLISHED, CREATED_AT, UPDATED_AT FROM contact WHERE ID = :p0';
+        $sql = 'SELECT ID, PUBLISHED, CREATED_AT, UPDATED_AT FROM contact WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -280,13 +280,13 @@ abstract class ContactQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_published column
+     * Filter the query on the published column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsPublished(1234); // WHERE is_published = 1234
-     * $query->filterByIsPublished(array(12, 34)); // WHERE is_published IN (12, 34)
-     * $query->filterByIsPublished(array('min' => 12)); // WHERE is_published > 12
+     * $query->filterByIsPublished(1234); // WHERE published = 1234
+     * $query->filterByIsPublished(array(12, 34)); // WHERE published IN (12, 34)
+     * $query->filterByIsPublished(array('min' => 12)); // WHERE published > 12
      * </code>
      *
      * @param     mixed $isPublished The value to use as filter.
@@ -302,11 +302,11 @@ abstract class ContactQuery extends ModelCriteria
         if (is_array($isPublished)) {
             $useMinMax = false;
             if (isset($isPublished['min'])) {
-                $this->addUsingAlias(ContactTableMap::COL_IS_PUBLISHED, $isPublished['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ContactTableMap::COL_PUBLISHED, $isPublished['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isPublished['max'])) {
-                $this->addUsingAlias(ContactTableMap::COL_IS_PUBLISHED, $isPublished['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ContactTableMap::COL_PUBLISHED, $isPublished['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -317,7 +317,7 @@ abstract class ContactQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ContactTableMap::COL_IS_PUBLISHED, $isPublished, $comparison);
+        return $this->addUsingAlias(ContactTableMap::COL_PUBLISHED, $isPublished, $comparison);
     }
 
     /**

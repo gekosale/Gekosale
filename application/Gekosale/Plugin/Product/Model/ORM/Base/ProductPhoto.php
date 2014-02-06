@@ -74,18 +74,18 @@ abstract class ProductPhoto implements ActiveRecordInterface
     protected $photo_id;
 
     /**
-     * The value for the is_main_photo field.
+     * The value for the main_photo field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_main_photo;
+    protected $main_photo;
 
     /**
-     * The value for the is_visible field.
+     * The value for the visible field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_visible;
+    protected $visible;
 
     /**
      * @var        File
@@ -113,8 +113,8 @@ abstract class ProductPhoto implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_main_photo = 1;
-        $this->is_visible = 1;
+        $this->main_photo = 1;
+        $this->visible = 1;
     }
 
     /**
@@ -411,25 +411,25 @@ abstract class ProductPhoto implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_main_photo] column value.
+     * Get the [main_photo] column value.
      * 
      * @return   int
      */
     public function getIsMainPhoto()
     {
 
-        return $this->is_main_photo;
+        return $this->main_photo;
     }
 
     /**
-     * Get the [is_visible] column value.
+     * Get the [visible] column value.
      * 
      * @return   int
      */
     public function getIsVisible()
     {
 
-        return $this->is_visible;
+        return $this->visible;
     }
 
     /**
@@ -504,7 +504,7 @@ abstract class ProductPhoto implements ActiveRecordInterface
     } // setPhotoId()
 
     /**
-     * Set the value of [is_main_photo] column.
+     * Set the value of [main_photo] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Product\Model\ORM\ProductPhoto The current object (for fluent API support)
@@ -515,9 +515,9 @@ abstract class ProductPhoto implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_main_photo !== $v) {
-            $this->is_main_photo = $v;
-            $this->modifiedColumns[ProductPhotoTableMap::COL_IS_MAIN_PHOTO] = true;
+        if ($this->main_photo !== $v) {
+            $this->main_photo = $v;
+            $this->modifiedColumns[ProductPhotoTableMap::COL_MAIN_PHOTO] = true;
         }
 
 
@@ -525,7 +525,7 @@ abstract class ProductPhoto implements ActiveRecordInterface
     } // setIsMainPhoto()
 
     /**
-     * Set the value of [is_visible] column.
+     * Set the value of [visible] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\Product\Model\ORM\ProductPhoto The current object (for fluent API support)
@@ -536,9 +536,9 @@ abstract class ProductPhoto implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_visible !== $v) {
-            $this->is_visible = $v;
-            $this->modifiedColumns[ProductPhotoTableMap::COL_IS_VISIBLE] = true;
+        if ($this->visible !== $v) {
+            $this->visible = $v;
+            $this->modifiedColumns[ProductPhotoTableMap::COL_VISIBLE] = true;
         }
 
 
@@ -555,11 +555,11 @@ abstract class ProductPhoto implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_main_photo !== 1) {
+            if ($this->main_photo !== 1) {
                 return false;
             }
 
-            if ($this->is_visible !== 1) {
+            if ($this->visible !== 1) {
                 return false;
             }
 
@@ -600,10 +600,10 @@ abstract class ProductPhoto implements ActiveRecordInterface
             $this->photo_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProductPhotoTableMap::translateFieldName('IsMainPhoto', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_main_photo = (null !== $col) ? (int) $col : null;
+            $this->main_photo = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductPhotoTableMap::translateFieldName('IsVisible', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_visible = (null !== $col) ? (int) $col : null;
+            $this->visible = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -857,11 +857,11 @@ abstract class ProductPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(ProductPhotoTableMap::COL_PHOTO_ID)) {
             $modifiedColumns[':p' . $index++]  = 'PHOTO_ID';
         }
-        if ($this->isColumnModified(ProductPhotoTableMap::COL_IS_MAIN_PHOTO)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_MAIN_PHOTO';
+        if ($this->isColumnModified(ProductPhotoTableMap::COL_MAIN_PHOTO)) {
+            $modifiedColumns[':p' . $index++]  = 'MAIN_PHOTO';
         }
-        if ($this->isColumnModified(ProductPhotoTableMap::COL_IS_VISIBLE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_VISIBLE';
+        if ($this->isColumnModified(ProductPhotoTableMap::COL_VISIBLE)) {
+            $modifiedColumns[':p' . $index++]  = 'VISIBLE';
         }
 
         $sql = sprintf(
@@ -883,11 +883,11 @@ abstract class ProductPhoto implements ActiveRecordInterface
                     case 'PHOTO_ID':                        
                         $stmt->bindValue($identifier, $this->photo_id, PDO::PARAM_INT);
                         break;
-                    case 'IS_MAIN_PHOTO':                        
-                        $stmt->bindValue($identifier, $this->is_main_photo, PDO::PARAM_INT);
+                    case 'MAIN_PHOTO':                        
+                        $stmt->bindValue($identifier, $this->main_photo, PDO::PARAM_INT);
                         break;
-                    case 'IS_VISIBLE':                        
-                        $stmt->bindValue($identifier, $this->is_visible, PDO::PARAM_INT);
+                    case 'VISIBLE':                        
+                        $stmt->bindValue($identifier, $this->visible, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1105,8 +1105,8 @@ abstract class ProductPhoto implements ActiveRecordInterface
         if ($this->isColumnModified(ProductPhotoTableMap::COL_ID)) $criteria->add(ProductPhotoTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(ProductPhotoTableMap::COL_PRODUCT_ID)) $criteria->add(ProductPhotoTableMap::COL_PRODUCT_ID, $this->product_id);
         if ($this->isColumnModified(ProductPhotoTableMap::COL_PHOTO_ID)) $criteria->add(ProductPhotoTableMap::COL_PHOTO_ID, $this->photo_id);
-        if ($this->isColumnModified(ProductPhotoTableMap::COL_IS_MAIN_PHOTO)) $criteria->add(ProductPhotoTableMap::COL_IS_MAIN_PHOTO, $this->is_main_photo);
-        if ($this->isColumnModified(ProductPhotoTableMap::COL_IS_VISIBLE)) $criteria->add(ProductPhotoTableMap::COL_IS_VISIBLE, $this->is_visible);
+        if ($this->isColumnModified(ProductPhotoTableMap::COL_MAIN_PHOTO)) $criteria->add(ProductPhotoTableMap::COL_MAIN_PHOTO, $this->main_photo);
+        if ($this->isColumnModified(ProductPhotoTableMap::COL_VISIBLE)) $criteria->add(ProductPhotoTableMap::COL_VISIBLE, $this->visible);
 
         return $criteria;
     }
@@ -1314,8 +1314,8 @@ abstract class ProductPhoto implements ActiveRecordInterface
         $this->id = null;
         $this->product_id = null;
         $this->photo_id = null;
-        $this->is_main_photo = null;
-        $this->is_visible = null;
+        $this->main_photo = null;
+        $this->visible = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

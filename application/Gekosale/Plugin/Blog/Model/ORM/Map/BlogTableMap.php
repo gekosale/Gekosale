@@ -76,14 +76,14 @@ class BlogTableMap extends TableMap
     const COL_ID = 'blog.ID';
 
     /**
-     * the column name for the IS_PUBLISHED field
+     * the column name for the PUBLISHED field
      */
-    const COL_IS_PUBLISHED = 'blog.IS_PUBLISHED';
+    const COL_PUBLISHED = 'blog.PUBLISHED';
 
     /**
-     * the column name for the IS_FEATURED field
+     * the column name for the FEATURED field
      */
-    const COL_IS_FEATURED = 'blog.IS_FEATURED';
+    const COL_FEATURED = 'blog.FEATURED';
 
     /**
      * the column name for the START_DATE field
@@ -128,9 +128,9 @@ class BlogTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'IsPublished', 'IsFeatured', 'StartDate', 'EndDate', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'isPublished', 'isFeatured', 'startDate', 'endDate', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(BlogTableMap::COL_ID, BlogTableMap::COL_IS_PUBLISHED, BlogTableMap::COL_IS_FEATURED, BlogTableMap::COL_START_DATE, BlogTableMap::COL_END_DATE, BlogTableMap::COL_CREATED_AT, BlogTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_IS_PUBLISHED', 'COL_IS_FEATURED', 'COL_START_DATE', 'COL_END_DATE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'is_published', 'is_featured', 'start_date', 'end_date', 'created_at', 'updated_at', ),
+        self::TYPE_COLNAME       => array(BlogTableMap::COL_ID, BlogTableMap::COL_PUBLISHED, BlogTableMap::COL_FEATURED, BlogTableMap::COL_START_DATE, BlogTableMap::COL_END_DATE, BlogTableMap::COL_CREATED_AT, BlogTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PUBLISHED', 'COL_FEATURED', 'COL_START_DATE', 'COL_END_DATE', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'published', 'featured', 'start_date', 'end_date', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
@@ -143,9 +143,9 @@ class BlogTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'IsPublished' => 1, 'IsFeatured' => 2, 'StartDate' => 3, 'EndDate' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'isPublished' => 1, 'isFeatured' => 2, 'startDate' => 3, 'endDate' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(BlogTableMap::COL_ID => 0, BlogTableMap::COL_IS_PUBLISHED => 1, BlogTableMap::COL_IS_FEATURED => 2, BlogTableMap::COL_START_DATE => 3, BlogTableMap::COL_END_DATE => 4, BlogTableMap::COL_CREATED_AT => 5, BlogTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_IS_PUBLISHED' => 1, 'COL_IS_FEATURED' => 2, 'COL_START_DATE' => 3, 'COL_END_DATE' => 4, 'COL_CREATED_AT' => 5, 'COL_UPDATED_AT' => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'is_published' => 1, 'is_featured' => 2, 'start_date' => 3, 'end_date' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_COLNAME       => array(BlogTableMap::COL_ID => 0, BlogTableMap::COL_PUBLISHED => 1, BlogTableMap::COL_FEATURED => 2, BlogTableMap::COL_START_DATE => 3, BlogTableMap::COL_END_DATE => 4, BlogTableMap::COL_CREATED_AT => 5, BlogTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PUBLISHED' => 1, 'COL_FEATURED' => 2, 'COL_START_DATE' => 3, 'COL_END_DATE' => 4, 'COL_CREATED_AT' => 5, 'COL_UPDATED_AT' => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'published' => 1, 'featured' => 2, 'start_date' => 3, 'end_date' => 4, 'created_at' => 5, 'updated_at' => 6, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
@@ -166,8 +166,8 @@ class BlogTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('IS_PUBLISHED', 'IsPublished', 'INTEGER', true, 10, 1);
-        $this->addColumn('IS_FEATURED', 'IsFeatured', 'INTEGER', true, null, null);
+        $this->addColumn('PUBLISHED', 'IsPublished', 'INTEGER', true, 10, 1);
+        $this->addColumn('FEATURED', 'IsFeatured', 'INTEGER', true, null, null);
         $this->addColumn('START_DATE', 'StartDate', 'TIMESTAMP', false, null, null);
         $this->addColumn('END_DATE', 'EndDate', 'TIMESTAMP', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
@@ -348,16 +348,16 @@ class BlogTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(BlogTableMap::COL_ID);
-            $criteria->addSelectColumn(BlogTableMap::COL_IS_PUBLISHED);
-            $criteria->addSelectColumn(BlogTableMap::COL_IS_FEATURED);
+            $criteria->addSelectColumn(BlogTableMap::COL_PUBLISHED);
+            $criteria->addSelectColumn(BlogTableMap::COL_FEATURED);
             $criteria->addSelectColumn(BlogTableMap::COL_START_DATE);
             $criteria->addSelectColumn(BlogTableMap::COL_END_DATE);
             $criteria->addSelectColumn(BlogTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(BlogTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.IS_PUBLISHED');
-            $criteria->addSelectColumn($alias . '.IS_FEATURED');
+            $criteria->addSelectColumn($alias . '.PUBLISHED');
+            $criteria->addSelectColumn($alias . '.FEATURED');
             $criteria->addSelectColumn($alias . '.START_DATE');
             $criteria->addSelectColumn($alias . '.END_DATE');
             $criteria->addSelectColumn($alias . '.CREATED_AT');

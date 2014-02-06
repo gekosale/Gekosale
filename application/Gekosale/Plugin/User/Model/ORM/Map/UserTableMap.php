@@ -86,14 +86,14 @@ class UserTableMap extends TableMap
     const COL_PASSWORD = 'user.PASSWORD';
 
     /**
-     * the column name for the IS_ACTIVE field
+     * the column name for the ACTIVE field
      */
-    const COL_IS_ACTIVE = 'user.IS_ACTIVE';
+    const COL_ACTIVE = 'user.ACTIVE';
 
     /**
-     * the column name for the IS_GLOBAL field
+     * the column name for the GLOBAL field
      */
-    const COL_IS_GLOBAL = 'user.IS_GLOBAL';
+    const COL_GLOBAL = 'user.GLOBAL';
 
     /**
      * The default string format for model objects of the related table
@@ -109,9 +109,9 @@ class UserTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'Login', 'Password', 'IsActive', 'IsGlobal', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'login', 'password', 'isActive', 'isGlobal', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_IS_ACTIVE, UserTableMap::COL_IS_GLOBAL, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOGIN', 'COL_PASSWORD', 'COL_IS_ACTIVE', 'COL_IS_GLOBAL', ),
-        self::TYPE_FIELDNAME     => array('id', 'login', 'password', 'is_active', 'is_global', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_ACTIVE, UserTableMap::COL_GLOBAL, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_LOGIN', 'COL_PASSWORD', 'COL_ACTIVE', 'COL_GLOBAL', ),
+        self::TYPE_FIELDNAME     => array('id', 'login', 'password', 'active', 'global', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -124,9 +124,9 @@ class UserTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'Login' => 1, 'Password' => 2, 'IsActive' => 3, 'IsGlobal' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'login' => 1, 'password' => 2, 'isActive' => 3, 'isGlobal' => 4, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_LOGIN => 1, UserTableMap::COL_PASSWORD => 2, UserTableMap::COL_IS_ACTIVE => 3, UserTableMap::COL_IS_GLOBAL => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOGIN' => 1, 'COL_PASSWORD' => 2, 'COL_IS_ACTIVE' => 3, 'COL_IS_GLOBAL' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'login' => 1, 'password' => 2, 'is_active' => 3, 'is_global' => 4, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_LOGIN => 1, UserTableMap::COL_PASSWORD => 2, UserTableMap::COL_ACTIVE => 3, UserTableMap::COL_GLOBAL => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_LOGIN' => 1, 'COL_PASSWORD' => 2, 'COL_ACTIVE' => 3, 'COL_GLOBAL' => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'login' => 1, 'password' => 2, 'active' => 3, 'global' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
@@ -149,8 +149,8 @@ class UserTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 10, null);
         $this->addColumn('LOGIN', 'Login', 'VARCHAR', true, 128, null);
         $this->addColumn('PASSWORD', 'Password', 'VARCHAR', true, 128, null);
-        $this->addColumn('IS_ACTIVE', 'IsActive', 'INTEGER', true, 10, 0);
-        $this->addColumn('IS_GLOBAL', 'IsGlobal', 'INTEGER', true, 10, 1);
+        $this->addColumn('ACTIVE', 'IsActive', 'INTEGER', true, 10, 0);
+        $this->addColumn('GLOBAL', 'IsGlobal', 'INTEGER', true, 10, 1);
     } // initialize()
 
     /**
@@ -315,14 +315,14 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_ID);
             $criteria->addSelectColumn(UserTableMap::COL_LOGIN);
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
-            $criteria->addSelectColumn(UserTableMap::COL_IS_ACTIVE);
-            $criteria->addSelectColumn(UserTableMap::COL_IS_GLOBAL);
+            $criteria->addSelectColumn(UserTableMap::COL_ACTIVE);
+            $criteria->addSelectColumn(UserTableMap::COL_GLOBAL);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.LOGIN');
             $criteria->addSelectColumn($alias . '.PASSWORD');
-            $criteria->addSelectColumn($alias . '.IS_ACTIVE');
-            $criteria->addSelectColumn($alias . '.IS_GLOBAL');
+            $criteria->addSelectColumn($alias . '.ACTIVE');
+            $criteria->addSelectColumn($alias . '.GLOBAL');
         }
     }
 

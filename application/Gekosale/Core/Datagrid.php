@@ -78,7 +78,7 @@ class Datagrid
     {
         $filters = Array();
         foreach ($this->queryColumnsOptions as $name => $options) {
-            if (isset($options['prepareForSelect']) and $options['prepareForSelect']) {
+            if (isset($options['prepareForSelect']) && $options['prepareForSelect']) {
                 $possibilities = Array(
                     "{id: '', caption: ''}"
                 );
@@ -114,7 +114,7 @@ class Datagrid
                 $stmt->execute();
                 while ($rs = $stmt->fetch()) {
                     $caption = addslashes($rs['possibility']);
-                    if (isset($options['processLanguage']) and $options['processLanguage']) {
+                    if (isset($options['processLanguage']) && $options['processLanguage']) {
                         $caption = addslashes(_($caption));
                     }
                     $id = addslashes($rs['possibility']);
@@ -123,7 +123,7 @@ class Datagrid
                 $filters[$name] = implode(', ', $possibilities);
             }
             else 
-                if (isset($options['prepareForTree']) and $options['prepareForTree']) {
+                if (isset($options['prepareForTree']) && $options['prepareForTree']) {
                     $filters[$name] = json_encode($options['first_level']);
                 }
         }
@@ -141,9 +141,9 @@ class Datagrid
     public function processFilters ()
     {
         foreach ($this->queryColumnsOptions as $name => $options) {
-            if (isset($options['prepareForAutosuggest']) and $options['prepareForAutosuggest']) {
-                $source = (isset($options['source']) and $options['source']) ? $options['source'] : $name;
-                if (isset($options['encrypted']) and $options['encrypted']) {
+            if (isset($options['prepareForAutosuggest']) && $options['prepareForAutosuggest']) {
+                $source = (isset($options['source']) && $options['source']) ? $options['source'] : $name;
+                if (isset($options['encrypted']) && $options['encrypted']) {
                     $source = 'AES_DECRYPT(' . $source . ', :encryptionkey)';
                 }
             }
@@ -218,7 +218,7 @@ class Datagrid
                 $rows = Array();
                 $this->warnings[] = $e->getMessage();
             }
-            if (isset($this->additionalRows) and is_array($this->additionalRows) and count($this->additionalRows)) {
+            if (isset($this->additionalRows) && is_array($this->additionalRows) && count($this->additionalRows)) {
                 $rows = array_merge($this->additionalRows, $rows);
             }
             $rowData = $this->processRows($rows);
@@ -388,10 +388,10 @@ class Datagrid
         foreach ($rows as $row) {
             $columns = Array();
             foreach ($row as $param => $value) {
-                if (isset($this->queryColumnsOptions[$param]) and isset($this->queryColumnsOptions[$param]['processLanguage']) and $this->queryColumnsOptions[$param]['processLanguage']) {
+                if (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processLanguage']) && $this->queryColumnsOptions[$param]['processLanguage']) {
                     $value = _($value);
                 }
-                elseif (isset($this->queryColumnsOptions[$param]) and isset($this->queryColumnsOptions[$param]['processFunction']) and $this->queryColumnsOptions[$param]['processFunction']) {
+                elseif (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processFunction']) && $this->queryColumnsOptions[$param]['processFunction']) {
                     try {
                         $value = call_user_func($this->queryColumnsOptions[$param]['processFunction'], $value);
                     }
@@ -413,11 +413,11 @@ class Datagrid
     {
         $idColumn = isset($this->queryColumnsOptions[$this->queryColumns[0]]['source']) ? $this->queryColumnsOptions[$this->queryColumns[0]]['source'] : $this->queryColumns[0];
         $groupBy = ! empty($this->queryGroupBy) ? ' GROUP BY ' . $this->queryGroupBy : '';
-        $orderBy = (isset($request['order_by']) and in_array($request['order_by'], $this->queryColumns)) ? $request['order_by'] : $this->queryColumns[0];
-        $orderDir = (isset($request['order_dir']) and ($request['order_dir'] == 'desc')) ? 'DESC' : 'ASC';
+        $orderBy = (isset($request['order_by']) && in_array($request['order_by'], $this->queryColumns)) ? $request['order_by'] : $this->queryColumns[0];
+        $orderDir = (isset($request['order_dir']) && ($request['order_dir'] == 'desc')) ? 'DESC' : 'ASC';
         $conditionsString = '';
         $conditions = Array();
-        if (isset($request['where']) and is_array($request['where'])) {
+        if (isset($request['where']) && is_array($request['where'])) {
             $conditions = $request['where'];
             $conditionsString = $this->getConditionsString($conditions);
         }
@@ -425,7 +425,7 @@ class Datagrid
         $additionalConditionString = $this->getAdditionalConditionsString($conditionsString);
         $havingString = '';
         $having = Array();
-        if (isset($request['where']) and is_array($request['where'])) {
+        if (isset($request['where']) && is_array($request['where'])) {
             $having = $request['where'];
             $havingString = $this->getHavingString($conditions);
         }
@@ -447,7 +447,7 @@ class Datagrid
         $string = '';
         foreach ($this->queryColumnsOptions as $name => $options) {
             if (isset($options['source'])) {
-                if (isset($options['encrypted']) and $options['encrypted']) {
+                if (isset($options['encrypted']) && $options['encrypted']) {
                     $string .= 'AES_DECRYPT(' . $options['source'] . ', :encryptionkey) AS ' . $name;
                 }
                 else {
@@ -455,7 +455,7 @@ class Datagrid
                 }
             }
             else {
-                if (isset($options['encrypted']) and $options['encrypted']) {
+                if (isset($options['encrypted']) && $options['encrypted']) {
                     $string .= 'AES_DECRYPT(' . $name . ', :encryptionkey) AS ' . $name;
                 }
                 else {
@@ -478,7 +478,7 @@ class Datagrid
                 unset($part);
                 continue;
             }
-            if (isset($this->queryColumnsOptions[$part['column']]['filter']) and ($this->queryColumnsOptions[$part['column']]['filter'] == 'having')) {
+            if (isset($this->queryColumnsOptions[$part['column']]['filter']) && ($this->queryColumnsOptions[$part['column']]['filter'] == 'having')) {
                 unset($part);
                 continue;
             }
@@ -503,7 +503,7 @@ class Datagrid
                     $operator = '=';
             }
             if (isset($this->queryColumnsOptions[$part['column']]['source'])) {
-                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) and $this->queryColumnsOptions[$part['column']]['encrypted']) {
+                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']) {
                     $columnSource = 'AES_DECRYPT(' . $this->queryColumnsOptions[$part['column']]['source'] . ', :encryptionkey)';
                 }
                 else {
@@ -581,7 +581,7 @@ class Datagrid
             }
             
             if (isset($this->queryColumnsOptions[$part['column']]['source'])) {
-                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) and $this->queryColumnsOptions[$part['column']]['encrypted']) {
+                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']) {
                     $columnSource = 'AES_DECRYPT(' . $this->queryColumnsOptions[$part['column']]['source'] . ', :encryptionkey)';
                 }
                 else {

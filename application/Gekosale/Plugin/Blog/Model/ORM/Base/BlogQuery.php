@@ -23,16 +23,16 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildBlogQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildBlogQuery orderByIsPublished($order = Criteria::ASC) Order by the is_published column
- * @method     ChildBlogQuery orderByIsFeatured($order = Criteria::ASC) Order by the is_featured column
+ * @method     ChildBlogQuery orderByIsPublished($order = Criteria::ASC) Order by the published column
+ * @method     ChildBlogQuery orderByIsFeatured($order = Criteria::ASC) Order by the featured column
  * @method     ChildBlogQuery orderByStartDate($order = Criteria::ASC) Order by the start_date column
  * @method     ChildBlogQuery orderByEndDate($order = Criteria::ASC) Order by the end_date column
  * @method     ChildBlogQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildBlogQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildBlogQuery groupById() Group by the id column
- * @method     ChildBlogQuery groupByIsPublished() Group by the is_published column
- * @method     ChildBlogQuery groupByIsFeatured() Group by the is_featured column
+ * @method     ChildBlogQuery groupByIsPublished() Group by the published column
+ * @method     ChildBlogQuery groupByIsFeatured() Group by the featured column
  * @method     ChildBlogQuery groupByStartDate() Group by the start_date column
  * @method     ChildBlogQuery groupByEndDate() Group by the end_date column
  * @method     ChildBlogQuery groupByCreatedAt() Group by the created_at column
@@ -58,16 +58,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBlog findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBlog matching the query, or a new ChildBlog object populated from the query conditions when no match is found
  *
  * @method     ChildBlog findOneById(int $id) Return the first ChildBlog filtered by the id column
- * @method     ChildBlog findOneByIsPublished(int $is_published) Return the first ChildBlog filtered by the is_published column
- * @method     ChildBlog findOneByIsFeatured(int $is_featured) Return the first ChildBlog filtered by the is_featured column
+ * @method     ChildBlog findOneByIsPublished(int $published) Return the first ChildBlog filtered by the published column
+ * @method     ChildBlog findOneByIsFeatured(int $featured) Return the first ChildBlog filtered by the featured column
  * @method     ChildBlog findOneByStartDate(string $start_date) Return the first ChildBlog filtered by the start_date column
  * @method     ChildBlog findOneByEndDate(string $end_date) Return the first ChildBlog filtered by the end_date column
  * @method     ChildBlog findOneByCreatedAt(string $created_at) Return the first ChildBlog filtered by the created_at column
  * @method     ChildBlog findOneByUpdatedAt(string $updated_at) Return the first ChildBlog filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildBlog objects filtered by the id column
- * @method     array findByIsPublished(int $is_published) Return ChildBlog objects filtered by the is_published column
- * @method     array findByIsFeatured(int $is_featured) Return ChildBlog objects filtered by the is_featured column
+ * @method     array findByIsPublished(int $published) Return ChildBlog objects filtered by the published column
+ * @method     array findByIsFeatured(int $featured) Return ChildBlog objects filtered by the featured column
  * @method     array findByStartDate(string $start_date) Return ChildBlog objects filtered by the start_date column
  * @method     array findByEndDate(string $end_date) Return ChildBlog objects filtered by the end_date column
  * @method     array findByCreatedAt(string $created_at) Return ChildBlog objects filtered by the created_at column
@@ -160,7 +160,7 @@ abstract class BlogQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, IS_PUBLISHED, IS_FEATURED, START_DATE, END_DATE, CREATED_AT, UPDATED_AT FROM blog WHERE ID = :p0';
+        $sql = 'SELECT ID, PUBLISHED, FEATURED, START_DATE, END_DATE, CREATED_AT, UPDATED_AT FROM blog WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -291,13 +291,13 @@ abstract class BlogQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_published column
+     * Filter the query on the published column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsPublished(1234); // WHERE is_published = 1234
-     * $query->filterByIsPublished(array(12, 34)); // WHERE is_published IN (12, 34)
-     * $query->filterByIsPublished(array('min' => 12)); // WHERE is_published > 12
+     * $query->filterByIsPublished(1234); // WHERE published = 1234
+     * $query->filterByIsPublished(array(12, 34)); // WHERE published IN (12, 34)
+     * $query->filterByIsPublished(array('min' => 12)); // WHERE published > 12
      * </code>
      *
      * @param     mixed $isPublished The value to use as filter.
@@ -313,11 +313,11 @@ abstract class BlogQuery extends ModelCriteria
         if (is_array($isPublished)) {
             $useMinMax = false;
             if (isset($isPublished['min'])) {
-                $this->addUsingAlias(BlogTableMap::COL_IS_PUBLISHED, $isPublished['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(BlogTableMap::COL_PUBLISHED, $isPublished['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isPublished['max'])) {
-                $this->addUsingAlias(BlogTableMap::COL_IS_PUBLISHED, $isPublished['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(BlogTableMap::COL_PUBLISHED, $isPublished['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -328,17 +328,17 @@ abstract class BlogQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BlogTableMap::COL_IS_PUBLISHED, $isPublished, $comparison);
+        return $this->addUsingAlias(BlogTableMap::COL_PUBLISHED, $isPublished, $comparison);
     }
 
     /**
-     * Filter the query on the is_featured column
+     * Filter the query on the featured column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsFeatured(1234); // WHERE is_featured = 1234
-     * $query->filterByIsFeatured(array(12, 34)); // WHERE is_featured IN (12, 34)
-     * $query->filterByIsFeatured(array('min' => 12)); // WHERE is_featured > 12
+     * $query->filterByIsFeatured(1234); // WHERE featured = 1234
+     * $query->filterByIsFeatured(array(12, 34)); // WHERE featured IN (12, 34)
+     * $query->filterByIsFeatured(array('min' => 12)); // WHERE featured > 12
      * </code>
      *
      * @param     mixed $isFeatured The value to use as filter.
@@ -354,11 +354,11 @@ abstract class BlogQuery extends ModelCriteria
         if (is_array($isFeatured)) {
             $useMinMax = false;
             if (isset($isFeatured['min'])) {
-                $this->addUsingAlias(BlogTableMap::COL_IS_FEATURED, $isFeatured['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(BlogTableMap::COL_FEATURED, $isFeatured['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isFeatured['max'])) {
-                $this->addUsingAlias(BlogTableMap::COL_IS_FEATURED, $isFeatured['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(BlogTableMap::COL_FEATURED, $isFeatured['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -369,7 +369,7 @@ abstract class BlogQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BlogTableMap::COL_IS_FEATURED, $isFeatured, $comparison);
+        return $this->addUsingAlias(BlogTableMap::COL_FEATURED, $isFeatured, $comparison);
     }
 
     /**

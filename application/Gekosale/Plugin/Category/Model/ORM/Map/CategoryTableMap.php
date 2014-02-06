@@ -93,9 +93,9 @@ class CategoryTableMap extends TableMap
     const COL_CATEGORY_ID = 'category.CATEGORY_ID';
 
     /**
-     * the column name for the IS_ENABLED field
+     * the column name for the ENABLED field
      */
-    const COL_IS_ENABLED = 'category.IS_ENABLED';
+    const COL_ENABLED = 'category.ENABLED';
 
     /**
      * the column name for the CREATED_AT field
@@ -130,9 +130,9 @@ class CategoryTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'PhotoId', 'Hierarchy', 'CategoryId', 'IsEnabled', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'photoId', 'hierarchy', 'categoryId', 'isEnabled', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID, CategoryTableMap::COL_PHOTO_ID, CategoryTableMap::COL_HIERARCHY, CategoryTableMap::COL_CATEGORY_ID, CategoryTableMap::COL_IS_ENABLED, CategoryTableMap::COL_CREATED_AT, CategoryTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PHOTO_ID', 'COL_HIERARCHY', 'COL_CATEGORY_ID', 'COL_IS_ENABLED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'photo_id', 'hierarchy', 'category_id', 'is_enabled', 'created_at', 'updated_at', ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID, CategoryTableMap::COL_PHOTO_ID, CategoryTableMap::COL_HIERARCHY, CategoryTableMap::COL_CATEGORY_ID, CategoryTableMap::COL_ENABLED, CategoryTableMap::COL_CREATED_AT, CategoryTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_PHOTO_ID', 'COL_HIERARCHY', 'COL_CATEGORY_ID', 'COL_ENABLED', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'photo_id', 'hierarchy', 'category_id', 'enabled', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
@@ -145,9 +145,9 @@ class CategoryTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'PhotoId' => 1, 'Hierarchy' => 2, 'CategoryId' => 3, 'IsEnabled' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'photoId' => 1, 'hierarchy' => 2, 'categoryId' => 3, 'isEnabled' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID => 0, CategoryTableMap::COL_PHOTO_ID => 1, CategoryTableMap::COL_HIERARCHY => 2, CategoryTableMap::COL_CATEGORY_ID => 3, CategoryTableMap::COL_IS_ENABLED => 4, CategoryTableMap::COL_CREATED_AT => 5, CategoryTableMap::COL_UPDATED_AT => 6, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PHOTO_ID' => 1, 'COL_HIERARCHY' => 2, 'COL_CATEGORY_ID' => 3, 'COL_IS_ENABLED' => 4, 'COL_CREATED_AT' => 5, 'COL_UPDATED_AT' => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'photo_id' => 1, 'hierarchy' => 2, 'category_id' => 3, 'is_enabled' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID => 0, CategoryTableMap::COL_PHOTO_ID => 1, CategoryTableMap::COL_HIERARCHY => 2, CategoryTableMap::COL_CATEGORY_ID => 3, CategoryTableMap::COL_ENABLED => 4, CategoryTableMap::COL_CREATED_AT => 5, CategoryTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_PHOTO_ID' => 1, 'COL_HIERARCHY' => 2, 'COL_CATEGORY_ID' => 3, 'COL_ENABLED' => 4, 'COL_CREATED_AT' => 5, 'COL_UPDATED_AT' => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'photo_id' => 1, 'hierarchy' => 2, 'category_id' => 3, 'enabled' => 4, 'created_at' => 5, 'updated_at' => 6, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
@@ -171,7 +171,7 @@ class CategoryTableMap extends TableMap
         $this->addForeignKey('PHOTO_ID', 'PhotoId', 'INTEGER', 'file', 'ID', false, 10, null);
         $this->addColumn('HIERARCHY', 'Hierarchy', 'TINYINT', false, 3, 0);
         $this->addForeignKey('CATEGORY_ID', 'CategoryId', 'INTEGER', 'category', 'ID', false, 10, null);
-        $this->addColumn('IS_ENABLED', 'IsEnabled', 'INTEGER', true, 10, 1);
+        $this->addColumn('ENABLED', 'IsEnabled', 'INTEGER', true, 10, 1);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -361,7 +361,7 @@ class CategoryTableMap extends TableMap
             $criteria->addSelectColumn(CategoryTableMap::COL_PHOTO_ID);
             $criteria->addSelectColumn(CategoryTableMap::COL_HIERARCHY);
             $criteria->addSelectColumn(CategoryTableMap::COL_CATEGORY_ID);
-            $criteria->addSelectColumn(CategoryTableMap::COL_IS_ENABLED);
+            $criteria->addSelectColumn(CategoryTableMap::COL_ENABLED);
             $criteria->addSelectColumn(CategoryTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(CategoryTableMap::COL_UPDATED_AT);
         } else {
@@ -369,7 +369,7 @@ class CategoryTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.PHOTO_ID');
             $criteria->addSelectColumn($alias . '.HIERARCHY');
             $criteria->addSelectColumn($alias . '.CATEGORY_ID');
-            $criteria->addSelectColumn($alias . '.IS_ENABLED');
+            $criteria->addSelectColumn($alias . '.ENABLED');
             $criteria->addSelectColumn($alias . '.CREATED_AT');
             $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }

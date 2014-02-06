@@ -27,7 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildClientQuery orderByLogin($order = Criteria::ASC) Order by the login column
  * @method     ChildClientQuery orderByPassword($order = Criteria::ASC) Order by the password column
- * @method     ChildClientQuery orderByIsDisabled($order = Criteria::ASC) Order by the is_disabled column
+ * @method     ChildClientQuery orderByIsDisabled($order = Criteria::ASC) Order by the disabled column
  * @method     ChildClientQuery orderByShopId($order = Criteria::ASC) Order by the shop_id column
  * @method     ChildClientQuery orderByActiveLink($order = Criteria::ASC) Order by the active_link column
  * @method     ChildClientQuery orderByClientType($order = Criteria::ASC) Order by the client_type column
@@ -36,7 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClientQuery groupById() Group by the id column
  * @method     ChildClientQuery groupByLogin() Group by the login column
  * @method     ChildClientQuery groupByPassword() Group by the password column
- * @method     ChildClientQuery groupByIsDisabled() Group by the is_disabled column
+ * @method     ChildClientQuery groupByIsDisabled() Group by the disabled column
  * @method     ChildClientQuery groupByShopId() Group by the shop_id column
  * @method     ChildClientQuery groupByActiveLink() Group by the active_link column
  * @method     ChildClientQuery groupByClientType() Group by the client_type column
@@ -72,7 +72,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildClient findOneById(int $id) Return the first ChildClient filtered by the id column
  * @method     ChildClient findOneByLogin(string $login) Return the first ChildClient filtered by the login column
  * @method     ChildClient findOneByPassword(string $password) Return the first ChildClient filtered by the password column
- * @method     ChildClient findOneByIsDisabled(int $is_disabled) Return the first ChildClient filtered by the is_disabled column
+ * @method     ChildClient findOneByIsDisabled(int $disabled) Return the first ChildClient filtered by the disabled column
  * @method     ChildClient findOneByShopId(int $shop_id) Return the first ChildClient filtered by the shop_id column
  * @method     ChildClient findOneByActiveLink(string $active_link) Return the first ChildClient filtered by the active_link column
  * @method     ChildClient findOneByClientType(int $client_type) Return the first ChildClient filtered by the client_type column
@@ -81,7 +81,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findById(int $id) Return ChildClient objects filtered by the id column
  * @method     array findByLogin(string $login) Return ChildClient objects filtered by the login column
  * @method     array findByPassword(string $password) Return ChildClient objects filtered by the password column
- * @method     array findByIsDisabled(int $is_disabled) Return ChildClient objects filtered by the is_disabled column
+ * @method     array findByIsDisabled(int $disabled) Return ChildClient objects filtered by the disabled column
  * @method     array findByShopId(int $shop_id) Return ChildClient objects filtered by the shop_id column
  * @method     array findByActiveLink(string $active_link) Return ChildClient objects filtered by the active_link column
  * @method     array findByClientType(int $client_type) Return ChildClient objects filtered by the client_type column
@@ -174,7 +174,7 @@ abstract class ClientQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, LOGIN, PASSWORD, IS_DISABLED, SHOP_ID, ACTIVE_LINK, CLIENT_TYPE, AUTO_ASSIGN FROM client WHERE ID = :p0';
+        $sql = 'SELECT ID, LOGIN, PASSWORD, DISABLED, SHOP_ID, ACTIVE_LINK, CLIENT_TYPE, AUTO_ASSIGN FROM client WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -363,13 +363,13 @@ abstract class ClientQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_disabled column
+     * Filter the query on the disabled column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsDisabled(1234); // WHERE is_disabled = 1234
-     * $query->filterByIsDisabled(array(12, 34)); // WHERE is_disabled IN (12, 34)
-     * $query->filterByIsDisabled(array('min' => 12)); // WHERE is_disabled > 12
+     * $query->filterByIsDisabled(1234); // WHERE disabled = 1234
+     * $query->filterByIsDisabled(array(12, 34)); // WHERE disabled IN (12, 34)
+     * $query->filterByIsDisabled(array('min' => 12)); // WHERE disabled > 12
      * </code>
      *
      * @param     mixed $isDisabled The value to use as filter.
@@ -385,11 +385,11 @@ abstract class ClientQuery extends ModelCriteria
         if (is_array($isDisabled)) {
             $useMinMax = false;
             if (isset($isDisabled['min'])) {
-                $this->addUsingAlias(ClientTableMap::COL_IS_DISABLED, $isDisabled['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ClientTableMap::COL_DISABLED, $isDisabled['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isDisabled['max'])) {
-                $this->addUsingAlias(ClientTableMap::COL_IS_DISABLED, $isDisabled['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ClientTableMap::COL_DISABLED, $isDisabled['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -400,7 +400,7 @@ abstract class ClientQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ClientTableMap::COL_IS_DISABLED, $isDisabled, $comparison);
+        return $this->addUsingAlias(ClientTableMap::COL_DISABLED, $isDisabled, $comparison);
     }
 
     /**

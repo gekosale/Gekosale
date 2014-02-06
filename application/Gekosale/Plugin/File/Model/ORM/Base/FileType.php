@@ -64,11 +64,11 @@ abstract class FileType implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the is_active field.
+     * The value for the active field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_active;
+    protected $active;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -86,7 +86,7 @@ abstract class FileType implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_active = 1;
+        $this->active = 1;
     }
 
     /**
@@ -372,14 +372,14 @@ abstract class FileType implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_active] column value.
+     * Get the [active] column value.
      * 
      * @return   int
      */
     public function getIsActive()
     {
 
-        return $this->is_active;
+        return $this->active;
     }
 
     /**
@@ -425,7 +425,7 @@ abstract class FileType implements ActiveRecordInterface
     } // setName()
 
     /**
-     * Set the value of [is_active] column.
+     * Set the value of [active] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\File\Model\ORM\FileType The current object (for fluent API support)
@@ -436,9 +436,9 @@ abstract class FileType implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_active !== $v) {
-            $this->is_active = $v;
-            $this->modifiedColumns[FileTypeTableMap::COL_IS_ACTIVE] = true;
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[FileTypeTableMap::COL_ACTIVE] = true;
         }
 
 
@@ -455,7 +455,7 @@ abstract class FileType implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_active !== 1) {
+            if ($this->active !== 1) {
                 return false;
             }
 
@@ -493,7 +493,7 @@ abstract class FileType implements ActiveRecordInterface
             $this->name = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FileTypeTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_active = (null !== $col) ? (int) $col : null;
+            $this->active = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -717,8 +717,8 @@ abstract class FileType implements ActiveRecordInterface
         if ($this->isColumnModified(FileTypeTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'NAME';
         }
-        if ($this->isColumnModified(FileTypeTableMap::COL_IS_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ACTIVE';
+        if ($this->isColumnModified(FileTypeTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'ACTIVE';
         }
 
         $sql = sprintf(
@@ -737,8 +737,8 @@ abstract class FileType implements ActiveRecordInterface
                     case 'NAME':                        
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'IS_ACTIVE':                        
-                        $stmt->bindValue($identifier, $this->is_active, PDO::PARAM_INT);
+                    case 'ACTIVE':                        
+                        $stmt->bindValue($identifier, $this->active, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -930,7 +930,7 @@ abstract class FileType implements ActiveRecordInterface
 
         if ($this->isColumnModified(FileTypeTableMap::COL_ID)) $criteria->add(FileTypeTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(FileTypeTableMap::COL_NAME)) $criteria->add(FileTypeTableMap::COL_NAME, $this->name);
-        if ($this->isColumnModified(FileTypeTableMap::COL_IS_ACTIVE)) $criteria->add(FileTypeTableMap::COL_IS_ACTIVE, $this->is_active);
+        if ($this->isColumnModified(FileTypeTableMap::COL_ACTIVE)) $criteria->add(FileTypeTableMap::COL_ACTIVE, $this->active);
 
         return $criteria;
     }
@@ -1033,7 +1033,7 @@ abstract class FileType implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
-        $this->is_active = null;
+        $this->active = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

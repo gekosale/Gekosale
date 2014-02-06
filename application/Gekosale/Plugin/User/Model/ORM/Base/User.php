@@ -78,18 +78,18 @@ abstract class User implements ActiveRecordInterface
     protected $password;
 
     /**
-     * The value for the is_active field.
+     * The value for the active field.
      * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $is_active;
+    protected $active;
 
     /**
-     * The value for the is_global field.
+     * The value for the global field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_global;
+    protected $global;
 
     /**
      * @var        ObjectCollection|ChildUserGroupShop[] Collection to store aggregation of ChildUserGroupShop objects.
@@ -143,8 +143,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_active = 0;
-        $this->is_global = 1;
+        $this->active = 0;
+        $this->global = 1;
     }
 
     /**
@@ -441,25 +441,25 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_active] column value.
+     * Get the [active] column value.
      * 
      * @return   int
      */
     public function getIsActive()
     {
 
-        return $this->is_active;
+        return $this->active;
     }
 
     /**
-     * Get the [is_global] column value.
+     * Get the [global] column value.
      * 
      * @return   int
      */
     public function getIsGlobal()
     {
 
-        return $this->is_global;
+        return $this->global;
     }
 
     /**
@@ -526,7 +526,7 @@ abstract class User implements ActiveRecordInterface
     } // setPassword()
 
     /**
-     * Set the value of [is_active] column.
+     * Set the value of [active] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\User\Model\ORM\User The current object (for fluent API support)
@@ -537,9 +537,9 @@ abstract class User implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_active !== $v) {
-            $this->is_active = $v;
-            $this->modifiedColumns[UserTableMap::COL_IS_ACTIVE] = true;
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[UserTableMap::COL_ACTIVE] = true;
         }
 
 
@@ -547,7 +547,7 @@ abstract class User implements ActiveRecordInterface
     } // setIsActive()
 
     /**
-     * Set the value of [is_global] column.
+     * Set the value of [global] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\User\Model\ORM\User The current object (for fluent API support)
@@ -558,9 +558,9 @@ abstract class User implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_global !== $v) {
-            $this->is_global = $v;
-            $this->modifiedColumns[UserTableMap::COL_IS_GLOBAL] = true;
+        if ($this->global !== $v) {
+            $this->global = $v;
+            $this->modifiedColumns[UserTableMap::COL_GLOBAL] = true;
         }
 
 
@@ -577,11 +577,11 @@ abstract class User implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_active !== 0) {
+            if ($this->active !== 0) {
                 return false;
             }
 
-            if ($this->is_global !== 1) {
+            if ($this->global !== 1) {
                 return false;
             }
 
@@ -622,10 +622,10 @@ abstract class User implements ActiveRecordInterface
             $this->password = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_active = (null !== $col) ? (int) $col : null;
+            $this->active = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('IsGlobal', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_global = (null !== $col) ? (int) $col : null;
+            $this->global = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -909,11 +909,11 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
             $modifiedColumns[':p' . $index++]  = 'PASSWORD';
         }
-        if ($this->isColumnModified(UserTableMap::COL_IS_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ACTIVE';
+        if ($this->isColumnModified(UserTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'ACTIVE';
         }
-        if ($this->isColumnModified(UserTableMap::COL_IS_GLOBAL)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_GLOBAL';
+        if ($this->isColumnModified(UserTableMap::COL_GLOBAL)) {
+            $modifiedColumns[':p' . $index++]  = 'GLOBAL';
         }
 
         $sql = sprintf(
@@ -935,11 +935,11 @@ abstract class User implements ActiveRecordInterface
                     case 'PASSWORD':                        
                         $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
                         break;
-                    case 'IS_ACTIVE':                        
-                        $stmt->bindValue($identifier, $this->is_active, PDO::PARAM_INT);
+                    case 'ACTIVE':                        
+                        $stmt->bindValue($identifier, $this->active, PDO::PARAM_INT);
                         break;
-                    case 'IS_GLOBAL':                        
-                        $stmt->bindValue($identifier, $this->is_global, PDO::PARAM_INT);
+                    case 'GLOBAL':                        
+                        $stmt->bindValue($identifier, $this->global, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1160,8 +1160,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_ID)) $criteria->add(UserTableMap::COL_ID, $this->id);
         if ($this->isColumnModified(UserTableMap::COL_LOGIN)) $criteria->add(UserTableMap::COL_LOGIN, $this->login);
         if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
-        if ($this->isColumnModified(UserTableMap::COL_IS_ACTIVE)) $criteria->add(UserTableMap::COL_IS_ACTIVE, $this->is_active);
-        if ($this->isColumnModified(UserTableMap::COL_IS_GLOBAL)) $criteria->add(UserTableMap::COL_IS_GLOBAL, $this->is_global);
+        if ($this->isColumnModified(UserTableMap::COL_ACTIVE)) $criteria->add(UserTableMap::COL_ACTIVE, $this->active);
+        if ($this->isColumnModified(UserTableMap::COL_GLOBAL)) $criteria->add(UserTableMap::COL_GLOBAL, $this->global);
 
         return $criteria;
     }
@@ -2069,8 +2069,8 @@ abstract class User implements ActiveRecordInterface
         $this->id = null;
         $this->login = null;
         $this->password = null;
-        $this->is_active = null;
-        $this->is_global = null;
+        $this->active = null;
+        $this->global = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

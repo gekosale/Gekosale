@@ -3,7 +3,6 @@
 namespace Gekosale\Core\Console\Command\Propel;
 
 use Gekosale\Core\Console\Command\AbstractCommand;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input\InputInterface;

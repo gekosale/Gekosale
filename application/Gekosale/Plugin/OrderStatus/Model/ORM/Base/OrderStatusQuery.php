@@ -23,14 +23,14 @@ use Propel\Runtime\Exception\PropelException;
  * 
  *
  * @method     ChildOrderStatusQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildOrderStatusQuery orderByIsDefault($order = Criteria::ASC) Order by the is_default column
- * @method     ChildOrderStatusQuery orderByIsEditable($order = Criteria::ASC) Order by the is_editable column
+ * @method     ChildOrderStatusQuery orderByIsDefault($order = Criteria::ASC) Order by the default column
+ * @method     ChildOrderStatusQuery orderByIsEditable($order = Criteria::ASC) Order by the editable column
  * @method     ChildOrderStatusQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildOrderStatusQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildOrderStatusQuery groupById() Group by the id column
- * @method     ChildOrderStatusQuery groupByIsDefault() Group by the is_default column
- * @method     ChildOrderStatusQuery groupByIsEditable() Group by the is_editable column
+ * @method     ChildOrderStatusQuery groupByIsDefault() Group by the default column
+ * @method     ChildOrderStatusQuery groupByIsEditable() Group by the editable column
  * @method     ChildOrderStatusQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildOrderStatusQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -50,14 +50,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderStatus findOneOrCreate(ConnectionInterface $con = null) Return the first ChildOrderStatus matching the query, or a new ChildOrderStatus object populated from the query conditions when no match is found
  *
  * @method     ChildOrderStatus findOneById(int $id) Return the first ChildOrderStatus filtered by the id column
- * @method     ChildOrderStatus findOneByIsDefault(int $is_default) Return the first ChildOrderStatus filtered by the is_default column
- * @method     ChildOrderStatus findOneByIsEditable(int $is_editable) Return the first ChildOrderStatus filtered by the is_editable column
+ * @method     ChildOrderStatus findOneByIsDefault(int $default) Return the first ChildOrderStatus filtered by the default column
+ * @method     ChildOrderStatus findOneByIsEditable(int $editable) Return the first ChildOrderStatus filtered by the editable column
  * @method     ChildOrderStatus findOneByCreatedAt(string $created_at) Return the first ChildOrderStatus filtered by the created_at column
  * @method     ChildOrderStatus findOneByUpdatedAt(string $updated_at) Return the first ChildOrderStatus filtered by the updated_at column
  *
  * @method     array findById(int $id) Return ChildOrderStatus objects filtered by the id column
- * @method     array findByIsDefault(int $is_default) Return ChildOrderStatus objects filtered by the is_default column
- * @method     array findByIsEditable(int $is_editable) Return ChildOrderStatus objects filtered by the is_editable column
+ * @method     array findByIsDefault(int $default) Return ChildOrderStatus objects filtered by the default column
+ * @method     array findByIsEditable(int $editable) Return ChildOrderStatus objects filtered by the editable column
  * @method     array findByCreatedAt(string $created_at) Return ChildOrderStatus objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildOrderStatus objects filtered by the updated_at column
  *
@@ -148,7 +148,7 @@ abstract class OrderStatusQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, IS_DEFAULT, IS_EDITABLE, CREATED_AT, UPDATED_AT FROM order_status WHERE ID = :p0';
+        $sql = 'SELECT ID, DEFAULT, EDITABLE, CREATED_AT, UPDATED_AT FROM order_status WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -279,13 +279,13 @@ abstract class OrderStatusQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_default column
+     * Filter the query on the default column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsDefault(1234); // WHERE is_default = 1234
-     * $query->filterByIsDefault(array(12, 34)); // WHERE is_default IN (12, 34)
-     * $query->filterByIsDefault(array('min' => 12)); // WHERE is_default > 12
+     * $query->filterByIsDefault(1234); // WHERE default = 1234
+     * $query->filterByIsDefault(array(12, 34)); // WHERE default IN (12, 34)
+     * $query->filterByIsDefault(array('min' => 12)); // WHERE default > 12
      * </code>
      *
      * @param     mixed $isDefault The value to use as filter.
@@ -301,11 +301,11 @@ abstract class OrderStatusQuery extends ModelCriteria
         if (is_array($isDefault)) {
             $useMinMax = false;
             if (isset($isDefault['min'])) {
-                $this->addUsingAlias(OrderStatusTableMap::COL_IS_DEFAULT, $isDefault['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(OrderStatusTableMap::COL_DEFAULT, $isDefault['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isDefault['max'])) {
-                $this->addUsingAlias(OrderStatusTableMap::COL_IS_DEFAULT, $isDefault['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(OrderStatusTableMap::COL_DEFAULT, $isDefault['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -316,17 +316,17 @@ abstract class OrderStatusQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OrderStatusTableMap::COL_IS_DEFAULT, $isDefault, $comparison);
+        return $this->addUsingAlias(OrderStatusTableMap::COL_DEFAULT, $isDefault, $comparison);
     }
 
     /**
-     * Filter the query on the is_editable column
+     * Filter the query on the editable column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsEditable(1234); // WHERE is_editable = 1234
-     * $query->filterByIsEditable(array(12, 34)); // WHERE is_editable IN (12, 34)
-     * $query->filterByIsEditable(array('min' => 12)); // WHERE is_editable > 12
+     * $query->filterByIsEditable(1234); // WHERE editable = 1234
+     * $query->filterByIsEditable(array(12, 34)); // WHERE editable IN (12, 34)
+     * $query->filterByIsEditable(array('min' => 12)); // WHERE editable > 12
      * </code>
      *
      * @param     mixed $isEditable The value to use as filter.
@@ -342,11 +342,11 @@ abstract class OrderStatusQuery extends ModelCriteria
         if (is_array($isEditable)) {
             $useMinMax = false;
             if (isset($isEditable['min'])) {
-                $this->addUsingAlias(OrderStatusTableMap::COL_IS_EDITABLE, $isEditable['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(OrderStatusTableMap::COL_EDITABLE, $isEditable['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isEditable['max'])) {
-                $this->addUsingAlias(OrderStatusTableMap::COL_IS_EDITABLE, $isEditable['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(OrderStatusTableMap::COL_EDITABLE, $isEditable['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -357,7 +357,7 @@ abstract class OrderStatusQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OrderStatusTableMap::COL_IS_EDITABLE, $isEditable, $comparison);
+        return $this->addUsingAlias(OrderStatusTableMap::COL_EDITABLE, $isEditable, $comparison);
     }
 
     /**

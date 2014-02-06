@@ -80,11 +80,11 @@ abstract class ProductNew implements ActiveRecordInterface
     protected $end_date;
 
     /**
-     * The value for the is_active field.
+     * The value for the active field.
      * Note: this column has a database default value of: 1
      * @var        int
      */
-    protected $is_active;
+    protected $active;
 
     /**
      * @var        Product
@@ -107,7 +107,7 @@ abstract class ProductNew implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->is_active = 1;
+        $this->active = 1;
     }
 
     /**
@@ -433,14 +433,14 @@ abstract class ProductNew implements ActiveRecordInterface
     }
 
     /**
-     * Get the [is_active] column value.
+     * Get the [active] column value.
      * 
      * @return   int
      */
     public function getIsActive()
     {
 
-        return $this->is_active;
+        return $this->active;
     }
 
     /**
@@ -532,7 +532,7 @@ abstract class ProductNew implements ActiveRecordInterface
     } // setEndDate()
 
     /**
-     * Set the value of [is_active] column.
+     * Set the value of [active] column.
      * 
      * @param      int $v new value
      * @return   \Gekosale\Plugin\ProductNew\Model\ORM\ProductNew The current object (for fluent API support)
@@ -543,9 +543,9 @@ abstract class ProductNew implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->is_active !== $v) {
-            $this->is_active = $v;
-            $this->modifiedColumns[ProductNewTableMap::COL_IS_ACTIVE] = true;
+        if ($this->active !== $v) {
+            $this->active = $v;
+            $this->modifiedColumns[ProductNewTableMap::COL_ACTIVE] = true;
         }
 
 
@@ -562,7 +562,7 @@ abstract class ProductNew implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_active !== 1) {
+            if ($this->active !== 1) {
                 return false;
             }
 
@@ -612,7 +612,7 @@ abstract class ProductNew implements ActiveRecordInterface
             $this->end_date = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProductNewTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_active = (null !== $col) ? (int) $col : null;
+            $this->active = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -858,8 +858,8 @@ abstract class ProductNew implements ActiveRecordInterface
         if ($this->isColumnModified(ProductNewTableMap::COL_END_DATE)) {
             $modifiedColumns[':p' . $index++]  = 'END_DATE';
         }
-        if ($this->isColumnModified(ProductNewTableMap::COL_IS_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_ACTIVE';
+        if ($this->isColumnModified(ProductNewTableMap::COL_ACTIVE)) {
+            $modifiedColumns[':p' . $index++]  = 'ACTIVE';
         }
 
         $sql = sprintf(
@@ -884,8 +884,8 @@ abstract class ProductNew implements ActiveRecordInterface
                     case 'END_DATE':                        
                         $stmt->bindValue($identifier, $this->end_date ? $this->end_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'IS_ACTIVE':                        
-                        $stmt->bindValue($identifier, $this->is_active, PDO::PARAM_INT);
+                    case 'ACTIVE':                        
+                        $stmt->bindValue($identifier, $this->active, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1101,7 +1101,7 @@ abstract class ProductNew implements ActiveRecordInterface
         if ($this->isColumnModified(ProductNewTableMap::COL_PRODUCT_ID)) $criteria->add(ProductNewTableMap::COL_PRODUCT_ID, $this->product_id);
         if ($this->isColumnModified(ProductNewTableMap::COL_START_DATE)) $criteria->add(ProductNewTableMap::COL_START_DATE, $this->start_date);
         if ($this->isColumnModified(ProductNewTableMap::COL_END_DATE)) $criteria->add(ProductNewTableMap::COL_END_DATE, $this->end_date);
-        if ($this->isColumnModified(ProductNewTableMap::COL_IS_ACTIVE)) $criteria->add(ProductNewTableMap::COL_IS_ACTIVE, $this->is_active);
+        if ($this->isColumnModified(ProductNewTableMap::COL_ACTIVE)) $criteria->add(ProductNewTableMap::COL_ACTIVE, $this->active);
 
         return $criteria;
     }
@@ -1259,7 +1259,7 @@ abstract class ProductNew implements ActiveRecordInterface
         $this->product_id = null;
         $this->start_date = null;
         $this->end_date = null;
-        $this->is_active = null;
+        $this->active = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

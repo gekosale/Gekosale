@@ -111,9 +111,9 @@ class ShipmentTableMap extends TableMap
     const COL_MODEL = 'shipment.MODEL';
 
     /**
-     * the column name for the IS_SENT field
+     * the column name for the SENT field
      */
-    const COL_IS_SENT = 'shipment.IS_SENT';
+    const COL_SENT = 'shipment.SENT';
 
     /**
      * the column name for the ENVELOPE_ID field
@@ -134,9 +134,9 @@ class ShipmentTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('Id', 'OrderId', 'Guid', 'PackageNumber', 'Label', 'OrderData', 'FormData', 'Model', 'IsSent', 'EnvelopeId', ),
         self::TYPE_STUDLYPHPNAME => array('id', 'orderId', 'guid', 'packageNumber', 'label', 'orderData', 'formData', 'model', 'isSent', 'envelopeId', ),
-        self::TYPE_COLNAME       => array(ShipmentTableMap::COL_ID, ShipmentTableMap::COL_ORDER_ID, ShipmentTableMap::COL_GUID, ShipmentTableMap::COL_PACKAGE_NUMBER, ShipmentTableMap::COL_LABEL, ShipmentTableMap::COL_ORDER_DATA, ShipmentTableMap::COL_FORM_DATA, ShipmentTableMap::COL_MODEL, ShipmentTableMap::COL_IS_SENT, ShipmentTableMap::COL_ENVELOPE_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_ORDER_ID', 'COL_GUID', 'COL_PACKAGE_NUMBER', 'COL_LABEL', 'COL_ORDER_DATA', 'COL_FORM_DATA', 'COL_MODEL', 'COL_IS_SENT', 'COL_ENVELOPE_ID', ),
-        self::TYPE_FIELDNAME     => array('id', 'order_id', 'guid', 'package_number', 'label', 'order_data', 'form_data', 'model', 'is_sent', 'envelope_id', ),
+        self::TYPE_COLNAME       => array(ShipmentTableMap::COL_ID, ShipmentTableMap::COL_ORDER_ID, ShipmentTableMap::COL_GUID, ShipmentTableMap::COL_PACKAGE_NUMBER, ShipmentTableMap::COL_LABEL, ShipmentTableMap::COL_ORDER_DATA, ShipmentTableMap::COL_FORM_DATA, ShipmentTableMap::COL_MODEL, ShipmentTableMap::COL_SENT, ShipmentTableMap::COL_ENVELOPE_ID, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_ORDER_ID', 'COL_GUID', 'COL_PACKAGE_NUMBER', 'COL_LABEL', 'COL_ORDER_DATA', 'COL_FORM_DATA', 'COL_MODEL', 'COL_SENT', 'COL_ENVELOPE_ID', ),
+        self::TYPE_FIELDNAME     => array('id', 'order_id', 'guid', 'package_number', 'label', 'order_data', 'form_data', 'model', 'sent', 'envelope_id', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
@@ -149,9 +149,9 @@ class ShipmentTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('Id' => 0, 'OrderId' => 1, 'Guid' => 2, 'PackageNumber' => 3, 'Label' => 4, 'OrderData' => 5, 'FormData' => 6, 'Model' => 7, 'IsSent' => 8, 'EnvelopeId' => 9, ),
         self::TYPE_STUDLYPHPNAME => array('id' => 0, 'orderId' => 1, 'guid' => 2, 'packageNumber' => 3, 'label' => 4, 'orderData' => 5, 'formData' => 6, 'model' => 7, 'isSent' => 8, 'envelopeId' => 9, ),
-        self::TYPE_COLNAME       => array(ShipmentTableMap::COL_ID => 0, ShipmentTableMap::COL_ORDER_ID => 1, ShipmentTableMap::COL_GUID => 2, ShipmentTableMap::COL_PACKAGE_NUMBER => 3, ShipmentTableMap::COL_LABEL => 4, ShipmentTableMap::COL_ORDER_DATA => 5, ShipmentTableMap::COL_FORM_DATA => 6, ShipmentTableMap::COL_MODEL => 7, ShipmentTableMap::COL_IS_SENT => 8, ShipmentTableMap::COL_ENVELOPE_ID => 9, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_ORDER_ID' => 1, 'COL_GUID' => 2, 'COL_PACKAGE_NUMBER' => 3, 'COL_LABEL' => 4, 'COL_ORDER_DATA' => 5, 'COL_FORM_DATA' => 6, 'COL_MODEL' => 7, 'COL_IS_SENT' => 8, 'COL_ENVELOPE_ID' => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'order_id' => 1, 'guid' => 2, 'package_number' => 3, 'label' => 4, 'order_data' => 5, 'form_data' => 6, 'model' => 7, 'is_sent' => 8, 'envelope_id' => 9, ),
+        self::TYPE_COLNAME       => array(ShipmentTableMap::COL_ID => 0, ShipmentTableMap::COL_ORDER_ID => 1, ShipmentTableMap::COL_GUID => 2, ShipmentTableMap::COL_PACKAGE_NUMBER => 3, ShipmentTableMap::COL_LABEL => 4, ShipmentTableMap::COL_ORDER_DATA => 5, ShipmentTableMap::COL_FORM_DATA => 6, ShipmentTableMap::COL_MODEL => 7, ShipmentTableMap::COL_SENT => 8, ShipmentTableMap::COL_ENVELOPE_ID => 9, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_ORDER_ID' => 1, 'COL_GUID' => 2, 'COL_PACKAGE_NUMBER' => 3, 'COL_LABEL' => 4, 'COL_ORDER_DATA' => 5, 'COL_FORM_DATA' => 6, 'COL_MODEL' => 7, 'COL_SENT' => 8, 'COL_ENVELOPE_ID' => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'order_id' => 1, 'guid' => 2, 'package_number' => 3, 'label' => 4, 'order_data' => 5, 'form_data' => 6, 'model' => 7, 'sent' => 8, 'envelope_id' => 9, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
@@ -179,7 +179,7 @@ class ShipmentTableMap extends TableMap
         $this->addColumn('ORDER_DATA', 'OrderData', 'LONGVARCHAR', false, null, null);
         $this->addColumn('FORM_DATA', 'FormData', 'LONGVARCHAR', false, null, null);
         $this->addColumn('MODEL', 'Model', 'VARCHAR', false, 45, null);
-        $this->addColumn('IS_SENT', 'IsSent', 'INTEGER', true, null, 0);
+        $this->addColumn('SENT', 'IsSent', 'INTEGER', true, null, 0);
         $this->addColumn('ENVELOPE_ID', 'EnvelopeId', 'VARCHAR', false, 255, null);
     } // initialize()
 
@@ -336,7 +336,7 @@ class ShipmentTableMap extends TableMap
             $criteria->addSelectColumn(ShipmentTableMap::COL_ORDER_DATA);
             $criteria->addSelectColumn(ShipmentTableMap::COL_FORM_DATA);
             $criteria->addSelectColumn(ShipmentTableMap::COL_MODEL);
-            $criteria->addSelectColumn(ShipmentTableMap::COL_IS_SENT);
+            $criteria->addSelectColumn(ShipmentTableMap::COL_SENT);
             $criteria->addSelectColumn(ShipmentTableMap::COL_ENVELOPE_ID);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
@@ -347,7 +347,7 @@ class ShipmentTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.ORDER_DATA');
             $criteria->addSelectColumn($alias . '.FORM_DATA');
             $criteria->addSelectColumn($alias . '.MODEL');
-            $criteria->addSelectColumn($alias . '.IS_SENT');
+            $criteria->addSelectColumn($alias . '.SENT');
             $criteria->addSelectColumn($alias . '.ENVELOPE_ID');
         }
     }

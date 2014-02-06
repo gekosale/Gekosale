@@ -26,7 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShipmentQuery orderByOrderData($order = Criteria::ASC) Order by the order_data column
  * @method     ChildShipmentQuery orderByFormData($order = Criteria::ASC) Order by the form_data column
  * @method     ChildShipmentQuery orderByModel($order = Criteria::ASC) Order by the model column
- * @method     ChildShipmentQuery orderByIsSent($order = Criteria::ASC) Order by the is_sent column
+ * @method     ChildShipmentQuery orderByIsSent($order = Criteria::ASC) Order by the sent column
  * @method     ChildShipmentQuery orderByEnvelopeId($order = Criteria::ASC) Order by the envelope_id column
  *
  * @method     ChildShipmentQuery groupById() Group by the id column
@@ -37,7 +37,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShipmentQuery groupByOrderData() Group by the order_data column
  * @method     ChildShipmentQuery groupByFormData() Group by the form_data column
  * @method     ChildShipmentQuery groupByModel() Group by the model column
- * @method     ChildShipmentQuery groupByIsSent() Group by the is_sent column
+ * @method     ChildShipmentQuery groupByIsSent() Group by the sent column
  * @method     ChildShipmentQuery groupByEnvelopeId() Group by the envelope_id column
  *
  * @method     ChildShipmentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -55,7 +55,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShipment findOneByOrderData(string $order_data) Return the first ChildShipment filtered by the order_data column
  * @method     ChildShipment findOneByFormData(string $form_data) Return the first ChildShipment filtered by the form_data column
  * @method     ChildShipment findOneByModel(string $model) Return the first ChildShipment filtered by the model column
- * @method     ChildShipment findOneByIsSent(int $is_sent) Return the first ChildShipment filtered by the is_sent column
+ * @method     ChildShipment findOneByIsSent(int $sent) Return the first ChildShipment filtered by the sent column
  * @method     ChildShipment findOneByEnvelopeId(string $envelope_id) Return the first ChildShipment filtered by the envelope_id column
  *
  * @method     array findById(int $id) Return ChildShipment objects filtered by the id column
@@ -66,7 +66,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByOrderData(string $order_data) Return ChildShipment objects filtered by the order_data column
  * @method     array findByFormData(string $form_data) Return ChildShipment objects filtered by the form_data column
  * @method     array findByModel(string $model) Return ChildShipment objects filtered by the model column
- * @method     array findByIsSent(int $is_sent) Return ChildShipment objects filtered by the is_sent column
+ * @method     array findByIsSent(int $sent) Return ChildShipment objects filtered by the sent column
  * @method     array findByEnvelopeId(string $envelope_id) Return ChildShipment objects filtered by the envelope_id column
  *
  */
@@ -156,7 +156,7 @@ abstract class ShipmentQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, ORDER_ID, GUID, PACKAGE_NUMBER, LABEL, ORDER_DATA, FORM_DATA, MODEL, IS_SENT, ENVELOPE_ID FROM shipment WHERE ID = :p0';
+        $sql = 'SELECT ID, ORDER_ID, GUID, PACKAGE_NUMBER, LABEL, ORDER_DATA, FORM_DATA, MODEL, SENT, ENVELOPE_ID FROM shipment WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -487,13 +487,13 @@ abstract class ShipmentQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_sent column
+     * Filter the query on the sent column
      *
      * Example usage:
      * <code>
-     * $query->filterByIsSent(1234); // WHERE is_sent = 1234
-     * $query->filterByIsSent(array(12, 34)); // WHERE is_sent IN (12, 34)
-     * $query->filterByIsSent(array('min' => 12)); // WHERE is_sent > 12
+     * $query->filterByIsSent(1234); // WHERE sent = 1234
+     * $query->filterByIsSent(array(12, 34)); // WHERE sent IN (12, 34)
+     * $query->filterByIsSent(array('min' => 12)); // WHERE sent > 12
      * </code>
      *
      * @param     mixed $isSent The value to use as filter.
@@ -509,11 +509,11 @@ abstract class ShipmentQuery extends ModelCriteria
         if (is_array($isSent)) {
             $useMinMax = false;
             if (isset($isSent['min'])) {
-                $this->addUsingAlias(ShipmentTableMap::COL_IS_SENT, $isSent['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ShipmentTableMap::COL_SENT, $isSent['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($isSent['max'])) {
-                $this->addUsingAlias(ShipmentTableMap::COL_IS_SENT, $isSent['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ShipmentTableMap::COL_SENT, $isSent['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -524,7 +524,7 @@ abstract class ShipmentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ShipmentTableMap::COL_IS_SENT, $isSent, $comparison);
+        return $this->addUsingAlias(ShipmentTableMap::COL_SENT, $isSent, $comparison);
     }
 
     /**
