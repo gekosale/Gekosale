@@ -60,7 +60,7 @@ class CompanyTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 13;
+    const NUM_COLUMNS = 15;
 
     /**
      * The number of lazy-loaded columns
@@ -70,7 +70,7 @@ class CompanyTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 13;
+    const NUM_HYDRATE_COLUMNS = 15;
 
     /**
      * the column name for the ID field
@@ -101,6 +101,16 @@ class CompanyTableMap extends TableMap
      * the column name for the TAX_ID field
      */
     const COL_TAX_ID = 'company.TAX_ID';
+
+    /**
+     * the column name for the COMPANY_NAME field
+     */
+    const COL_COMPANY_NAME = 'company.COMPANY_NAME';
+
+    /**
+     * the column name for the SHORT_COMPANY_NAME field
+     */
+    const COL_SHORT_COMPANY_NAME = 'company.SHORT_COMPANY_NAME';
 
     /**
      * the column name for the POST_CODE field
@@ -142,15 +152,6 @@ class CompanyTableMap extends TableMap
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
-    // i18n behavior
-    
-    /**
-     * The default locale to use for translations.
-     *
-     * @var string
-     */
-    const DEFAULT_LOCALE = 'en_US';
-
     /**
      * holds an array of fieldnames
      *
@@ -158,12 +159,12 @@ class CompanyTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'CountryId', 'PhotoId', 'BankName', 'BankAccountNo', 'TaxId', 'PostCode', 'City', 'Street', 'StreetNo', 'PlaceNo', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'countryId', 'photoId', 'bankName', 'bankAccountNo', 'taxId', 'postCode', 'city', 'street', 'streetNo', 'placeNo', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(CompanyTableMap::COL_ID, CompanyTableMap::COL_COUNTRY_ID, CompanyTableMap::COL_PHOTO_ID, CompanyTableMap::COL_BANK_NAME, CompanyTableMap::COL_BANK_ACCOUNT_NO, CompanyTableMap::COL_TAX_ID, CompanyTableMap::COL_POST_CODE, CompanyTableMap::COL_CITY, CompanyTableMap::COL_STREET, CompanyTableMap::COL_STREET_NO, CompanyTableMap::COL_PLACE_NO, CompanyTableMap::COL_CREATED_AT, CompanyTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_COUNTRY_ID', 'COL_PHOTO_ID', 'COL_BANK_NAME', 'COL_BANK_ACCOUNT_NO', 'COL_TAX_ID', 'COL_POST_CODE', 'COL_CITY', 'COL_STREET', 'COL_STREET_NO', 'COL_PLACE_NO', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('id', 'country_id', 'photo_id', 'bank_name', 'bank_account_no', 'tax_id', 'post_code', 'city', 'street', 'street_no', 'place_no', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('Id', 'CountryId', 'PhotoId', 'BankName', 'BankAccountNo', 'TaxId', 'CompanyName', 'ShortCompanyName', 'PostCode', 'City', 'Street', 'StreetNo', 'PlaceNo', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'countryId', 'photoId', 'bankName', 'bankAccountNo', 'taxId', 'companyName', 'shortCompanyName', 'postCode', 'city', 'street', 'streetNo', 'placeNo', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(CompanyTableMap::COL_ID, CompanyTableMap::COL_COUNTRY_ID, CompanyTableMap::COL_PHOTO_ID, CompanyTableMap::COL_BANK_NAME, CompanyTableMap::COL_BANK_ACCOUNT_NO, CompanyTableMap::COL_TAX_ID, CompanyTableMap::COL_COMPANY_NAME, CompanyTableMap::COL_SHORT_COMPANY_NAME, CompanyTableMap::COL_POST_CODE, CompanyTableMap::COL_CITY, CompanyTableMap::COL_STREET, CompanyTableMap::COL_STREET_NO, CompanyTableMap::COL_PLACE_NO, CompanyTableMap::COL_CREATED_AT, CompanyTableMap::COL_UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID', 'COL_COUNTRY_ID', 'COL_PHOTO_ID', 'COL_BANK_NAME', 'COL_BANK_ACCOUNT_NO', 'COL_TAX_ID', 'COL_COMPANY_NAME', 'COL_SHORT_COMPANY_NAME', 'COL_POST_CODE', 'COL_CITY', 'COL_STREET', 'COL_STREET_NO', 'COL_PLACE_NO', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'country_id', 'photo_id', 'bank_name', 'bank_account_no', 'tax_id', 'company_name', 'short_company_name', 'post_code', 'city', 'street', 'street_no', 'place_no', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -173,12 +174,12 @@ class CompanyTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'CountryId' => 1, 'PhotoId' => 2, 'BankName' => 3, 'BankAccountNo' => 4, 'TaxId' => 5, 'PostCode' => 6, 'City' => 7, 'Street' => 8, 'StreetNo' => 9, 'PlaceNo' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'countryId' => 1, 'photoId' => 2, 'bankName' => 3, 'bankAccountNo' => 4, 'taxId' => 5, 'postCode' => 6, 'city' => 7, 'street' => 8, 'streetNo' => 9, 'placeNo' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
-        self::TYPE_COLNAME       => array(CompanyTableMap::COL_ID => 0, CompanyTableMap::COL_COUNTRY_ID => 1, CompanyTableMap::COL_PHOTO_ID => 2, CompanyTableMap::COL_BANK_NAME => 3, CompanyTableMap::COL_BANK_ACCOUNT_NO => 4, CompanyTableMap::COL_TAX_ID => 5, CompanyTableMap::COL_POST_CODE => 6, CompanyTableMap::COL_CITY => 7, CompanyTableMap::COL_STREET => 8, CompanyTableMap::COL_STREET_NO => 9, CompanyTableMap::COL_PLACE_NO => 10, CompanyTableMap::COL_CREATED_AT => 11, CompanyTableMap::COL_UPDATED_AT => 12, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_COUNTRY_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_BANK_NAME' => 3, 'COL_BANK_ACCOUNT_NO' => 4, 'COL_TAX_ID' => 5, 'COL_POST_CODE' => 6, 'COL_CITY' => 7, 'COL_STREET' => 8, 'COL_STREET_NO' => 9, 'COL_PLACE_NO' => 10, 'COL_CREATED_AT' => 11, 'COL_UPDATED_AT' => 12, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'country_id' => 1, 'photo_id' => 2, 'bank_name' => 3, 'bank_account_no' => 4, 'tax_id' => 5, 'post_code' => 6, 'city' => 7, 'street' => 8, 'street_no' => 9, 'place_no' => 10, 'created_at' => 11, 'updated_at' => 12, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'CountryId' => 1, 'PhotoId' => 2, 'BankName' => 3, 'BankAccountNo' => 4, 'TaxId' => 5, 'CompanyName' => 6, 'ShortCompanyName' => 7, 'PostCode' => 8, 'City' => 9, 'Street' => 10, 'StreetNo' => 11, 'PlaceNo' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'countryId' => 1, 'photoId' => 2, 'bankName' => 3, 'bankAccountNo' => 4, 'taxId' => 5, 'companyName' => 6, 'shortCompanyName' => 7, 'postCode' => 8, 'city' => 9, 'street' => 10, 'streetNo' => 11, 'placeNo' => 12, 'createdAt' => 13, 'updatedAt' => 14, ),
+        self::TYPE_COLNAME       => array(CompanyTableMap::COL_ID => 0, CompanyTableMap::COL_COUNTRY_ID => 1, CompanyTableMap::COL_PHOTO_ID => 2, CompanyTableMap::COL_BANK_NAME => 3, CompanyTableMap::COL_BANK_ACCOUNT_NO => 4, CompanyTableMap::COL_TAX_ID => 5, CompanyTableMap::COL_COMPANY_NAME => 6, CompanyTableMap::COL_SHORT_COMPANY_NAME => 7, CompanyTableMap::COL_POST_CODE => 8, CompanyTableMap::COL_CITY => 9, CompanyTableMap::COL_STREET => 10, CompanyTableMap::COL_STREET_NO => 11, CompanyTableMap::COL_PLACE_NO => 12, CompanyTableMap::COL_CREATED_AT => 13, CompanyTableMap::COL_UPDATED_AT => 14, ),
+        self::TYPE_RAW_COLNAME   => array('COL_ID' => 0, 'COL_COUNTRY_ID' => 1, 'COL_PHOTO_ID' => 2, 'COL_BANK_NAME' => 3, 'COL_BANK_ACCOUNT_NO' => 4, 'COL_TAX_ID' => 5, 'COL_COMPANY_NAME' => 6, 'COL_SHORT_COMPANY_NAME' => 7, 'COL_POST_CODE' => 8, 'COL_CITY' => 9, 'COL_STREET' => 10, 'COL_STREET_NO' => 11, 'COL_PLACE_NO' => 12, 'COL_CREATED_AT' => 13, 'COL_UPDATED_AT' => 14, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'country_id' => 1, 'photo_id' => 2, 'bank_name' => 3, 'bank_account_no' => 4, 'tax_id' => 5, 'company_name' => 6, 'short_company_name' => 7, 'post_code' => 8, 'city' => 9, 'street' => 10, 'street_no' => 11, 'place_no' => 12, 'created_at' => 13, 'updated_at' => 14, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -203,6 +204,8 @@ class CompanyTableMap extends TableMap
         $this->addColumn('BANK_NAME', 'BankName', 'VARCHAR', false, 500, null);
         $this->addColumn('BANK_ACCOUNT_NO', 'BankAccountNo', 'VARCHAR', false, 50, null);
         $this->addColumn('TAX_ID', 'TaxId', 'VARCHAR', false, 45, null);
+        $this->addColumn('COMPANY_NAME', 'CompanyName', 'VARCHAR', false, 255, null);
+        $this->addColumn('SHORT_COMPANY_NAME', 'ShortCompanyName', 'VARCHAR', false, 255, null);
         $this->addColumn('POST_CODE', 'PostCode', 'VARCHAR', false, 45, null);
         $this->addColumn('CITY', 'City', 'VARCHAR', false, 45, null);
         $this->addColumn('STREET', 'Street', 'VARCHAR', false, 45, null);
@@ -221,7 +224,6 @@ class CompanyTableMap extends TableMap
         $this->addRelation('File', '\\Gekosale\\Plugin\\File\\Model\\ORM\\File', RelationMap::MANY_TO_ONE, array('photo_id' => 'id', ), 'SET NULL', null);
         $this->addRelation('ControllerPermission', '\\Gekosale\\Plugin\\Controller\\Model\\ORM\\ControllerPermission', RelationMap::ONE_TO_MANY, array('id' => 'company_id', ), 'CASCADE', null, 'ControllerPermissions');
         $this->addRelation('Shop', '\\Gekosale\\Plugin\\Shop\\Model\\ORM\\Shop', RelationMap::ONE_TO_MANY, array('id' => 'company_id', ), 'CASCADE', null, 'Shops');
-        $this->addRelation('CompanyI18n', '\\Gekosale\\Plugin\\Company\\Model\\ORM\\CompanyI18n', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'CompanyI18ns');
     } // buildRelations()
 
     /**
@@ -233,7 +235,6 @@ class CompanyTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'i18n' => array('i18n_table' => '%TABLE%_i18n', 'i18n_phpname' => '%PHPNAME%I18n', 'i18n_columns' => 'company_name, short_company_name', 'locale_column' => 'locale', 'locale_length' => '5', 'default_locale' => '', 'locale_alias' => '', ),
             'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
         );
     } // getBehaviors()
@@ -246,7 +247,6 @@ class CompanyTableMap extends TableMap
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
                 ControllerPermissionTableMap::clearInstancePool();
                 ShopTableMap::clearInstancePool();
-                CompanyI18nTableMap::clearInstancePool();
             }
 
     /**
@@ -393,6 +393,8 @@ class CompanyTableMap extends TableMap
             $criteria->addSelectColumn(CompanyTableMap::COL_BANK_NAME);
             $criteria->addSelectColumn(CompanyTableMap::COL_BANK_ACCOUNT_NO);
             $criteria->addSelectColumn(CompanyTableMap::COL_TAX_ID);
+            $criteria->addSelectColumn(CompanyTableMap::COL_COMPANY_NAME);
+            $criteria->addSelectColumn(CompanyTableMap::COL_SHORT_COMPANY_NAME);
             $criteria->addSelectColumn(CompanyTableMap::COL_POST_CODE);
             $criteria->addSelectColumn(CompanyTableMap::COL_CITY);
             $criteria->addSelectColumn(CompanyTableMap::COL_STREET);
@@ -407,6 +409,8 @@ class CompanyTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.BANK_NAME');
             $criteria->addSelectColumn($alias . '.BANK_ACCOUNT_NO');
             $criteria->addSelectColumn($alias . '.TAX_ID');
+            $criteria->addSelectColumn($alias . '.COMPANY_NAME');
+            $criteria->addSelectColumn($alias . '.SHORT_COMPANY_NAME');
             $criteria->addSelectColumn($alias . '.POST_CODE');
             $criteria->addSelectColumn($alias . '.CITY');
             $criteria->addSelectColumn($alias . '.STREET');

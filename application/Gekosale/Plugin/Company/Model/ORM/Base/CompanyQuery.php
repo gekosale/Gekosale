@@ -5,7 +5,6 @@ namespace Gekosale\Plugin\Company\Model\ORM\Base;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Company\Model\ORM\Company as ChildCompany;
-use Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery as ChildCompanyI18nQuery;
 use Gekosale\Plugin\Company\Model\ORM\CompanyQuery as ChildCompanyQuery;
 use Gekosale\Plugin\Company\Model\ORM\Map\CompanyTableMap;
 use Gekosale\Plugin\Controller\Model\ORM\ControllerPermission;
@@ -32,6 +31,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCompanyQuery orderByBankName($order = Criteria::ASC) Order by the bank_name column
  * @method     ChildCompanyQuery orderByBankAccountNo($order = Criteria::ASC) Order by the bank_account_no column
  * @method     ChildCompanyQuery orderByTaxId($order = Criteria::ASC) Order by the tax_id column
+ * @method     ChildCompanyQuery orderByCompanyName($order = Criteria::ASC) Order by the company_name column
+ * @method     ChildCompanyQuery orderByShortCompanyName($order = Criteria::ASC) Order by the short_company_name column
  * @method     ChildCompanyQuery orderByPostCode($order = Criteria::ASC) Order by the post_code column
  * @method     ChildCompanyQuery orderByCity($order = Criteria::ASC) Order by the city column
  * @method     ChildCompanyQuery orderByStreet($order = Criteria::ASC) Order by the street column
@@ -46,6 +47,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCompanyQuery groupByBankName() Group by the bank_name column
  * @method     ChildCompanyQuery groupByBankAccountNo() Group by the bank_account_no column
  * @method     ChildCompanyQuery groupByTaxId() Group by the tax_id column
+ * @method     ChildCompanyQuery groupByCompanyName() Group by the company_name column
+ * @method     ChildCompanyQuery groupByShortCompanyName() Group by the short_company_name column
  * @method     ChildCompanyQuery groupByPostCode() Group by the post_code column
  * @method     ChildCompanyQuery groupByCity() Group by the city column
  * @method     ChildCompanyQuery groupByStreet() Group by the street column
@@ -74,10 +77,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCompanyQuery rightJoinShop($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Shop relation
  * @method     ChildCompanyQuery innerJoinShop($relationAlias = null) Adds a INNER JOIN clause to the query using the Shop relation
  *
- * @method     ChildCompanyQuery leftJoinCompanyI18n($relationAlias = null) Adds a LEFT JOIN clause to the query using the CompanyI18n relation
- * @method     ChildCompanyQuery rightJoinCompanyI18n($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CompanyI18n relation
- * @method     ChildCompanyQuery innerJoinCompanyI18n($relationAlias = null) Adds a INNER JOIN clause to the query using the CompanyI18n relation
- *
  * @method     ChildCompany findOne(ConnectionInterface $con = null) Return the first ChildCompany matching the query
  * @method     ChildCompany findOneOrCreate(ConnectionInterface $con = null) Return the first ChildCompany matching the query, or a new ChildCompany object populated from the query conditions when no match is found
  *
@@ -87,6 +86,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCompany findOneByBankName(string $bank_name) Return the first ChildCompany filtered by the bank_name column
  * @method     ChildCompany findOneByBankAccountNo(string $bank_account_no) Return the first ChildCompany filtered by the bank_account_no column
  * @method     ChildCompany findOneByTaxId(string $tax_id) Return the first ChildCompany filtered by the tax_id column
+ * @method     ChildCompany findOneByCompanyName(string $company_name) Return the first ChildCompany filtered by the company_name column
+ * @method     ChildCompany findOneByShortCompanyName(string $short_company_name) Return the first ChildCompany filtered by the short_company_name column
  * @method     ChildCompany findOneByPostCode(string $post_code) Return the first ChildCompany filtered by the post_code column
  * @method     ChildCompany findOneByCity(string $city) Return the first ChildCompany filtered by the city column
  * @method     ChildCompany findOneByStreet(string $street) Return the first ChildCompany filtered by the street column
@@ -101,6 +102,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     array findByBankName(string $bank_name) Return ChildCompany objects filtered by the bank_name column
  * @method     array findByBankAccountNo(string $bank_account_no) Return ChildCompany objects filtered by the bank_account_no column
  * @method     array findByTaxId(string $tax_id) Return ChildCompany objects filtered by the tax_id column
+ * @method     array findByCompanyName(string $company_name) Return ChildCompany objects filtered by the company_name column
+ * @method     array findByShortCompanyName(string $short_company_name) Return ChildCompany objects filtered by the short_company_name column
  * @method     array findByPostCode(string $post_code) Return ChildCompany objects filtered by the post_code column
  * @method     array findByCity(string $city) Return ChildCompany objects filtered by the city column
  * @method     array findByStreet(string $street) Return ChildCompany objects filtered by the street column
@@ -196,7 +199,7 @@ abstract class CompanyQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ID, COUNTRY_ID, PHOTO_ID, BANK_NAME, BANK_ACCOUNT_NO, TAX_ID, POST_CODE, CITY, STREET, STREET_NO, PLACE_NO, CREATED_AT, UPDATED_AT FROM company WHERE ID = :p0';
+        $sql = 'SELECT ID, COUNTRY_ID, PHOTO_ID, BANK_NAME, BANK_ACCOUNT_NO, TAX_ID, COMPANY_NAME, SHORT_COMPANY_NAME, POST_CODE, CITY, STREET, STREET_NO, PLACE_NO, CREATED_AT, UPDATED_AT FROM company WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);            
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -497,6 +500,64 @@ abstract class CompanyQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CompanyTableMap::COL_TAX_ID, $taxId, $comparison);
+    }
+
+    /**
+     * Filter the query on the company_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCompanyName('fooValue');   // WHERE company_name = 'fooValue'
+     * $query->filterByCompanyName('%fooValue%'); // WHERE company_name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $companyName The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildCompanyQuery The current query, for fluid interface
+     */
+    public function filterByCompanyName($companyName = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($companyName)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $companyName)) {
+                $companyName = str_replace('*', '%', $companyName);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(CompanyTableMap::COL_COMPANY_NAME, $companyName, $comparison);
+    }
+
+    /**
+     * Filter the query on the short_company_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByShortCompanyName('fooValue');   // WHERE short_company_name = 'fooValue'
+     * $query->filterByShortCompanyName('%fooValue%'); // WHERE short_company_name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $shortCompanyName The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildCompanyQuery The current query, for fluid interface
+     */
+    public function filterByShortCompanyName($shortCompanyName = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($shortCompanyName)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $shortCompanyName)) {
+                $shortCompanyName = str_replace('*', '%', $shortCompanyName);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(CompanyTableMap::COL_SHORT_COMPANY_NAME, $shortCompanyName, $comparison);
     }
 
     /**
@@ -1027,79 +1088,6 @@ abstract class CompanyQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Gekosale\Plugin\Company\Model\ORM\CompanyI18n object
-     *
-     * @param \Gekosale\Plugin\Company\Model\ORM\CompanyI18n|ObjectCollection $companyI18n  the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildCompanyQuery The current query, for fluid interface
-     */
-    public function filterByCompanyI18n($companyI18n, $comparison = null)
-    {
-        if ($companyI18n instanceof \Gekosale\Plugin\Company\Model\ORM\CompanyI18n) {
-            return $this
-                ->addUsingAlias(CompanyTableMap::COL_ID, $companyI18n->getId(), $comparison);
-        } elseif ($companyI18n instanceof ObjectCollection) {
-            return $this
-                ->useCompanyI18nQuery()
-                ->filterByPrimaryKeys($companyI18n->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByCompanyI18n() only accepts arguments of type \Gekosale\Plugin\Company\Model\ORM\CompanyI18n or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the CompanyI18n relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ChildCompanyQuery The current query, for fluid interface
-     */
-    public function joinCompanyI18n($relationAlias = null, $joinType = 'LEFT JOIN')
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('CompanyI18n');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'CompanyI18n');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the CompanyI18n relation CompanyI18n object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   \Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery A secondary query class using the current class as primary query
-     */
-    public function useCompanyI18nQuery($relationAlias = null, $joinType = 'LEFT JOIN')
-    {
-        return $this
-            ->joinCompanyI18n($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'CompanyI18n', '\Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery');
-    }
-
-    /**
      * Exclude object from result
      *
      * @param   ChildCompany $company Object to remove from the list of results
@@ -1188,63 +1176,6 @@ abstract class CompanyQuery extends ModelCriteria
             $con->rollBack();
             throw $e;
         }
-    }
-
-    // i18n behavior
-    
-    /**
-     * Adds a JOIN clause to the query using the i18n relation
-     *
-     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
-     *
-     * @return    ChildCompanyQuery The current query, for fluid interface
-     */
-    public function joinI18n($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $relationName = $relationAlias ? $relationAlias : 'CompanyI18n';
-    
-        return $this
-            ->joinCompanyI18n($relationAlias, $joinType)
-            ->addJoinCondition($relationName, $relationName . '.Locale = ?', $locale);
-    }
-    
-    /**
-     * Adds a JOIN clause to the query and hydrates the related I18n object.
-     * Shortcut for $c->joinI18n($locale)->with()
-     *
-     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
-     *
-     * @return    ChildCompanyQuery The current query, for fluid interface
-     */
-    public function joinWithI18n($locale = 'en_US', $joinType = Criteria::LEFT_JOIN)
-    {
-        $this
-            ->joinI18n($locale, null, $joinType)
-            ->with('CompanyI18n');
-        $this->with['CompanyI18n']->setIsWithOneToMany(false);
-    
-        return $this;
-    }
-    
-    /**
-     * Use the I18n relation query object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $locale Locale to use for the join condition, e.g. 'fr_FR'
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'. Defaults to left join.
-     *
-     * @return    ChildCompanyI18nQuery A secondary query class using the current class as primary query
-     */
-    public function useI18nQuery($locale = 'en_US', $relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinI18n($locale, $relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'CompanyI18n', '\Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery');
     }
 
     // timestampable behavior

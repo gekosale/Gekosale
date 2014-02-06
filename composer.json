@@ -42,8 +42,6 @@
             "": "application/"
         },
         "classmap": [
-            "lib/dispatcher/sfEvent.php",
-            "lib/dispatcher/sfEventDispatcher.php",
             "lib/xajax/xajax_core/xajax.inc.php",
             "lib/imageGD/Image.php"
         ]

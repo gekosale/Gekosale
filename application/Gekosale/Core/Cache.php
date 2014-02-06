@@ -11,7 +11,7 @@
  * @author      Adam Piotrowski <adam@gekosale.com>
  * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
-namespace Gekosale\Core\Cache;
+namespace Gekosale\Core;
 
 class Cache
 {

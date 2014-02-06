@@ -6,8 +6,6 @@ use \DateTime;
 use \Exception;
 use \PDO;
 use Gekosale\Plugin\Company\Model\ORM\Company as ChildCompany;
-use Gekosale\Plugin\Company\Model\ORM\CompanyI18n as ChildCompanyI18n;
-use Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery as ChildCompanyI18nQuery;
 use Gekosale\Plugin\Company\Model\ORM\CompanyQuery as ChildCompanyQuery;
 use Gekosale\Plugin\Company\Model\ORM\Map\CompanyTableMap;
 use Gekosale\Plugin\Controller\Model\ORM\ControllerPermission as ChildControllerPermission;
@@ -105,6 +103,18 @@ abstract class Company implements ActiveRecordInterface
     protected $tax_id;
 
     /**
+     * The value for the company_name field.
+     * @var        string
+     */
+    protected $company_name;
+
+    /**
+     * The value for the short_company_name field.
+     * @var        string
+     */
+    protected $short_company_name;
+
+    /**
      * The value for the post_code field.
      * @var        string
      */
@@ -169,32 +179,12 @@ abstract class Company implements ActiveRecordInterface
     protected $collShopsPartial;
 
     /**
-     * @var        ObjectCollection|ChildCompanyI18n[] Collection to store aggregation of ChildCompanyI18n objects.
-     */
-    protected $collCompanyI18ns;
-    protected $collCompanyI18nsPartial;
-
-    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
-
-    // i18n behavior
-    
-    /**
-     * Current locale
-     * @var        string
-     */
-    protected $currentLocale = 'en_US';
-    
-    /**
-     * Current translation objects
-     * @var        array[ChildCompanyI18n]
-     */
-    protected $currentTranslations;
 
     /**
      * An array of objects scheduled for deletion.
@@ -207,12 +197,6 @@ abstract class Company implements ActiveRecordInterface
      * @var ObjectCollection
      */
     protected $shopsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection
-     */
-    protected $companyI18nsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -552,6 +536,28 @@ abstract class Company implements ActiveRecordInterface
     }
 
     /**
+     * Get the [company_name] column value.
+     * 
+     * @return   string
+     */
+    public function getCompanyName()
+    {
+
+        return $this->company_name;
+    }
+
+    /**
+     * Get the [short_company_name] column value.
+     * 
+     * @return   string
+     */
+    public function getShortCompanyName()
+    {
+
+        return $this->short_company_name;
+    }
+
+    /**
      * Get the [post_code] column value.
      * 
      * @return   string
@@ -781,6 +787,48 @@ abstract class Company implements ActiveRecordInterface
     } // setTaxId()
 
     /**
+     * Set the value of [company_name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Company\Model\ORM\Company The current object (for fluent API support)
+     */
+    public function setCompanyName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->company_name !== $v) {
+            $this->company_name = $v;
+            $this->modifiedColumns[CompanyTableMap::COL_COMPANY_NAME] = true;
+        }
+
+
+        return $this;
+    } // setCompanyName()
+
+    /**
+     * Set the value of [short_company_name] column.
+     * 
+     * @param      string $v new value
+     * @return   \Gekosale\Plugin\Company\Model\ORM\Company The current object (for fluent API support)
+     */
+    public function setShortCompanyName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->short_company_name !== $v) {
+            $this->short_company_name = $v;
+            $this->modifiedColumns[CompanyTableMap::COL_SHORT_COMPANY_NAME] = true;
+        }
+
+
+        return $this;
+    } // setShortCompanyName()
+
+    /**
      * Set the value of [post_code] column.
      * 
      * @param      string $v new value
@@ -986,28 +1034,34 @@ abstract class Company implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CompanyTableMap::translateFieldName('TaxId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->tax_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CompanyTableMap::translateFieldName('PostCode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CompanyTableMap::translateFieldName('CompanyName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->company_name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CompanyTableMap::translateFieldName('ShortCompanyName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->short_company_name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : CompanyTableMap::translateFieldName('PostCode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->post_code = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CompanyTableMap::translateFieldName('City', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : CompanyTableMap::translateFieldName('City', TableMap::TYPE_PHPNAME, $indexType)];
             $this->city = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : CompanyTableMap::translateFieldName('Street', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : CompanyTableMap::translateFieldName('Street', TableMap::TYPE_PHPNAME, $indexType)];
             $this->street = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : CompanyTableMap::translateFieldName('StreetNo', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : CompanyTableMap::translateFieldName('StreetNo', TableMap::TYPE_PHPNAME, $indexType)];
             $this->street_no = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : CompanyTableMap::translateFieldName('PlaceNo', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : CompanyTableMap::translateFieldName('PlaceNo', TableMap::TYPE_PHPNAME, $indexType)];
             $this->place_no = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : CompanyTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : CompanyTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : CompanyTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : CompanyTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1020,7 +1074,7 @@ abstract class Company implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = CompanyTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 15; // 15 = CompanyTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating \Gekosale\Plugin\Company\Model\ORM\Company object", 0, $e);
@@ -1092,8 +1146,6 @@ abstract class Company implements ActiveRecordInterface
             $this->collControllerPermissions = null;
 
             $this->collShops = null;
-
-            $this->collCompanyI18ns = null;
 
         } // if (deep)
     }
@@ -1281,23 +1333,6 @@ abstract class Company implements ActiveRecordInterface
                 }
             }
 
-            if ($this->companyI18nsScheduledForDeletion !== null) {
-                if (!$this->companyI18nsScheduledForDeletion->isEmpty()) {
-                    \Gekosale\Plugin\Company\Model\ORM\CompanyI18nQuery::create()
-                        ->filterByPrimaryKeys($this->companyI18nsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->companyI18nsScheduledForDeletion = null;
-                }
-            }
-
-                if ($this->collCompanyI18ns !== null) {
-            foreach ($this->collCompanyI18ns as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
             $this->alreadyInSave = false;
 
         }
@@ -1341,6 +1376,12 @@ abstract class Company implements ActiveRecordInterface
         }
         if ($this->isColumnModified(CompanyTableMap::COL_TAX_ID)) {
             $modifiedColumns[':p' . $index++]  = 'TAX_ID';
+        }
+        if ($this->isColumnModified(CompanyTableMap::COL_COMPANY_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'COMPANY_NAME';
+        }
+        if ($this->isColumnModified(CompanyTableMap::COL_SHORT_COMPANY_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'SHORT_COMPANY_NAME';
         }
         if ($this->isColumnModified(CompanyTableMap::COL_POST_CODE)) {
             $modifiedColumns[':p' . $index++]  = 'POST_CODE';
@@ -1391,6 +1432,12 @@ abstract class Company implements ActiveRecordInterface
                         break;
                     case 'TAX_ID':                        
                         $stmt->bindValue($identifier, $this->tax_id, PDO::PARAM_STR);
+                        break;
+                    case 'COMPANY_NAME':                        
+                        $stmt->bindValue($identifier, $this->company_name, PDO::PARAM_STR);
+                        break;
+                    case 'SHORT_COMPANY_NAME':                        
+                        $stmt->bindValue($identifier, $this->short_company_name, PDO::PARAM_STR);
                         break;
                     case 'POST_CODE':                        
                         $stmt->bindValue($identifier, $this->post_code, PDO::PARAM_STR);
@@ -1494,24 +1541,30 @@ abstract class Company implements ActiveRecordInterface
                 return $this->getTaxId();
                 break;
             case 6:
-                return $this->getPostCode();
+                return $this->getCompanyName();
                 break;
             case 7:
-                return $this->getCity();
+                return $this->getShortCompanyName();
                 break;
             case 8:
-                return $this->getStreet();
+                return $this->getPostCode();
                 break;
             case 9:
-                return $this->getStreetNo();
+                return $this->getCity();
                 break;
             case 10:
-                return $this->getPlaceNo();
+                return $this->getStreet();
                 break;
             case 11:
-                return $this->getCreatedAt();
+                return $this->getStreetNo();
                 break;
             case 12:
+                return $this->getPlaceNo();
+                break;
+            case 13:
+                return $this->getCreatedAt();
+                break;
+            case 14:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1549,13 +1602,15 @@ abstract class Company implements ActiveRecordInterface
             $keys[3] => $this->getBankName(),
             $keys[4] => $this->getBankAccountNo(),
             $keys[5] => $this->getTaxId(),
-            $keys[6] => $this->getPostCode(),
-            $keys[7] => $this->getCity(),
-            $keys[8] => $this->getStreet(),
-            $keys[9] => $this->getStreetNo(),
-            $keys[10] => $this->getPlaceNo(),
-            $keys[11] => $this->getCreatedAt(),
-            $keys[12] => $this->getUpdatedAt(),
+            $keys[6] => $this->getCompanyName(),
+            $keys[7] => $this->getShortCompanyName(),
+            $keys[8] => $this->getPostCode(),
+            $keys[9] => $this->getCity(),
+            $keys[10] => $this->getStreet(),
+            $keys[11] => $this->getStreetNo(),
+            $keys[12] => $this->getPlaceNo(),
+            $keys[13] => $this->getCreatedAt(),
+            $keys[14] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1574,9 +1629,6 @@ abstract class Company implements ActiveRecordInterface
             }
             if (null !== $this->collShops) {
                 $result['Shops'] = $this->collShops->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collCompanyI18ns) {
-                $result['CompanyI18ns'] = $this->collCompanyI18ns->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1631,24 +1683,30 @@ abstract class Company implements ActiveRecordInterface
                 $this->setTaxId($value);
                 break;
             case 6:
-                $this->setPostCode($value);
+                $this->setCompanyName($value);
                 break;
             case 7:
-                $this->setCity($value);
+                $this->setShortCompanyName($value);
                 break;
             case 8:
-                $this->setStreet($value);
+                $this->setPostCode($value);
                 break;
             case 9:
-                $this->setStreetNo($value);
+                $this->setCity($value);
                 break;
             case 10:
-                $this->setPlaceNo($value);
+                $this->setStreet($value);
                 break;
             case 11:
-                $this->setCreatedAt($value);
+                $this->setStreetNo($value);
                 break;
             case 12:
+                $this->setPlaceNo($value);
+                break;
+            case 13:
+                $this->setCreatedAt($value);
+                break;
+            case 14:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1681,13 +1739,15 @@ abstract class Company implements ActiveRecordInterface
         if (array_key_exists($keys[3], $arr)) $this->setBankName($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setBankAccountNo($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setTaxId($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setPostCode($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setCity($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setStreet($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setStreetNo($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setPlaceNo($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
+        if (array_key_exists($keys[6], $arr)) $this->setCompanyName($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setShortCompanyName($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setPostCode($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setCity($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setStreet($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setStreetNo($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setPlaceNo($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
     }
 
     /**
@@ -1705,6 +1765,8 @@ abstract class Company implements ActiveRecordInterface
         if ($this->isColumnModified(CompanyTableMap::COL_BANK_NAME)) $criteria->add(CompanyTableMap::COL_BANK_NAME, $this->bank_name);
         if ($this->isColumnModified(CompanyTableMap::COL_BANK_ACCOUNT_NO)) $criteria->add(CompanyTableMap::COL_BANK_ACCOUNT_NO, $this->bank_account_no);
         if ($this->isColumnModified(CompanyTableMap::COL_TAX_ID)) $criteria->add(CompanyTableMap::COL_TAX_ID, $this->tax_id);
+        if ($this->isColumnModified(CompanyTableMap::COL_COMPANY_NAME)) $criteria->add(CompanyTableMap::COL_COMPANY_NAME, $this->company_name);
+        if ($this->isColumnModified(CompanyTableMap::COL_SHORT_COMPANY_NAME)) $criteria->add(CompanyTableMap::COL_SHORT_COMPANY_NAME, $this->short_company_name);
         if ($this->isColumnModified(CompanyTableMap::COL_POST_CODE)) $criteria->add(CompanyTableMap::COL_POST_CODE, $this->post_code);
         if ($this->isColumnModified(CompanyTableMap::COL_CITY)) $criteria->add(CompanyTableMap::COL_CITY, $this->city);
         if ($this->isColumnModified(CompanyTableMap::COL_STREET)) $criteria->add(CompanyTableMap::COL_STREET, $this->street);
@@ -1782,6 +1844,8 @@ abstract class Company implements ActiveRecordInterface
         $copyObj->setBankName($this->getBankName());
         $copyObj->setBankAccountNo($this->getBankAccountNo());
         $copyObj->setTaxId($this->getTaxId());
+        $copyObj->setCompanyName($this->getCompanyName());
+        $copyObj->setShortCompanyName($this->getShortCompanyName());
         $copyObj->setPostCode($this->getPostCode());
         $copyObj->setCity($this->getCity());
         $copyObj->setStreet($this->getStreet());
@@ -1804,12 +1868,6 @@ abstract class Company implements ActiveRecordInterface
             foreach ($this->getShops() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addShop($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getCompanyI18ns() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCompanyI18n($relObj->copy($deepCopy));
                 }
             }
 
@@ -1961,9 +2019,6 @@ abstract class Company implements ActiveRecordInterface
         }
         if ('Shop' == $relationName) {
             return $this->initShops();
-        }
-        if ('CompanyI18n' == $relationName) {
-            return $this->initCompanyI18ns();
         }
     }
 
@@ -2554,231 +2609,6 @@ abstract class Company implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collCompanyI18ns collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCompanyI18ns()
-     */
-    public function clearCompanyI18ns()
-    {
-        $this->collCompanyI18ns = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collCompanyI18ns collection loaded partially.
-     */
-    public function resetPartialCompanyI18ns($v = true)
-    {
-        $this->collCompanyI18nsPartial = $v;
-    }
-
-    /**
-     * Initializes the collCompanyI18ns collection.
-     *
-     * By default this just sets the collCompanyI18ns collection to an empty array (like clearcollCompanyI18ns());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCompanyI18ns($overrideExisting = true)
-    {
-        if (null !== $this->collCompanyI18ns && !$overrideExisting) {
-            return;
-        }
-        $this->collCompanyI18ns = new ObjectCollection();
-        $this->collCompanyI18ns->setModel('\Gekosale\Plugin\Company\Model\ORM\CompanyI18n');
-    }
-
-    /**
-     * Gets an array of ChildCompanyI18n objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildCompany is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildCompanyI18n[] List of ChildCompanyI18n objects
-     * @throws PropelException
-     */
-    public function getCompanyI18ns($criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collCompanyI18nsPartial && !$this->isNew();
-        if (null === $this->collCompanyI18ns || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCompanyI18ns) {
-                // return empty collection
-                $this->initCompanyI18ns();
-            } else {
-                $collCompanyI18ns = ChildCompanyI18nQuery::create(null, $criteria)
-                    ->filterByCompany($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collCompanyI18nsPartial && count($collCompanyI18ns)) {
-                        $this->initCompanyI18ns(false);
-
-                        foreach ($collCompanyI18ns as $obj) {
-                            if (false == $this->collCompanyI18ns->contains($obj)) {
-                                $this->collCompanyI18ns->append($obj);
-                            }
-                        }
-
-                        $this->collCompanyI18nsPartial = true;
-                    }
-
-                    reset($collCompanyI18ns);
-
-                    return $collCompanyI18ns;
-                }
-
-                if ($partial && $this->collCompanyI18ns) {
-                    foreach ($this->collCompanyI18ns as $obj) {
-                        if ($obj->isNew()) {
-                            $collCompanyI18ns[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collCompanyI18ns = $collCompanyI18ns;
-                $this->collCompanyI18nsPartial = false;
-            }
-        }
-
-        return $this->collCompanyI18ns;
-    }
-
-    /**
-     * Sets a collection of CompanyI18n objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $companyI18ns A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildCompany The current object (for fluent API support)
-     */
-    public function setCompanyI18ns(Collection $companyI18ns, ConnectionInterface $con = null)
-    {
-        $companyI18nsToDelete = $this->getCompanyI18ns(new Criteria(), $con)->diff($companyI18ns);
-
-        
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->companyI18nsScheduledForDeletion = clone $companyI18nsToDelete;
-
-        foreach ($companyI18nsToDelete as $companyI18nRemoved) {
-            $companyI18nRemoved->setCompany(null);
-        }
-
-        $this->collCompanyI18ns = null;
-        foreach ($companyI18ns as $companyI18n) {
-            $this->addCompanyI18n($companyI18n);
-        }
-
-        $this->collCompanyI18ns = $companyI18ns;
-        $this->collCompanyI18nsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related CompanyI18n objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related CompanyI18n objects.
-     * @throws PropelException
-     */
-    public function countCompanyI18ns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collCompanyI18nsPartial && !$this->isNew();
-        if (null === $this->collCompanyI18ns || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCompanyI18ns) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getCompanyI18ns());
-            }
-
-            $query = ChildCompanyI18nQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByCompany($this)
-                ->count($con);
-        }
-
-        return count($this->collCompanyI18ns);
-    }
-
-    /**
-     * Method called to associate a ChildCompanyI18n object to this object
-     * through the ChildCompanyI18n foreign key attribute.
-     *
-     * @param    ChildCompanyI18n $l ChildCompanyI18n
-     * @return   \Gekosale\Plugin\Company\Model\ORM\Company The current object (for fluent API support)
-     */
-    public function addCompanyI18n(ChildCompanyI18n $l)
-    {
-        if ($l && $locale = $l->getLocale()) {
-            $this->setLocale($locale);
-            $this->currentTranslations[$locale] = $l;
-        }
-        if ($this->collCompanyI18ns === null) {
-            $this->initCompanyI18ns();
-            $this->collCompanyI18nsPartial = true;
-        }
-
-        if (!in_array($l, $this->collCompanyI18ns->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddCompanyI18n($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param CompanyI18n $companyI18n The companyI18n object to add.
-     */
-    protected function doAddCompanyI18n($companyI18n)
-    {
-        $this->collCompanyI18ns[]= $companyI18n;
-        $companyI18n->setCompany($this);
-    }
-
-    /**
-     * @param  CompanyI18n $companyI18n The companyI18n object to remove.
-     * @return ChildCompany The current object (for fluent API support)
-     */
-    public function removeCompanyI18n($companyI18n)
-    {
-        if ($this->getCompanyI18ns()->contains($companyI18n)) {
-            $this->collCompanyI18ns->remove($this->collCompanyI18ns->search($companyI18n));
-            if (null === $this->companyI18nsScheduledForDeletion) {
-                $this->companyI18nsScheduledForDeletion = clone $this->collCompanyI18ns;
-                $this->companyI18nsScheduledForDeletion->clear();
-            }
-            $this->companyI18nsScheduledForDeletion[]= clone $companyI18n;
-            $companyI18n->setCompany(null);
-        }
-
-        return $this;
-    }
-
-    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -2789,6 +2619,8 @@ abstract class Company implements ActiveRecordInterface
         $this->bank_name = null;
         $this->bank_account_no = null;
         $this->tax_id = null;
+        $this->company_name = null;
+        $this->short_company_name = null;
         $this->post_code = null;
         $this->city = null;
         $this->street = null;
@@ -2826,20 +2658,10 @@ abstract class Company implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collCompanyI18ns) {
-                foreach ($this->collCompanyI18ns as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
-
-        // i18n behavior
-        $this->currentLocale = 'en_US';
-        $this->currentTranslations = null;
 
         $this->collControllerPermissions = null;
         $this->collShops = null;
-        $this->collCompanyI18ns = null;
         $this->aCountry = null;
         $this->aFile = null;
     }
@@ -2852,153 +2674,6 @@ abstract class Company implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(CompanyTableMap::DEFAULT_STRING_FORMAT);
-    }
-
-    // i18n behavior
-    
-    /**
-     * Sets the locale for translations
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     *
-     * @return    ChildCompany The current object (for fluent API support)
-     */
-    public function setLocale($locale = 'en_US')
-    {
-        $this->currentLocale = $locale;
-    
-        return $this;
-    }
-    
-    /**
-     * Gets the locale for translations
-     *
-     * @return    string $locale Locale to use for the translation, e.g. 'fr_FR'
-     */
-    public function getLocale()
-    {
-        return $this->currentLocale;
-    }
-    
-    /**
-     * Returns the current translation for a given locale
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return ChildCompanyI18n */
-    public function getTranslation($locale = 'en_US', ConnectionInterface $con = null)
-    {
-        if (!isset($this->currentTranslations[$locale])) {
-            if (null !== $this->collCompanyI18ns) {
-                foreach ($this->collCompanyI18ns as $translation) {
-                    if ($translation->getLocale() == $locale) {
-                        $this->currentTranslations[$locale] = $translation;
-    
-                        return $translation;
-                    }
-                }
-            }
-            if ($this->isNew()) {
-                $translation = new ChildCompanyI18n();
-                $translation->setLocale($locale);
-            } else {
-                $translation = ChildCompanyI18nQuery::create()
-                    ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
-                    ->findOneOrCreate($con);
-                $this->currentTranslations[$locale] = $translation;
-            }
-            $this->addCompanyI18n($translation);
-        }
-    
-        return $this->currentTranslations[$locale];
-    }
-    
-    /**
-     * Remove the translation for a given locale
-     *
-     * @param     string $locale Locale to use for the translation, e.g. 'fr_FR'
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return    ChildCompany The current object (for fluent API support)
-     */
-    public function removeTranslation($locale = 'en_US', ConnectionInterface $con = null)
-    {
-        if (!$this->isNew()) {
-            ChildCompanyI18nQuery::create()
-                ->filterByPrimaryKey(array($this->getPrimaryKey(), $locale))
-                ->delete($con);
-        }
-        if (isset($this->currentTranslations[$locale])) {
-            unset($this->currentTranslations[$locale]);
-        }
-        foreach ($this->collCompanyI18ns as $key => $translation) {
-            if ($translation->getLocale() == $locale) {
-                unset($this->collCompanyI18ns[$key]);
-                break;
-            }
-        }
-    
-        return $this;
-    }
-    
-    /**
-     * Returns the current translation
-     *
-     * @param     ConnectionInterface $con an optional connection object
-     *
-     * @return ChildCompanyI18n */
-    public function getCurrentTranslation(ConnectionInterface $con = null)
-    {
-        return $this->getTranslation($this->getLocale(), $con);
-    }
-    
-    
-        /**
-         * Get the [company_name] column value.
-         * 
-         * @return   string
-         */
-        public function getCompanyName()
-        {
-        return $this->getCurrentTranslation()->getCompanyName();
-    }
-    
-    
-        /**
-         * Set the value of [company_name] column.
-         * 
-         * @param      string $v new value
-         * @return   \Gekosale\Plugin\Company\Model\ORM\CompanyI18n The current object (for fluent API support)
-         */
-        public function setCompanyName($v)
-        {    $this->getCurrentTranslation()->setCompanyName($v);
-    
-        return $this;
-    }
-    
-    
-        /**
-         * Get the [short_company_name] column value.
-         * 
-         * @return   string
-         */
-        public function getShortCompanyName()
-        {
-        return $this->getCurrentTranslation()->getShortCompanyName();
-    }
-    
-    
-        /**
-         * Set the value of [short_company_name] column.
-         * 
-         * @param      string $v new value
-         * @return   \Gekosale\Plugin\Company\Model\ORM\CompanyI18n The current object (for fluent API support)
-         */
-        public function setShortCompanyName($v)
-        {    $this->getCurrentTranslation()->setShortCompanyName($v);
-    
-        return $this;
     }
 
     // timestampable behavior
