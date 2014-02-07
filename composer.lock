@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e5bbd568d78cc50fb83c35019643dc6c",
+    "hash": "db80bb5795bacba3f8b83eb31c6934c7",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -825,6 +825,62 @@
                 "templating"
             ],
             "time": "2014-02-03 20:10:17"
+        },
+        {
+            "name": "phery/phery",
+            "version": "2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pocesar/phery.git",
+                "reference": "8a039995b42e77490b94e07bc383c5d89ad7387c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pocesar/phery/zipball/8a039995b42e77490b94e07bc383c5d89ad7387c",
+                "reference": "8a039995b42e77490b94e07bc383c5d89ad7387c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "kohana-modules/phery": "Module with straightfoward, transparent and seamless integration with Kohana 3.x"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paulo Cesar",
+                    "homepage": "http://phery-php-ajax.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "XAJAX alternative, phery.js is a library in PHP that maps to all jQuery functions, DOM manipulation, meta arguments and serialization, seamless ajax integration, RESTful emulation, form submission and partial rendering views, plus its PSR-0 compatible",
+            "homepage": "http://phery-php-ajax.net",
+            "keywords": [
+                "HTML5",
+                "ajax",
+                "csrf",
+                "delegation",
+                "dom",
+                "fileupload",
+                "form",
+                "javascript",
+                "jquery",
+                "json",
+                "manipulation",
+                "mapping",
+                "php",
+                "psr-0",
+                "restful",
+                "serialization",
+                "unobtrusive",
+                "upload"
+            ],
+            "time": "2013-12-23 09:25:46"
         },
         {
             "name": "predis/predis",

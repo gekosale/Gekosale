@@ -35,17 +35,17 @@ class Field extends Node
 
     public function Validate ($values = Array())
     {
-        if (! isset($this->_attributes['rules']) or ! is_array($this->_attributes['rules'])) {
+        if (! isset($this->_attributes['rules']) || ! is_array($this->_attributes['rules'])) {
             return true;
         }
         $result = true;
         foreach ($this->_attributes['rules'] as $rule) {
-            if (isset($this->_value) and is_array($this->_value)) {
+            if (isset($this->_value) && is_array($this->_value)) {
                 foreach ($this->_value as $i => $value) {
                     $skip = false;
-                    if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])) {
+                    if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
                         foreach ($this->_attributes['dependencies'] as $dependency) {
-                            if ((($dependency->type == \FormEngine\Dependency::HIDE) and $dependency->Evaluate($value, $i)) or (($dependency->type == \FormEngine\Dependency::SHOW) and ! $dependency->Evaluate($value, $i)) or (($dependency->type == \FormEngine\Dependency::IGNORE) and $dependency->Evaluate($value, $i))) {
+                            if ((($dependency->type == \FormEngine\Dependency::HIDE) && $dependency->Evaluate($value, $i)) || (($dependency->type == \FormEngine\Dependency::SHOW) && ! $dependency->Evaluate($value, $i)) || (($dependency->type == \FormEngine\Dependency::IGNORE) && $dependency->Evaluate($value, $i))) {
                                 $skip = true;
                                 break;
                             }
@@ -56,7 +56,7 @@ class Field extends Node
                             $rule->setLanguage($i);
                         }
                         if (($checkResult = $rule->Check($value)) !== true) {
-                            if (! isset($this->_attributes['error']) or ! is_array($this->_attributes['error'])) {
+                            if (! isset($this->_attributes['error']) || ! is_array($this->_attributes['error'])) {
                                 $this->_attributes['error'] = ($i > 0) ? array_fill(0, $i, '') : Array();
                             }
                             elseif ($i > 0) {
@@ -69,9 +69,9 @@ class Field extends Node
                 }
             }
             else {
-                if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])) {
+                if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
                     foreach ($this->_attributes['dependencies'] as $dependency) {
-                        if ((($dependency->type == \FormEngine\Dependency::HIDE) and $dependency->Evaluate($this->_value)) or (($dependency->type == \FormEngine\Dependency::SHOW) and ! $dependency->Evaluate($this->_value)) or (($dependency->type == \FormEngine\Dependency::IGNORE) and $dependency->Evaluate($this->_value))) {
+                        if ((($dependency->type == \FormEngine\Dependency::HIDE) && $dependency->Evaluate($this->_value)) || (($dependency->type == \FormEngine\Dependency::SHOW) && ! $dependency->Evaluate($this->_value)) || (($dependency->type == \FormEngine\Dependency::IGNORE) && $dependency->Evaluate($this->_value))) {
                             return $result;
                         }
                     }
@@ -121,7 +121,7 @@ class Field extends Node
 
     protected function _FormatRules_JS ()
     {
-        if (! isset($this->_attributes['rules']) or ! is_array($this->_attributes['rules'])) {
+        if (! isset($this->_attributes['rules']) || ! is_array($this->_attributes['rules'])) {
             return '';
         }
         $rules = Array();

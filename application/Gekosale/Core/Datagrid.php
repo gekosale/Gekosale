@@ -559,7 +559,7 @@ class Datagrid
                 unset($part);
                 continue;
             }
-            if (! isset($this->queryColumnsOptions[$part['column']]['filter']) or ($this->queryColumnsOptions[$part['column']]['filter'] != 'having')) {
+            if (! isset($this->queryColumnsOptions[$part['column']]['filter']) || ($this->queryColumnsOptions[$part['column']]['filter'] != 'having')) {
                 unset($part);
                 continue;
             }

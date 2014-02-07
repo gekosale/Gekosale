@@ -64,7 +64,7 @@ abstract class Node
 
     public function AddRule ($rule)
     {
-        if (! isset($this->_attributes['rules']) or ! is_array($this->_attributes['rules'])) {
+        if (! isset($this->_attributes['rules']) || ! is_array($this->_attributes['rules'])) {
             $this->_attributes['rules'] = Array();
         }
         $this->_attributes['rules'][] = $rule;
@@ -77,7 +77,7 @@ abstract class Node
 
     public function AddFilter ($filter)
     {
-        if (! isset($this->_attributes['filters']) or ! is_array($this->_attributes['filters'])) {
+        if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
         }
         $this->_attributes['filters'][] = $filter;
@@ -85,7 +85,7 @@ abstract class Node
 
     public function SetFilter ($filter)
     {
-        if (! isset($this->_attributes['filters']) or ! is_array($this->_attributes['filters'])) {
+        if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
         }
         $this->_attributes['filters'][] = $filter;
@@ -98,7 +98,7 @@ abstract class Node
 
     public function AddDependency ($dependency)
     {
-        if (! isset($this->_attributes['dependencies']) or ! is_array($this->_attributes['dependencies'])) {
+        if (! isset($this->_attributes['dependencies']) || ! is_array($this->_attributes['dependencies'])) {
             $this->_attributes['dependencies'] = Array();
         }
         $this->_attributes['dependencies'][] = $dependency;
@@ -106,7 +106,7 @@ abstract class Node
 
     protected function _Filter ($values)
     {
-        if (! isset($this->_attributes['filters']) or ! is_array($this->_attributes['filters'])) {
+        if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             return $values;
         }
         if (is_array($values)) {
@@ -334,10 +334,10 @@ abstract class Node
 
     protected function _FormatRepeatable_JS ()
     {
-        if ((isset($this->_attributes['repeat_min']) and ($this->_attributes['repeat_min'] != 1)) or (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] != 1))) {
-            $min = (isset($this->_attributes['repeat_min']) and is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
-            $max = (isset($this->_attributes['repeat_max']) and is_numeric($this->_attributes['repeat_max'])) ? $this->_attributes['repeat_max'] : 1;
-            if (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] == FE::INFINITE)) {
+        if ((isset($this->_attributes['repeat_min']) && ($this->_attributes['repeat_min'] != 1)) || (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] != 1))) {
+            $min = (isset($this->_attributes['repeat_min']) && is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
+            $max = (isset($this->_attributes['repeat_max']) && is_numeric($this->_attributes['repeat_max'])) ? $this->_attributes['repeat_max'] : 1;
+            if (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] == FE::INFINITE)) {
                 $max = 'GForm.INFINITE';
             }
             
@@ -350,7 +350,7 @@ abstract class Node
     protected function _FormatDependency_JS ()
     {
         $dependencies = Array();
-        if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])) {
+        if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
             foreach ($this->_attributes['dependencies'] as $dependency) {
                 $dependencies[] = $dependency->Render_JS();
             }
@@ -399,9 +399,7 @@ abstract class Node
 
     protected function _IsIterated ($array)
     {
-        $islocale = $this->_IsLocale(key($array));
-        
-        if (is_numeric(key($array)) or substr(key($array), 0, 4) == 'new-' or $islocale) {
+        if (is_numeric(key($array)) || substr(key($array), 0, 4) == 'new-' || $this->_IsLocale(key($array))) {
             return true;
         }
         

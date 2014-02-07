@@ -101,7 +101,7 @@ class ProductSelect extends Select
 
     public function loadProducts ($request, $processFunction)
     {
-        if (isset($request['dynamic_exclude']) and is_array($request['dynamic_exclude'])) {
+        if (isset($request['dynamic_exclude']) && is_array($request['dynamic_exclude'])) {
             $this->_attributes['exclude'] = array_merge($this->_attributes['exclude'], $request['dynamic_exclude']);
         }
         else {

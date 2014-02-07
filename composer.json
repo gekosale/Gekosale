@@ -34,16 +34,13 @@
         "propel/propel": "2.0.x-dev",
         "doctrine/common": "*",
         "apigen/apigen": "2.8.0",
-        "swiftmailer/swiftmailer": "5.1.*@dev"
+        "swiftmailer/swiftmailer": "5.1.*@dev",
+        "phery/phery": "2.x"
     },
     "autoload": {
         "psr-0": {
             "Gekosale": "application",
-            "PasswordHash": "lib",
             "": "application/"
         },
-        "classmap": [
-            "vendor/xajax/xajax_core/xajax.inc.php"
-        ]
     }
 }

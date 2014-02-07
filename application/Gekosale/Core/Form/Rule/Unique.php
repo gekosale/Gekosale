@@ -73,7 +73,7 @@ class Unique extends Rule
 			WHERE
 				{$this->_column} = :value
 		";
-        if ($this->_exclude and is_array($this->_exclude)) {
+        if ($this->_exclude && is_array($this->_exclude)) {
             if (! is_array($this->_exclude['values'])) {
                 $this->_exclude['values'] = Array(
                     $this->_exclude['values']

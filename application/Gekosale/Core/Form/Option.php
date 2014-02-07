@@ -29,7 +29,7 @@ class Option
     public static function Make ($array, $default = '')
     {
         $result = Array();
-        if ($default and is_array($default)) {
+        if ($default && is_array($default)) {
             $result[] = new self('', $default[0]);
         }
         foreach ($array as $key => $value) {
