@@ -25,17 +25,6 @@ class Vat extends Model
 
     public function initDatagrid ()
     {
-        foreach (VatQuery::with('translation')->get() as $vat)
-        {
-            echo $vat->name;
-        }
-        die();
-//         $vat = VatQuery::all();
-        
-//         $vat->load('VatI18n');
-        
-//         echo $vat->toJson();
-        
         $this->datagrid = $this->getDatagrid();
         
         $this->datagrid->setTableData(Array(

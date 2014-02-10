@@ -32,11 +32,10 @@
         "kriswallsmith/assetic": "v1.1.2",
         "twig/extensions": "1.0.x-dev",
         "propel/propel": "2.0.x-dev",
-        "doctrine/common": "*",
         "apigen/apigen": "2.8.0",
         "swiftmailer/swiftmailer": "5.1.*@dev",
         "phery/phery": "2.x",
-        "illuminate/database": "*"
+        "illuminate/database": "4.1"
     },
     "autoload": {
         "psr-0": {

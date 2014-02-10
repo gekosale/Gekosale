@@ -71,9 +71,6 @@ class CurrencyForm extends Form
         
         $this->getDispatcher()->dispatch(FormEvent::FORM_INIT_EVENT, $event);
         
-        print_r($form);
-        die();
-        
         $form->Populate($event->getPopulateData());
         
         return $form;

@@ -103,7 +103,5 @@ abstract class Box extends \Gekosale\Component\Controller
             $this,
             $action
         ));
-        
-        return $this->registry->template->fetch($this->loadTemplate($action . '.tpl'));
     }
 }
