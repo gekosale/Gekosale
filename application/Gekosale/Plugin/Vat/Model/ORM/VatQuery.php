@@ -2,20 +2,15 @@
 
 namespace Gekosale\Plugin\Vat\Model\ORM;
 
-use Gekosale\Plugin\Vat\Model\ORM\Base\VatQuery as BaseVatQuery;
+use Illuminate\Database\Eloquent\Model;
 
-
-/**
- * Skeleton subclass for performing query and update operations on the 'vat' table.
- *
- * 
- *
- * You should add additional methods to this class to meet the
- * application requirements.  This class will only be generated as
- * long as it does not already exist in the output directory.
- *
- */
-class VatQuery extends BaseVatQuery
+class VatQuery extends Model
 {
 
-} // VatQuery
+    protected $table = 'vat';
+
+    public function translation ()
+    {
+        return $this->hasMany('Gekosale\Plugin\Vat\Model\ORM\VatI18n');
+    }
+}

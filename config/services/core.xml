@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="request" synthetic="true"/>
+        
+        <service id="finder" class="Symfony\Component\Finder\Finder"/>
+
+        <service id="filesystem" class="Symfony\Component\Filesystem\Filesystem"/>
+
+        <service id="config.locator" class="Symfony\Component\Config\FileLocator">
+            <argument>%application.root_path%config</argument>
+        </service>
+
+        <service id="helper" class="Gekosale\Core\Helper">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="event_dispatcher" class="Gekosale\Core\Event">
+            <argument type="service" id="service_container"/>
+            <call method="addSubscribers"/>
+        </service>
+
+        <service id="controller_resolver" class="Gekosale\Core\Resolver\Controller">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="kernel" class="Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="controller_resolver"/>
+        </service>
+
+        <service id="translation" class="Gekosale\Core\Translation">
+            <argument type="service" id="service_container"/>
+            <argument>%locale%</argument>
+        </service>
+
+    </services>
+</container>

@@ -1,34 +1,38 @@
 <?php
 
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ * 
+ * This file is part of the Gekosale package.
  *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ * 
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Core
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * Controller provides common methods needed only in controllers
+ * 
+ * @author Adam Piotrowski <adam@gekosale.com>
+ */
 class Controller extends Component
 {
 
+    protected $parameters;
+
     /**
-     * Generates a URL from the given parameters.
-     *
-     * @param string         $route         The name of the route
-     * @param mixed          $parameters    An array of parameters
-     * @param Boolean|string $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
-     *
-     * @return string The generated URL
-     *
-     * @see UrlGeneratorInterface
+     * Generates relative or absolute url based on given route and parameters
+     * 
+     * @param string $route
+     * @param array  $parameters
+     * @param string $referenceType
+     * 
+     * @return string Generated url
      */
     public function generateUrl ($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
@@ -36,31 +40,14 @@ class Controller extends Component
     }
 
     /**
-     * Returns a RedirectResponse to the given URL.
-     *
-     * @param string  $url    The URL to redirect to
-     * @param integer $status The status code to use for the Response
-     *
+     * Redirects user to a given url
+     * 
+     * @param string $url
+     * @param number $status
      * @return RedirectResponse
      */
     public function redirect ($url, $status = 302)
     {
         return new RedirectResponse($url, $status);
-    }
-
-    public function setModel ($class, $alias)
-    {
-        if (NULL == $alias) {
-            $alias = 'model';
-        }
-        $this->$alias = $this->getModel($class);
-    }
-
-    public function setForm ($class, $alias)
-    {
-        if (NULL == $alias) {
-            $alias = 'form';
-        }
-        $this->$alias = $this->getForm($class);
     }
 }

@@ -35,12 +35,13 @@
         "doctrine/common": "*",
         "apigen/apigen": "2.8.0",
         "swiftmailer/swiftmailer": "5.1.*@dev",
-        "phery/phery": "2.x"
+        "phery/phery": "2.x",
+        "illuminate/database": "*"
     },
     "autoload": {
         "psr-0": {
             "Gekosale": "application",
             "": "application/"
-        },
+        }
     }
 }

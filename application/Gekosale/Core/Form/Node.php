@@ -399,7 +399,9 @@ abstract class Node
 
     protected function _IsIterated ($array)
     {
-        if (is_numeric(key($array)) || substr(key($array), 0, 4) == 'new-' || $this->_IsLocale(key($array))) {
+        $key = key($array);
+        
+        if (is_numeric($key) || substr($key, 0, 4) == 'new-' || $this->_IsLocale($key)) {
             return true;
         }
         

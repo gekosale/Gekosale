@@ -32,7 +32,7 @@ class File
         $this->container = $container;
         $this->path = $path;
         $this->extension = $extension;
-        $this->cacheid = $this->container->get('helper')->getViewId() . '_' . $this->container->get('helper')->getLanguageId();
+        $this->cacheid = NULL;
     }
 
     public function save ($name, $value)

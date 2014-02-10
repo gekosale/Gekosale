@@ -19,9 +19,6 @@ use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 
 class Event extends ContainerAwareEventDispatcher
 {
-
-    protected $container;
-
     public function __construct (ContainerInterface $container)
     {
         $this->container = $container;
@@ -31,7 +28,5 @@ class Event extends ContainerAwareEventDispatcher
     public function addSubscribers ()
     {
         $this->addSubscriber(new RouterListener($this->container->get('router')->getMatcher()));
-        
-        $this->addSubscriber(new Event\Subscriber\TemplateSubscriber());
     }
 }

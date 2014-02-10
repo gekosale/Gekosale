@@ -1,100 +1,132 @@
 <?php
 
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ * 
+ * This file is part of the Gekosale package.
  *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ * 
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Core
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class Component extends ContainerAware
+/**
+ * Component provides common methods needed in controllers, models and repositories
+ * 
+ * @author Adam Piotrowski <adam@gekosale.com>
+ */
+abstract class Component extends ContainerAware
 {
 
-    public function has ($id)
+    /**
+     * Returns true if the service id is defined.
+     *
+     * @param string $id The service id
+     *
+     * @return Boolean true if the service id is defined, false otherwise
+     */
+    final protected function has ($id)
     {
         return $this->container->has($id);
     }
 
-    public function get ($id)
+    /**
+     * Gets a service by id.
+     *
+     * @param string $id The service id
+     *
+     * @return object The service
+     */
+    final protected function get ($id)
     {
         return $this->container->get($id);
     }
 
-    public function trans ($id)
+    /**
+     * Translates a string using the translation service
+     * 
+     * @param string $id Message to translate
+     * 
+     * @return string The message
+     */
+    final protected function trans ($id)
     {
         return $this->container->get('translation')->trans($id);
     }
 
-    public function getDb ()
+    /**
+     * Shortcut to return the database service
+     * 
+     * @return ConnectionManagerSingle
+     */
+    final protected function getDb ()
     {
         return $this->container->get('db');
     }
 
-    public function getSession ()
+    /**
+     * Shortcut to return the session service
+     * 
+     * @return Session
+     */
+    final protected function getSession ()
     {
         return $this->container->get('session');
     }
 
-    protected function getRouter ()
+    /**
+     * Shortcut to return the router service
+     * 
+     * @return Router
+     */
+    final protected function getRouter ()
     {
         return $this->container->get('router');
     }
 
-    protected function getRequest ()
+    /**
+     * Shortcut to return the request service
+     * 
+     * @return Request
+     */
+    final protected function getRequest ()
     {
         return $this->container->get('request');
     }
 
-    protected function getDispatcher ()
+    /**
+     * Shortcut to return event dispatcher service
+     * 
+     * @return EventDispatcher
+     */
+    final protected function getDispatcher ()
     {
-        return $this->container->get('dispatcher');
+        return $this->container->get('event_dispatcher');
     }
 
-    protected function getModel ($class)
-    {
-        return $this->container->get('resolver.model')->create($class);
-    }
-
-    protected function getForm ($class)
-    {
-        return $this->container->get('resolver.form')->create($class);
-    }
-
-    protected function getDatagrid ()
-    {
-        return $this->container->get('datagrid');
-    }
-
-    protected function getLocales ()
+    /**
+     * Shortcut to return language IDs
+     * 
+     * @return array
+     */
+    final protected function getLocales ()
     {
         return array_keys($this->container->getParameter('locales'));
     }
 
-    public function getPropertyAccessor ()
+    /**
+     * Shortcut to get param from current route
+     * 
+     * @param string $index
+     * 
+     * @return mixed
+     */
+    final protected function getParam ($index)
     {
-        return PropertyAccess::createPropertyAccessor();
-    }
-
-    public function registerXajaxMethod ($method, $model)
-    {
-        $this->container->get('xajax')->registerFunction(array(
-            $method,
-            $model,
-            $method
-        ));
-    }
-
-    public function getJavascript ()
-    {
-        return $this->container->get('xajax')->getJavascript();
+        return $this->container->get('request')->attributes->getParameter($index);
     }
 }

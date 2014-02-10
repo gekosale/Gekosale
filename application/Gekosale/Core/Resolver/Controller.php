@@ -25,11 +25,7 @@ class Controller extends BaseControllerResolver
 
     protected $container;
 
-    protected $mode;
-
     protected $action;
-
-    protected $namespaces;
 
     protected $baseController;
 
@@ -50,23 +46,9 @@ class Controller extends BaseControllerResolver
     protected function createController ($class)
     {
         $controller = new $class();
-        $annotationReader = new AnnotationReader();
-        $reflectionClass = new \ReflectionClass($class);
-        $reflectionMethod = new \ReflectionMethod($class, $this->action);
-        $classAnnotations = $annotationReader->getClassAnnotations($reflectionClass);
-        $methodAnnotations = $annotationReader->getMethodAnnotations($reflectionMethod);
         
         if ($controller instanceof ContainerAwareInterface) {
             $controller->setContainer($this->container);
-        }
-        
-        foreach ($methodAnnotations as $annotation) {
-            if ($annotation instanceof \Gekosale\Core\Model) {
-                $controller->setModel($annotation->model, $annotation->alias);
-            }
-            if ($annotation instanceof \Gekosale\Core\Form) {
-                $controller->setForm($annotation->form, $annotation->alias);
-            }
         }
         
         return array(

@@ -17,16 +17,8 @@ use Gekosale\Core\Form\Filter\NoCode;
 use Gekosale\Core\Form\Filter\Trim;
 use Gekosale\Core\Form\Filter\Secure;
 
-/**
- * @Annotation
- */
-class Form extends Component
+abstract class Form extends Component
 {
-
-    public $form;
-
-    public $alias = NULL;
-
     /**
      * Shortcut for adding new Form\Element\Form
      * 

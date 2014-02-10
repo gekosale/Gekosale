@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="session.handler" class="Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler">
+            <argument type="service" id="propel.connection"/>
+            <argument>%session.config%</argument>
+        </service>
+
+        <service id="session.storage" class="Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage">
+            <argument type="collection"/>
+            <argument type="service" id="session.handler"/>
+        </service>
+
+        <service id="session" class="Symfony\Component\HttpFoundation\Session\Session">
+            <argument type="service" id="session.storage"/>
+            <call method="start"/>
+        </service>
+
+    </services>
+</container>

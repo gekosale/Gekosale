@@ -6,7 +6,11 @@
 
     <imports>
         <import resource="parameters.xml" />
-        <import resource="services.xml" />
+        <import resource="services/cache.xml" />
+        <import resource="services/core.xml" />
+        <import resource="services/routing.xml" />
+        <import resource="services/session.xml" />
+        <import resource="services/template.xml" />
     </imports>
 
 </container>

@@ -26,8 +26,8 @@ class Company extends Admin
     {
         $this->model->initDatagrid();
         
-        $this->registerXajaxMethod('doDeleteCompany', $this->model);
-        $this->registerXajaxMethod('doLoadCompany', $this->model);
+//         $this->registerXajaxMethod('doDeleteCompany', $this->model);
+//         $this->registerXajaxMethod('doLoadCompany', $this->model);
         
         return Array(
             'datagrid_filter' => $this->model->getFilterData()

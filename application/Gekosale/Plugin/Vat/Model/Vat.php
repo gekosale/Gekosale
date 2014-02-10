@@ -16,10 +16,7 @@ namespace Gekosale\Plugin\Vat\Model;
 
 use Gekosale\Plugin\Vat\Event\ModelEvent;
 use Gekosale\Core\Model;
-use Gekosale\Core\Datagrid;
 use Gekosale\Plugin\Vat\Model\ORM\VatQuery;
-use Gekosale\Plugin\Vat\Model\ORM\VatTranslationQuery;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
 class Vat extends Model
 {
@@ -28,6 +25,17 @@ class Vat extends Model
 
     public function initDatagrid ()
     {
+        foreach (VatQuery::with('translation')->get() as $vat)
+        {
+            echo $vat->name;
+        }
+        die();
+//         $vat = VatQuery::all();
+        
+//         $vat->load('VatI18n');
+        
+//         echo $vat->toJson();
+        
         $this->datagrid = $this->getDatagrid();
         
         $this->datagrid->setTableData(Array(

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+	<services>
+		<service id="template.subscriber" class="Gekosale\Core\Template\Subscriber\Template">
+			<tag name="kernel.event_subscriber" />
+		</service>
+
+		<service id="twig.loader.front" class="Twig_Loader_Filesystem">
+			<argument>%front.themes%</argument>
+		</service>
+
+		<service id="twig.loader.admin" class="Twig_Loader_Filesystem">
+			<argument>%admin.themes%</argument>
+		</service>
+
+		<service id="twig" class="Twig_Environment">
+			<argument type="service" id="twig.loader.front" />
+			<argument type="collection">
+				<argument key="cache">%application.root_path%var/cache</argument>
+				<argument key="auto_reload">true</argument>
+				<argument key="autoescape">true</argument>
+			</argument>
+		</service>
+
+		<service id="twig.extension.translation"
+			class="Symfony\Bridge\Twig\Extension\TranslationExtension">
+			<argument type="service" id="translation" />
+			<tag name="twig.extension" />
+		</service>
+
+		<service id="twig.extension.routing" class="Gekosale\Core\Template\Extension\Routing">
+			<argument type="service" id="router" />
+			<tag name="twig.extension" />
+		</service>
+
+		<service id="twig.extension.intl" class="Twig_Extensions_Extension_Intl">
+			<tag name="twig.extension" />
+		</service>
+
+		<service id="twig.extension.box" class="Gekosale\Core\Template\Extension\Box">
+			<argument type="service" id="service_container" />
+			<tag name="twig.extension" />
+		</service>
+
+		<service id="twig.extension.form" class="Gekosale\Core\Template\Extension\Form">
+			<argument type="service" id="service_container" />
+			<tag name="twig.extension" />
+		</service>
+
+		<service id="twig.extension.asset" class="Gekosale\Core\Template\Extension\Asset">
+			<argument type="service" id="service_container" />
+			<tag name="twig.extension" />
+		</service>
+
+	</services>
+</container>

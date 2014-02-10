@@ -15,7 +15,7 @@
 
 include 'bootstrap.php';
 
-$application = new Gekosale\Core\Application();
+$application = new Gekosale\Core\Application(true);
 
 $application->run();
 

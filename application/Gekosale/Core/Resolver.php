@@ -16,7 +16,7 @@ namespace Gekosale\Core;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Resolver extends ContainerAware
+abstract class Resolver extends ContainerAware
 {
 
     protected $container;

@@ -16,10 +16,7 @@ namespace Gekosale\Plugin\Company\Model;
 
 use Gekosale\Plugin\Company\Event\ModelEvent;
 use Gekosale\Core\Model;
-use Gekosale\Core\Datagrid;
 use Gekosale\Plugin\Company\Model\ORM\CompanyQuery;
-use Gekosale\Plugin\Company\Model\ORM\CompanyTranslationQuery;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
 class Company extends Model
 {
@@ -81,24 +78,28 @@ class Company extends Model
     /**
      * Adds or updates company. Also triggers MODEL_SAVE_EVENT
      * 
-     * @param   array       $Data   Source data. Defaults to form submitted data
-     * @param   int|null    $id     Existent company ID or NULL if creating a new rate
+     * @param array $Data Source data. Defaults to form submitted data
+     * @param int|null $id     Existent company ID or NULL if creating a new rate
      * 
      * @return  int         $id     Company ID 
      */
     public function save ($Data, $id = null)
     {
-        $company = CompanyQuery::create()->filterByPrimaryKey($id)->findOneOrCreate();
+        $company = CompanyQuery::firstOrNew(array(
+            'id' => $id
+        ));
+        
+        $company->photo_id = NULL;
+        
+        $company->company_name = 'Test';
         
         $company->save();
         
-        $id = $company->getId();
-        
-        $event = new ModelEvent($Data, $id);
+        $event = new ModelEvent($Data, $company->id);
         
         $this->getDispatcher()->dispatch(ModelEvent::MODEL_SAVE_EVENT, $event);
         
-        return $id;
+        return $company->id;
     }
 
     /**
@@ -111,7 +112,7 @@ class Company extends Model
      */
     public function delete ($id)
     {
-        $company = CompanyQuery::create()->findById($id);
+        $company = CompanyQuery::find($id);
         
         if (null === $company) {
             throw new \InvalidArgumentException(sprintf('Company record for ID=%s not found.', $id));
@@ -122,7 +123,9 @@ class Company extends Model
 
     public function getPopulateData ($id)
     {
-        $company = CompanyQuery::create()->findOneById($id);
+        $company = CompanyQuery::find($id);
+
+        print_r($company->company_name);
         
         if (null === $company) {
             throw new \InvalidArgumentException(sprintf('Company record for ID=%s not found.', $id));

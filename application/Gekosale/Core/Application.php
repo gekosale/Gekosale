@@ -1,43 +1,94 @@
 <?php
 
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ * 
+ * This file is part of the Gekosale package.
  *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ * 
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Core
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Propel\Runtime\Propel;
 use Propel\Runtime\Connection\ConnectionManagerSingle;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
+use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
 
+/**
+ * Main application class.
+ * 
+ * Initializes containers, database connection, registers plugins and extensions.
+ * 
+ * Uses kernel dispatch and terminate events
+ * 
+ * @author Adam Piotrowski <adam@gekosale.com>
+ */
 class Application
 {
 
     /**
-     * Constructor
+     * Container instance
+     * 
+     * @var object
      */
     protected $container;
 
+    /**
+     * Container builder instance
+     * 
+     * @var object
+     */
+    protected $containerBuilder;
+
+    /**
+     * Request instance
+     * 
+     * @var object
+     */
     protected $request;
 
+    /**
+     * Response instance
+     * 
+     * @var object
+     */
     protected $response;
 
+    /**
+     * Stopwatch component instance
+     * 
+     * @var object
+     */
     protected $stopwatch;
 
-    public function __construct ()
+    /**
+     * True if the debug mode is enabled, false otherwise
+     * 
+     * @var bool
+     */
+    protected $isDebug;
+
+    /**
+     * Constructor 
+     * 
+     * @param bool $isDebug Enable or disable debug mode in application
+     */
+    public function __construct ($isDebug)
     {
+        $this->isDebug = $isDebug;
         /*
          * Init Stopwatch component and start timing
          */
@@ -52,18 +103,47 @@ class Application
         
         /*
          * Init Service Container
-         */
-        $this->container = $this->getContainerBuilder();
+        */
+        $file = ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Core' . DS . 'ServiceContainer.php';
         
-        /*
-         * Load application configuration
-         */
-        $loader = new XmlFileLoader($this->container, new FileLocator(ROOTPATH . 'config'));
-        $loader->load('config.xml');
+        $containerConfigCache = new ConfigCache($file, $this->isDebug);
         
-        $this->initPropelContainer();
+        if (! $containerConfigCache->isFresh()) {
+            
+            $this->containerBuilder = new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
+            
+            $loader = new XmlFileLoader($this->containerBuilder, new FileLocator(ROOTPATH . 'config'));
+            $loader->load('config.xml');
+            
+            $this->initPropelContainer();
+            
+            $this->initDbContainer();
+            
+            $extensionLoader = new PluginExtensionLoader($this->containerBuilder);
+            $extensionLoader->registerExtensions();
+            
+            $registerListenersPass = new RegisterListenersPass();
+            $registerListenersPass->process($this->containerBuilder);
+            
+            $registerTwigExtensionsPass = new RegisterTwigExtensionsPass();
+            $registerTwigExtensionsPass->process($this->containerBuilder);
+            
+            $this->containerBuilder->compile();
+            
+            $dumper = new PhpDumper($this->containerBuilder);
+            
+            $options = array(
+                'class' => 'ServiceContainer',
+                'base_class' => 'Container',
+                'namespace' => __NAMESPACE__
+            );
+            
+            $content = $dumper->dump($options);
+            
+            $containerConfigCache->write($content, $this->containerBuilder->getResources());
+        }
         
-        $this->container->set('urlgenerator', $this->container->get('router')->getGenerator());
+        $this->container = new ServiceContainer();
     }
 
     /**
@@ -76,10 +156,31 @@ class Application
         $serviceContainer = Propel::getServiceContainer();
         $serviceContainer->setAdapterClass('default', 'mysql');
         $manager = new ConnectionManagerSingle();
-        $manager->setConfiguration($this->container->getParameter('propel.config'));
+        $manager->setConfiguration($this->containerBuilder->getParameter('propel.config'));
         $serviceContainer->setConnectionManager('default', $manager);
         
-        $this->container->set('propel.connection', Propel::getReadConnection('default')->getWrappedConnection());
+        $this->containerBuilder->set('propel.connection', Propel::getReadConnection('default')->getWrappedConnection());
+    }
+
+    protected function initDbContainer ()
+    {
+        $settings = array(
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'gekosale3',
+            'username' => 'root',
+            'password' => '',
+            'collation' => 'utf8_general_ci',
+            'charset' => 'utf8',
+            'prefix' => ''
+        );
+        
+        $connFactory = new \Illuminate\Database\Connectors\ConnectionFactory(new \Illuminate\Container\Container());
+        $conn = $connFactory->make($settings);
+        $resolver = new \Illuminate\Database\ConnectionResolver();
+        $resolver->addConnection('default', $conn);
+        $resolver->setDefaultConnection('default');
+        \Illuminate\Database\Eloquent\Model::setConnectionResolver($resolver);
     }
 
     /**
@@ -106,26 +207,6 @@ class Application
     }
 
     /**
-     * Initializes and returns new ContainerBuilder instance
-     *
-     * @return  object  Symfony\Component\DependencyInjection\ContainerBuilder
-     */
-    protected function getContainerBuilder ()
-    {
-        return new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
-    }
-
-    /**
-     * Returns container instance
-     *
-     * @return  object  $container
-     */
-    public function getContainer ()
-    {
-        return $this->container;
-    }
-
-    /**
      * Returns all globally accessible kernel parameters
      *
      * @return  array
@@ -133,7 +214,8 @@ class Application
     protected function getKernelParameters ()
     {
         return array(
-            'application.root_path' => ROOTPATH
+            'application.root_path' => ROOTPATH,
+            'application.debug_mode' => $this->isDebug
         );
     }
 }

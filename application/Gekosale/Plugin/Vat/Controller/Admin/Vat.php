@@ -15,19 +15,21 @@
 namespace Gekosale\Plugin\Vat\Controller\Admin;
 
 use Gekosale\Core\Controller\Admin;
+use Gekosale\Plugin\Vat\Repository\Vat as VatRepository;
 
 class Vat extends Admin
 {
 
     /**
-     * @Gekosale\Core\Model(model="Gekosale\Plugin\Vat\Model\Vat")
+     * @Gekosale\Core\Model (model="Gekosale\Plugin\Vat\Model\Vat")
      */
     public function index ()
     {
-        $this->model->initDatagrid();
+        $this->repository = new VatRepository();
         
-        $this->registerXajaxMethod('doDeleteVat', $this->model);
-        $this->registerXajaxMethod('doLoadVat', $this->model);
+        print_r($this->repository->all());
+        
+        $this->model->initDatagrid();
         
         return Array(
             'datagrid_filter' => $this->model->getFilterData()
