@@ -15,6 +15,7 @@ namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use xajaxResponse;
+use Exception;
 
 class Datagrid
 {

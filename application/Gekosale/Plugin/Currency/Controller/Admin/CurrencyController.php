@@ -13,23 +13,22 @@
  * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Currency\Controller\Admin;
+
 use Gekosale\Core\Controller\AdminController;
 
 class CurrencyController extends AdminController
 {
 
-    public function index()
+    public function index ()
     {
         return Array(
-//             'datagrid_filter' => $this->model->getFilterData()
+            'datagrid_filter' => $this->model->getFilterData()
         );
     }
 
     public function add ()
     {
-        print_r($this->get('currency.form'));
-        die();
-        $form = $this->form->init();
+        $form = $this->get('currency.form');
         
         if ($form->Validate()) {
             
@@ -45,7 +44,7 @@ class CurrencyController extends AdminController
 
     public function edit ($id)
     {
-        $form = $this->form->init($id, $this->model->getPopulateData($id));
+        $form = $this->get('currency.form');
         
         if ($form->Validate()) {
             

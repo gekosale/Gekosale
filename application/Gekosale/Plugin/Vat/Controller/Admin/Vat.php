@@ -20,14 +20,9 @@ use Gekosale\Plugin\Vat\Repository\Vat as VatRepository;
 class Vat extends Admin
 {
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Vat\Model\Vat")
-     */
     public function index ()
     {
         $this->repository = new VatRepository();
-        
-        print_r($this->repository->all());
         
         $this->model->initDatagrid();
         
@@ -36,10 +31,6 @@ class Vat extends Admin
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Vat\Model\Vat")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Vat\Form\Vat")
-     */
     public function add ()
     {
         $form = $this->form->init();
@@ -56,10 +47,6 @@ class Vat extends Admin
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Vat\Model\Vat")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Vat\Form\Vat")
-     */
     public function edit ($id)
     {
         $form = $this->form->init($id, $this->model->getPopulateData($id));

@@ -19,9 +19,6 @@ use Gekosale\Core\Controller\Admin;
 class Availability extends Admin
 {
 
-    /**
-     * @Gekosale\Core\Model(model="Gekosale\Plugin\Availability\Model\Availability")
-     */
     public function index ()
     {
         $this->model->initDatagrid();
@@ -34,10 +31,6 @@ class Availability extends Admin
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Availability\Model\Availability")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Availability\Form\Availability")
-     */
     public function add ()
     {
         $form = $this->form->init();
@@ -54,10 +47,6 @@ class Availability extends Admin
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Availability\Model\Availability")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Availability\Form\Availability")
-     */
     public function edit ($id)
     {
         $form = $this->form->init($id, $this->model->getPopulateData($id));

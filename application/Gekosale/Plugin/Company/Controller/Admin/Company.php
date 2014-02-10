@@ -19,25 +19,15 @@ use Gekosale\Core\Controller\Admin;
 class Company extends Admin
 {
 
-    /**
-     * @Gekosale\Core\Model(model="Gekosale\Plugin\Company\Model\Company")
-     */
     public function index ()
     {
         $this->model->initDatagrid();
-        
-//         $this->registerXajaxMethod('doDeleteCompany', $this->model);
-//         $this->registerXajaxMethod('doLoadCompany', $this->model);
         
         return Array(
             'datagrid_filter' => $this->model->getFilterData()
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Company\Model\Company")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Company\Form\Company")
-     */
     public function add ()
     {
         $form = $this->form->init();
@@ -54,10 +44,6 @@ class Company extends Admin
         );
     }
 
-    /**
-     * @Gekosale\Core\Model (model="Gekosale\Plugin\Company\Model\Company")
-     * @Gekosale\Core\Form  (form="Gekosale\Plugin\Company\Form\Company")
-     */
     public function edit ($id)
     {
         $form = $this->form->init($id, $this->model->getPopulateData($id));

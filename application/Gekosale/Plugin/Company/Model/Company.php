@@ -16,7 +16,6 @@ namespace Gekosale\Plugin\Company\Model;
 
 use Gekosale\Plugin\Company\Event\ModelEvent;
 use Gekosale\Core\Model;
-use Gekosale\Plugin\Company\Model\ORM\CompanyQuery;
 
 class Company extends Model
 {
@@ -125,8 +124,6 @@ class Company extends Model
     {
         $company = CompanyQuery::find($id);
 
-        print_r($company->company_name);
-        
         if (null === $company) {
             throw new \InvalidArgumentException(sprintf('Company record for ID=%s not found.', $id));
         }
