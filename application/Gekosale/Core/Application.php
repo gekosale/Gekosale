@@ -69,7 +69,7 @@ class Application
      */
     public function __construct ($isDebug)
     {
-        $this->isDebug = $isDebug;
+        $this->isDebug = (bool) $isDebug;
         /*
          * Init Stopwatch component and start timing
          */

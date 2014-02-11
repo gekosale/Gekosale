@@ -98,7 +98,7 @@ final class ServiceContainerBuilder
     public function __construct (array $parameters, $isDebug = false)
     {
         $this->parameters = $parameters;
-        $this->isDebug = $isDebug;
+        $this->isDebug = (bool) $isDebug;
         $this->compilerClassPath = __DIR__ . self::SERVICE_CONTAINER_CLASS . '.php';
         $this->containerConfigCache = new ConfigCache($this->compilerClassPath, $this->isDebug);
     }
