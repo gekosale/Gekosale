@@ -55,8 +55,6 @@ class Template implements EventSubscriberInterface
         
         $template = $guesser->guess($controller, $action);
         
-//         echo "<pre>";
-//         print_r($container->get($this->engine));
         $container->get($this->engine)->setLoader($container->get('twig.loader.admin'));
         
         $response = $container->get($this->engine)->render($template, $parameters);

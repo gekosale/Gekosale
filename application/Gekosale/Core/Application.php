@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
 use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
  * Main application class.
@@ -117,8 +118,6 @@ class Application
             
             $this->initPropelContainer();
             
-            $this->initDbContainer();
-            
             $extensionLoader = new PluginExtensionLoader($this->containerBuilder);
             $extensionLoader->registerExtensions();
             
@@ -160,27 +159,6 @@ class Application
         $serviceContainer->setConnectionManager('default', $manager);
         
         $this->containerBuilder->set('propel.connection', Propel::getReadConnection('default')->getWrappedConnection());
-    }
-
-    protected function initDbContainer ()
-    {
-        $settings = array(
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'database' => 'gekosale3',
-            'username' => 'root',
-            'password' => '',
-            'collation' => 'utf8_general_ci',
-            'charset' => 'utf8',
-            'prefix' => ''
-        );
-        
-        $connFactory = new \Illuminate\Database\Connectors\ConnectionFactory(new \Illuminate\Container\Container());
-        $conn = $connFactory->make($settings);
-        $resolver = new \Illuminate\Database\ConnectionResolver();
-        $resolver->addConnection('default', $conn);
-        $resolver->setDefaultConnection('default');
-        \Illuminate\Database\Eloquent\Model::setConnectionResolver($resolver);
     }
 
     /**

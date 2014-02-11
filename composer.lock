@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d6ff3a00a78df78ccd931bc08264db4d",
+    "hash": "9072966b819a5858c5b960e1d15e918d",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -1309,6 +1309,55 @@
             "time": "2014-01-07 13:28:54"
         },
         {
+            "name": "symfony/expression-language",
+            "version": "2.4.x-dev",
+            "target-dir": "Symfony/Component/ExpressionLanguage",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/expression-language.git",
+                "reference": "e969ce56b986ae291174658396d852c29246d65a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/expression-language/zipball/e969ce56b986ae291174658396d852c29246d65a",
+                "reference": "e969ce56b986ae291174658396d852c29246d65a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\ExpressionLanguage\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony ExpressionLanguage Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-02-10 14:27:45"
+        },
+        {
             "name": "symfony/filesystem",
             "version": "2.4.x-dev",
             "target-dir": "Symfony/Component/Filesystem",
@@ -2255,6 +2304,7 @@
         "symfony/browser-kit": 20,
         "symfony/config": 20,
         "symfony/console": 20,
+        "symfony/expression-language": 20,
         "symfony/routing": 20,
         "symfony/process": 20,
         "symfony/options-resolver": 20,

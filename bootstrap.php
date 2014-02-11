@@ -20,13 +20,6 @@ DEFINE('ROOTPATH', dirname(__FILE__) . DS);
 setlocale(LC_ALL, "pl_PL");
 date_default_timezone_set('Europe/Warsaw');
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
-
 $loader = require ROOTPATH . 'vendor/autoload.php';
-
-AnnotationRegistry::registerLoader(array(
-    $loader,
-    'loadClass'
-));
 
 Symfony\Component\Debug\Debug::enable();

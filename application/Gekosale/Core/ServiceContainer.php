@@ -41,6 +41,7 @@ class ServiceContainer extends Container
             'currency.form' => 'getCurrency_FormService',
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
+            'database.manager' => 'getDatabase_ManagerService',
             'event_dispatcher' => 'getEventDispatcherService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
@@ -182,6 +183,25 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'database.manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Illuminate\Database\Capsule\Manager A Illuminate\Database\Capsule\Manager instance.
+     */
+    protected function getDatabase_ManagerService()
+    {
+        $this->services['database.manager'] = $instance = new \Illuminate\Database\Capsule\Manager();
+
+        $instance->addConnection(array('driver' => 'mysql', 'host' => 'localhost', 'database' => 'gekosale3', 'username' => 'root', 'password' => '', 'charset' => 'utf8', 'collation' => 'utf8_unicode_ci', 'prefix' => ''));
+        $instance->setAsGlobal();
+        $instance->bootEloquent();
+
+        return $instance;
+    }
+
+    /**
      * Gets the 'event_dispatcher' service.
      *
      * This service is shared.
@@ -317,7 +337,7 @@ class ServiceContainer extends Container
      */
     protected function getSession_HandlerService()
     {
-        return $this->services['session.handler'] = new \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler($this->get('propel.connection'), array('db_table' => 'session'));
+        return $this->services['session.handler'] = new \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler($this->get("database.manager")->getConnection()->getPdo(), array('db_table' => 'session'));
     }
 
     /**

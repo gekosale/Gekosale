@@ -27,7 +27,7 @@ abstract class Component extends ContainerAware
      *
      * @param string $id The service id
      *
-     * @return Boolean true if the service id is defined, false otherwise
+     * @return bool true if the service id is defined, false otherwise
      */
     final protected function has ($id)
     {
@@ -39,7 +39,7 @@ abstract class Component extends ContainerAware
      *
      * @param string $id The service id
      *
-     * @return object The service
+     * @return object Service
      */
     final protected function get ($id)
     {
@@ -61,17 +61,17 @@ abstract class Component extends ContainerAware
     /**
      * Shortcut to return the database service
      * 
-     * @return ConnectionManagerSingle
+     * @return object Database manager service
      */
     final protected function getDb ()
     {
-        return $this->container->get('db');
+        return $this->container->get('database.manager');
     }
 
     /**
      * Shortcut to return the session service
      * 
-     * @return Session
+     * @return object Session service
      */
     final protected function getSession ()
     {
@@ -79,9 +79,19 @@ abstract class Component extends ContainerAware
     }
 
     /**
+     * Shortcut to return the session flashbag
+     * 
+     * @return object FlashBag from session service
+     */
+    final protected function getFlashBag ()
+    {
+        return $this->container->get('session')->getFlashBag();
+    }
+
+    /**
      * Shortcut to return the router service
      * 
-     * @return Router
+     * @return object Router service
      */
     final protected function getRouter ()
     {
@@ -101,7 +111,7 @@ abstract class Component extends ContainerAware
     /**
      * Shortcut to return event dispatcher service
      * 
-     * @return EventDispatcher
+     * @return object Event dispatcher service
      */
     final protected function getDispatcher ()
     {

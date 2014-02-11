@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="database.manager" class="Illuminate\Database\Capsule\Manager">
+            <call method="addConnection">
+	            <argument type="collection">
+		            <argument key="driver">mysql</argument>
+					<argument key="host">localhost</argument>
+					<argument key="database">gekosale3</argument>
+					<argument key="username">root</argument>
+					<argument key="password"></argument>
+					<argument key="charset">utf8</argument>
+					<argument key="collation">utf8_unicode_ci</argument>
+					<argument key="prefix"></argument>
+	            </argument>
+            </call>
+            <call method="setAsGlobal"/>
+            <call method="bootEloquent"/>
+        </service>
+    </services>
+</container>

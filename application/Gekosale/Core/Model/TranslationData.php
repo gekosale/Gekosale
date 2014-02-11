@@ -2,9 +2,9 @@
 
 namespace Gekosale\Core\Model;
 
-class Currency extends Eloquent {
+class TranslationData extends Eloquent {
 
-	protected $table = 'currency';
+	protected $table = 'translation_data';
 	public $timestamps = true;
 	protected $softDelete = false;
 

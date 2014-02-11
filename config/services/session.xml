@@ -6,7 +6,7 @@
     <services>
 
         <service id="session.handler" class="Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler">
-            <argument type="service" id="propel.connection"/>
+        	<argument type="expression">service('database.manager').getConnection().getPdo()</argument>
             <argument>%session.config%</argument>
         </service>
 
