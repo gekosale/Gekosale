@@ -23,7 +23,6 @@ use Symfony\Component\Stopwatch\Stopwatch;
 use Propel\Runtime\Propel;
 use Propel\Runtime\Connection\ConnectionManagerSingle;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
 use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
 use Illuminate\Database\Capsule\Manager as Capsule;

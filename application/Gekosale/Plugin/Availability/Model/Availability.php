@@ -16,10 +16,6 @@ namespace Gekosale\Plugin\Availability\Model;
 
 use Gekosale\Plugin\Availability\Event\ModelEvent;
 use Gekosale\Core\Model;
-use Gekosale\Core\Datagrid;
-use Gekosale\Plugin\Availability\Model\ORM\AvailabilityQuery;
-use Gekosale\Plugin\Availability\Model\ORM\AvailabilityTranslationQuery;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
 class Availability extends Model
 {

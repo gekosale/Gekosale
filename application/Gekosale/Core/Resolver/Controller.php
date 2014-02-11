@@ -18,7 +18,6 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolver as BaseController
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 class Controller extends BaseControllerResolver
 {

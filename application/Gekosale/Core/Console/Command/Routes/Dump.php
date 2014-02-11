@@ -3,7 +3,6 @@
 namespace Gekosale\Core\Console\Command\Routes;
 
 use Gekosale\Core\Console\Command\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

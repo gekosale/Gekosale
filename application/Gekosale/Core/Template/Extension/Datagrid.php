@@ -13,8 +13,6 @@
  */
 namespace Gekosale\Core\Template\Extension;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 class Datagrid extends \Twig_Extension
 {
 }

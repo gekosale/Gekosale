@@ -26,10 +26,6 @@ class Console extends Application
             new Console\Command\Cache\Clear(),
             new Console\Command\Admin\Add(),
             new Console\Command\Admin\Reset(),
-            new Console\Command\Propel\Build(),
-            new Console\Command\Propel\Diff(),
-            new Console\Command\Propel\Reverse(),
-            new Console\Command\Propel\Migration(),
             new Console\Command\Migrate\Add(),
             new Console\Command\Migrate\Up(),
             new Console\Command\Routes\Dump()

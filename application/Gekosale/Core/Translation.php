@@ -15,7 +15,6 @@ namespace Gekosale\Core;
 
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
-use Propel\Runtime\Propel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Translation extends Translator

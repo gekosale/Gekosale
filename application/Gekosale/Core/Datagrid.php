@@ -318,7 +318,7 @@ class Datagrid
             $rs = $stmt->fetch();
         }
         catch (Exception $e) {
-            throw new FrontendException('ERR_DATASET_GET_TOTAL', 12, $e->getMessage());
+            throw new \RuntimeException('ERR_DATASET_GET_TOTAL', 12, $e->getMessage());
         }
         return $rs['total'];
     }
