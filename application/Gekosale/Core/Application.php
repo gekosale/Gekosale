@@ -13,19 +13,7 @@
 namespace Gekosale\Core;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Propel\Runtime\Propel;
-use Propel\Runtime\Connection\ConnectionManagerSingle;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
-use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
  * Main application class.
@@ -45,13 +33,6 @@ class Application
      * @var object
      */
     protected $container;
-
-    /**
-     * Container builder instance
-     * 
-     * @var object
-     */
-    protected $containerBuilder;
 
     /**
      * Request instance
@@ -102,62 +83,15 @@ class Application
         $this->request = Request::createFromGlobals();
         
         /*
+         * Check if service container exists and/or needs to be regenerated
+         */
+        $serviceContainerBuilder = new ServiceContainerBuilder($this->getKernelParameters(), $this->isDebug);
+        $serviceContainerBuilder->check();
+        
+        /*
          * Init Service Container
         */
-        $file = ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Core' . DS . 'ServiceContainer.php';
-        
-        $containerConfigCache = new ConfigCache($file, $this->isDebug);
-        
-        if (! $containerConfigCache->isFresh()) {
-            
-            $this->containerBuilder = new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
-            
-            $loader = new XmlFileLoader($this->containerBuilder, new FileLocator(ROOTPATH . 'config'));
-            $loader->load('config.xml');
-            
-            $this->initPropelContainer();
-            
-            $extensionLoader = new PluginExtensionLoader($this->containerBuilder);
-            $extensionLoader->registerExtensions();
-            
-            $registerListenersPass = new RegisterListenersPass();
-            $registerListenersPass->process($this->containerBuilder);
-            
-            $registerTwigExtensionsPass = new RegisterTwigExtensionsPass();
-            $registerTwigExtensionsPass->process($this->containerBuilder);
-            
-            $this->containerBuilder->compile();
-            
-            $dumper = new PhpDumper($this->containerBuilder);
-            
-            $options = array(
-                'class' => 'ServiceContainer',
-                'base_class' => 'Container',
-                'namespace' => __NAMESPACE__
-            );
-            
-            $content = $dumper->dump($options);
-            
-            $containerConfigCache->write($content, $this->containerBuilder->getResources());
-        }
-        
         $this->container = new ServiceContainer();
-    }
-
-    /**
-     * Inits Propel service container and registers new database connection
-     *
-     * @return  void
-     */
-    protected function initPropelContainer ()
-    {
-        $serviceContainer = Propel::getServiceContainer();
-        $serviceContainer->setAdapterClass('default', 'mysql');
-        $manager = new ConnectionManagerSingle();
-        $manager->setConfiguration($this->containerBuilder->getParameter('propel.config'));
-        $serviceContainer->setConnectionManager('default', $manager);
-        
-        $this->containerBuilder->set('propel.connection', Propel::getReadConnection('default')->getWrappedConnection());
     }
 
     /**
