@@ -25,7 +25,7 @@ class ProductAggregator extends Field
         if (! isset($this->_attributes['products_source_field']) || ! ($this->_attributes['products_source_field'] instanceof ProductSelect)) {
             throw new Exception("Source field (attribute: products_source_field) not set for field '{$this->_attributes['name']}'.");
         }
-        $this->_attributes['products_source_field_name'] = $this->_attributes['products_source_field']->GetName();
+        $this->_attributes['products_source_field_name'] = $this->_attributes['products_source_field']->getName();
         $this->_attributes['vat_values'] = App::getModel('vat/vat')->getVATAll();
         $this->_attributes['prefixes'] = Array(
             $this->trans('TXT_PRICE_NET'),
@@ -51,15 +51,15 @@ class ProductAggregator extends Field
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('products_source_field_name', 'sProductsSourceField'),
-            $this->_FormatAttribute_JS('suffix', 'sSuffix'),
-            $this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-            $this->_FormatAttribute_JS('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('jsfunction', 'fLoadProductData', \FormEngine\FE::TYPE_FUNCTION)
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('products_source_field_name', 'sProductsSourceField'),
+            $this->formatAttributeJavascript('suffix', 'sSuffix'),
+            $this->formatAttributeJavascript('prefixes', 'asPrefixes'),
+            $this->formatAttributeJavascript('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('jsfunction', 'fLoadProductData', \FormEngine\FE::TYPE_FUNCTION)
         );
         return $attributes;
     }

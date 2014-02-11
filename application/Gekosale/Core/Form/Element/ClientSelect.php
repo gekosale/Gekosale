@@ -42,19 +42,19 @@ class ClientSelect extends Select
         ));
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('help', 'sHelp'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('jsfunction', 'fLoadClients', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('jsfunctiondetails', 'fLoadClientData', FE::TYPE_FUNCTION),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('help', 'sHelp'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('jsfunction', 'fLoadClients', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('jsfunctiondetails', 'fLoadClientData', FE::TYPE_FUNCTION),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

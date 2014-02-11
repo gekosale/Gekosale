@@ -43,21 +43,21 @@ class ProgressIndicator extends Field
         ));
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('chunks', 'iChunks'),
-            $this->_FormatAttribute_JS('load', 'fLoadRecords', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('process', 'fProcessRecords', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('success', 'fSuccessRecords', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('preventSubmit', 'bPreventSubmit', FE::TYPE_BOOLEAN),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('chunks', 'iChunks'),
+            $this->formatAttributeJavascript('load', 'fLoadRecords', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('process', 'fProcessRecords', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('success', 'fSuccessRecords', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('preventSubmit', 'bPreventSubmit', FE::TYPE_BOOLEAN),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

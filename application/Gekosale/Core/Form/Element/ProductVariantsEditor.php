@@ -29,9 +29,9 @@ class ProductVariantsEditor extends Field
         if (! isset($this->_attributes['allow_generate'])) {
             $this->_attributes['allow_generate'] = 1;
         }
-        $this->_attributes['category_field'] = $this->_attributes['category']->GetName();
-        $this->_attributes['price_field'] = $this->_attributes['price']->GetName();
-        $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->GetName();
+        $this->_attributes['category_field'] = $this->_attributes['category']->getName();
+        $this->_attributes['price_field'] = $this->_attributes['price']->getName();
+        $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->getName();
         $this->_attributes['vat_values'] = App::getModel('vat/vat')->getVATValuesAll();
         $this->_attributes['suffixes'] = App::getModel('suffix/suffix')->getSuffixTypes();
         $this->_jsGetAttributeSetsForCategories = 'GetAttributeSetsForCategories_' . $this->_id;
@@ -119,32 +119,32 @@ class ProductVariantsEditor extends Field
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('get_sets_for_categories', 'fGetSetsForCategories', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('get_attributes_for_set', 'fGetAttributesForSet', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('get_values_for_attribute', 'fGetValuesForAttribute', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('get_cartesian', 'fGetCartesian', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('add_attribute', 'fAddAttribute', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('add_value', 'fAddValue', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('category_field', 'sCategoryField'),
-            $this->_FormatAttribute_JS('price_field', 'sPriceField'),
-            $this->_FormatAttribute_JS('allow_generate', 'bAllowGenerate'),
-            $this->_FormatAttribute_JS('vat_field_name', 'sVatField'),
-            $this->_FormatAttribute_JS('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('currency', 'sCurrency'),
-            $this->_FormatAttribute_JS('photos', 'aoPhotos', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('availablity', 'aoAvailablity', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('suffixes', 'aoSuffixes', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('set', 'sSet'),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('get_sets_for_categories', 'fGetSetsForCategories', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('get_attributes_for_set', 'fGetAttributesForSet', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('get_values_for_attribute', 'fGetValuesForAttribute', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('get_cartesian', 'fGetCartesian', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('add_attribute', 'fAddAttribute', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('add_value', 'fAddValue', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('category_field', 'sCategoryField'),
+            $this->formatAttributeJavascript('price_field', 'sPriceField'),
+            $this->formatAttributeJavascript('allow_generate', 'bAllowGenerate'),
+            $this->formatAttributeJavascript('vat_field_name', 'sVatField'),
+            $this->formatAttributeJavascript('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('currency', 'sCurrency'),
+            $this->formatAttributeJavascript('photos', 'aoPhotos', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('availablity', 'aoAvailablity', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('suffixes', 'aoSuffixes', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('set', 'sSet'),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

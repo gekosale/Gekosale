@@ -23,25 +23,25 @@ class PriceModifier extends Price
         if (! isset($this->_attributes['base_price_field']) || ! ($this->_attributes['base_price_field'] instanceof Field)) {
             throw new Exception("Base price source field (attribute: base_price_field) not set for field '{$this->_attributes['name']}'.");
         }
-        $this->_attributes['base_price_field_name'] = $this->_attributes['base_price_field']->GetName();
+        $this->_attributes['base_price_field_name'] = $this->_attributes['base_price_field']->getName();
         $this->_attributes['suffixes'] = App::getModel('suffix/suffix')->getSuffixTypesForSelect();
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('suffix', 'sSuffix'),
-            $this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('vat_field_name', 'sVatField'),
-            $this->_FormatAttribute_JS('base_price_field_name', 'sBasePriceField'),
-            $this->_FormatAttribute_JS('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('suffixes', 'oSuffixes', \FormEngine\FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('suffix', 'sSuffix'),
+            $this->formatAttributeJavascript('prefixes', 'asPrefixes'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('vat_field_name', 'sVatField'),
+            $this->formatAttributeJavascript('base_price_field_name', 'sBasePriceField'),
+            $this->formatAttributeJavascript('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('suffixes', 'oSuffixes', \FormEngine\FE::TYPE_OBJECT),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

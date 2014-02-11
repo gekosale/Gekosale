@@ -66,22 +66,22 @@ class TechnicalAttributeEditor extends Field
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('set', 'sSetId'),
-            $this->_FormatAttribute_JS('attributes', 'aoAttributes', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('deleteAttributeFunction', 'fDeleteAttribute', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('renameAttributeFunction', 'fRenameAttribute', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('renameValueFunction', 'fRenameValue', FE::TYPE_FUNCTION),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('set', 'sSetId'),
+            $this->formatAttributeJavascript('attributes', 'aoAttributes', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('deleteAttributeFunction', 'fDeleteAttribute', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('renameAttributeFunction', 'fRenameAttribute', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('renameValueFunction', 'fRenameValue', FE::TYPE_FUNCTION),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

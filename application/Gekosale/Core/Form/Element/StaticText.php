@@ -25,17 +25,17 @@ class StaticText extends Node
         $this->_attributes['name'] = '';
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('text', 'sText'),
-            $this->_FormatAttribute_JS('class', 'sClass'),
-            $this->_FormatDependency_JS()
+            $this->formatAttributeJavascript('text', 'sText'),
+            $this->formatAttributeJavascript('class', 'sClass'),
+            $this->formatDependencyJavascript()
         );
         return $attributes;
     }
 
-    public function Render_Static ()
+    public function renderStatic ()
     {
     }
 

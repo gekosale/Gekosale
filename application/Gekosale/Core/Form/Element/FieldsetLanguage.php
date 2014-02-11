@@ -40,15 +40,15 @@ class FieldsetLanguage extends Fieldset
         return 'aoLanguages: [' . implode(', ', $options) . ']';
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatRepeatable_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatRepeatableJavascript(),
+            $this->formatDependencyJavascript(),
             $this->_FormatLanguages_JS(),
-            'aoFields: [' . $this->_RenderChildren() . ']'
+            'aoFields: [' . $this->_renderChildren() . ']'
         );
         
         return $attributes;

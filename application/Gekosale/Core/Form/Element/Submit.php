@@ -19,14 +19,14 @@ use Gekosale\Core\Form\Node;
 class Submit extends Node
 {
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('class', 'sClass'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('icon', 'sIcon'),
-            $this->_FormatDependency_JS()
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('class', 'sClass'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('icon', 'sIcon'),
+            $this->formatDependencyJavascript()
         );
         return $attributes;
     }

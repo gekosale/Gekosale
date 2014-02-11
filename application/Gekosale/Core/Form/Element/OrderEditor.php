@@ -39,21 +39,21 @@ class OrderEditor extends Select
         $this->_attributes['datagrid_filter'] = $this->getDatagridFilterData();
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('on_change', 'fOnChange', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('on_before_change', 'fOnBeforeChange', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('on_change', 'fOnChange', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('on_before_change', 'fOnBeforeChange', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

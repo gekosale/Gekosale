@@ -32,7 +32,7 @@ class Compare extends Rule
         return ($value == $this->_compareWith->GetValue());
     }
 
-    public function Render ()
+    public function render ()
     {
         $errorMsg = addslashes($this->_errorMsg);
         $field = addslashes($this->_compareWith->getName());

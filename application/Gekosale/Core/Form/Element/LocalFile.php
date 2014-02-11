@@ -63,26 +63,26 @@ class LocalFile extends File
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('selector', 'sSelector'),
-            $this->_FormatAttribute_JS('file_source', 'sFilePath'),
-            $this->_FormatAttribute_JS('upload_url', 'sUploadUrl'),
-            $this->_FormatAttribute_JS('session_name', 'sSessionName'),
-            $this->_FormatAttribute_JS('session_id', 'sSessionId'),
-            $this->_FormatAttribute_JS('file_types', 'asFileTypes'),
-            $this->_FormatAttribute_JS('type_icons', 'oTypeIcons', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('file_types_description', 'sFileTypesDescription'),
-            $this->_FormatAttribute_JS('delete_handler', 'fDeleteFile', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('load_handler', 'fLoadFiles', FE::TYPE_FUNCTION),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('selector', 'sSelector'),
+            $this->formatAttributeJavascript('file_source', 'sFilePath'),
+            $this->formatAttributeJavascript('upload_url', 'sUploadUrl'),
+            $this->formatAttributeJavascript('session_name', 'sSessionName'),
+            $this->formatAttributeJavascript('session_id', 'sSessionId'),
+            $this->formatAttributeJavascript('file_types', 'asFileTypes'),
+            $this->formatAttributeJavascript('type_icons', 'oTypeIcons', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('file_types_description', 'sFileTypesDescription'),
+            $this->formatAttributeJavascript('delete_handler', 'fDeleteFile', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('load_handler', 'fLoadFiles', FE::TYPE_FUNCTION),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

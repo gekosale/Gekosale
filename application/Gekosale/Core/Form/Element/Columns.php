@@ -17,14 +17,14 @@ namespace Gekosale\Core\Form\Element;
 class Columns extends Container
 {
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('class', 'sClass'),
-            $this->_FormatDependency_JS(),
-            'aoFields: [' . $this->_RenderChildren() . ']'
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('class', 'sClass'),
+            $this->formatDependencyJavascript(),
+            'aoFields: [' . $this->_renderChildren() . ']'
         );
         return $attributes;
     }

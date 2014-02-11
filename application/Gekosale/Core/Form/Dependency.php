@@ -149,23 +149,23 @@ class Dependency
         }
     }
 
-    public function Render_JS ()
+    public function renderJavascript ()
     {
         if (is_subclass_of($this->_condition, 'FormEngine\Condition')) {
-            return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->GetName()}.{$this->_field->GetName()}', {$this->_condition->Render_JS()})";
+            return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_condition->renderJavascript()})";
         }
         else {
             switch ($this->type) {
                 case self::INVOKE_CUSTOM_FUNCTION:
                     if ($this->_argument !== null) {
                         $argument = json_encode($this->_argument);
-                        return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->GetName()}.{$this->_field->GetName()}', {$this->_jsFunction}, {$argument})";
+                        return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_jsFunction}, {$argument})";
                     }
-                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->GetName()}.{$this->_field->GetName()}', {$this->_jsFunction})";
+                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_jsFunction})";
                     break;
                 case self::EXCHANGE_OPTIONS:
                 case self::SUGGEST:
-                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->GetName()}.{$this->_field->GetName()}', xajax_{$this->_jsFunction})";
+                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', xajax_{$this->_jsFunction})";
             }
         }
     }

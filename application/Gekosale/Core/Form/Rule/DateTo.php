@@ -35,7 +35,7 @@ class DateTo extends Rule
         return true;
     }
 
-    public function Render ()
+    public function render ()
     {
         $errorMsg = addslashes($this->_errorMsg);
         $field = addslashes($this->_compareWith->getName());

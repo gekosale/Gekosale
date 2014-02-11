@@ -35,7 +35,7 @@ class Format extends Rule
         return (preg_match($this->_format, $value) == 1);
     }
 
-    public function Render ()
+    public function render ()
     {
         $format = addslashes($this->_format);
         $errorMsg = addslashes($this->_errorMsg);

@@ -19,7 +19,7 @@ use Gekosale\Core\Form\Filter;
 class NoCode extends Filter
 {
 
-    protected function _FilterValue ($value)
+    protected function filterValue ($value)
     {
         return strip_tags($value);
     }

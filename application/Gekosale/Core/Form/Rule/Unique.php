@@ -92,7 +92,7 @@ class Unique extends Rule
         return false;
     }
 
-    public function Render ()
+    public function render ()
     {
         $errorMsg = addslashes($this->_errorMsg);
         return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->_jsFunction}}";

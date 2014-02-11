@@ -22,57 +22,57 @@ class TechnicalDataEditor extends Field
         parent::__construct($attributes);
         $this->_attributes['attribute_groups'] = $this->GetAttributeGroups();
         $this->_attributes['technical_attributes'] = $this->GetTechnicalAttributes();
-        $this->_RegisterXajaxMethod('fGetTechnicalAttributesForSet', Array(
+        $this->registerXajaxMethod('fGetTechnicalAttributesForSet', Array(
             $this,
             'GetTechnicalAttributesForSet'
         ));
-        $this->_RegisterXajaxMethod('fGetSets', Array(
+        $this->registerXajaxMethod('fGetSets', Array(
             $this,
             'GetSets'
         ));
-        $this->_RegisterXajaxMethod('fSaveSet', Array(
+        $this->registerXajaxMethod('fSaveSet', Array(
             $this,
             'SaveSet'
         ));
-        $this->_RegisterXajaxMethod('fDeleteSet', Array(
+        $this->registerXajaxMethod('fDeleteSet', Array(
             $this,
             'DeleteSet'
         ));
-        $this->_RegisterXajaxMethod('fSaveAttributeGroup', Array(
+        $this->registerXajaxMethod('fSaveAttributeGroup', Array(
             $this,
             'SaveAttributeGroup'
         ));
-        $this->_RegisterXajaxMethod('fDeleteAttributeGroup', Array(
+        $this->registerXajaxMethod('fDeleteAttributeGroup', Array(
             $this,
             'DeleteAttributeGroup'
         ));
-        $this->_RegisterXajaxMethod('fSaveAttribute', Array(
+        $this->registerXajaxMethod('fSaveAttribute', Array(
             $this,
             'SaveAttribute'
         ));
-        $this->_RegisterXajaxMethod('fDeleteAttribute', Array(
+        $this->registerXajaxMethod('fDeleteAttribute', Array(
             $this,
             'DeleteAttribute'
         ));
-        $this->_RegisterXajaxMethod('fGetValuesForAttribute', Array(
+        $this->registerXajaxMethod('fGetValuesForAttribute', Array(
             $this,
             'GetValuesForAttribute'
         ));
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('set_id', 'sSetId'),
-            $this->_FormatAttribute_JS('product_id', 'sProductId'),
-            $this->_FormatAttribute_JS('attribute_groups', 'aAttributeGroups', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('technical_attributes', 'aTechnicalAttributes', FE::TYPE_OBJECT),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('set_id', 'sSetId'),
+            $this->formatAttributeJavascript('product_id', 'sProductId'),
+            $this->formatAttributeJavascript('attribute_groups', 'aAttributeGroups', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('technical_attributes', 'aTechnicalAttributes', FE::TYPE_OBJECT),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

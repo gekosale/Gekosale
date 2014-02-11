@@ -46,18 +46,18 @@ class LayerSelector extends Field
         $this->_attributes['stores'] = $storesArray;
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('stores', 'oStores', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('active', 'sActive'),
-            $this->_FormatAttribute_JS('set', 'sSet'),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('stores', 'oStores', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('active', 'sActive'),
+            $this->formatAttributeJavascript('set', 'sSet'),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

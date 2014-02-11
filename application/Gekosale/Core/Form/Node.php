@@ -49,11 +49,11 @@ abstract class Node
         $this->_xajaxMethods = Array();
     }
 
-    public function Render ($mode = 'JS', $tabs = '')
+    public function render ($mode = 'JS', $tabs = '')
     {
         $this->_tabs = $tabs;
         $this->_renderMode = $mode;
-        $renderFunction = 'Render_' . $mode;
+        $renderFunction = 'render_' . $mode;
         $lines = explode("\n", $this->$renderFunction());
         foreach ($lines as &$line) {
             $line = $this->_tabs . $line;
@@ -62,7 +62,7 @@ abstract class Node
         return implode("\n", $lines);
     }
 
-    public function AddRule ($rule)
+    public function addRule ($rule)
     {
         if (! isset($this->_attributes['rules']) || ! is_array($this->_attributes['rules'])) {
             $this->_attributes['rules'] = Array();
@@ -70,12 +70,12 @@ abstract class Node
         $this->_attributes['rules'][] = $rule;
     }
 
-    public function ClearRules ()
+    public function clearRules ()
     {
         $this->_attributes['rules'] = Array();
     }
 
-    public function AddFilter ($filter)
+    public function addFilter ($filter)
     {
         if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
@@ -83,7 +83,7 @@ abstract class Node
         $this->_attributes['filters'][] = $filter;
     }
 
-    public function SetFilter ($filter)
+    public function setFilter ($filter)
     {
         if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
@@ -91,12 +91,12 @@ abstract class Node
         $this->_attributes['filters'][] = $filter;
     }
 
-    public function ClearFilters ()
+    public function clearFilters ()
     {
         $this->_attributes['filters'] = Array();
     }
 
-    public function AddDependency ($dependency)
+    public function addDependency ($dependency)
     {
         if (! isset($this->_attributes['dependencies']) || ! is_array($this->_attributes['dependencies'])) {
             $this->_attributes['dependencies'] = Array();
@@ -104,7 +104,7 @@ abstract class Node
         $this->_attributes['dependencies'][] = $dependency;
     }
 
-    protected function _Filter ($values)
+    protected function filter ($values)
     {
         if (! isset($this->_attributes['filters']) || ! is_array($this->_attributes['filters'])) {
             return $values;
@@ -125,12 +125,12 @@ abstract class Node
         return $values;
     }
 
-    public function GetName ()
+    public function getName ()
     {
         return $this->_attributes['name'];
     }
 
-    protected function _HarvestValues ($node, $levels)
+    protected function harvestValues ($node, $levels)
     {
         $value = $node->GetValue();
         foreach ($levels as $level) {
@@ -145,7 +145,7 @@ abstract class Node
         return $value;
     }
 
-    protected function _HarvestErrors ($node, $levels)
+    protected function harvestErrors ($node, $levels)
     {
         if (! isset($node->_attributes['error'])) {
             return '';
@@ -163,26 +163,26 @@ abstract class Node
         return $value;
     }
 
-    protected function _Harvest ($action, $levelsCount = 0, $levels = Array())
+    protected function harvest ($action, $levelsCount = 0, $levels = Array())
     {
         if (isset($this->_children)) {
             $array = Array();
             foreach ($this->_children as $child) {
-                $name = $child->GetName();
+                $name = $child->getName();
                 if (empty($name)) {
                     continue;
                 }
                 if (get_class($this) == 'FormEngine\Elements\FieldsetRepeatable') {
-                    $repetitions = $child->_HarvestRepetitions($levelsCount);
+                    $repetitions = $child->harvestRepetitions($levelsCount);
                     foreach ($repetitions as $repetition) {
                         $levelsCopy = $levels + Array(
                             $repetition
                         );
-                        $array[$repetition][$name] = $child->_Harvest($action, $levelsCount + 1, $levelsCopy);
+                        $array[$repetition][$name] = $child->harvest($action, $levelsCount + 1, $levelsCopy);
                     }
                 }
                 else {
-                    $array[$name] = $child->_Harvest($action, $levelsCount, $levels);
+                    $array[$name] = $child->harvest($action, $levelsCount, $levels);
                 }
             }
             
@@ -197,25 +197,25 @@ abstract class Node
         }
     }
 
-    protected function _HarvestRepetitions ($level = 0)
+    protected function harvestRepetitions ($level = 0)
     {
         if (isset($this->_children)) {
             $array = Array();
             foreach ($this->_children as $child) {
-                array_push($array, $child->_HarvestRepetitions($level));
+                array_push($array, $child->harvestRepetitions($level));
             }
             
             return array_unique($array);
         }
         else {
             $value = $this->GetValue();
-            $repetitions = $this->_ExtractRepetitions($value, $level);
+            $repetitions = $this->extractRepetitions($value, $level);
             
             return array_unique($repetitions);
         }
     }
 
-    protected function _ExtractRepetitions ($array, $targetLevel, $level = 0)
+    protected function extractRepetitions ($array, $targetLevel, $level = 0)
     {
         if ($targetLevel >= $level) {
             if (is_array($array)) {
@@ -226,15 +226,15 @@ abstract class Node
         }
         $repetitions = Array();
         foreach ($array as $key => $value) {
-            array_push($repetitions, $this->_ExtractRepetitions($value, $targetLevel, $level + 1));
+            array_push($repetitions, $this->extractRepetitions($value, $targetLevel, $level + 1));
         }
         
         return $repetitions;
     }
 
-    protected function _FormatAttributes_JS ($attributes)
+    protected function formatAttributesJavascript ($attributes)
     {
-        $attributes = array_merge($attributes, $this->_PrepareAutoAttributes_JS());
+        $attributes = array_merge($attributes, $this->prepareAutoAttributesJavascript());
         $attributesString = "\n";
         foreach ($attributes as $attribute) {
             if (! empty($attribute)) {
@@ -245,7 +245,7 @@ abstract class Node
         return substr($attributesString, 0, - 2) . "\n";
     }
 
-    protected function _FormatAttribute_JS ($attributeName, $name = null, $type = FE::TYPE_STRING)
+    protected function formatAttributeJavascript ($attributeName, $name = null, $type = FE::TYPE_STRING)
     {
         if ($name == null) {
             if (! isset($this->_attributes[$attributeName])) {
@@ -332,7 +332,7 @@ abstract class Node
         }
     }
 
-    protected function _FormatRepeatable_JS ()
+    protected function formatRepeatableJavascript ()
     {
         if ((isset($this->_attributes['repeat_min']) && ($this->_attributes['repeat_min'] != 1)) || (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] != 1))) {
             $min = (isset($this->_attributes['repeat_min']) && is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
@@ -347,12 +347,12 @@ abstract class Node
         return '';
     }
 
-    protected function _FormatDependency_JS ()
+    protected function formatDependencyJavascript ()
     {
         $dependencies = Array();
         if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
             foreach ($this->_attributes['dependencies'] as $dependency) {
-                $dependencies[] = $dependency->Render_JS();
+                $dependencies[] = $dependency->renderJavascript();
             }
         }
         if (count($dependencies)) {
@@ -362,27 +362,27 @@ abstract class Node
         return '';
     }
 
-    protected function _FormatFactor_JS ($factor, $name)
+    protected function formatFactorJavascript ($factor, $name)
     {
-        return "{$name}: {$this->_attributes[$factor]->Render()}";
+        return "{$name}: {$this->_attributes[$factor]->render()}";
     }
 
-    public function Render_JS ()
+    public function renderJavascript ()
     {
-        return "{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->_PrepareAttributes_JS())}}";
+        return "{fType: {$this->_jsNodeName},{$this->formatAttributesJavascript($this->prepareAttributesJavascript())}}";
     }
 
-    public function Render_JSAllegroParams ()
+    public function renderJavascriptAllegroParams ()
     {
-        return $this->Render_JS();
+        return $this->renderJavascript();
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         return Array();
     }
 
-    public function Render_Static ()
+    public function renderStatic ()
     {
     }
 
@@ -391,7 +391,7 @@ abstract class Node
         return true;
     }
 
-    protected function _IsLocale ($locale)
+    protected function isLocale ($locale)
     {
         $data = \Locale::parseLocale($locale);
         return isset($data['region']);
@@ -401,7 +401,7 @@ abstract class Node
     {
         $key = key($array);
         
-        if (is_numeric($key) || substr($key, 0, 4) == 'new-' || $this->_IsLocale($key)) {
+        if (is_numeric($key) || substr($key, 0, 4) == 'new-' || $this->isLocale($key)) {
             return true;
         }
         
@@ -412,7 +412,7 @@ abstract class Node
     {
     }
 
-    protected function _PrepareAutoAttributes_JS ()
+    protected function prepareAutoAttributesJavascript ()
     {
         $attributes = Array();
         $attributes = array_merge($attributes, $this->_xajaxMethods);
@@ -420,7 +420,7 @@ abstract class Node
         return $attributes;
     }
 
-    protected function _RegisterXajaxMethod ($name, $callback)
+    protected function registerXajaxMethod ($name, $callback)
     {
         $jsName = $name . '_' . $this->_id;
         $this->_attributes[$name] = 'xajax_' . $jsName;
@@ -429,7 +429,7 @@ abstract class Node
             $callback[0],
             $callback[1]
         ));
-        $this->_xajaxMethods[] = $this->_FormatAttribute_JS($name, $name, FE::TYPE_FUNCTION);
+        $this->_xajaxMethods[] = $this->formatAttributeJavascript($name, $name, FE::TYPE_FUNCTION);
     }
 
     public function __get ($attributeName)

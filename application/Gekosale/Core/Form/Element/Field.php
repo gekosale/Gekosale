@@ -87,13 +87,13 @@ class Field extends Node
 
     public function Populate ($value)
     {
-        $value = $this->_Filter($value);
+        $value = $this->filter($value);
         $this->_value = $value;
     }
 
     public function PopulateGlobal ($globalvalue)
     {
-        $globalvalue = $this->_Filter($globalvalue);
+        $globalvalue = $this->filter($globalvalue);
         $this->_globalvalue = $globalvalue;
     }
 
@@ -126,7 +126,7 @@ class Field extends Node
         }
         $rules = Array();
         foreach ($this->_attributes['rules'] as $rule) {
-            $rules[] = $rule->Render();
+            $rules[] = $rule->render();
         }
         return 'aoRules: [' . implode(', ', $rules) . ']';
     }

@@ -24,31 +24,31 @@ class SortableList extends Field
         parent::__construct($attributes);
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('clickable', 'bClickable'),
-            $this->_FormatAttribute_JS('deletable', 'bDeletable'),
-            $this->_FormatAttribute_JS('sortable', 'bSortable'),
-            $this->_FormatAttribute_JS('addable', 'bAddable'),
-            $this->_FormatAttribute_JS('items', 'oItems', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('total', 'iTotal'),
-            $this->_FormatAttribute_JS('onClick', 'fOnClick', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('onAdd', 'fOnAdd', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('onAfterAdd', 'fOnAfterAdd', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('onDelete', 'fOnDelete', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('onSaveOrder', 'fOnSaveOrder', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('active', 'sActive'),
-            $this->_FormatAttribute_JS('add_item_prompt', 'sAddItemPrompt'),
-            $this->_FormatAttribute_JS('delete_item_prompt', 'sDeleteItemPrompt'),
-            $this->_FormatAttribute_JS('set', 'sSet'),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('clickable', 'bClickable'),
+            $this->formatAttributeJavascript('deletable', 'bDeletable'),
+            $this->formatAttributeJavascript('sortable', 'bSortable'),
+            $this->formatAttributeJavascript('addable', 'bAddable'),
+            $this->formatAttributeJavascript('items', 'oItems', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('total', 'iTotal'),
+            $this->formatAttributeJavascript('onClick', 'fOnClick', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('onAdd', 'fOnAdd', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('onAfterAdd', 'fOnAfterAdd', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('onDelete', 'fOnDelete', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('onSaveOrder', 'fOnSaveOrder', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('active', 'sActive'),
+            $this->formatAttributeJavascript('add_item_prompt', 'sAddItemPrompt'),
+            $this->formatAttributeJavascript('delete_item_prompt', 'sDeleteItemPrompt'),
+            $this->formatAttributeJavascript('set', 'sSet'),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

@@ -64,20 +64,20 @@ class DatagridSelect extends Select
         ));
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('jsfunction', 'fLoadRecords', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('key', 'sKey'),
-            $this->_FormatAttribute_JS('columns', 'aoColumns', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('selected_columns', 'aoSelectedColumns', FE::TYPE_OBJECT),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('jsfunction', 'fLoadRecords', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('key', 'sKey'),
+            $this->formatAttributeJavascript('columns', 'aoColumns', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('selected_columns', 'aoSelectedColumns', FE::TYPE_OBJECT),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

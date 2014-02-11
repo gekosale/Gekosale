@@ -64,7 +64,7 @@ class Form extends Container
         }
     }
 
-    public function Render_JS ()
+    public function renderJavascript ()
     {
         return "
 			<form id=\"{$this->_attributes['name']}\" method=\"{$this->_attributes['method']}\" action=\"{$this->_attributes['action']}\">
@@ -78,7 +78,7 @@ class Form extends Container
 							sClass: '{$this->_attributes['class']}',
 							iTabs: " . (($this->_attributes['tabs'] == self::TABS_VERTICAL) ? 'GForm.TABS_VERTICAL' : 'GForm.TABS_HORIZONTAL') . ",
 							aoFields: [
-								{$this->_RenderChildren()}
+								{$this->_renderChildren()}
 							],
 							oValues: " . json_encode($this->GetValues()) . ",
 							oErrors: " . json_encode($this->GetErrors()) . "
@@ -89,7 +89,7 @@ class Form extends Container
 		";
     }
 
-    public function Render_Static ()
+    public function renderStatic ()
     {
     }
 
@@ -111,14 +111,14 @@ class Form extends Container
                 if (is_object($field)) {
                     if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
-                            $field->GetName() => $field->GetValue()
+                            $field->getName() => $field->GetValue()
                         ));
                     }
                 }
                 else {
                     if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
-                            $field->GetName() => $field->GetValue()
+                            $field->getName() => $field->GetValue()
                         ));
                     }
                 }
@@ -127,9 +127,9 @@ class Form extends Container
             return $values;
         }
         else {
-            return $this->_Harvest(Array(
+            return $this->harvest(Array(
                 $this,
-                '_HarvestValues'
+                'harvestValues'
             ));
         }
         
@@ -138,16 +138,16 @@ class Form extends Container
 
     public function GetErrors ()
     {
-        return $this->_Harvest(Array(
+        return $this->harvest(Array(
             $this,
-            '_HarvestErrors'
+            'harvestErrors'
         ));
     }
 
     public function GetValue ($element)
     {
         foreach ($this->fields as $field) {
-            if ($field->GetName() == $element) {
+            if ($field->getName() == $element) {
                 return $field->GetValue();
             }
         }

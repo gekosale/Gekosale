@@ -17,11 +17,11 @@ namespace Gekosale\Core\Form\Element;
 class Hidden extends Field
 {
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatDependency_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         

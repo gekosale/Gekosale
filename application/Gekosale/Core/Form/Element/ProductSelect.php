@@ -37,7 +37,7 @@ class ProductSelect extends Select
             'loadCategoryChildren'
         ));
         if (isset($this->_attributes['exclude_from'])) {
-            $this->_attributes['exclude_from_field'] = $this->_attributes['exclude_from']->GetName();
+            $this->_attributes['exclude_from_field'] = $this->_attributes['exclude_from']->getName();
         }
         if (! isset($this->_attributes['exclude'])) {
             $this->_attributes['exclude'] = Array(
@@ -57,21 +57,21 @@ class ProductSelect extends Select
         }
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('exclude_from_field', 'sExcludeFrom'),
-            $this->_FormatAttribute_JS('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('advanced_editor', 'bAdvancedEditor', FE::TYPE_BOOLEAN),
-            $this->_FormatAttribute_JS('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('exclude_from_field', 'sExcludeFrom'),
+            $this->formatAttributeJavascript('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('advanced_editor', 'bAdvancedEditor', FE::TYPE_BOOLEAN),
+            $this->formatAttributeJavascript('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

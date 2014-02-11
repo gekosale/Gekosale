@@ -60,13 +60,13 @@ class Custom extends Rule
         return call_user_func($this->_checkFunction, $value, $params);
     }
 
-    public function Render ()
+    public function render ()
     {
         $errorMsg = addslashes($this->_errorMsg);
         $params = Array();
         foreach ($this->_params as $paramName => $paramValue) {
             if ($paramValue instanceof \FormEngine\Node) {
-                $params['_field_' . $paramName] = $paramValue->GetName();
+                $params['_field_' . $paramName] = $paramValue->getName();
             }
             else {
                 $params[$paramName] = $paramValue;

@@ -35,7 +35,7 @@ abstract class Container extends Node
         $this->_children[] = $child;
         $child->form = $this->form;
         $child->parent = $this;
-        $childName = $child->GetName();
+        $childName = $child->getName();
         if (isset($this->form->fields[$childName])) {
             if (is_array($this->form->fields[$childName])) {
                 $this->form->fields[$childName][] = $child;
@@ -68,36 +68,36 @@ abstract class Container extends Node
         return $this->AddChild(new TextField($options, $container));
     }
 
-    public function AddRule ($rule)
+    public function addRule ($rule)
     {
         foreach ($this->_children as $child) {
-            $child->AddRule($rule);
+            $child->addRule($rule);
         }
     }
 
-    public function AddRuleRequired ($options)
+    public function addRuleRequired ($options)
     {
-        return $this->AddRule(new \Gekosale\Core\Form\Rule\Required($options));
+        return $this->addRule(new \Gekosale\Core\Form\Rule\Required($options));
     }
 
-    public function ClearRules ()
+    public function clearRules ()
     {
         foreach ($this->_children as $child) {
-            $child->ClearRules();
+            $child->clearRules();
         }
     }
 
-    public function AddFilter ($filter)
+    public function addFilter ($filter)
     {
         foreach ($this->_children as $child) {
-            $child->AddFilter($filter);
+            $child->addFilter($filter);
         }
     }
 
-    public function ClearFilters ()
+    public function clearFilters ()
     {
         foreach ($this->_children as $child) {
-            $child->ClearFilters();
+            $child->clearFilters();
         }
     }
 
@@ -108,7 +108,7 @@ abstract class Container extends Node
                 $valueArray = Array();
                 if (isset($value) && is_array($value)) {
                     foreach ($value as $i => $repetition) {
-                        $name = $child->GetName();
+                        $name = $child->getName();
                         if (! empty($name)) {
                             if (isset($repetition[$name])) {
                                 $valueArray[$i] = $repetition[$name];
@@ -125,7 +125,7 @@ abstract class Container extends Node
         }
         else { // simple value
             foreach ($this->_children as $child) {
-                $name = $child->GetName();
+                $name = $child->getName();
                 if (empty($name)) {
                     continue;
                 }
@@ -139,11 +139,11 @@ abstract class Container extends Node
         }
     }
 
-    protected function _RenderChildren ()
+    protected function _renderChildren ()
     {
         $render = Array();
         foreach ($this->_children as $child) {
-            $render[] = $child->Render($this->_renderMode, $this->_tabs . $this->_tabsOffset);
+            $render[] = $child->render($this->_renderMode, $this->_tabs . $this->_tabsOffset);
         }
         return implode(',', $render);
     }
@@ -164,10 +164,10 @@ abstract class Container extends Node
         $values = Array();
         foreach ($this->_children as $child) {
             if (is_subclass_of($child, 'FormEngine\Elements\Container')) {
-                $values[$child->GetName()] = $child->_GetValues();
+                $values[$child->getName()] = $child->_GetValues();
             }
             elseif (is_subclass_of($child, 'FormEngine\Elements\Field')) {
-                $values[$child->GetName()] = $child->GetValue();
+                $values[$child->getName()] = $child->GetValue();
             }
         }
         return $values;

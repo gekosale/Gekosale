@@ -24,7 +24,7 @@ class VAT extends Format
         parent::__construct($errorMsg, '/^\.*/');
     }
 
-    public function Render ()
+    public function render ()
     {
         $errorMsg = addslashes($this->_errorMsg);
         return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}'}";

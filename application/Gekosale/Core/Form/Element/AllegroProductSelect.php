@@ -89,30 +89,30 @@ class AllegroProductSelect extends ProductSelect
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('help', 'sHelp'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('default_title_format', 'sDefaultTitleFormat'),
-            $this->_FormatAttribute_JS('default_description_format', 'sDefaultDescriptionFormat'),
-            $this->_FormatAttribute_JS('favourite_categories', 'aoFavouriteCategories', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('jsfunction_load', 'fLoadProducts', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('jsfunction_process_titles', 'fProcessTitles', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('jsfunction_prepare_row', 'fPrepareRow', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('get_children', 'fGetChildren', FE::TYPE_FUNCTION),
-            $this->_FormatAttribute_JS('advanced_editor', 'bAdvancedEditor', FE::TYPE_BOOLEAN),
-            $this->_FormatAttribute_JS('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
-            $this->_FormatAttribute_JS('main_allegro_categories', 'oItems', FE::TYPE_OBJECT),
-            $this->_FormatFactor_JS('min_price_factor', 'oMinPriceFactor'),
-            $this->_FormatFactor_JS('start_price_factor', 'oStartPriceFactor'),
-            $this->_FormatFactor_JS('buy_price_factor', 'oBuyPriceFactor'),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('help', 'sHelp'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('default_title_format', 'sDefaultTitleFormat'),
+            $this->formatAttributeJavascript('default_description_format', 'sDefaultDescriptionFormat'),
+            $this->formatAttributeJavascript('favourite_categories', 'aoFavouriteCategories', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('jsfunction_load', 'fLoadProducts', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('jsfunction_process_titles', 'fProcessTitles', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('jsfunction_prepare_row', 'fPrepareRow', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('get_children', 'fGetChildren', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('advanced_editor', 'bAdvancedEditor', FE::TYPE_BOOLEAN),
+            $this->formatAttributeJavascript('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('main_allegro_categories', 'oItems', FE::TYPE_OBJECT),
+            $this->formatFactorJavascript('min_price_factor', 'oMinPriceFactor'),
+            $this->formatFactorJavascript('start_price_factor', 'oStartPriceFactor'),
+            $this->formatFactorJavascript('buy_price_factor', 'oBuyPriceFactor'),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

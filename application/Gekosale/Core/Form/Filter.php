@@ -28,12 +28,12 @@ abstract class Filter
             }
         }
         else {
-            $values = $this->_FilterValue($values);
+            $values = $this->filterValue($values);
         }
         return $values;
     }
 
-    protected function _FilterValue ($value)
+    protected function filterValue ($value)
     {
         return $value;
     }

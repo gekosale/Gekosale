@@ -38,23 +38,23 @@ class RangeEditor extends OptionedField
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('suffix', 'sSuffix'),
-            $this->_FormatAttribute_JS('price_precision', 'iPricePrecision'),
-            $this->_FormatAttribute_JS('range_precision', 'iRangePrecision'),
-            $this->_FormatAttribute_JS('range_suffix', 'sRangeSuffix'),
-            $this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-            $this->_FormatAttribute_JS('allow_vat', 'bAllowVat', FE::TYPE_BOOLEAN),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('suffix', 'sSuffix'),
+            $this->formatAttributeJavascript('price_precision', 'iPricePrecision'),
+            $this->formatAttributeJavascript('range_precision', 'iRangePrecision'),
+            $this->formatAttributeJavascript('range_suffix', 'sRangeSuffix'),
+            $this->formatAttributeJavascript('prefixes', 'asPrefixes'),
+            $this->formatAttributeJavascript('allow_vat', 'bAllowVat', FE::TYPE_BOOLEAN),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
             $this->_FormatOptions_JS(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

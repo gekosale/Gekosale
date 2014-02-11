@@ -19,7 +19,7 @@ use Gekosale\Core\Form\Filter;
 class Secure extends Filter
 {
 
-    protected function _FilterValue ($value)
+    protected function filterValue ($value)
     {
         return $value;
     }

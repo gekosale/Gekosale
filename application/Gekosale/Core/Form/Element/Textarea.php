@@ -17,18 +17,18 @@ namespace Gekosale\Core\Form\Element;
 class Textarea extends TextField
 {
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('rows', 'iRows', \FormEngine\FE::TYPE_NUMBER),
-            $this->_FormatAttribute_JS('cols', 'iCols', \FormEngine\FE::TYPE_NUMBER),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatRepeatable_JS(),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('rows', 'iRows', \FormEngine\FE::TYPE_NUMBER),
+            $this->formatAttributeJavascript('cols', 'iCols', \FormEngine\FE::TYPE_NUMBER),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatRepeatableJavascript(),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;

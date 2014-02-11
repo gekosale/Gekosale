@@ -21,7 +21,7 @@ class Price extends TextField
     {
         parent::__construct($attributes);
         if (isset($this->_attributes['vat_field']) && is_subclass_of($this->_attributes['vat_field'], 'FormEngine\Elements\Field')) {
-            $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->GetName();
+            $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->getName();
         }
         $this->_attributes['prefixes'] = Array(
             $this->trans('TXT_PRICE_NET'),
@@ -29,18 +29,18 @@ class Price extends TextField
         );
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJavascript ()
     {
         $attributes = Array(
-            $this->_FormatAttribute_JS('name', 'sName'),
-            $this->_FormatAttribute_JS('label', 'sLabel'),
-            $this->_FormatAttribute_JS('comment', 'sComment'),
-            $this->_FormatAttribute_JS('suffix', 'sSuffix'),
-            $this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-            $this->_FormatAttribute_JS('error', 'sError'),
-            $this->_FormatAttribute_JS('vat_field_name', 'sVatField'),
+            $this->formatAttributeJavascript('name', 'sName'),
+            $this->formatAttributeJavascript('label', 'sLabel'),
+            $this->formatAttributeJavascript('comment', 'sComment'),
+            $this->formatAttributeJavascript('suffix', 'sSuffix'),
+            $this->formatAttributeJavascript('prefixes', 'asPrefixes'),
+            $this->formatAttributeJavascript('error', 'sError'),
+            $this->formatAttributeJavascript('vat_field_name', 'sVatField'),
             $this->_FormatRules_JS(),
-            $this->_FormatDependency_JS(),
+            $this->formatDependencyJavascript(),
             $this->_FormatDefaults_JS()
         );
         return $attributes;
