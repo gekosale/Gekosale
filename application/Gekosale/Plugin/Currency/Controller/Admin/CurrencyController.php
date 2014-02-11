@@ -22,27 +22,8 @@ class CurrencyController extends AdminController
 
     public function index ()
     {
-        $this->getFlashBag()->add('notice', 'Profile updated');
-        
-        print_r($this->getFlashBag()->get('notice'));die();
-        
-        foreach ($this->getFlashBag()->get('notice') as $message) {
-            echo "<div class='flash-notice'>$message</div>";
-        }
-        
-//         if (! $this->getDb()->schema()->hasTable('users')) {
-//             $this->getDb()->schema()->create('users', function  ($table)
-//             {
-//                 $table->increments('id');
-//                 $table->string('email')->unique();
-//                 $table->timestamps();
-//             });
-//         }
-        
-//         die();
-        
         return Array(
-//             'datagrid_filter' => $this->model->getFilterData()
+            'datagrid_filter' => Array()
         );
     }
 
