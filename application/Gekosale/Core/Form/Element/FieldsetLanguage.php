@@ -48,7 +48,7 @@ class FieldsetLanguage extends Fieldset
             $this->formatRepeatableJavascript(),
             $this->formatDependencyJavascript(),
             $this->_FormatLanguages_JS(),
-            'aoFields: [' . $this->_renderChildren() . ']'
+            'aoFields: [' . $this->renderChildren () . ']'
         );
         
         return $attributes;

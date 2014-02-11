@@ -55,11 +55,11 @@ class Unique extends Rule
     public function doAjaxCheck ($request)
     {
         return Array(
-            'unique' => $this->_Check($request['value'])
+            'unique' => $this->check($request['value'])
         );
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
         if ($this->_valueProcessFunction) {
             $value = call_user_func($this->_valueProcessFunction, $value);

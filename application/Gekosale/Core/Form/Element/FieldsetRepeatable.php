@@ -24,7 +24,7 @@ class FieldsetRepeatable extends Fieldset
             $this->formatAttributeJavascript('label', 'sLabel'),
             $this->formatRepeatableJavascript(),
             $this->formatDependencyJavascript(),
-            'aoFields: [' . $this->_renderChildren() . ']'
+            'aoFields: [' . $this->renderChildren () . ']'
         );
         return $attributes;
     }

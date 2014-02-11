@@ -19,7 +19,7 @@ use Gekosale\Core\Form\Rule;
 class Required extends Rule
 {
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
         if (is_array($value)) {
             return ! empty($value);

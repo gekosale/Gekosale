@@ -21,7 +21,7 @@ class ProductVariantsEditor extends Field
 
     protected $_jsGetAttributesForSet;
 
-    protected $_jsGetValuesForAttribute;
+    protected $_jsgetValuesForAttribute;
 
     public function __construct ($attributes)
     {
@@ -36,13 +36,13 @@ class ProductVariantsEditor extends Field
         $this->_attributes['suffixes'] = App::getModel('suffix/suffix')->getSuffixTypes();
         $this->_jsGetAttributeSetsForCategories = 'GetAttributeSetsForCategories_' . $this->_id;
         $this->_jsGetAttributesForSet = 'GetAttributesForSet_' . $this->_id;
-        $this->_jsGetValuesForAttribute = 'GetValuesForAttribute_' . $this->_id;
+        $this->_jsgetValuesForAttribute = 'getValuesForAttribute_' . $this->_id;
         $this->_jsGetCartesian = 'GetCartesian_' . $this->_id;
         $this->_jsAddAttribute = 'AddAttribute_' . $this->_id;
         $this->_jsAddValue = 'AddValue_' . $this->_id;
         $this->_attributes['get_sets_for_categories'] = 'xajax_' . $this->_jsGetAttributeSetsForCategories;
         $this->_attributes['get_attributes_for_set'] = 'xajax_' . $this->_jsGetAttributesForSet;
-        $this->_attributes['get_values_for_attribute'] = 'xajax_' . $this->_jsGetValuesForAttribute;
+        $this->_attributes['get_values_for_attribute'] = 'xajax_' . $this->_jsgetValuesForAttribute;
         $this->_attributes['get_cartesian'] = 'xajax_' . $this->_jsGetCartesian;
         $this->_attributes['add_attribute'] = 'xajax_' . $this->_jsAddAttribute;
         $this->_attributes['add_value'] = 'xajax_' . $this->_jsAddValue;
@@ -57,7 +57,7 @@ class ProductVariantsEditor extends Field
             'getAttributesForSet'
         ));
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            $this->_jsGetValuesForAttribute,
+            $this->_jsgetValuesForAttribute,
             $this,
             'getValuesForAttribute'
         ));
@@ -128,7 +128,7 @@ class ProductVariantsEditor extends Field
             $this->formatAttributeJavascript('error', 'sError'),
             $this->formatAttributeJavascript('get_sets_for_categories', 'fGetSetsForCategories', FE::TYPE_FUNCTION),
             $this->formatAttributeJavascript('get_attributes_for_set', 'fGetAttributesForSet', FE::TYPE_FUNCTION),
-            $this->formatAttributeJavascript('get_values_for_attribute', 'fGetValuesForAttribute', FE::TYPE_FUNCTION),
+            $this->formatAttributeJavascript('get_values_for_attribute', 'fgetValuesForAttribute', FE::TYPE_FUNCTION),
             $this->formatAttributeJavascript('get_cartesian', 'fGetCartesian', FE::TYPE_FUNCTION),
             $this->formatAttributeJavascript('add_attribute', 'fAddAttribute', FE::TYPE_FUNCTION),
             $this->formatAttributeJavascript('add_value', 'fAddValue', FE::TYPE_FUNCTION),

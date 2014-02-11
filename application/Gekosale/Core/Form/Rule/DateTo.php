@@ -27,10 +27,10 @@ class DateTo extends Rule
         $this->_compareWith = $compareWith;
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
-        if (strlen($value) > 0 && strlen($this->_compareWith->GetValue()) > 0) {
-            return ($value >= $this->_compareWith->GetValue());
+        if (strlen($value) > 0 && strlen($this->_compareWith->getValue()) > 0) {
+            return ($value >= $this->_compareWith->getValue());
         }
         return true;
     }

@@ -38,7 +38,7 @@ class CurrencyForm extends Form
             'label' => $this->trans('Translation data')
         ), $this->container);
         
-        $languageData->AddTextField(Array(
+        $languageData->addTextField(Array(
             'name' => 'name',
             'label' => $this->trans('Name'),
             'rules' => Array(
@@ -46,7 +46,7 @@ class CurrencyForm extends Form
             )
         ));
         
-        $requiredData->AddTextField(Array(
+        $requiredData->addTextField(Array(
             'name' => 'value',
             'label' => $this->trans('Value'),
             'comment' => $this->trans('Value in %'),

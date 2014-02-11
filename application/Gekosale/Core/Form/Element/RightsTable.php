@@ -61,7 +61,7 @@ class RightsTable extends Field
 
     protected function _FormatDefaults_JS ()
     {
-        $values = $this->GetValue();
+        $values = $this->getValue();
         if (empty($values)) {
             return '';
         }

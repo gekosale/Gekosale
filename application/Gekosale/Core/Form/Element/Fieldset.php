@@ -24,7 +24,7 @@ class Fieldset extends Container
             $this->formatAttributeJavascript('label', 'sLabel'),
             $this->formatAttributeJavascript('class', 'sClass'),
             $this->formatDependencyJavascript(),
-            'aoFields: [' . $this->_renderChildren() . ']'
+            'aoFields: [' . $this->renderChildren () . ']'
         );
         return $attributes;
     }

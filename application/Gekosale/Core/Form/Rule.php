@@ -25,13 +25,13 @@ abstract class Rule
 
     public function Check ($value)
     {
-        if ($this->_Check($value) === true) {
+        if ($this->check($value) === true) {
             return true;
         }
         return $this->GetFailureMessage();
     }
 
-    abstract protected function _Check ($value);
+    abstract protected function check ($value);
 
     public function GetType ()
     {
@@ -39,7 +39,7 @@ abstract class Rule
         return strtolower(end($classPath));
     }
 
-    public function GetFailureMessage ()
+    public function getFailureMessage ()
     {
         return $this->_errorMsg;
     }

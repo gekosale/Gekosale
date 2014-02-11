@@ -63,7 +63,7 @@ abstract class Container extends Node
         return $this->AddChild(new FieldsetLanguage($options, $container));
     }
 
-    public function AddTextField ($options, $container = NULL)
+    public function addTextField ($options, $container = NULL)
     {
         return $this->AddChild(new TextField($options, $container));
     }
@@ -139,7 +139,7 @@ abstract class Container extends Node
         }
     }
 
-    protected function _renderChildren ()
+    protected function renderChildren  ()
     {
         $render = Array();
         foreach ($this->_children as $child) {
@@ -148,26 +148,26 @@ abstract class Container extends Node
         return implode(',', $render);
     }
 
-    public function Validate ()
+    public function validate ()
     {
         $result = true;
         foreach ($this->_children as $child) {
-            if (! $child->Validate()) {
+            if (! $child->validate()) {
                 $result = false;
             }
         }
         return $result;
     }
 
-    protected function _GetValues ()
+    protected function _getValues ()
     {
         $values = Array();
         foreach ($this->_children as $child) {
             if (is_subclass_of($child, 'FormEngine\Elements\Container')) {
-                $values[$child->getName()] = $child->_GetValues();
+                $values[$child->getName()] = $child->_getValues();
             }
             elseif (is_subclass_of($child, 'FormEngine\Elements\Field')) {
-                $values[$child->getName()] = $child->GetValue();
+                $values[$child->getName()] = $child->getValue();
             }
         }
         return $values;

@@ -27,9 +27,9 @@ class Compare extends Rule
         $this->_compareWith = $compareWith;
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
-        return ($value == $this->_compareWith->GetValue());
+        return ($value == $this->_compareWith->getValue());
     }
 
     public function render ()

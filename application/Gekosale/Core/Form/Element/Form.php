@@ -78,10 +78,10 @@ class Form extends Container
 							sClass: '{$this->_attributes['class']}',
 							iTabs: " . (($this->_attributes['tabs'] == self::TABS_VERTICAL) ? 'GForm.TABS_VERTICAL' : 'GForm.TABS_HORIZONTAL') . ",
 							aoFields: [
-								{$this->_renderChildren()}
+								{$this->renderChildren ()}
 							],
-							oValues: " . json_encode($this->GetValues()) . ",
-							oErrors: " . json_encode($this->GetErrors()) . "
+							oValues: " . json_encode($this->getValues()) . ",
+							oErrors: " . json_encode($this->getErrors ()) . "
 						});
 					});
 				/*]]>*/
@@ -95,15 +95,15 @@ class Form extends Container
 
     public function getSubmitValues ($flags = 1)
     {
-        return $this->GetValues($flags);
+        return $this->getValues($flags);
     }
 
     public function getElementValue ($element)
     {
-        return $this->GetValue($element);
+        return $this->getValue($element);
     }
 
-    public function GetValues ($flags = 0)
+    public function getValues ($flags = 0)
     {
         if ($flags & self::FORMAT_FLAT) {
             $values = Array();
@@ -111,14 +111,14 @@ class Form extends Container
                 if (is_object($field)) {
                     if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
-                            $field->getName() => $field->GetValue()
+                            $field->getName() => $field->getValue()
                         ));
                     }
                 }
                 else {
                     if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
-                            $field->getName() => $field->GetValue()
+                            $field->getName() => $field->getValue()
                         ));
                     }
                 }
@@ -136,7 +136,7 @@ class Form extends Container
         return Array();
     }
 
-    public function GetErrors ()
+    public function getErrors  ()
     {
         return $this->harvest(Array(
             $this,
@@ -144,11 +144,11 @@ class Form extends Container
         ));
     }
 
-    public function GetValue ($element)
+    public function getValue ($element)
     {
         foreach ($this->fields as $field) {
             if ($field->getName() == $element) {
-                return $field->GetValue();
+                return $field->getValue();
             }
         }
     }
@@ -182,7 +182,7 @@ class Form extends Container
         return (isset($_POST[$actionName]) && ($_POST[$actionName] == '1'));
     }
 
-    public function Validate ()
+    public function validate ()
     {
         $values = $this->getSubmittedData();
         if (! isset($values[$this->_attributes['name'] . '_submitted']) or ! $values[$this->_attributes['name'] . '_submitted']) {
@@ -190,6 +190,6 @@ class Form extends Container
         }
         $this->Populate($values);
         
-        return parent::Validate();
+        return parent::validate();
     }
 }

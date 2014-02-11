@@ -12,7 +12,7 @@ class AvailabilitySubscriber implements EventSubscriberInterface
     {
         $form = $event->getForm();
 
-        $form->fields['required_data']->AddTextField(Array(
+        $form->fields['required_data']->addTextField(Array(
             'name' => 'value1222',
             'label' => 'Test1',
             'suffix' => '%'

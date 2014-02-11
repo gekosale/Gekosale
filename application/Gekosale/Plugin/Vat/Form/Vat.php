@@ -38,7 +38,7 @@ class Vat extends Form
             'label' => $this->trans('TXT_LANGUAGE_DATA')
         ), $this->container);
         
-        $languageData->AddTextField(Array(
+        $languageData->addTextField(Array(
             'name' => 'name',
             'label' => $this->trans('TXT_NAME'),
             'rules' => Array(
@@ -46,7 +46,7 @@ class Vat extends Form
             )
         ));
         
-        $requiredData->AddTextField(Array(
+        $requiredData->addTextField(Array(
             'name' => 'value',
             'label' => $this->trans('TXT_VALUE'),
             'comment' => $this->trans('TXT_VALUE_IN_PERCENT'),

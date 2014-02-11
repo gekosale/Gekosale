@@ -46,12 +46,12 @@ class Custom extends Rule
         );
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
         $params = Array();
         foreach ($this->_params as $paramName => $paramValue) {
             if ($paramValue instanceof Node) {
-                $params[$paramName] = $paramValue->GetValue();
+                $params[$paramName] = $paramValue->getValue();
             }
             else {
                 $params[$paramName] = $paramValue;

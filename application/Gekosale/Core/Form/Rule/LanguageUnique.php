@@ -56,7 +56,7 @@ class LanguageUnique extends Rule
     {
         $this->setLanguage($request['language']);
         return Array(
-            'unique' => $this->_Check($request['value'])
+            'unique' => $this->check($request['value'])
         );
     }
 
@@ -65,7 +65,7 @@ class LanguageUnique extends Rule
         $this->_language = $language;
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
         if ($this->_valueProcessFunction) {
             $f = $this->_valueProcessFunction;

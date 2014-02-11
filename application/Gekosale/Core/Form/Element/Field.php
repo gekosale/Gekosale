@@ -33,7 +33,7 @@ class Field extends Node
         }
     }
 
-    public function Validate ($values = Array())
+    public function validate ($values = Array())
     {
         if (! isset($this->_attributes['rules']) || ! is_array($this->_attributes['rules'])) {
             return true;
@@ -97,7 +97,7 @@ class Field extends Node
         $this->_globalvalue = $globalvalue;
     }
 
-    public function GetValue ()
+    public function getValue ()
     {
         if (! isset($this->_value)) {
             return null;
@@ -107,7 +107,7 @@ class Field extends Node
 
     protected function _FormatDefaults_JS ()
     {
-        $values = $this->GetValue();
+        $values = $this->getValue();
         if (empty($values)) {
             return '';
         }

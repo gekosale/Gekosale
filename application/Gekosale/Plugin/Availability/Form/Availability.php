@@ -38,7 +38,7 @@ class Availability extends Form
             'label' => $this->trans('TXT_LANGUAGE_DATA')
         ), $this->container);
         
-        $languageData->AddTextField(Array(
+        $languageData->addTextField(Array(
             'name' => 'name',
             'label' => $this->trans('TXT_NAME'),
             'rules' => Array(

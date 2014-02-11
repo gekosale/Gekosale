@@ -27,7 +27,7 @@ class Format extends Rule
         $this->_format = $format;
     }
 
-    protected function _Check ($value)
+    protected function check ($value)
     {
         if (strlen($value) == 0) {
             return true;

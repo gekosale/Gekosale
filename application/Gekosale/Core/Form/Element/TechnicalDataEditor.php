@@ -54,9 +54,9 @@ class TechnicalDataEditor extends Field
             $this,
             'DeleteAttribute'
         ));
-        $this->registerXajaxMethod('fGetValuesForAttribute', Array(
+        $this->registerXajaxMethod('fgetValuesForAttribute', Array(
             $this,
-            'GetValuesForAttribute'
+            'getValuesForAttribute'
         ));
     }
 
@@ -147,7 +147,7 @@ class TechnicalDataEditor extends Field
         return App::GetModel('TechnicalData')->GetAttributes();
     }
 
-    public function GetValuesForAttribute ($request)
+    public function getValuesForAttribute ($request)
     {
         $request['attributeId'];
         return Array(

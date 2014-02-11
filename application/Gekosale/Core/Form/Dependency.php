@@ -86,9 +86,9 @@ class Dependency
         }
         
         if ($i === null) {
-            return $this->_condition->Evaluate($this->_field->GetValue());
+            return $this->_condition->Evaluate($this->_field->getValue());
         }
-        $matchingValues = $this->_field->GetValue();
+        $matchingValues = $this->_field->getValue();
         if (is_array($matchingValues)) {
             if (isset($matchingValues[$i])) {
                 return $this->_condition->Evaluate($matchingValues[$i]);

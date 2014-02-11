@@ -132,7 +132,7 @@ abstract class Node
 
     protected function harvestValues ($node, $levels)
     {
-        $value = $node->GetValue();
+        $value = $node->getValue();
         foreach ($levels as $level) {
             if (isset($value[$level])) {
                 $value = $value[$level];
@@ -208,7 +208,7 @@ abstract class Node
             return array_unique($array);
         }
         else {
-            $value = $this->GetValue();
+            $value = $this->getValue();
             $repetitions = $this->extractRepetitions($value, $level);
             
             return array_unique($repetitions);
@@ -386,7 +386,7 @@ abstract class Node
     {
     }
 
-    public function Validate ()
+    public function validate ()
     {
         return true;
     }
