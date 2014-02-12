@@ -150,7 +150,7 @@ final class ServiceContainerBuilder
         $this->containerBuilder->compile();
 
         $dumper = new PhpDumper($this->containerBuilder);
-        
+
         $options = Array(
             'class'      => self::SERVICE_CONTAINER_CLASS,
             'base_class' => self::SERVICE_CONTAINER_BASE_CLASS,
@@ -206,13 +206,13 @@ final class ServiceContainerBuilder
     protected function registerCompilerPasses()
     {
         /*
-		 * RegisterListenersPass for all event listeners
-		 */
+         * RegisterListenersPass for all event listeners
+         */
         $this->registerCompilerPass(new RegisterListenersPass());
 
         /*
-		 * RegisterTwigExtensionsPass for all services tagged with twig.extension
-		 */
+         * RegisterTwigExtensionsPass for all services tagged with twig.extension
+         */
         $this->registerCompilerPass(new RegisterTwigExtensionsPass());
     }
 }
