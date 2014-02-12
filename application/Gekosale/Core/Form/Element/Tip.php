@@ -51,7 +51,7 @@ class Tip extends \FormEngine\Node
     {
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 }

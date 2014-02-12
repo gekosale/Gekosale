@@ -15,6 +15,12 @@ namespace Gekosale\Core;
 
 use Symfony\Component\Console\Application;
 
+/**
+ * Class Console
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Console extends Application
 {
 
@@ -23,7 +29,6 @@ class Console extends Application
         parent::__construct('Welcome to Gekosale CLI Tool', '1.0');
         
         $this->addCommands(array(
-            new Console\Command\Cache\Clear(),
             new Console\Command\Admin\Add(),
             new Console\Command\Admin\Reset(),
             new Console\Command\Migrate\Add(),

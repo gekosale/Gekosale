@@ -15,6 +15,7 @@
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
+
 $this->collection = new RouteCollection();
 
 $this->collection->add('admin.availability.index', new Route('/admin/availability', array(

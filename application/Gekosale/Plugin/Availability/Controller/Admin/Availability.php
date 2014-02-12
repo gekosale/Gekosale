@@ -16,6 +16,12 @@ namespace Gekosale\Plugin\Availability\Controller\Admin;
 
 use Gekosale\Core\Controller\Admin;
 
+/**
+ * Class Availability
+ *
+ * @package Gekosale\Plugin\Availability\Controller\Admin
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Availability extends Admin
 {
 

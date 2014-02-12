@@ -408,7 +408,7 @@ abstract class Node
         return false;
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 

@@ -16,6 +16,12 @@ namespace Gekosale\Core\Cache\Storage;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class File
+ *
+ * @package Gekosale\Core\Cache\Storage
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class File
 {
 
@@ -27,51 +33,77 @@ class File
 
     protected $container;
 
-    public function __construct (ContainerInterface $container, $path, $extension)
+    /**
+     * @param ContainerInterface $container
+     * @param                    $path
+     * @param                    $extension
+     */
+    public function __construct(ContainerInterface $container, $path, $extension)
     {
         $this->container = $container;
-        $this->path = $path;
+        $this->path      = $path;
         $this->extension = $extension;
-        $this->cacheid = NULL;
+        $this->cacheid   = null;
     }
 
-    public function save ($name, $value)
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function save($name, $value)
     {
         $this->container->get('filesystem')->dumpFile($this->getCacheFileName($name), $value);
     }
 
-    public function load ($name)
+    /**
+     * @param $name
+     *
+     * @return bool|string
+     */
+    public function load($name)
     {
-        if (($content = @file_get_contents($this->getCacheFileName($name))) === FALSE) {
-            return FALSE;
+        if (($content = @file_get_contents($this->getCacheFileName($name))) === false) {
+            return false;
         }
-        
+
         clearstatcache();
         if (filemtime($this->getCacheFileName($name)) < time()) {
-            return FALSE;
+            return false;
         }
-        
+
         return $content;
     }
 
-    public function delete ($name)
+    /**
+     * @param $name
+     */
+    public function delete($name)
     {
         foreach (glob($this->path . strtolower($name) . '*') as $key => $fn) {
             @unlink($fn);
         }
     }
 
-    public function deleteAll ()
+    /**
+     *
+     */
+    public function deleteAll()
     {
         foreach (glob($this->path . '*' . $this->extension) as $fn) {
             @unlink($fn);
         }
     }
 
-    public function getCacheFileName ($name)
+    /**
+     * @param $name
+     *
+     * @return string
+     */
+    public function getCacheFileName($name)
     {
-        $cacheid = $this->container->get('helper')->getViewId() . '_' . $this->container->get('helper')->getLanguageId();
-        
+        $cacheid = $this->container->get('helper')->getViewId() . '_' . $this->container->get('helper')->getLanguageId(
+            );
+
         return $this->path . strtolower($name) . '_' . $cacheid . $this->extension;
     }
 }

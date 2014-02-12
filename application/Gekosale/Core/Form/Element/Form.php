@@ -153,12 +153,12 @@ class Form extends Container
         }
     }
 
-    public function GetFlags ()
+    public function getFlags ()
     {
         return $this->_flags;
     }
 
-    public function Populate ($value, $flags = 0)
+    public function populate ($value, $flags = 0)
     {
         if ($flags & self::FORMAT_FLAT) {
             return;
@@ -167,7 +167,7 @@ class Form extends Container
             $this->_values = $this->_values + $value;
         }
         $this->_populatingWholeForm = true;
-        parent::Populate($value);
+        parent::populate($value);
         $this->_populatingWholeForm = false;
     }
 
@@ -176,7 +176,7 @@ class Form extends Container
         return $_POST;
     }
 
-    public function IsAction ($actionName)
+    public function isAction ($actionName)
     {
         $actionName = '_Action_' . $actionName;
         return (isset($_POST[$actionName]) && ($_POST[$actionName] == '1'));
@@ -185,10 +185,10 @@ class Form extends Container
     public function validate ()
     {
         $values = $this->getSubmittedData();
-        if (! isset($values[$this->_attributes['name'] . '_submitted']) or ! $values[$this->_attributes['name'] . '_submitted']) {
+        if (! isset($values[$this->_attributes['name'] . '_submitted']) || ! $values[$this->_attributes['name'] . '_submitted']) {
             return false;
         }
-        $this->Populate($values);
+        $this->populate($values);
         
         return parent::validate();
     }

@@ -13,10 +13,14 @@
  */
 namespace Gekosale\Core;
 
-use Gekosale\Core\Form\Filter\NoCode;
-use Gekosale\Core\Form\Filter\Trim;
-use Gekosale\Core\Form\Filter\Secure;
-
+/**
+ * Class Form
+ *
+ * Provides common methods used in forms
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 abstract class Form extends Component
 {
     /**

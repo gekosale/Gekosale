@@ -38,6 +38,7 @@ class ServiceContainer extends Container
             'cache.storage' => 'getCache_StorageService',
             'config.locator' => 'getConfig_LocatorService',
             'controller_resolver' => 'getControllerResolverService',
+            'currency.datagrid' => 'getCurrency_DatagridService',
             'currency.form' => 'getCurrency_FormService',
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
@@ -64,6 +65,7 @@ class ServiceContainer extends Container
             'twig.extension.translation' => 'getTwig_Extension_TranslationService',
             'twig.loader.admin' => 'getTwig_Loader_AdminService',
             'twig.loader.front' => 'getTwig_Loader_FrontService',
+            'xajax.manager' => 'getXajax_ManagerService',
         );
 
         $this->aliases = array();
@@ -132,6 +134,23 @@ class ServiceContainer extends Container
     protected function getControllerResolverService()
     {
         return $this->services['controller_resolver'] = new \Gekosale\Core\Resolver\Controller($this);
+    }
+
+    /**
+     * Gets the 'currency.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid A Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid instance.
+     */
+    protected function getCurrency_DatagridService()
+    {
+        $this->services['currency.datagrid'] = $instance = new \Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -503,6 +522,19 @@ class ServiceContainer extends Container
     protected function getTwig_Loader_FrontService()
     {
         return $this->services['twig.loader.front'] = new \Twig_Loader_Filesystem(array(0 => 'D:\\Git\\Gekosale3\\design/frontend/Gekosale/templates'));
+    }
+
+    /**
+     * Gets the 'xajax.manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\XajaxManager A Gekosale\Core\XajaxManager instance.
+     */
+    protected function getXajax_ManagerService()
+    {
+        return $this->services['xajax.manager'] = new \Gekosale\Core\XajaxManager($this);
     }
 
     /**

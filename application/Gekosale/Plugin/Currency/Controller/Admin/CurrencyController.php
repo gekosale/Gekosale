@@ -22,6 +22,32 @@ class CurrencyController extends AdminController
 
     public function index ()
     {
+//         $this->getAjaxManager()->registerFunction('LoadAllCurrencieslist', array(
+//             $this,
+//             'getCurrencieslistForAjax'
+//         ));
+        
+//         $this->getAjaxManager()->process();
+        
+        //         Phery::instance()->set(array(
+        //             'alias-for-function' => function  ($ajax_data)
+        //             {
+        //                 ob_start();
+        //                 var_dump($ajax_data);
+        //                 $data = ob_get_clean();
+        
+
+        //                 return PheryResponse::factory('#result')->html($data)
+        //                     ->process();
+        //             }
+        //         ))
+        //             ->process();
+        
+        $this->get('currency.datagrid')->init();
+        
+        print_r($this->get('currency.datagrid'));
+        die();
+        
         return Array(
             'datagrid_filter' => Array()
         );

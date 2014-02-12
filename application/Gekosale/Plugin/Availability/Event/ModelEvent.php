@@ -16,8 +16,14 @@ namespace Gekosale\Plugin\Availability\Event;
 
 use Gekosale\Core\Event\ModelSaveEvent;
 
+/**
+ * Class ModelEvent
+ *
+ * @package Gekosale\Plugin\Availability\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class ModelEvent extends ModelSaveEvent
 {
 
-    const MODEL_SAVE_EVENT = 'availability.model.save';
+	const MODEL_SAVE_EVENT = 'availability.model.save';
 }

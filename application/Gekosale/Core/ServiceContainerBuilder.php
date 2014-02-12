@@ -24,180 +24,196 @@ use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
 use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
 
 /**
- * Service Container Builer manages cached Container
- * 
- * It runs compiler passes, registers extensions, plugins
- * 
- * @author Adam Piotrowski <adam@gekosale.com>
+ * Class ServiceContainerBuilder
+ *
+ * Manages cached Container
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
 final class ServiceContainerBuilder
 {
 
-    /**
-     * Cached container class name
-     *
-     * @var string
-     */
-    const SERVICE_CONTAINER_CLASS = 'ServiceContainer';
+	/**
+	 * Cached container class name
+	 *
+	 * @var string
+	 */
+	const SERVICE_CONTAINER_CLASS = 'ServiceContainer';
 
-    /**
-     * Cached container parent class name
-     *
-     * @var string
-     */
-    const SERVICE_CONTAINER_BASE_CLASS = 'Container';
+	/**
+	 * Cached container parent class name
+	 *
+	 * @var string
+	 */
+	const SERVICE_CONTAINER_BASE_CLASS = 'Container';
 
-    /**
-     * Container builder instance
-     *
-     * @var object
-     */
-    protected $containerBuilder;
+	/**
+	 * Container builder instance
+	 *
+	 * @var object
+	 */
+	protected $containerBuilder;
 
-    /**
-     * Array containing default kernel parameters used in configuring services
-     * 
-     * @var array
-     */
-    protected $parameters;
+	/**
+	 * Array containing default kernel parameters used in configuring services
+	 *
+	 * @var array
+	 */
+	protected $parameters;
 
-    /**
-     * True if the debug mode is enabled, false otherwise
-     *
-     * @var bool
-     */
-    protected $isDebug;
+	/**
+	 * True if the debug mode is enabled, false otherwise
+	 *
+	 * @var bool
+	 */
+	protected $isDebug;
 
-    /**
-     * Compiler passes registered to run during container build process
-     * 
-     * @var array
-     */
-    protected $compilerPasses;
+	/**
+	 * Compiler passes registered to run during container build process
+	 *
+	 * @var array
+	 */
+	protected $compilerPasses;
 
-    /**
-     * Path to cached container class
-     * 
-     * @var string
-     */
-    protected $compilerClassPath;
+	/**
+	 * Path to cached container class
+	 *
+	 * @var string
+	 */
+	protected $compilerClassPath;
 
-    /**
-     * Config instance class
-     * 
-     * @var ConfigCache
-     */
-    protected $containerConfigCache;
+	/**
+	 * Config instance class
+	 *
+	 * @var ConfigCache
+	 */
+	protected $containerConfigCache;
 
-    /**
-     * Constructor 
-     * 
-     * @param array  $parameters  Array containing default kernel parameters
-     * @param string $isDebug     Enable or disable debug mode
-     */
-    public function __construct (array $parameters, $isDebug = false)
-    {
-        $this->parameters = $parameters;
-        $this->isDebug = (bool) $isDebug;
-        $this->compilerClassPath = __DIR__ . self::SERVICE_CONTAINER_CLASS . '.php';
-        $this->containerConfigCache = new ConfigCache($this->compilerClassPath, $this->isDebug);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param array $parameters
+	 * @param bool  $isDebug
+	 */
+	public function __construct(array $parameters, $isDebug = FALSE)
+	{
+		$this->parameters           = $parameters;
+		$this->isDebug              = (bool)$isDebug;
+		$this->compilerClassPath    = __DIR__ . DS . self::SERVICE_CONTAINER_CLASS . '.php';
+		$this->containerConfigCache = new ConfigCache($this->compilerClassPath, $this->isDebug);
+	}
 
-    /**
-     * Checks if optimised container class needs to be regenerated
-     * 
-     * @return void
-     */
-    public function check ()
-    {
-        if (! $this->containerConfigCache->isFresh()) {
-            
-            $this->initContainerBuilder();
-            
-            $this->loadXmlConfiguration();
-            
-            $this->registerExtensions();
-            
-            $this->registerCompilerPasses();
-            
-            foreach ($this->compilerPasses as $compilerPass) {
-                $compilerPass->process($this->containerBuilder);
-            }
-            
-            $this->compileAndSaveContainer();
-        }
-    }
+	/**
+	 * Checks if optimised container class needs to be regenerated
+	 *
+	 * @return void
+	 */
 
-    protected function registerExtensions ()
-    {
-        $extensionLoader = new PluginExtensionLoader($this->containerBuilder);
-        $extensionLoader->registerExtensions();
-    }
+	public function check()
+	{
+		if (!$this->containerConfigCache->isFresh()) {
 
-    /**
-     * Compiles container and saves it as an optimized class
-     * 
-     * @return void
-     */
-    protected function compileAndSaveContainer ()
-    {
-        $this->containerBuilder->compile();
-        
-        $dumper = new PhpDumper($this->containerBuilder);
-        
-        $content = $dumper->dump([
-            'class' => self::SERVICE_CONTAINER_CLASS,
-            'base_class' => self::SERVICE_CONTAINER_BASE_CLASS,
-            'namespace' => __NAMESPACE__
-        ]);
-        
-        $this->containerConfigCache->write($content, $this->containerBuilder->getResources());
-    }
+			$this->initContainerBuilder();
 
-    /**
-     * Initializes Container Builder instance
-     * 
-     * @return void
-     */
-    protected function initContainerBuilder ()
-    {
-        $parameterBag = new ParameterBag($this->parameters);
-        $this->containerBuilder = new ContainerBuilder($parameterBag);
-    }
+			$this->loadXmlConfiguration();
 
-    /**
-     * Loads services configuration and predefined parameters from XML config file
-     * 
-     * @return void
-     */
-    protected function loadXmlConfiguration ()
-    {
-        $locator = new FileLocator(ROOTPATH . 'config');
-        
-        $loader = new XmlFileLoader($this->containerBuilder, $locator);
-        $loader->load('config.xml');
-    }
+			$this->registerExtensions();
 
-    /**
-     * Registers Compiler passess used in process of compiling the container
-     * 
-     * @param CompilerPassInterface $compilerPass
-     * 
-     * @return void
-     */
-    protected function registerCompilerPass (CompilerPassInterface $compilerPass)
-    {
-        $this->compilerPasses[] = $compilerPass;
-    }
+			$this->registerCompilerPasses();
 
-    /**
-     * Register all needed compiler passes
-     * 
-     * @return void
-     */
-    protected function registerCompilerPasses ()
-    {
-        $this->registerCompilerPass(new RegisterListenersPass());
-        $this->registerCompilerPass(new RegisterTwigExtensionsPass());
-    }
+			foreach ($this->compilerPasses as $compilerPass) {
+				$compilerPass->process($this->containerBuilder);
+			}
+
+			$this->compileAndSaveContainer();
+		}
+	}
+
+	/**
+	 * Register extensions using recursive scan
+	 * 
+	 * @return void
+	 */
+	protected function registerExtensions()
+	{
+		$extensionLoader = new PluginExtensionLoader($this->containerBuilder);
+		$extensionLoader->registerExtensions();
+	}
+
+	/**
+	 * Compiles container and saves it as an optimized class
+	 *
+	 * @return void
+	 */
+	protected function compileAndSaveContainer()
+	{
+		$this->containerBuilder->compile();
+
+		$dumper = new PhpDumper($this->containerBuilder);
+
+		$content = $dumper->dump(
+		                  [
+		                  'class'      => self::SERVICE_CONTAINER_CLASS,
+		                  'base_class' => self::SERVICE_CONTAINER_BASE_CLASS,
+		                  'namespace'  => __NAMESPACE__
+		                  ]
+		);
+
+		$this->containerConfigCache->write($content, $this->containerBuilder->getResources());
+	}
+
+	/**
+	 * Initializes Container Builder instance
+	 *
+	 * @return void
+	 */
+	protected function initContainerBuilder()
+	{
+		$parameterBag           = new ParameterBag($this->parameters);
+		$this->containerBuilder = new ContainerBuilder($parameterBag);
+	}
+
+	/**
+	 * Loads services configuration and predefined parameters from XML config file
+	 *
+	 * @return void
+	 */
+	protected function loadXmlConfiguration()
+	{
+		$locator = new FileLocator(ROOTPATH . 'config');
+
+		$loader = new XmlFileLoader($this->containerBuilder, $locator);
+		$loader->load('config.xml');
+	}
+
+	/**
+	 * Registers Compiler passess used in process of compiling the container
+	 *
+	 * @param CompilerPassInterface $compilerPass
+	 *
+	 * @return void
+	 */
+	protected function registerCompilerPass(CompilerPassInterface $compilerPass)
+	{
+		$this->compilerPasses[] = $compilerPass;
+	}
+
+	/**
+	 * Register all required compiler passes
+	 *
+	 * @return void
+	 */
+	protected function registerCompilerPasses()
+	{
+		/*
+		 * RegisterListenersPass for all event listeners
+		 */
+		$this->registerCompilerPass(new RegisterListenersPass());
+
+		/*
+		 * RegisterTwigExtensionsPass for all services tagged with twig.extension
+		 */
+		$this->registerCompilerPass(new RegisterTwigExtensionsPass());
+	}
 }

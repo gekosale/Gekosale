@@ -14,10 +14,10 @@
  */
 namespace Gekosale\Plugin\Vat\Controller\Admin;
 
-use Gekosale\Core\Controller\Admin;
+use Gekosale\Core\Controller\AdminController;
 use Gekosale\Plugin\Vat\Repository\Vat as VatRepository;
 
-class Vat extends Admin
+class Vat extends AdminController
 {
 
     public function index ()

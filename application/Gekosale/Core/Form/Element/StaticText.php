@@ -39,7 +39,7 @@ class StaticText extends Node
     {
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 }

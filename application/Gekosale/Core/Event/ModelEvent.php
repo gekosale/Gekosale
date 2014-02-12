@@ -15,26 +15,38 @@ namespace Gekosale\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * Class ModelEvent
+ *
+ * @package Gekosale\Core\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class ModelEvent extends Event
 {
 
-    protected $submittedData;
+	/**
+	 * @var array
+	 */
+	protected $data = Array();
 
-    protected $id;
+	/**
+	 * @var null
+	 */
+	protected $id = NULL;
 
-    public function __construct ($submittedData, $id)
-    {
-        $this->submittedData = $submittedData;
-        $this->id = $id;
-    }
+	public function __construct($data, $id)
+	{
+		$this->data = $data;
+		$this->id   = $id;
+	}
 
-    public function getSubmittedData ()
-    {
-        return $this->submittedData;
-    }
+	public function getSubmittedData()
+	{
+		return $this->data;
+	}
 
-    public function getId ()
-    {
-        return $this->id;
-    }
+	public function getId()
+	{
+		return $this->id;
+	}
 }

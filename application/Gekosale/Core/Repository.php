@@ -13,9 +13,12 @@
 namespace Gekosale\Core;
 
 /**
- * Repository provides additional logic needed in all repositiories
- * 
- * @author Adam Piotrowski <adam@gekosale.com>
+ * Class Repository
+ *
+ * Provides additional logic needed in all repositiories
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
 abstract class Repository extends Component
 {

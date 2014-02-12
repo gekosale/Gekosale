@@ -36,7 +36,7 @@ class Submit extends Node
         return '';
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 }

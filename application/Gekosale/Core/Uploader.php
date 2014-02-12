@@ -38,6 +38,9 @@ abstract class Uploader extends Component
         $this->setFiles();
     }
 
+    /**
+     * @param $type
+     */
     final protected function loadAllowedType ($type)
     {
         $types = Array();
@@ -52,6 +55,9 @@ abstract class Uploader extends Component
         }
     }
 
+    /**
+     * @param $extension
+     */
     final protected function loadAllowedExtensions ($extension)
     {
         $extensions = Array();
@@ -66,6 +72,12 @@ abstract class Uploader extends Component
         }
     }
 
+    /**
+     * @param $name
+     *
+     * @return mixed
+     * @throws Exception
+     */
     final protected function insertFile ($name)
     {
         $sql = 'INSERT INTO file(name, filetypeid, fileextensionid, viewid)
@@ -88,6 +100,13 @@ abstract class Uploader extends Component
         return $idFile;
     }
 
+    /**
+     * @param $file
+     *
+     * @return bool
+     * @throws \Exception
+     * @throws Exception
+     */
     public function process ($file)
     {
         if (is_object($file)) {
@@ -109,6 +128,13 @@ abstract class Uploader extends Component
         }
     }
 
+    /**
+     * @param $type
+     * @param $fileName
+     *
+     * @return bool
+     * @throws Exception
+     */
     final protected function check ($type, $fileName)
     {
         if ($type == self::MIME) {
@@ -135,16 +161,25 @@ abstract class Uploader extends Component
         return true;
     }
 
+    /**
+     * @return null
+     */
     final public function getType ()
     {
         return $this->fileType;
     }
 
+    /**
+     * @return array
+     */
     final public function getAllowedExtensions ()
     {
         return $this->allowedExtensions;
     }
 
+    /**
+     *
+     */
     public function setFiles ()
     {
         if (($this->files = App::getContainer()->get('cache')->load('files')) === FALSE) {
@@ -177,6 +212,11 @@ abstract class Uploader extends Component
         }
     }
 
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
     final public function getFileById ($id)
     {
         if ($id > 0 && (isset($this->files[$id]))) {}
@@ -186,6 +226,12 @@ abstract class Uploader extends Component
         return @ $this->files[$id];
     }
 
+    /**
+     * @param $name
+     *
+     * @return mixed
+     * @throws CoreException
+     */
     final protected function getFileByName ($name)
     {
         $sql = 'SELECT idfile, F.name AS filename, F.fileextensionid, F.filetypeid,
@@ -203,6 +249,12 @@ abstract class Uploader extends Component
         throw new CoreException(_('ERR_FILE_NOT_EXIST'), 8, $e->getMessage());
     }
 
+    /**
+     * @param $fileName
+     *
+     * @return mixed
+     * @throws Exception
+     */
     public function getFileExtension ($fileName)
     {
         preg_match('/.(?<ext>[a-z]{1,4})$/', $fileName, $matches);

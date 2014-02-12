@@ -10,9 +10,18 @@ use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper;
 use Symfony\Component\Routing\Generator\Dumper\PhpGeneratorDumper;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Class Dump
+ *
+ * @package Gekosale\Core\Console\Command\Routes
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Dump extends AbstractCommand
 {
 
+    /**
+     *
+     */
     protected function configure ()
     {
         $this->setName('routes:dump');
@@ -22,6 +31,12 @@ class Dump extends AbstractCommand
         $this->setHelp(sprintf('%Dumps routes into one optimized file.%s', PHP_EOL, PHP_EOL));
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
     protected function execute (InputInterface $input, OutputInterface $output)
     {
         $rootCollection = new RouteCollection();

@@ -35,7 +35,7 @@ class FE
         return $_POST;
     }
 
-    public static function IsAction ($actionName)
+    public static function isAction ($actionName)
     {
         $actionName = '_Action_' . $actionName;
         return (isset($_POST[$actionName]) && ($_POST[$actionName] == '1'));

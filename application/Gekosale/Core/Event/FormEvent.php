@@ -16,6 +16,12 @@ namespace Gekosale\Core\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Gekosale\Core\Form\Element\Form;
 
+/**
+ * Class FormEvent
+ *
+ * @package Gekosale\Core\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class FormEvent extends Event
 {
 

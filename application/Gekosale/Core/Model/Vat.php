@@ -2,6 +2,12 @@
 
 namespace Gekosale\Core\Model;
 
+/**
+ * Class Vat
+ *
+ * @package Gekosale\Core\Model
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Vat extends Eloquent {
 
 	protected $table = 'vat';

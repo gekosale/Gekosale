@@ -17,14 +17,26 @@ use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 
+/**
+ * Class Event
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Event extends ContainerAwareEventDispatcher
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct (ContainerInterface $container)
     {
         $this->container = $container;
         parent::__construct($container);
     }
 
+    /**
+     *
+     */
     public function addSubscribers ()
     {
         $this->addSubscriber(new RouterListener($this->container->get('router')->getMatcher()));

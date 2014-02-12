@@ -17,7 +17,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use xajaxResponse;
 use Exception;
 
-class Datagrid
+/**
+ * Class DataGrid
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski
+ */
+class DataGrid extends Component
 {
 
     protected $db;
@@ -50,12 +56,6 @@ class Datagrid
 
     protected $container;
 
-    public function __construct (ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->db = $this->container->get('propel.connection');
-    }
-
     public function setAdditionalRows ($rows)
     {
         $this->additionalRows = $rows;
@@ -66,12 +66,14 @@ class Datagrid
         if (! isset($this->autosuggests[$field])) {
             $objResponse = new xajaxResponse();
             $objResponse->script('
-					' . $processFunction . '({
+								' . $processFunction . '({
 						data_id: ""
 					});
 				');
+            
             return $objResponse;
         }
+        
         return $this->autosuggests[$field]->getSuggestions($request, $processFunction);
     }
 
@@ -123,10 +125,11 @@ class Datagrid
                 }
                 $filters[$name] = implode(', ', $possibilities);
             }
-            else 
+            else {
                 if (isset($options['prepareForTree']) && $options['prepareForTree']) {
                     $filters[$name] = json_encode($options['first_level']);
                 }
+            }
         }
         
         return $filters;
@@ -203,6 +206,7 @@ class Datagrid
     {
         $objResponse = new xajaxResponse();
         $objResponse->script('' . 'try {' . 'GF_Datagrid.ReturnInstance(' . (int) $datagridId . ').LoadData();' . '}' . 'catch (xException) {' . 'GF_Debug.HandleException(xException);' . '}' . '');
+        
         return $objResponse;
     }
 
@@ -233,6 +237,7 @@ class Datagrid
             $objResponse = new xajaxResponse();
             $objResponse->script("GError('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
         }
+        
         return $objResponse;
     }
 
@@ -241,6 +246,7 @@ class Datagrid
         $objResponse = new xajaxResponse();
         if ($this->registry->right->checkDeletePermission($controllerName) === FALSE) {
             $objResponse->alert('Nie masz uprawnień');
+            
             return $objResponse;
         }
         
@@ -263,6 +269,7 @@ class Datagrid
         catch (Exception $e) {
             $objResponse->script("GWarning('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
         }
+        
         return $objResponse;
     }
 
@@ -271,7 +278,8 @@ class Datagrid
         $offset = isset($request['starting_from']) ? $request['starting_from'] : 0;
         $limit = isset($request['limit']) ? $request['limit'] : 10;
         list ($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString, $havingString, $having) = $this->getQueryData($request);
-        $sql = "SELECT SQL_CALC_FOUND_ROWS {$this->getColumnsString()} FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString} ORDER BY {$orderBy} {$orderDir} LIMIT {$offset},{$limit}";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS {$this->getColumnsString(
+		)} FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString} ORDER BY {$orderBy} {$orderDir} LIMIT {$offset},{$limit}";
         $stmt = $this->db->prepare($sql);
         foreach ($conditions as $i => &$part) {
             if (isset($part['value']) && is_array($part['value'])) {
@@ -306,6 +314,7 @@ class Datagrid
             $stmt->bindValue('views', implode(',', $this->viewIds));
         }
         $stmt->execute();
+        
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -320,6 +329,7 @@ class Datagrid
         catch (Exception $e) {
             throw new \RuntimeException('ERR_DATASET_GET_TOTAL', 12, $e->getMessage());
         }
+        
         return $rs['total'];
     }
 
@@ -375,6 +385,7 @@ class Datagrid
         while ($rs = $stmtTotal->fetch()) {
             $totalRows = $rs['total'];
         }
+        
         return $totalRows;
     }
 
@@ -407,6 +418,7 @@ class Datagrid
             }
             $rowData[] = '{' . implode(', ', $columns) . '}';
         }
+        
         return $rowData;
     }
 
@@ -430,6 +442,7 @@ class Datagrid
             $having = $request['where'];
             $havingString = $this->getHavingString($conditions);
         }
+        
         return Array(
             $idColumn,
             $groupBy,
@@ -467,6 +480,7 @@ class Datagrid
             if (-- $limit == 0)
                 break;
         }
+        
         return substr($string, 0, - 2);
     }
 
@@ -533,6 +547,7 @@ class Datagrid
         if (count($parts) && ($parts[0] != '()')) {
             $condition = ' WHERE ' . implode(' AND ', $parts);
         }
+        
         return $condition;
     }
 
@@ -605,6 +620,7 @@ class Datagrid
         }
         if (count($parts))
             $condition = ' HAVING ' . implode(' AND ', $parts);
+        
         return $condition;
     }
 }

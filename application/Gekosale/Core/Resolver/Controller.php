@@ -14,12 +14,12 @@
  */
 namespace Gekosale\Core\Resolver;
 
-use Symfony\Component\HttpKernel\Controller\ControllerResolver as BaseControllerResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Controller extends BaseControllerResolver
+class Controller extends ControllerResolver
 {
 
     protected $container;

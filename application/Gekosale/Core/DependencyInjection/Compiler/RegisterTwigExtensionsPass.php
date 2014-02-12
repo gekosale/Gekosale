@@ -17,6 +17,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class RegisterTwigExtensionsPass
+ *
+ * @package Gekosale\Core\DependencyInjection\Compiler
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class RegisterTwigExtensionsPass implements CompilerPassInterface
 {
 

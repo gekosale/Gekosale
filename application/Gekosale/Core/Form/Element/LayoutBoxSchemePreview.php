@@ -48,7 +48,7 @@ class LayoutBoxSchemePreview extends Field
     {
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 }

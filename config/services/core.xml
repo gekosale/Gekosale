@@ -27,6 +27,10 @@
         <service id="controller_resolver" class="Gekosale\Core\Resolver\Controller">
             <argument type="service" id="service_container"/>
         </service>
+        
+        <service id="xajax.manager" class="Gekosale\Core\XajaxManager">
+        	<argument type="service" id="service_container"/>
+        </service>
 
         <service id="kernel" class="Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel">
             <argument type="service" id="event_dispatcher"/>

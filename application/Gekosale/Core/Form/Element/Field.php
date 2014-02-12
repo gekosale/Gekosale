@@ -29,7 +29,7 @@ class Field extends Node
         $this->_value = '';
         $this->_globalvalue = '';
         if (isset($this->_attributes['default'])) {
-            $this->Populate($attributes['default']);
+            $this->populate($attributes['default']);
         }
     }
 
@@ -85,7 +85,7 @@ class Field extends Node
         return $result;
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
         $value = $this->filter($value);
         $this->_value = $value;

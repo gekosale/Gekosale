@@ -9,6 +9,19 @@
         }
     ],
     "license": "proprietary",
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "xajax/xajax",
+                "version": "1.0.0",
+                "dist": {
+                    "url": "http://www.gekosale.pl/packages/Xajax.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    ],
     "require": {
         "symfony/browser-kit": "2.4.x-dev",
         "symfony/config": "2.4.x-dev",
@@ -32,16 +45,16 @@
         "symfony/twig-bridge": "2.4.x-dev",
         "kriswallsmith/assetic": "v1.1.2",
         "twig/extensions": "1.0.x-dev",
-        "propel/propel": "2.0.x-dev",
         "apigen/apigen": "2.8.0",
         "swiftmailer/swiftmailer": "5.1.x-dev",
-        "phery/phery": "2.x",
-        "illuminate/database": "4.1"
+        "illuminate/database": "4.1",
+        "xajax/xajax": "1.0.0"
     },
     "autoload": {
         "psr-0": {
             "Gekosale": "application",
             "": "application/"
-        }
+        },
+        "classmap": ["vendor/xajax/xajax"]
     }
 }

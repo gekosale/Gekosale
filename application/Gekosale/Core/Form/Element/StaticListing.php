@@ -54,7 +54,7 @@ class StaticListing extends Field
     {
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
     }
 }

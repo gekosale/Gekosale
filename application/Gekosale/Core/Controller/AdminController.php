@@ -16,6 +16,12 @@ namespace Gekosale\Core\Controller;
 
 use Gekosale\Core\Controller;
 
+/**
+ * Class AdminController
+ *
+ * @package Gekosale\Core\Controller
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class AdminController extends Controller
 {
 }

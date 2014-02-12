@@ -16,8 +16,14 @@ namespace Gekosale\Plugin\Availability\Event;
 
 use Gekosale\Core\Event\FormInitEvent;
 
+/**
+ * Class FormEvent
+ *
+ * @package Gekosale\Plugin\Availability\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class FormEvent extends FormInitEvent
 {
 
-    const FORM_INIT_EVENT = 'availability.form.init';
+	const FORM_INIT_EVENT = 'availability.form.init';
 }

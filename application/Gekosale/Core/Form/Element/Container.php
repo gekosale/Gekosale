@@ -101,7 +101,7 @@ abstract class Container extends Node
         }
     }
 
-    public function Populate ($value)
+    public function populate ($value)
     {
         if (isset($value) && is_array($value) && $this->_IsIterated($value)) {
             foreach ($this->_children as $child) {
@@ -120,7 +120,7 @@ abstract class Container extends Node
                     }
                 }
                 
-                $child->Populate($valueArray);
+                $child->populate($valueArray);
             }
         }
         else { // simple value
@@ -130,10 +130,10 @@ abstract class Container extends Node
                     continue;
                 }
                 if (isset($value[$name])) {
-                    $child->Populate($value[$name]);
+                    $child->populate($value[$name]);
                 }
                 elseif ($this->form->_populatingWholeForm) {
-                    $child->Populate(null);
+                    $child->populate(null);
                 }
             }
         }

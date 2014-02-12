@@ -9,6 +9,13 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
+        
+        <service id="currency.datagrid" class="Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
         <service id="currency.form" class="Gekosale\Plugin\Currency\Form\CurrencyForm">
         	<call method="setContainer">
                 <argument type="service" id="service_container" />

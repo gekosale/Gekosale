@@ -17,13 +17,29 @@ use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class Translation
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Translation extends Translator
 {
 
+    /**
+     * @var null|\Symfony\Component\Translation\MessageSelector
+     */
     protected $locale;
 
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
     protected $container;
 
+    /**
+     * @param ContainerInterface                                  $container
+     * @param null|\Symfony\Component\Translation\MessageSelector $locale
+     */
     public function __construct (ContainerInterface $container, $locale)
     {
         $this->container = $container;
@@ -34,6 +50,9 @@ class Translation extends Translator
         parent::addResource('array', $this->getResource(), $this->locale);
     }
 
+    /**
+     * @return array
+     */
     protected function getResource ()
     {
         $Data = Array();

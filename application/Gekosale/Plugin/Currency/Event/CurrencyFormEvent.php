@@ -16,8 +16,14 @@ namespace Gekosale\Plugin\Currency\Event;
 
 use Gekosale\Core\Event\FormEvent;
 
+/**
+ * Class CurrencyFormEvent
+ *
+ * @package Gekosale\Plugin\Currency\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 final class CurrencyFormEvent extends FormEvent
 {
 
-    const FORM_INIT_EVENT = 'currency.form.init';
+	const FORM_INIT_EVENT = 'currency.form.init';
 }

@@ -34,7 +34,6 @@ class AdminTemplateGuesser implements TemplateGuesserInterface
         if (! preg_match('/Controller\\\Admin\\\(.+)Controller$/', $controller, $matches)) {
             throw new \InvalidArgumentException(sprintf('The "%s" class does not look like an admin controller class', $controller));
         }
-        
         return strtolower($matches[1]);
     }
 }

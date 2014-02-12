@@ -133,9 +133,6 @@
 			},
 			filter: {
 				type: GF_Datagrid.FILTER_SELECT,
-				options: [
-					{{ datagrid_filter.currencyto }}
-				],
 			}
 		});
 		
@@ -146,17 +143,14 @@
 			},
 			mechanics: {
 				key: 'id',
-				rows_per_page: {{ globalsettings.interface.datagrid_rows_per_page }}
+				rows_per_page: '{{ globalsettings.interface.datagrid_rows_per_page }}'
 			},
 			event_handlers: {
 				load: xajax_LoadAllCurrencieslist,
 				edit_row: editCurrencieslist,
 				delete_row: deleteCurrencieslist,
 				delete_group: deleteMultipleCurrencieslist,
-				process: processCurrency,
-				{% if globalsettings.interface.datagrid_click_row_action == 'edit' %}
-				click_row: editCurrencieslist
-				{% endif %}
+				process: processCurrency
 			},
 			columns: [
 				column_id,

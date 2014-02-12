@@ -9,6 +9,12 @@ use Symfony\Component\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class Add
+ *
+ * @package Gekosale\Core\Console\Command\Admin
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Add extends AbstractCommand
 {
 

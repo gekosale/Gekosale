@@ -13,9 +13,12 @@
 namespace Gekosale\Core;
 
 /**
- * Model provides additional logic needed in all models
- * 
- * @author Adam Piotrowski <adam@gekosale.com>
+ * Class Model
+ *
+ * Provides additional logic needed in all models
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
 abstract class Model extends Component
 {
