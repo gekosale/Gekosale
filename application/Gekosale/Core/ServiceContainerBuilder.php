@@ -18,7 +18,7 @@ use Symfony\Component\Config\ConfigCache,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
     Symfony\Component\DependencyInjection\Dumper\PhpDumper,
     Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface,
-    Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass,
+    Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
 
 use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass,
     Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
