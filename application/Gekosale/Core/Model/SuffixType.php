@@ -17,10 +17,12 @@ namespace Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class SuffixType extends Eloquent {
+class SuffixType extends Eloquent
+{
 
-	protected $table = 'suffix_type';
-	public $timestamps = false;
-	protected $softDelete = false;
+    protected $table = 'suffix_type';
 
+    public $timestamps = false;
+
+    protected $softDelete = false;
 }

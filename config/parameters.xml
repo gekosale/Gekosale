@@ -43,6 +43,17 @@
         <parameter key="session.config" type="collection">
             <parameter key="db_table">session</parameter>
         </parameter>
+        
+        <parameter key="db.config" type="collection">
+			<parameter key="driver">mysql</parameter>
+			<parameter key="host">localhost</parameter>
+			<parameter key="database">gekosale3</parameter>
+			<parameter key="username">root</parameter>
+			<parameter key="password"></parameter>
+			<parameter key="charset">utf8</parameter>
+			<parameter key="collation">utf8_unicode_ci</parameter>
+			<parameter key="prefix"></parameter>
+        </parameter>
 
     </parameters>
 

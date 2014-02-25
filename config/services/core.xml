@@ -3,42 +3,53 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+	<parameters>
+		<parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
+		<parameter key="controller_resolver.class">Gekosale\Core\Resolver\Controller</parameter>
+		<parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
+        <parameter key="finder.class">Symfony\Component\Finder\Finder</parameter>
+        <parameter key="filesystem.class">Symfony\Component\Filesystem\Filesystem</parameter>
+        <parameter key="helper.class">Gekosale\Core\Helper</parameter>
+        <parameter key="kernel.class">Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel</parameter>
+        <parameter key="translation.class">Gekosale\Core\Translation</parameter>
+        <parameter key="xajax_manager.class">Gekosale\Core\XajaxManager</parameter>
+    </parameters>
+    
     <services>
 
         <service id="request" synthetic="true"/>
         
-        <service id="finder" class="Symfony\Component\Finder\Finder"/>
+        <service id="finder" class="%finder.class%"/>
 
-        <service id="filesystem" class="Symfony\Component\Filesystem\Filesystem"/>
+        <service id="filesystem" class="%filesystem.class%"/>
 
-        <service id="config.locator" class="Symfony\Component\Config\FileLocator">
+        <service id="config_locator" class="%config_locator.class%">
             <argument>%application.root_path%config</argument>
         </service>
 
-        <service id="helper" class="Gekosale\Core\Helper">
+        <service id="helper" class="%helper.class%">
             <argument type="service" id="service_container"/>
         </service>
 
-        <service id="event_dispatcher" class="Gekosale\Core\Event">
+        <service id="event_dispatcher" class="%event_dispatcher.class%">
             <argument type="service" id="service_container"/>
-            <call method="addSubscribers"/>
         </service>
 
-        <service id="controller_resolver" class="Gekosale\Core\Resolver\Controller">
+        <service id="controller_resolver" class="%controller_resolver.class%">
             <argument type="service" id="service_container"/>
         </service>
         
-        <service id="xajax.manager" class="Gekosale\Core\XajaxManager">
+        <service id="xajax_manager" class="%xajax_manager.class%">
         	<argument type="service" id="service_container"/>
         </service>
 
-        <service id="kernel" class="Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel">
+        <service id="kernel" class="%kernel.class%">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="service_container"/>
             <argument type="service" id="controller_resolver"/>
         </service>
 
-        <service id="translation" class="Gekosale\Core\Translation">
+        <service id="translation" class="%translation.class%">
             <argument type="service" id="service_container"/>
             <argument>%locale%</argument>
         </service>

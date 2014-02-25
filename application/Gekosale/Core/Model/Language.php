@@ -17,17 +17,25 @@ namespace Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Language extends Eloquent {
+class Language extends Eloquent
+{
 
-	protected $table = 'language';
-	public $timestamps = true;
-	protected $softDelete = false;
-	protected $fillable = array('name');
-	protected $visible = array('name');
+    protected $table = 'language';
 
-	public function currency()
-	{
-		return $this->hasOne('Currency');
-	}
+    public $timestamps = true;
 
+    protected $softDelete = false;
+
+    protected $fillable = array(
+        'name'
+    );
+
+    protected $visible = array(
+        'name'
+    );
+
+    public function currency ()
+    {
+        return $this->hasOne('Currency');
+    }
 }

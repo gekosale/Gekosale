@@ -11,17 +11,16 @@
  */
 namespace Gekosale\Core;
 
-use Symfony\Component\Config\ConfigCache,
-    Symfony\Component\Config\FileLocator,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
-    Symfony\Component\DependencyInjection\Dumper\PhpDumper,
-    Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface,
-    Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
-
-use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass,
-    Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
+use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
+use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
 
 /**
  * Class ServiceContainerBuilder

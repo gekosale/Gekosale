@@ -1,19 +1,18 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Core
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Gekosale\Core\Repository;
+use Gekosale\Core\DataGrid\Column;
+use Gekosale\Core\DataGrid\Renderer;
 use xajaxResponse;
 use Exception;
 
@@ -26,11 +25,13 @@ use Exception;
 class DataGrid extends Component
 {
 
+    protected $datagrid;
+
     protected $db;
 
-    protected $queryColumns;
+    protected $columns;
 
-    protected $queryColumnsOptions;
+    protected $columnsOptions;
 
     protected $queryFrom;
 
@@ -56,17 +57,45 @@ class DataGrid extends Component
 
     protected $container;
 
+    protected $repository;
+
+    public function setName ($name)
+    {
+        $this->name = $name;
+    }
+
+    public function render ()
+    {
+        $renderer = new Renderer($this);
+        return $renderer->toHtml();
+    }
+
+    public function getContainer ()
+    {
+        return $this->container;
+    }
+
+    public function setRepository (Repository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function setAdditionalRows ($rows)
     {
         $this->additionalRows = $rows;
     }
 
+    protected function addColumn (Column $column)
+    {
+        $this->columns[] = $column;
+    }
+
     public function getFilterSuggestions ($field, $request, $processFunction)
     {
-        if (! isset($this->autosuggests[$field])) {
+        if (! isset($this->autosuggests[$field])){
             $objResponse = new xajaxResponse();
             $objResponse->script('
-								' . $processFunction . '({
+                                                        ' . $processFunction . '({
 						data_id: ""
 					});
 				');
@@ -80,44 +109,44 @@ class DataGrid extends Component
     public function getFilterData ()
     {
         $filters = Array();
-        foreach ($this->queryColumnsOptions as $name => $options) {
-            if (isset($options['prepareForSelect']) && $options['prepareForSelect']) {
+        foreach ($this->queryColumnsOptions as $name => $options){
+            if (isset($options['prepareForSelect']) && $options['prepareForSelect']){
                 $possibilities = Array(
                     "{id: '', caption: ''}"
                 );
                 $sql = 'SELECT DISTINCT ';
-                if (isset($options['source'])) {
+                if (isset($options['source'])){
                     $sql .= $options['source'];
                 }
-                else {
+                else{
                     $sql .= $name;
                 }
                 $sql .= ' AS possibility FROM ' . $this->queryFrom . ' ORDER BY possibility';
                 $stmt = $this->db->prepare($sql);
-                if (preg_match('/:languageid/', $sql)) {
+                if (preg_match('/:languageid/', $sql)){
                     $stmt->bindValue('languageid', $this->languageId);
                 }
-                if (preg_match('/:viewid/', $sql)) {
-                    $stmt->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : NULL);
+                if (preg_match('/:viewid/', $sql)){
+                    $stmt->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : null);
                 }
-                if (preg_match('/:views/', $sql)) {
+                if (preg_match('/:views/', $sql)){
                     $stmt->bindValue('views', implode(',', $this->viewIds));
                 }
                 
-                foreach ($this->sqlParams as $key => $val) {
+                foreach ($this->sqlParams as $key => $val){
                     
-                    if (is_array($val)) {
+                    if (is_array($val)){
                         $stmt->bindValue($key, implode(',', $val));
                     }
-                    else {
+                    else{
                         $stmt->bindValue($key, $val);
                     }
                 }
                 
                 $stmt->execute();
-                while ($rs = $stmt->fetch()) {
+                while ($rs = $stmt->fetch()){
                     $caption = addslashes($rs['possibility']);
-                    if (isset($options['processLanguage']) && $options['processLanguage']) {
+                    if (isset($options['processLanguage']) && $options['processLanguage']){
                         $caption = addslashes(_($caption));
                     }
                     $id = addslashes($rs['possibility']);
@@ -125,8 +154,8 @@ class DataGrid extends Component
                 }
                 $filters[$name] = implode(', ', $possibilities);
             }
-            else {
-                if (isset($options['prepareForTree']) && $options['prepareForTree']) {
+            else{
+                if (isset($options['prepareForTree']) && $options['prepareForTree']){
                     $filters[$name] = json_encode($options['first_level']);
                 }
             }
@@ -139,25 +168,6 @@ class DataGrid extends Component
     {
         $this->queryColumnsOptions = $columns;
         $this->queryColumns = array_keys($columns);
-        $this->processFilters();
-    }
-
-    public function processFilters ()
-    {
-        foreach ($this->queryColumnsOptions as $name => $options) {
-            if (isset($options['prepareForAutosuggest']) && $options['prepareForAutosuggest']) {
-                $source = (isset($options['source']) && $options['source']) ? $options['source'] : $name;
-                if (isset($options['encrypted']) && $options['encrypted']) {
-                    $source = 'AES_DECRYPT(' . $source . ', :encryptionkey)';
-                }
-            }
-        }
-    }
-
-    public function setEncryptionKey ($encryptionKey)
-    {
-        $this->encryptionKey = $encryptionKey;
-        $this->processFilters();
     }
 
     public function setLanguageId ($languageId)
@@ -213,27 +223,27 @@ class DataGrid extends Component
     public function getData ($request, $processFunction)
     {
         $this->warnings = Array();
-        try {
+        try{
             $objResponse = new xajaxResponse();
-            try {
+            try{
                 $rows = $this->getSelectedRows($request);
                 $rowsTotal = $this->getTotalRows();
             }
-            catch (Exception $e) {
+            catch (Exception $e){
                 $rows = Array();
                 $this->warnings[] = $e->getMessage();
             }
-            if (isset($this->additionalRows) && is_array($this->additionalRows) && count($this->additionalRows)) {
+            if (isset($this->additionalRows) && is_array($this->additionalRows) && count($this->additionalRows)){
                 $rows = array_merge($this->additionalRows, $rows);
             }
             $rowData = $this->processRows($rows);
             
             $objResponse->script('' . '' . $processFunction . '({' . 'data_id: "' . (isset($request['id']) ? $request['id'] : '') . '",' . 'rows_num: ' . count($rows) . ',' . 'starting_from: ' . (isset($request['starting_from']) ? $request['starting_from'] : 0) . ',' . 'total: ' . $rowsTotal . ',' . 'filtered: ' . $this->getFilteredRows($request) . ',' . 'rows: [' . implode(', ', $rowData) . ']' . '});' . '');
-            foreach ($this->warnings as $warning) {
+            foreach ($this->warnings as $warning){
                 $objResponse->script("GWarning('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($warning))) . "');");
             }
         }
-        catch (Exception $e) {
+        catch (Exception $e){
             $objResponse = new xajaxResponse();
             $objResponse->script("GError('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
         }
@@ -244,29 +254,29 @@ class DataGrid extends Component
     public function deleteRow ($datagridId, $rowId, $deleteFunction, $controllerName)
     {
         $objResponse = new xajaxResponse();
-        if ($this->registry->right->checkDeletePermission($controllerName) === FALSE) {
+        if ($this->registry->right->checkDeletePermission($controllerName) === false){
             $objResponse->alert('Nie masz uprawnień');
             
             return $objResponse;
         }
         
-        try {
-            if (is_array($deleteFunction)) {
+        try{
+            if (is_array($deleteFunction)){
                 $state = $deleteFunction[0]->$deleteFunction[1]($rowId);
             }
-            else {
+            else{
                 $state = $deleteFunction($rowId);
             }
             
-            if (isset($state['error'])) {
+            if (isset($state['error'])){
                 $objResponse->script("GError('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . $state['error'] . "');");
             }
-            else {
+            else{
                 
                 $objResponse->script("try { GF_Datagrid.ReturnInstance({$datagridId}).LoadData(); GF_Datagrid.ReturnInstance({$datagridId}).ClearSelection(); GF_ConflictResolver.GetMain().Update(); } catch (x) { GF_Debug.HandleException(x); }");
             }
         }
-        catch (Exception $e) {
+        catch (Exception $e){
             $objResponse->script("GWarning('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
         }
         
@@ -277,40 +287,40 @@ class DataGrid extends Component
     {
         $offset = isset($request['starting_from']) ? $request['starting_from'] : 0;
         $limit = isset($request['limit']) ? $request['limit'] : 10;
-        list ($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString, $havingString, $having) = $this->getQueryData($request);
+        list($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString, $havingString, $having) = $this->getQueryData($request);
         $sql = "SELECT SQL_CALC_FOUND_ROWS {$this->getColumnsString(
-		)} FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString} ORDER BY {$orderBy} {$orderDir} LIMIT {$offset},{$limit}";
+        )} FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString} ORDER BY {$orderBy} {$orderDir} LIMIT {$offset},{$limit}";
         $stmt = $this->db->prepare($sql);
-        foreach ($conditions as $i => &$part) {
-            if (isset($part['value']) && is_array($part['value'])) {
-                foreach ($part['value'] as $j => &$subpart) {
+        foreach ($conditions as $i => &$part){
+            if (isset($part['value']) && is_array($part['value'])){
+                foreach ($part['value'] as $j => &$subpart){
                     $stmt->bindValue('value' . $i . '_' . $j, $subpart);
                 }
             }
-            else {
+            else{
                 $stmt->bindValue('value' . $i, $part['value']);
             }
         }
-        if (preg_match('/:encryptionkey/', $sql)) {
+        if (preg_match('/:encryptionkey/', $sql)){
             $stmt->bindValue('encryptionkey', $this->encryptionKey);
         }
-        if (preg_match('/:languageid/', $sql)) {
+        if (preg_match('/:languageid/', $sql)){
             $stmt->bindValue('languageid', $this->languageId);
         }
-        foreach ($this->sqlParams as $key => $val) {
-            if (preg_match('/:' . $key . '/', $sql)) {
-                if (is_array($val)) {
+        foreach ($this->sqlParams as $key => $val){
+            if (preg_match('/:' . $key . '/', $sql)){
+                if (is_array($val)){
                     $stmt->bindValue($key, implode(',', $val));
                 }
-                else {
+                else{
                     $stmt->bindValue($key, $val);
                 }
             }
         }
-        if (preg_match('/:viewid/', $sql)) {
-            $stmt->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : NULL);
+        if (preg_match('/:viewid/', $sql)){
+            $stmt->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : null);
         }
-        if (preg_match('/:views/', $sql)) {
+        if (preg_match('/:views/', $sql)){
             $stmt->bindValue('views', implode(',', $this->viewIds));
         }
         $stmt->execute();
@@ -322,11 +332,11 @@ class DataGrid extends Component
     {
         $sql = "SELECT FOUND_ROWS() as total";
         $stmt = $this->db->prepare($sql);
-        try {
+        try{
             $stmt->execute();
             $rs = $stmt->fetch();
         }
-        catch (Exception $e) {
+        catch (Exception $e){
             throw new \RuntimeException('ERR_DATASET_GET_TOTAL', 12, $e->getMessage());
         }
         
@@ -335,54 +345,54 @@ class DataGrid extends Component
 
     protected function getFilteredRows ($request)
     {
-        list ($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString, $havingString, $having) = $this->getQueryData($request);
-        if (empty($groupBy)) {
+        list($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString, $havingString, $having) = $this->getQueryData($request);
+        if (empty($groupBy)){
             $sqlTotal = "SELECT count({$idColumn}) AS total FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString}";
         }
-        else {
+        else{
             $sqlTotal = "SELECT count(*) as total FROM (SELECT count({$idColumn}) AS total FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString}) AS a";
         }
         $stmtTotal = $this->db->prepare($sqlTotal);
-        foreach ($conditions as $i => &$part) {
-            if (is_array($part['value'])) {
-                foreach ($part['value'] as $j => &$subpart) {
+        foreach ($conditions as $i => &$part){
+            if (is_array($part['value'])){
+                foreach ($part['value'] as $j => &$subpart){
                     $stmtTotal->bindValue('value' . $i . '_' . $j, $subpart);
                 }
             }
-            else {
+            else{
                 $stmtTotal->bindValue('value' . $i, $part['value']);
             }
         }
         
-        if (preg_match('/:encryptionkey/', $sqlTotal)) {
+        if (preg_match('/:encryptionkey/', $sqlTotal)){
             $stmtTotal->bindValue('encryptionkey', $this->encryptionKey);
         }
-        if (preg_match('/:languageid/', $sqlTotal)) {
+        if (preg_match('/:languageid/', $sqlTotal)){
             $stmtTotal->bindValue('languageid', $this->languageId);
         }
         
-        foreach ($this->sqlParams as $key => $val) {
+        foreach ($this->sqlParams as $key => $val){
             
-            if (preg_match("/:{$key}/", $sqlTotal)) {
-                if (is_array($val)) {
+            if (preg_match("/:{$key}/", $sqlTotal)){
+                if (is_array($val)){
                     $stmtTotal->bindValue($key, implode(',', $val));
                 }
-                else {
+                else{
                     $stmtTotal->bindValue($key, $val);
                 }
             }
         }
         
-        if (preg_match("/:viewid/", $sqlTotal)) {
-            $stmtTotal->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : NULL);
+        if (preg_match("/:viewid/", $sqlTotal)){
+            $stmtTotal->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : null);
         }
-        if (preg_match('/:views/', $sqlTotal)) {
+        if (preg_match('/:views/', $sqlTotal)){
             $stmtTotal->bindValue('views', implode(',', $this->viewIds));
         }
         $stmtTotal->execute();
         
         $totalRows = 0;
-        while ($rs = $stmtTotal->fetch()) {
+        while ($rs = $stmtTotal->fetch()){
             $totalRows = $rs['total'];
         }
         
@@ -397,18 +407,18 @@ class DataGrid extends Component
         );
         
         $rowData = Array();
-        foreach ($rows as $row) {
+        foreach ($rows as $row){
             $columns = Array();
-            foreach ($row as $param => $value) {
-                if (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processLanguage']) && $this->queryColumnsOptions[$param]['processLanguage']) {
+            foreach ($row as $param => $value){
+                if (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processLanguage']) && $this->queryColumnsOptions[$param]['processLanguage']){
                     $value = _($value);
                 }
-                elseif (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processFunction']) && $this->queryColumnsOptions[$param]['processFunction']) {
-                    try {
+                elseif (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processFunction']) && $this->queryColumnsOptions[$param]['processFunction']){
+                    try{
                         $value = call_user_func($this->queryColumnsOptions[$param]['processFunction'], $value);
                     }
-                    catch (Exception $e) {
-                        if (! in_array($e->getMessage(), $this->warnings)) {
+                    catch (Exception $e){
+                        if (! in_array($e->getMessage(), $this->warnings)){
                             $this->warnings[] = $e->getMessage();
                         }
                     }
@@ -430,7 +440,7 @@ class DataGrid extends Component
         $orderDir = (isset($request['order_dir']) && ($request['order_dir'] == 'desc')) ? 'DESC' : 'ASC';
         $conditionsString = '';
         $conditions = Array();
-        if (isset($request['where']) && is_array($request['where'])) {
+        if (isset($request['where']) && is_array($request['where'])){
             $conditions = $request['where'];
             $conditionsString = $this->getConditionsString($conditions);
         }
@@ -438,7 +448,7 @@ class DataGrid extends Component
         $additionalConditionString = $this->getAdditionalConditionsString($conditionsString);
         $havingString = '';
         $having = Array();
-        if (isset($request['where']) && is_array($request['where'])) {
+        if (isset($request['where']) && is_array($request['where'])){
             $having = $request['where'];
             $havingString = $this->getHavingString($conditions);
         }
@@ -459,26 +469,27 @@ class DataGrid extends Component
     protected function getColumnsString ($limit = 0)
     {
         $string = '';
-        foreach ($this->queryColumnsOptions as $name => $options) {
-            if (isset($options['source'])) {
-                if (isset($options['encrypted']) && $options['encrypted']) {
+        foreach ($this->queryColumnsOptions as $name => $options){
+            if (isset($options['source'])){
+                if (isset($options['encrypted']) && $options['encrypted']){
                     $string .= 'AES_DECRYPT(' . $options['source'] . ', :encryptionkey) AS ' . $name;
                 }
-                else {
+                else{
                     $string .= $options['source'] . ' AS ' . $name;
                 }
             }
-            else {
-                if (isset($options['encrypted']) && $options['encrypted']) {
+            else{
+                if (isset($options['encrypted']) && $options['encrypted']){
                     $string .= 'AES_DECRYPT(' . $name . ', :encryptionkey) AS ' . $name;
                 }
-                else {
+                else{
                     $string .= $name;
                 }
             }
             $string .= ', ';
-            if (-- $limit == 0)
+            if (-- $limit == 0){
                 break;
+            }
         }
         
         return substr($string, 0, - 2);
@@ -488,12 +499,12 @@ class DataGrid extends Component
     {
         $condition = '';
         $parts = Array();
-        foreach ($conditions as $i => &$part) {
-            if (! in_array($part['column'], $this->queryColumns)) {
+        foreach ($conditions as $i => &$part){
+            if (! in_array($part['column'], $this->queryColumns)){
                 unset($part);
                 continue;
             }
-            if (isset($this->queryColumnsOptions[$part['column']]['filter']) && ($this->queryColumnsOptions[$part['column']]['filter'] == 'having')) {
+            if (isset($this->queryColumnsOptions[$part['column']]['filter']) && ($this->queryColumnsOptions[$part['column']]['filter'] == 'having')){
                 unset($part);
                 continue;
             }
@@ -517,34 +528,34 @@ class DataGrid extends Component
                 default:
                     $operator = '=';
             }
-            if (isset($this->queryColumnsOptions[$part['column']]['source'])) {
-                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']) {
+            if (isset($this->queryColumnsOptions[$part['column']]['source'])){
+                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']){
                     $columnSource = 'AES_DECRYPT(' . $this->queryColumnsOptions[$part['column']]['source'] . ', :encryptionkey)';
                 }
-                else {
+                else{
                     $columnSource = $this->queryColumnsOptions[$part['column']]['source'];
                 }
             }
-            else {
+            else{
                 $columnSource = $part['column'];
             }
-            if (isset($part['value']) && is_array($part['value'])) {
+            if (isset($part['value']) && is_array($part['value'])){
                 $subparts = Array();
-                foreach ($part['value'] as $j => &$subpart) {
+                foreach ($part['value'] as $j => &$subpart){
                     $subparts[] = '(' . $columnSource . ' ' . $operator . ' :value' . $i . '_' . $j . $suffix . ')';
                 }
-                if (count($subparts)) {
+                if (count($subparts)){
                     $parts[] = '(' . implode(' OR ', $subparts) . ')';
                 }
-                else {
+                else{
                     $parts[] = '(0)';
                 }
             }
-            else {
+            else{
                 $parts[] = '(' . $columnSource . ' ' . $operator . ' :value' . $i . $suffix . ')';
             }
         }
-        if (count($parts) && ($parts[0] != '()')) {
+        if (count($parts) && ($parts[0] != '()')){
             $condition = ' WHERE ' . implode(' AND ', $parts);
         }
         
@@ -554,11 +565,11 @@ class DataGrid extends Component
     protected function getAdditionalConditionsString ($conditionsString)
     {
         $condition = '';
-        if ($this->queryAdditionalWhere != '') {
-            if ($conditionsString != '') {
+        if ($this->queryAdditionalWhere != ''){
+            if ($conditionsString != ''){
                 $condition .= ' AND ' . $this->queryAdditionalWhere;
             }
-            else {
+            else{
                 $condition = ' WHERE ' . $this->queryAdditionalWhere;
             }
         }
@@ -570,12 +581,12 @@ class DataGrid extends Component
     {
         $condition = '';
         $parts = Array();
-        foreach ($conditions as $i => &$part) {
-            if (! in_array($part['column'], $this->queryColumns)) {
+        foreach ($conditions as $i => &$part){
+            if (! in_array($part['column'], $this->queryColumns)){
                 unset($part);
                 continue;
             }
-            if (! isset($this->queryColumnsOptions[$part['column']]['filter']) || ($this->queryColumnsOptions[$part['column']]['filter'] != 'having')) {
+            if (! isset($this->queryColumnsOptions[$part['column']]['filter']) || ($this->queryColumnsOptions[$part['column']]['filter'] != 'having')){
                 unset($part);
                 continue;
             }
@@ -596,30 +607,31 @@ class DataGrid extends Component
                     $operator = '=';
             }
             
-            if (isset($this->queryColumnsOptions[$part['column']]['source'])) {
-                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']) {
+            if (isset($this->queryColumnsOptions[$part['column']]['source'])){
+                if (isset($this->queryColumnsOptions[$part['column']]['encrypted']) && $this->queryColumnsOptions[$part['column']]['encrypted']){
                     $columnSource = 'AES_DECRYPT(' . $this->queryColumnsOptions[$part['column']]['source'] . ', :encryptionkey)';
                 }
-                else {
+                else{
                     $columnSource = $this->queryColumnsOptions[$part['column']]['source'];
                 }
             }
-            else {
+            else{
                 $columnSource = $part['column'];
             }
-            if (is_array($part['value'])) {
+            if (is_array($part['value'])){
                 $subparts = Array();
-                foreach ($part['value'] as $j => &$subpart) {
+                foreach ($part['value'] as $j => &$subpart){
                     $subparts[] = '(' . $columnSource . ' ' . $operator . ' :value' . $i . '_' . $j . ')';
                 }
                 $parts[] = '(' . implode(' OR ', $subparts) . ')';
             }
-            else {
+            else{
                 $parts[] = '(' . $columnSource . ' ' . $operator . ' :value' . $i . ')';
             }
         }
-        if (count($parts))
+        if (count($parts)){
             $condition = ' HAVING ' . implode(' AND ', $parts);
+        }
         
         return $condition;
     }

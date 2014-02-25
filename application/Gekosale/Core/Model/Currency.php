@@ -17,10 +17,12 @@ namespace Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Currency extends Eloquent {
+class Currency extends Eloquent
+{
 
-	protected $table = 'currency';
-	public $timestamps = true;
-	protected $softDelete = false;
+    protected $table = 'currency';
 
+    public $timestamps = true;
+
+    protected $softDelete = false;
 }

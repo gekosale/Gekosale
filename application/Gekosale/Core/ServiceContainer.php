@@ -35,14 +35,14 @@ class ServiceContainer extends Container
         $this->methodMap = array(
             'availability.subscriber' => 'getAvailability_SubscriberService',
             'cache' => 'getCacheService',
-            'cache.storage' => 'getCache_StorageService',
-            'config.locator' => 'getConfig_LocatorService',
+            'cache_storage' => 'getCacheStorageService',
+            'config_locator' => 'getConfigLocatorService',
             'controller_resolver' => 'getControllerResolverService',
             'currency.datagrid' => 'getCurrency_DatagridService',
             'currency.form' => 'getCurrency_FormService',
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
-            'database.manager' => 'getDatabase_ManagerService',
+            'database_manager' => 'getDatabaseManagerService',
             'event_dispatcher' => 'getEventDispatcherService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
@@ -51,6 +51,7 @@ class ServiceContainer extends Container
             'request' => 'getRequestService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
+            'router.subscriber' => 'getRouter_SubscriberService',
             'session' => 'getSessionService',
             'session.handler' => 'getSession_HandlerService',
             'session.storage' => 'getSession_StorageService',
@@ -59,13 +60,15 @@ class ServiceContainer extends Container
             'twig' => 'getTwigService',
             'twig.extension.asset' => 'getTwig_Extension_AssetService',
             'twig.extension.box' => 'getTwig_Extension_BoxService',
+            'twig.extension.datagrid' => 'getTwig_Extension_DatagridService',
+            'twig.extension.debug' => 'getTwig_Extension_DebugService',
             'twig.extension.form' => 'getTwig_Extension_FormService',
             'twig.extension.intl' => 'getTwig_Extension_IntlService',
             'twig.extension.routing' => 'getTwig_Extension_RoutingService',
             'twig.extension.translation' => 'getTwig_Extension_TranslationService',
             'twig.loader.admin' => 'getTwig_Loader_AdminService',
             'twig.loader.front' => 'getTwig_Loader_FrontService',
-            'xajax.manager' => 'getXajax_ManagerService',
+            'xajax_manager' => 'getXajaxManagerService',
         );
 
         $this->aliases = array();
@@ -90,37 +93,37 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Core\Cache A Gekosale\Core\Cache instance.
+     * @return Gekosale\Core\Resolver\Controller A Gekosale\Core\Resolver\Controller instance.
      */
     protected function getCacheService()
     {
-        return $this->services['cache'] = new \Gekosale\Core\Cache($this->get('cache.storage'));
+        return $this->services['cache'] = new \Gekosale\Core\Resolver\Controller($this->get('cache_storage'));
     }
 
     /**
-     * Gets the 'cache.storage' service.
+     * Gets the 'cache_storage' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
      * @return Gekosale\Core\Cache\Storage\File A Gekosale\Core\Cache\Storage\File instance.
      */
-    protected function getCache_StorageService()
+    protected function getCacheStorageService()
     {
-        return $this->services['cache.storage'] = new \Gekosale\Core\Cache\Storage\File($this, 'D:\\Git\\Gekosale3\\var/cache', 'reg');
+        return $this->services['cache_storage'] = new \Gekosale\Core\Cache\Storage\File($this, 'D:\\Git\\Gekosale3\\var/cache', 'reg');
     }
 
     /**
-     * Gets the 'config.locator' service.
+     * Gets the 'config_locator' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
      * @return Symfony\Component\Config\FileLocator A Symfony\Component\Config\FileLocator instance.
      */
-    protected function getConfig_LocatorService()
+    protected function getConfigLocatorService()
     {
-        return $this->services['config.locator'] = new \Symfony\Component\Config\FileLocator('D:\\Git\\Gekosale3\\config');
+        return $this->services['config_locator'] = new \Symfony\Component\Config\FileLocator('D:\\Git\\Gekosale3\\config');
     }
 
     /**
@@ -148,6 +151,7 @@ class ServiceContainer extends Container
     {
         $this->services['currency.datagrid'] = $instance = new \Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid();
 
+        $instance->setRepository($this->get('currency.repository'));
         $instance->setContainer($this);
 
         return $instance;
@@ -202,16 +206,16 @@ class ServiceContainer extends Container
     }
 
     /**
-     * Gets the 'database.manager' service.
+     * Gets the 'database_manager' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
      * @return Illuminate\Database\Capsule\Manager A Illuminate\Database\Capsule\Manager instance.
      */
-    protected function getDatabase_ManagerService()
+    protected function getDatabaseManagerService()
     {
-        $this->services['database.manager'] = $instance = new \Illuminate\Database\Capsule\Manager();
+        $this->services['database_manager'] = $instance = new \Illuminate\Database\Capsule\Manager();
 
         $instance->addConnection(array('driver' => 'mysql', 'host' => 'localhost', 'database' => 'gekosale3', 'username' => 'root', 'password' => '', 'charset' => 'utf8', 'collation' => 'utf8_unicode_ci', 'prefix' => ''));
         $instance->setAsGlobal();
@@ -226,13 +230,13 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Core\Event A Gekosale\Core\Event instance.
+     * @return Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher A Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher instance.
      */
     protected function getEventDispatcherService()
     {
-        $this->services['event_dispatcher'] = $instance = new \Gekosale\Core\Event($this);
+        $this->services['event_dispatcher'] = $instance = new \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher($this);
 
-        $instance->addSubscribers();
+        $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
 
         return $instance;
@@ -326,7 +330,20 @@ class ServiceContainer extends Container
      */
     protected function getRouter_LoaderService()
     {
-        return $this->services['router.loader'] = new \Symfony\Component\Routing\Loader\PhpFileLoader($this->get('config.locator'));
+        return $this->services['router.loader'] = new \Symfony\Component\Routing\Loader\PhpFileLoader($this->get('config_locator'));
+    }
+
+    /**
+     * Gets the 'router.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Symfony\Component\HttpKernel\EventListener\RouterListener A Symfony\Component\HttpKernel\EventListener\RouterListener instance.
+     */
+    protected function getRouter_SubscriberService()
+    {
+        return $this->services['router.subscriber'] = new \Symfony\Component\HttpKernel\EventListener\RouterListener($this->get("router")->getMatcher());
     }
 
     /**
@@ -408,14 +425,16 @@ class ServiceContainer extends Container
      */
     protected function getTwigService()
     {
-        $this->services['twig'] = $instance = new \Twig_Environment($this->get('twig.loader.front'), array('cache' => 'D:\\Git\\Gekosale3\\var/cache', 'auto_reload' => true, 'autoescape' => true));
+        $this->services['twig'] = $instance = new \Twig_Environment($this->get('twig.loader.front'), array('cache' => 'D:\\Git\\Gekosale3\\var/cache', 'auto_reload' => true, 'autoescape' => true, 'debug' => true));
 
         $instance->addExtension($this->get('twig.extension.translation'));
         $instance->addExtension($this->get('twig.extension.routing'));
         $instance->addExtension($this->get('twig.extension.intl'));
+        $instance->addExtension($this->get('twig.extension.debug'));
         $instance->addExtension($this->get('twig.extension.box'));
         $instance->addExtension($this->get('twig.extension.form'));
         $instance->addExtension($this->get('twig.extension.asset'));
+        $instance->addExtension($this->get('twig.extension.datagrid'));
 
         return $instance;
     }
@@ -444,6 +463,32 @@ class ServiceContainer extends Container
     protected function getTwig_Extension_BoxService()
     {
         return $this->services['twig.extension.box'] = new \Gekosale\Core\Template\Extension\Box($this);
+    }
+
+    /**
+     * Gets the 'twig.extension.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\Template\Extension\DataGrid A Gekosale\Core\Template\Extension\DataGrid instance.
+     */
+    protected function getTwig_Extension_DatagridService()
+    {
+        return $this->services['twig.extension.datagrid'] = new \Gekosale\Core\Template\Extension\DataGrid($this);
+    }
+
+    /**
+     * Gets the 'twig.extension.debug' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Twig_Extension_Debug A Twig_Extension_Debug instance.
+     */
+    protected function getTwig_Extension_DebugService()
+    {
+        return $this->services['twig.extension.debug'] = new \Twig_Extension_Debug();
     }
 
     /**
@@ -525,16 +570,16 @@ class ServiceContainer extends Container
     }
 
     /**
-     * Gets the 'xajax.manager' service.
+     * Gets the 'xajax_manager' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
      * @return Gekosale\Core\XajaxManager A Gekosale\Core\XajaxManager instance.
      */
-    protected function getXajax_ManagerService()
+    protected function getXajaxManagerService()
     {
-        return $this->services['xajax.manager'] = new \Gekosale\Core\XajaxManager($this);
+        return $this->services['xajax_manager'] = new \Gekosale\Core\XajaxManager($this);
     }
 
     /**
@@ -619,6 +664,34 @@ class ServiceContainer extends Container
             'session.config' => array(
                 'db_table' => 'session',
             ),
+            'db.config' => array(
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'database' => 'gekosale3',
+                'username' => 'root',
+                'password' => '',
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+            ),
+            'cache.class' => 'Gekosale\\Core\\Resolver\\Controller',
+            'cache_storage.class' => 'Gekosale\\Core\\Cache\\Storage\\File',
+            'config_locator.class' => 'Symfony\\Component\\Config\\FileLocator',
+            'controller_resolver.class' => 'Gekosale\\Core\\Resolver\\Controller',
+            'event_dispatcher.class' => 'Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher',
+            'finder.class' => 'Symfony\\Component\\Finder\\Finder',
+            'filesystem.class' => 'Symfony\\Component\\Filesystem\\Filesystem',
+            'helper.class' => 'Gekosale\\Core\\Helper',
+            'kernel.class' => 'Symfony\\Component\\HttpKernel\\DependencyInjection\\ContainerAwareHttpKernel',
+            'translation.class' => 'Gekosale\\Core\\Translation',
+            'xajax_manager.class' => 'Gekosale\\Core\\XajaxManager',
+            'database_manager.class' => 'Illuminate\\Database\\Capsule\\Manager',
+            'router.class' => 'Symfony\\Component\\Routing\\Router',
+            'router.loader.class' => 'Symfony\\Component\\Routing\\Loader\\PhpFileLoader',
+            'router.subscriber.class' => 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener',
+            'session.class' => 'Symfony\\Component\\HttpFoundation\\Session\\Session',
+            'session.handler.class' => 'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\PdoSessionHandler',
+            'session.storage.class' => 'Symfony\\Component\\HttpFoundation\\Session\\Storage\\NativeSessionStorage',
         );
     }
 }

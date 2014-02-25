@@ -13,7 +13,6 @@
  * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Availability\Form;
-
 use Gekosale\Core\Form;
 use Gekosale\Plugin\Availability\Event\FormEvent;
 

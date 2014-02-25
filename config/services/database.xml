@@ -3,19 +3,14 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+	<parameters>
+		<parameter key="database_manager.class">Illuminate\Database\Capsule\Manager</parameter>
+    </parameters>
+    
     <services>
-        <service id="database.manager" class="Illuminate\Database\Capsule\Manager">
+        <service id="database_manager" class="%database_manager.class%">
             <call method="addConnection">
-	            <argument type="collection">
-		            <argument key="driver">mysql</argument>
-					<argument key="host">localhost</argument>
-					<argument key="database">gekosale3</argument>
-					<argument key="username">root</argument>
-					<argument key="password"></argument>
-					<argument key="charset">utf8</argument>
-					<argument key="collation">utf8_unicode_ci</argument>
-					<argument key="prefix"></argument>
-	            </argument>
+	            <argument>%db.config%</argument>
             </call>
             <call method="setAsGlobal"/>
             <call method="bootEloquent"/>

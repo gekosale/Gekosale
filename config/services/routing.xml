@@ -3,17 +3,28 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+	<parameters>
+		<parameter key="router.class">Symfony\Component\Routing\Router</parameter>
+		<parameter key="router.loader.class">Symfony\Component\Routing\Loader\PhpFileLoader</parameter>
+		<parameter key="router.subscriber.class">Symfony\Component\HttpKernel\EventListener\RouterListener</parameter>
+    </parameters>
+    
     <services>
     
-        <service id="router.loader" class="Symfony\Component\Routing\Loader\PhpFileLoader">
-            <argument type="service" id="config.locator"/>
+        <service id="router.loader" class="%router.loader.class%">
+            <argument type="service" id="config_locator"/>
         </service>
         
-        <service id="router" class="Symfony\Component\Routing\Router">
+        <service id="router" class="%router.class%">
             <argument type="service" id="router.loader"/>
             <argument></argument>
             <argument>%router.options%</argument>
         </service>
         
+        <service id="router.subscriber" class="Symfony\Component\HttpKernel\EventListener\RouterListener">
+    		<argument type="expression">service('router').getMatcher()</argument>
+			<tag name="kernel.event_subscriber" />
+		</service>
+		
     </services>
 </container>

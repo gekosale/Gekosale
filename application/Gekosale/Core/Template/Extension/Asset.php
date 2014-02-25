@@ -20,31 +20,31 @@ class Asset extends \Twig_Extension
 
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct (ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    public function getFunctions()
+    public function getFunctions ()
     {
         return array(
             new \Twig_SimpleFunction('asset', array(
-                                                   $this,
-                                                   'getAsset'
-                                              ), array(
-                                                      'is_safe' => Array(
-                                                          'html'
-                                                      )
-                                                 ))
+                $this,
+                'getAsset'
+            ), array(
+                'is_safe' => Array(
+                    'html'
+                )
+            ))
         );
     }
 
-    public function getAsset($path)
+    public function getAsset ($path)
     {
         return sprintf('%s/%s', $this->container->get('request')->getSchemeAndHttpHost(), $path);
     }
 
-    public function getName()
+    public function getName ()
     {
         return 'asset';
     }

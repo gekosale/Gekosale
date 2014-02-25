@@ -1,19 +1,15 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution 
- * 
- * For the full copyright and license information, 
- * please view the LICENSE file that was distributed with this source code. 
- * 
- * @category    Gekosale 
- * @package     Gekosale\Core 
- * @subpackage  Gekosale\Core\Resolver
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core\Resolver;
-
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -46,7 +42,7 @@ class Controller extends ControllerResolver
     {
         $controller = new $class();
         
-        if ($controller instanceof ContainerAwareInterface) {
+        if ($controller instanceof ContainerAwareInterface){
             $controller->setContainer($this->container);
         }
         

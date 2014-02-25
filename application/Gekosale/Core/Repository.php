@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Gekosale Open-Source E-Commerce Platform
  * 
@@ -14,8 +13,6 @@ namespace Gekosale\Core;
 
 /**
  * Class Repository
- *
- * Provides additional logic needed in all repositiories
  *
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>

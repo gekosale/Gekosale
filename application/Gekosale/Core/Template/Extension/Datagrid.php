@@ -13,6 +13,40 @@
  */
 namespace Gekosale\Core\Template\Extension;
 
-class Datagrid extends \Twig_Extension
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Gekosale\Core\DataGrid\DataGridInterface;
+
+class DataGrid extends \Twig_Extension
 {
+
+    protected $container;
+
+    public function __construct (ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    public function getFunctions ()
+    {
+        return array(
+            new \Twig_SimpleFunction('datagrid_renderer', array(
+                $this,
+                'render'
+            ), array(
+                'is_safe' => Array(
+                    'html'
+                )
+            ))
+        );
+    }
+
+    public function render (DataGridInterface $datagrid)
+    {
+        return $datagrid->render();
+    }
+
+    public function getName ()
+    {
+        return 'datagrid_renderer';
+    }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Gekosale Open-Source E-Commerce Platform
  * 

@@ -22,11 +22,11 @@
 				<argument key="cache">%application.root_path%var/cache</argument>
 				<argument key="auto_reload">true</argument>
 				<argument key="autoescape">true</argument>
+				<argument key="debug">true</argument>
 			</argument>
 		</service>
 
-		<service id="twig.extension.translation"
-			class="Symfony\Bridge\Twig\Extension\TranslationExtension">
+		<service id="twig.extension.translation" class="Symfony\Bridge\Twig\Extension\TranslationExtension">
 			<argument type="service" id="translation" />
 			<tag name="twig.extension" />
 		</service>
@@ -37,6 +37,10 @@
 		</service>
 
 		<service id="twig.extension.intl" class="Twig_Extensions_Extension_Intl">
+			<tag name="twig.extension" />
+		</service>
+		
+		<service id="twig.extension.debug" class="Twig_Extension_Debug">
 			<tag name="twig.extension" />
 		</service>
 
@@ -51,6 +55,11 @@
 		</service>
 
 		<service id="twig.extension.asset" class="Gekosale\Core\Template\Extension\Asset">
+			<argument type="service" id="service_container" />
+			<tag name="twig.extension" />
+		</service>
+		
+		<service id="twig.extension.datagrid" class="Gekosale\Core\Template\Extension\DataGrid">
 			<argument type="service" id="service_container" />
 			<tag name="twig.extension" />
 		</service>

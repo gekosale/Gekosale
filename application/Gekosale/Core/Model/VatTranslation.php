@@ -20,10 +20,19 @@ namespace Gekosale\Core\Model;
 class VatTranslation extends Eloquent
 {
 
-	protected $table = 'vat_translation';
-	public $timestamps = TRUE;
-	protected $softDelete = FALSE;
-	protected $fillable = array('language_id', 'name');
-	protected $visible = array('language_id', 'name');
+    protected $table = 'vat_translation';
 
+    public $timestamps = TRUE;
+
+    protected $softDelete = FALSE;
+
+    protected $fillable = array(
+        'language_id',
+        'name'
+    );
+
+    protected $visible = array(
+        'language_id',
+        'name'
+    );
 }

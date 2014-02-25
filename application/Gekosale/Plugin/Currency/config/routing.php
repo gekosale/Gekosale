@@ -1,38 +1,40 @@
 <?php
-
-/**
+/*
  * Gekosale Open-Source E-Commerce Platform
- * 
+ *
  * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-$this->collection = new RouteCollection();
+$collection = new RouteCollection();
 
-$this->collection->add('admin.currency.index', new Route('/admin/currency', array(
-    'controller' => 'Gekosale\Plugin\Currency\Controller\Admin\CurrencyController',
+$controller = 'Gekosale\Plugin\Currency\Controller\Admin\CurrencyController';
+
+$collection->add('admin.currency.index', new Route('/index', array(
+    'controller' => $controller,
     'mode' => 'admin',
-    'action' => 'index',
+    'action' => 'index'
 )));
 
-$this->collection->add('admin.currency.add', new Route('/admin/currency/add', array(
-    'controller' => 'Gekosale\Plugin\Currency\Controller\Admin\CurrencyController',
+$collection->add('admin.currency.add', new Route('/add', array(
+    'controller' => $controller,
     'mode' => 'admin',
-    'action' => 'add',
+    'action' => 'add'
 )));
 
-$this->collection->add('admin.currency.edit', new Route('/admin/currency/edit/{id}', array(
-    'controller' => 'Gekosale\Plugin\Currency\Controller\Admin\CurrencyController',
+$collection->add('admin.currency.edit', new Route('/edit/{id}', array(
+    'controller' => $controller,
     'mode' => 'admin',
     'action' => 'edit',
     'id' => NULL
 )));
 
-return $this->collection;
+$collection->addPrefix('/admin/currency');
+
+return $collection;

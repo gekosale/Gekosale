@@ -1,24 +1,29 @@
 <?php
 /*
  * Gekosale Open-Source E-Commerce Platform
- *
+ * 
  * This file is part of the Gekosale package.
  *
  * (c) Adam Piotrowski <adam@gekosale.com>
- *
+ * 
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Core\Controller;
+namespace Gekosale\Core\DataGrid\Filter;
 
-use Gekosale\Core\Controller;
+use Closure;
 
 /**
- * Class AdminController
+ * Class Between
  *
- * @package Gekosale\Core\Controller
+ * @package Gekosale\Core\DataGrid\Filter
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class AdminController extends Controller
+class Between implements DataGridFilterInterface
 {
-}
+
+    public function render ()
+    {
+        return 'type: GF_Datagrid.FILTER_BETWEEN';
+    }
+} 

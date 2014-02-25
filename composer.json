@@ -1,13 +1,38 @@
 {
     "name": "gekosale/gekosale",
     "description": "E-commerce platform",
-    "minimum-stability": "alpha",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Adam Piotrowski",
-            "email": "adam@gekosale.com"
+            "email": "adam@gekosale.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Rafal Martonik",
+            "email": "rafal@gekosale.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Adrian Potępa",
+            "email": "adrian@gekosale.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Michal Gonciarz",
+            "email": "michal@gekosale.com",
+            "role": "Support"
+        },
+        {
+            "name": "Igor Chudy",
+            "email": "igor@gekosale.com",
+            "role": "Design"
         }
     ],
+    "support": {
+        "email": "hello@gekosale.com"
+    },
+    "github-protocols": ["https"],
     "license": "proprietary",
     "repositories": [
         {
@@ -48,13 +73,16 @@
         "apigen/apigen": "2.8.0",
         "swiftmailer/swiftmailer": "5.1.x-dev",
         "illuminate/database": "4.1",
-        "xajax/xajax": "1.0.0"
+        "xajax/xajax": "1.0.0",
+        "gekosale/formengine": "1.0.x"
     },
     "autoload": {
         "psr-0": {
             "Gekosale": "application",
             "": "application/"
         },
-        "classmap": ["vendor/xajax/xajax"]
+        "classmap": [
+        	"vendor/xajax/xajax"
+       	]
     }
 }

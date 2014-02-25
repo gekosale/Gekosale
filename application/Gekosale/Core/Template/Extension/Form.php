@@ -30,7 +30,7 @@ class Form extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('form', array(
                 $this,
-                'Render'
+                'render'
             ), array(
                 'is_safe' => Array(
                     'html'
@@ -39,9 +39,9 @@ class Form extends \Twig_Extension
         );
     }
 
-    public function Render ($form)
+    public function render ($form)
     {
-        return $form->Render();
+        return $form->render();
     }
 
     public function getName ()

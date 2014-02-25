@@ -1,15 +1,13 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Core
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core;
 
@@ -27,33 +25,35 @@ class Translation extends Translator
 {
 
     /**
-     * @var null|\Symfony\Component\Translation\MessageSelector
+     * @var null
      */
     protected $locale;
 
     /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     * @var ContainerInterface
      */
     protected $container;
 
     /**
-     * @param ContainerInterface                                  $container
-     * @param null|\Symfony\Component\Translation\MessageSelector $locale
+     * @param ContainerInterface $container
+     * @param null               $locale
      */
-    public function __construct (ContainerInterface $container, $locale)
+    public function __construct(ContainerInterface $container, $locale)
     {
         $this->container = $container;
-        $this->locale = $locale;
-        
+        $this->locale    = $locale;
+
         parent::__construct($this->locale);
-        parent::addLoader('array', new ArrayLoader());
-        parent::addResource('array', $this->getResource(), $this->locale);
+
+        $this->addLoader('array', new ArrayLoader());
+
+        $this->addResource('array', $this->getResource(), $this->locale);
     }
 
     /**
      * @return array
      */
-    protected function getResource ()
+    protected function getResource()
     {
         $Data = Array();
         //         if (($Data = $this->container->get('cache')->load('translations')) === false) {

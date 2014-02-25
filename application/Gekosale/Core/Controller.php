@@ -10,7 +10,6 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core;
-
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 

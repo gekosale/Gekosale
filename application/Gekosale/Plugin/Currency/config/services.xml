@@ -11,6 +11,9 @@
         </service>
         
         <service id="currency.datagrid" class="Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="currency.repository" />
+            </call>
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
@@ -22,6 +25,7 @@
             </call>
             <call method="init"/>
         </service>
+        
         <service id="currency.subscriber" class="Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber">
         	<tag name="kernel.event_subscriber" />
         </service>

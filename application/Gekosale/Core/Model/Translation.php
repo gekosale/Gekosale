@@ -20,8 +20,9 @@ namespace Gekosale\Core\Model;
 class Translation extends Eloquent
 {
 
-	protected $table = 'translation';
-	public $timestamps = TRUE;
-	protected $softDelete = FALSE;
+    protected $table = 'translation';
 
+    public $timestamps = TRUE;
+
+    protected $softDelete = FALSE;
 }
