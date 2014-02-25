@@ -40,11 +40,8 @@ class AdminMenuEventSubscriber implements EventSubscriberInterface
             
             $adminMenuData = $eventData->getMenuData();
             
-//             $container->get('session')->set('admin.menu', $eventData->getMenuData());
+            $container->get('session')->set('admin.menu', $eventData->getMenuData());
         }
-        
-//         $menu = AdminMenu::all()->toArray();
-//         print_r($menu);
         
         $adminMenuData = $container->get('session')->get('admin.menu');
         
