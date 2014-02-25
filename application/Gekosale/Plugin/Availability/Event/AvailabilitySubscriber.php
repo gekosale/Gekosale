@@ -24,9 +24,8 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 class AvailabilitySubscriber implements EventSubscriberInterface
 {
 
-    public function onFormInitAction (Event $event)
-    {
-//         $form = $event->getForm();
+    /**
+     * $form = $event->getForm();
         
 //         $form->fields['required_data']->addTextField(Array(
 //             'name' => 'value1222',
@@ -41,6 +40,11 @@ class AvailabilitySubscriber implements EventSubscriberInterface
 //                 'value2' => 'required_data2'
 //             )
 //         ));
+     * @param Event $event
+     */
+    
+    public function onFormInitAction (Event $event)
+    {
     }
 
     public function onAdminMenuInitAction (Event $event)
