@@ -11,8 +11,6 @@
  */
 namespace Gekosale\Core\DataGrid\Filter;
 
-use Closure;
-
 /**
  * Class Between
  *
