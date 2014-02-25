@@ -9,13 +9,14 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Core\Resolver;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+namespace Gekosale\Core;
+
+use Symfony\Component\HttpKernel\Controller\ControllerResolver as BaseControllerResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Controller extends ControllerResolver
+class ControllerResolver extends BaseControllerResolver
 {
 
     protected $container;

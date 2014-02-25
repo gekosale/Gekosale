@@ -146,11 +146,11 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Core\Resolver\Controller A Gekosale\Core\Resolver\Controller instance.
+     * @return Gekosale\Core\ControllerResolver A Gekosale\Core\ControllerResolver instance.
      */
     protected function getControllerResolverService()
     {
-        return $this->services['controller_resolver'] = new \Gekosale\Core\Resolver\Controller($this);
+        return $this->services['controller_resolver'] = new \Gekosale\Core\ControllerResolver($this);
     }
 
     /**
@@ -712,7 +712,7 @@ class ServiceContainer extends Container
             'cache.class' => 'Gekosale\\Core\\Resolver\\Controller',
             'cache_storage.class' => 'Gekosale\\Core\\Cache\\Storage\\File',
             'config_locator.class' => 'Symfony\\Component\\Config\\FileLocator',
-            'controller_resolver.class' => 'Gekosale\\Core\\Resolver\\Controller',
+            'controller_resolver.class' => 'Gekosale\\Core\\ControllerResolver',
             'event_dispatcher.class' => 'Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher',
             'finder.class' => 'Symfony\\Component\\Finder\\Finder',
             'filesystem.class' => 'Symfony\\Component\\Filesystem\\Filesystem',

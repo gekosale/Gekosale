@@ -5,7 +5,7 @@
 
 	<parameters>
 		<parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
-		<parameter key="controller_resolver.class">Gekosale\Core\Resolver\Controller</parameter>
+		<parameter key="controller_resolver.class">Gekosale\Core\ControllerResolver</parameter>
 		<parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
         <parameter key="finder.class">Symfony\Component\Finder\Finder</parameter>
         <parameter key="filesystem.class">Symfony\Component\Filesystem\Filesystem</parameter>
