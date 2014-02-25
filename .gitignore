@@ -228,3 +228,4 @@ pip-log.txt
 /.idea
 
 /vendor
+/application/Gekosale/Core/ServiceContainer.php

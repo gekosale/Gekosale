@@ -1,15 +1,13 @@
 <?php
-
-/**
+/*
  * Gekosale Open-Source E-Commerce Platform
- * 
+ *
  * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Currency\Event;
 
@@ -17,6 +15,12 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
+/**
+ * Class CurrencyEventSubscriber
+ *
+ * @package Gekosale\Plugin\Currency\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class CurrencyEventSubscriber implements EventSubscriberInterface
 {
 

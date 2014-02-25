@@ -16,6 +16,12 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * Class CurrencyExtension
+ *
+ * @package Gekosale\Plugin\Currency\Extension
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class CurrencyExtension extends Extension
 {
 
