@@ -15,6 +15,7 @@ namespace Gekosale\Plugin\Currency\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 class CurrencyEventSubscriber implements EventSubscriberInterface
 {
@@ -30,10 +31,20 @@ class CurrencyEventSubscriber implements EventSubscriberInterface
         ));
     }
 
+    public function onAdminMenuInitAction (Event $event)
+    {
+        $event->setMenuData(Array(
+            'menu' => Array(
+                'configuration'
+            )
+        ));
+    }
+
     public static function getSubscribedEvents ()
     {
         return array(
-            CurrencyFormEvent::FORM_INIT_EVENT => 'onFormInitAction'
+            CurrencyFormEvent::FORM_INIT_EVENT => 'onFormInitAction',
+            AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
         );
     }
 }

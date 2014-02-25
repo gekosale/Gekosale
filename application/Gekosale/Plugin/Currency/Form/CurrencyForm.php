@@ -1,94 +1,98 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Component
- * @subpackage  Gekosale\Plugin\CurrencyForm
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Currency\Form;
+
 use Gekosale\Core\Form;
-use Gekosale\Plugin\Currency\Event\FormEvent;
+use Gekosale\Plugin\Currency\Event\CurrencyFormEvent;
 use FormEngine;
 
+/**
+ * Class CurrencyForm
+ *
+ * @package Gekosale\Plugin\Currency\Form
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class CurrencyForm extends Form
 {
 
     public function init ()
     {
         $form = new FormEngine\Elements\Form(Array(
-            'name' => 'currencieslist',
+            'name' => 'currency',
             'action' => '',
             'method' => 'post'
         ));
         
         $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset(Array(
             'name' => 'required_data',
-            'label' => $this->trans('TXT_MAIN_DATA')
+            'label' => $this->trans('Basic information')
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
             'name' => 'name',
-            'label' => $this->trans('TXT_CURRENCY_NAME'),
+            'label' => $this->trans('Name'),
             'rules' => Array(
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_NAME'))
+                new FormEngine\Rules\Required($this->trans('Name is required'))
             )
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\Select(Array(
             'name' => 'symbol',
-            'label' => $this->trans('TXT_CURRENCY_SYMBOL'),
-            'options' => FormEngine\Option::Make(App::getModel('currencieslist')->getCurrenciesALLToSelect()),
+            'label' => $this->trans('Symbol'),
+            'options' => FormEngine\Option::Make($this->get('currency.repository')->getCurrencySymbols()),
             'rules' => Array(
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_CURRENCY_SYMBOL'))
+                new FormEngine\Rules\Required($this->trans('Symbol is required'))
             )
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
             'name' => 'decimalseparator',
-            'label' => $this->trans('TXT_CURRENCY_DECIMAL_SEPARATOR'),
+            'label' => $this->trans('Decimal separator'),
             'rules' => Array(
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_CURRENCY_DECIMAL_SEPARATOR'))
+                new FormEngine\Rules\Required($this->trans('Decimal separator is required'))
             )
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
             'name' => 'decimalcount',
-            'label' => $this->trans('TXT_CURRENCY_DECIMAL_COUNT'),
+            'label' => $this->trans('Decimal count'),
             'rules' => Array(
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_CURRENCY_DECIMAL_COUNT'))
+                new FormEngine\Rules\Required($this->trans('Decimal count is required'))
             )
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
             'name' => 'thousandseparator',
-            'label' => $this->trans('TXT_CURRENCY_THOUSAND_SEPARATOR')
+            'label' => $this->trans('Thousands separator')
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
-            'name' => 'positivepreffix',
-            'label' => $this->trans('TXT_CURRENCY_POSITIVE_PREFFIX')
+            'name' => 'positiveprefix',
+            'label' => $this->trans('Positive prefix')
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
-            'name' => 'positivesuffix',
-            'label' => $this->trans('TXT_CURRENCY_POSITIVE_SUFFIX')
+            'name' => 'positivesufix',
+            'label' => $this->trans('Positive sufix')
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
-            'name' => 'negativepreffix',
-            'label' => $this->trans('TXT_CURRENCY_NEGATIVE_PREFFIX')
+            'name' => 'negativeprefix',
+            'label' => $this->trans('Negative prefix')
         )));
         
         $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
-            'name' => 'negativesuffix',
-            'label' => $this->trans('TXT_CURRENCY_NEGATIVE_SUFFIX')
+            'name' => 'negativesufix',
+            'label' => $this->trans('Negative sufix')
         )));
         
         $exchangeData = $form->AddChild(new FormEngine\Elements\Fieldset(Array(
@@ -96,40 +100,13 @@ class CurrencyForm extends Form
             'label' => $this->trans('TXT_CURRENCY_EXCHANGE')
         )));
         
-        $currencies = App::getModel('currencieslist')->getCurrencies();
-        
-        foreach ($currencies as $key => $currency){
-            
-            $exchangeData->AddChild(new FormEngine\Elements\TextField(Array(
-                'name' => 'currency_' . $currency['idcurrency'],
-                'label' => $currency['currencysymbol'],
-                'filters' => Array(
-                    new FormEngine\Filters\CommaToDotChanger()
-                ),
-                'rules' => Array(
-                    new FormEngine\Rules\Required($this->trans('ERR_EMPTY_EXCHANGE_DATA'))
-                )
-            )));
-        }
-        
-        $layerData = $form->AddChild(new FormEngine\Elements\Fieldset(Array(
-            'name' => 'view_data',
-            'label' => $this->trans('TXT_STORES')
-        )));
-        
-        $layerData->AddChild(new FormEngine\Elements\LayerSelector(Array(
-            'name' => 'view',
-            'label' => $this->trans('TXT_VIEW'),
-            'default' => Helper::getViewIdsDefault()
-        )));
-        
         $form->AddFilter(new FormEngine\Filters\NoCode());
         
         $form->AddFilter(new FormEngine\Filters\Secure());
         
-        $event = new FormEvent($form);
+        $event = new CurrencyFormEvent($form);
         
-        $this->getDispatcher()->dispatch(FormEvent::FORM_INIT_EVENT, $event);
+        $this->getDispatcher()->dispatch(CurrencyFormEvent::FORM_INIT_EVENT, $event);
         
         $form->Populate($event->getPopulateData());
         

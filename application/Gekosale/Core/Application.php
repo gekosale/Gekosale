@@ -71,7 +71,7 @@ class Application
         $this->stopwatch->start('application');
 
         /*
-		 * Get request
+		 * Create request instance
 		 */
         $this->request = Request::createFromGlobals();
 

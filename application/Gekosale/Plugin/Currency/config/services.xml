@@ -23,7 +23,6 @@
         	<call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
-            <call method="init"/>
         </service>
         
         <service id="currency.subscriber" class="Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber">

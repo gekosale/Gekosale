@@ -28,7 +28,7 @@ class CurrencyController extends AdminController
 
     public function add ()
     {
-        $form = $this->get('currency.form');
+        $form = $this->get('currency.form')->init();
         
         if ($form->Validate()){
             

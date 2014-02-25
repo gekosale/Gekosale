@@ -11,10 +11,9 @@
  */
 namespace Gekosale\Plugin\Availability\Event;
 
-use Symfony\Component\EventDispatcher\Event,
-    Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Gekosale\Plugin\CurrencyFormEvent;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**
  * Class AvailabilitySubscriber
@@ -25,34 +24,39 @@ use Gekosale\Plugin\CurrencyFormEvent;
 class AvailabilitySubscriber implements EventSubscriberInterface
 {
 
-    public function onFormInitAction(Event $event)
+    public function onFormInitAction (Event $event)
     {
-        $form = $event->getForm();
-
-        $form->fields['required_data']->addTextField(
-                                      Array(
-                                          'name'   => 'value1222',
-                                          'label'  => 'Test1',
-                                          'suffix' => '%'
-                                      )
-        );
-
-        $repository = $event->getDispatcher()->getContainer()->get('currency.repository');
-
-        $event->setPopulateData(
-              Array(
-                  'required_data2' => Array(
-                      'value2' => 'required_data2'
-                  )
-              )
-        );
+//         $form = $event->getForm();
+        
+//         $form->fields['required_data']->addTextField(Array(
+//             'name' => 'value1222',
+//             'label' => 'Test1',
+//             'suffix' => '%'
+//         ));
+        
+//         $repository = $event->getDispatcher()->getContainer()->get('currency.repository');
+        
+//         $event->setPopulateData(Array(
+//             'required_data2' => Array(
+//                 'value2' => 'required_data2'
+//             )
+//         ));
     }
 
-    public static function getSubscribedEvents()
+    public function onAdminMenuInitAction (Event $event)
+    {
+        $event->setMenuData(Array(
+            'menu' => Array(
+                'availability'
+            )
+        ));
+    }
+
+    public static function getSubscribedEvents ()
     {
         return array(
-            Gekosale\Plugin\Currency\Event\CurrencyFormEvent::FORM_INIT_EVENT
-			'currency.form.init' => 'onFormInitAction'
-		);
-	}
+            'currency.form.init' => 'onFormInitAction',
+            AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
+        );
+    }
 }

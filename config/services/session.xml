@@ -12,7 +12,7 @@
     <services>
 
         <service id="session.handler" class="%session.handler.class%">
-        	<argument type="expression">service('database.manager').getConnection().getPdo()</argument>
+        	<argument type="expression">service('database_manager').getConnection().getPdo()</argument>
             <argument>%session.config%</argument>
         </service>
 

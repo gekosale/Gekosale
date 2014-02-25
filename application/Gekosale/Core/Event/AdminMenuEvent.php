@@ -20,32 +20,19 @@ use FormEngine\Elements\Form;
  * @package Gekosale\Core\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class FormEvent extends Event
+class AdminMenuEvent extends Event
 {
 
-    protected $form;
-
-    protected $populateData = Array();
+    protected $menuData = Array();
 
     /**
      * Constructor
      *
      * @param Form $form
      */
-    public function __construct(Form $form)
+    public function __construct ($menuData)
     {
-        $this->form = $form;
-    }
-
-    /**
-     * Returns a form instance
-     *
-     * @return Form
-     *
-     */
-    public function getForm()
-    {
-        return $this->form;
+        $this->menuData = $menuData;
     }
 
     /**
@@ -53,9 +40,9 @@ class FormEvent extends Event
      *
      * @return array
      */
-    public function getPopulateData()
+    public function getMenuData ()
     {
-        return $this->populateData;
+        return $this->menuData;
     }
 
     /**
@@ -65,8 +52,8 @@ class FormEvent extends Event
      *
      * @return void
      */
-    public function setPopulateData(array $Data)
+    public function setMenuData (array $Data)
     {
-        $this->populateData = array_merge_recursive($this->populateData, $Data);
+        $this->menuData = array_merge_recursive($this->menuData, $Data);
     }
 }

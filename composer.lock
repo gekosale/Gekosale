@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "efd6730355d1996ca3c981830bf089e5",
+    "hash": "e7e66995cacd545c1c290820c2751475",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -180,17 +180,17 @@
         },
         {
             "name": "gekosale/formengine",
-            "version": "1.0.1",
+            "version": "dev-master",
             "target-dir": "FormEngine",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gekosale/FormEngine.git",
-                "reference": "5871aadd6c837c8d0039b958d7f3c16d5371c929"
+                "reference": "526d5879c23c7194225d46b19c37e5ad6cf8cbe5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gekosale/FormEngine/zipball/5871aadd6c837c8d0039b958d7f3c16d5371c929",
-                "reference": "5871aadd6c837c8d0039b958d7f3c16d5371c929",
+                "url": "https://api.github.com/repos/gekosale/FormEngine/zipball/526d5879c23c7194225d46b19c37e5ad6cf8cbe5",
+                "reference": "526d5879c23c7194225d46b19c37e5ad6cf8cbe5",
                 "shasum": ""
             },
             "require": {
@@ -218,7 +218,7 @@
                 "Forms",
                 "gekosale"
             ],
-            "time": "2014-02-23 22:11:08"
+            "time": "2014-02-25 18:44:54"
         },
         {
             "name": "illuminate/container",
@@ -1521,6 +1521,131 @@
             "time": "2014-02-12 21:00:41"
         },
         {
+            "name": "symfony/icu",
+            "version": "1.2.x-dev",
+            "target-dir": "Symfony/Component/Icu",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Icu.git",
+                "reference": "98e197da54df1f966dd5e8a4992135703569c987"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/98e197da54df1f966dd5e8a4992135703569c987",
+                "reference": "98e197da54df1f966dd5e8a4992135703569c987",
+                "shasum": ""
+            },
+            "require": {
+                "lib-icu": ">=4.4",
+                "php": ">=5.3.3",
+                "symfony/intl": "~2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Icu\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                }
+            ],
+            "description": "Contains an excerpt of the ICU data and classes to load it.",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "icu",
+                "intl"
+            ],
+            "time": "2013-10-04 10:06:38"
+        },
+        {
+            "name": "symfony/intl",
+            "version": "2.4.x-dev",
+            "target-dir": "Symfony/Component/Intl",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Intl.git",
+                "reference": "ab12f91c6b4a073007db3c478707ace276738a13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Intl/zipball/ab12f91c6b4a073007db3c478707ace276738a13",
+                "reference": "ab12f91c6b4a073007db3c478707ace276738a13",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/icu": "~1.0-RC"
+            },
+            "require-dev": {
+                "symfony/filesystem": ">=2.1"
+            },
+            "suggest": {
+                "ext-intl": "to use the component with locales other than \"en\""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Intl\\": ""
+                },
+                "classmap": [
+                    "Symfony/Component/Intl/Resources/stubs"
+                ],
+                "files": [
+                    "Symfony/Component/Intl/Resources/stubs/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Eriksen Costa",
+                    "email": "eriksen.costa@infranology.com.br"
+                }
+            ],
+            "description": "A PHP replacement layer for the C intl extension that includes additional data from the ICU library.",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "i18n",
+                "icu",
+                "internationalization",
+                "intl",
+                "l10n",
+                "localization"
+            ],
+            "time": "2014-02-11 13:52:09"
+        },
+        {
             "name": "symfony/options-resolver",
             "version": "2.4.x-dev",
             "target-dir": "Symfony/Component/OptionsResolver",
@@ -2168,6 +2293,7 @@
         "symfony/http-foundation": 20,
         "symfony/finder": 20,
         "symfony/filesystem": 20,
+        "symfony/intl": 20,
         "symfony/event-dispatcher": 20,
         "symfony/dependency-injection": 20,
         "symfony/debug": 20,
@@ -2177,7 +2303,8 @@
         "predis/predis": 20,
         "symfony/twig-bridge": 20,
         "twig/extensions": 20,
-        "swiftmailer/swiftmailer": 20
+        "swiftmailer/swiftmailer": 20,
+        "gekosale/formengine": 20
     },
     "platform": [
 

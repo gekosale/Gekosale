@@ -59,6 +59,7 @@
         "symfony/http-foundation": "2.4.x-dev",
         "symfony/finder": "2.4.x-dev",
         "symfony/filesystem": "2.4.x-dev",
+        "symfony/intl": "2.4.x-dev",
         "symfony/event-dispatcher": "2.4.x-dev",
         "symfony/dependency-injection": "2.4.x-dev",
         "symfony/debug": "2.4.x-dev",
@@ -74,7 +75,7 @@
         "swiftmailer/swiftmailer": "5.1.x-dev",
         "illuminate/database": "4.1",
         "xajax/xajax": "1.0.0",
-        "gekosale/formengine": "1.0.x"
+        "gekosale/formengine": "dev-master"
     },
     "autoload": {
         "psr-0": {

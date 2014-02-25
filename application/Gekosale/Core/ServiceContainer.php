@@ -33,6 +33,7 @@ class ServiceContainer extends Container
         $this->scopes = array();
         $this->scopeChildren = array();
         $this->methodMap = array(
+            'admin_menu.subscriber' => 'getAdminMenu_SubscriberService',
             'availability.subscriber' => 'getAvailability_SubscriberService',
             'cache' => 'getCacheService',
             'cache_storage' => 'getCacheStorageService',
@@ -72,6 +73,19 @@ class ServiceContainer extends Container
         );
 
         $this->aliases = array();
+    }
+
+    /**
+     * Gets the 'admin_menu.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\AdminMenu\Event\AdminMenuEventSubscriber A Gekosale\Plugin\AdminMenu\Event\AdminMenuEventSubscriber instance.
+     */
+    protected function getAdminMenu_SubscriberService()
+    {
+        return $this->services['admin_menu.subscriber'] = new \Gekosale\Plugin\AdminMenu\Event\AdminMenuEventSubscriber();
     }
 
     /**
@@ -170,7 +184,6 @@ class ServiceContainer extends Container
         $this->services['currency.form'] = $instance = new \Gekosale\Plugin\Currency\Form\CurrencyForm();
 
         $instance->setContainer($this);
-        $instance->init();
 
         return $instance;
     }
@@ -238,6 +251,11 @@ class ServiceContainer extends Container
 
         $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
+        $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
+        $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
+        $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
+        $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilitySubscriber');
+        $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
 
         return $instance;
     }
@@ -373,7 +391,7 @@ class ServiceContainer extends Container
      */
     protected function getSession_HandlerService()
     {
-        return $this->services['session.handler'] = new \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler($this->get("database.manager")->getConnection()->getPdo(), array('db_table' => 'session'));
+        return $this->services['session.handler'] = new \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler($this->get("database_manager")->getConnection()->getPdo(), array('db_table' => 'session'));
     }
 
     /**
@@ -425,16 +443,33 @@ class ServiceContainer extends Container
      */
     protected function getTwigService()
     {
+        $a = $this->get('twig.extension.translation');
+        $b = $this->get('twig.extension.routing');
+        $c = $this->get('twig.extension.intl');
+        $d = $this->get('twig.extension.debug');
+        $e = $this->get('twig.extension.box');
+        $f = $this->get('twig.extension.form');
+        $g = $this->get('twig.extension.asset');
+        $h = $this->get('twig.extension.datagrid');
+
         $this->services['twig'] = $instance = new \Twig_Environment($this->get('twig.loader.front'), array('cache' => 'D:\\Git\\Gekosale3\\var/cache', 'auto_reload' => true, 'autoescape' => true, 'debug' => true));
 
-        $instance->addExtension($this->get('twig.extension.translation'));
-        $instance->addExtension($this->get('twig.extension.routing'));
-        $instance->addExtension($this->get('twig.extension.intl'));
-        $instance->addExtension($this->get('twig.extension.debug'));
-        $instance->addExtension($this->get('twig.extension.box'));
-        $instance->addExtension($this->get('twig.extension.form'));
-        $instance->addExtension($this->get('twig.extension.asset'));
-        $instance->addExtension($this->get('twig.extension.datagrid'));
+        $instance->addExtension($a);
+        $instance->addExtension($b);
+        $instance->addExtension($c);
+        $instance->addExtension($d);
+        $instance->addExtension($e);
+        $instance->addExtension($f);
+        $instance->addExtension($g);
+        $instance->addExtension($h);
+        $instance->addExtension($a);
+        $instance->addExtension($b);
+        $instance->addExtension($c);
+        $instance->addExtension($d);
+        $instance->addExtension($e);
+        $instance->addExtension($f);
+        $instance->addExtension($g);
+        $instance->addExtension($h);
 
         return $instance;
     }
