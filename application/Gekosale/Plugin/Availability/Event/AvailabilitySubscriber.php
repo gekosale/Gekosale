@@ -24,30 +24,11 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 class AvailabilitySubscriber implements EventSubscriberInterface
 {
 
-    /**
-     * $form = $event->getForm();
-        
-//         $form->fields['required_data']->addTextField(Array(
-//             'name' => 'value1222',
-//             'label' => 'Test1',
-//             'suffix' => '%'
-//         ));
-        
-//         $repository = $event->getDispatcher()->getContainer()->get('currency.repository');
-        
-//         $event->setPopulateData(Array(
-//             'required_data2' => Array(
-//                 'value2' => 'required_data2'
-//             )
-//         ));
-     * @param Event $event
-     */
-    
-    public function onFormInitAction (Event $event)
+    public function onFormInitAction(Event $event)
     {
     }
 
-    public function onAdminMenuInitAction (Event $event)
+    public function onAdminMenuInitAction(Event $event)
     {
         $event->setMenuData(Array(
             'menu' => Array(
@@ -56,10 +37,10 @@ class AvailabilitySubscriber implements EventSubscriberInterface
         ));
     }
 
-    public static function getSubscribedEvents ()
+    public static function getSubscribedEvents()
     {
         return array(
-            'currency.form.init' => 'onFormInitAction',
+            'currency.form.init'                      => 'onFormInitAction',
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
         );
     }

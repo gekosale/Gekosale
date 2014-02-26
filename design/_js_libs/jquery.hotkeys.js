@@ -62,7 +62,6 @@
 				modif += "ctrl+";
 			}
 			
-			// TODO: Need to make sure this works consistently across platforms
 			if ( event.metaKey && !event.ctrlKey && special !== "meta" ) {
 				modif += "meta+";
 			}
