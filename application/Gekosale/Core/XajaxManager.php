@@ -76,20 +76,15 @@ class XajaxManager
 
     public function __call ($name, $arguments)
     {
-        try {
-            $request = $arguments[0];
-            $responseHandler = $arguments[1];
-            $objResponse = new xajaxResponse();
-            $response = call_user_func($this->callbacks[$name], $request);
-            if (! is_array($response)) {
-                $response = Array();
-            }
-            $objResponse->script("{$responseHandler}(" . json_encode($response) . ")");
+        $request = $arguments[0];
+        $responseHandler = $arguments[1];
+        $objResponse = new xajaxResponse();
+        $response = call_user_func($this->callbacks[$name], $request);
+        if (! is_array($response)){
+            $response = Array();
         }
-        catch (Exception $e) {
-            $objResponse = new xajaxResponse();
-            $objResponse->script("GError('" . _('ERR_PROBLEM_DURING_AJAX_EXECUTION') . "', '" . preg_replace('/(\n|\r)+/', '\n', nl2br(addslashes($e->getMessage()))) . "');");
-        }
+        $objResponse->script("{$responseHandler}(" . json_encode($response) . ")");
+        
         return $objResponse;
     }
 }
