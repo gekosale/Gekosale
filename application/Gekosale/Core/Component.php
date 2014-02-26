@@ -12,6 +12,7 @@
 namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class Component
@@ -31,7 +32,7 @@ abstract class Component extends ContainerAware
      *
      * @return bool true if the service id is defined, false otherwise
      */
-    final protected function has ($id)
+    final protected function has($id)
     {
         return $this->container->has($id);
     }
@@ -43,7 +44,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Service
      */
-    final protected function get ($id)
+    final protected function get($id)
     {
         return $this->container->get($id);
     }
@@ -55,7 +56,7 @@ abstract class Component extends ContainerAware
      *
      * @return string The message
      */
-    final protected function trans ($id)
+    final protected function trans($id)
     {
         return $this->container->get('translation')->trans($id);
     }
@@ -65,7 +66,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Database manager service
      */
-    final protected function getDb ()
+    final protected function getDb()
     {
         return $this->container->get('database.manager');
     }
@@ -75,7 +76,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Session service
      */
-    final protected function getSession ()
+    final protected function getSession()
     {
         return $this->container->get('session');
     }
@@ -85,7 +86,7 @@ abstract class Component extends ContainerAware
      *
      * @return object FlashBag from session service
      */
-    final protected function getFlashBag ()
+    final protected function getFlashBag()
     {
         return $this->container->get('session')->getFlashBag();
     }
@@ -95,7 +96,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Router service
      */
-    final protected function getRouter ()
+    final protected function getRouter()
     {
         return $this->container->get('router');
     }
@@ -105,7 +106,7 @@ abstract class Component extends ContainerAware
      *
      * @return Request
      */
-    final protected function getRequest ()
+    final protected function getRequest()
     {
         return $this->container->get('request');
     }
@@ -115,7 +116,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Event dispatcher service
      */
-    final protected function getDispatcher ()
+    final protected function getDispatcher()
     {
         return $this->container->get('event_dispatcher');
     }
@@ -125,7 +126,7 @@ abstract class Component extends ContainerAware
      *
      * @return array
      */
-    final protected function getLocales ()
+    final protected function getLocales()
     {
         return array_keys($this->container->getParameter('locales'));
     }
@@ -137,7 +138,7 @@ abstract class Component extends ContainerAware
      *
      * @return mixed
      */
-    final protected function getParam ($index)
+    final protected function getParam($index)
     {
         return $this->container->get('request')->attributes->getParameter($index);
     }
@@ -147,7 +148,7 @@ abstract class Component extends ContainerAware
      *
      * @return object Xajax
      */
-    final protected function getXajax ()
+    final protected function getXajax()
     {
         return $this->container->get('xajax');
     }
@@ -157,7 +158,7 @@ abstract class Component extends ContainerAware
      *
      * @return object XajaxManager
      */
-    final protected function getXajaxManager ()
+    final protected function getXajaxManager()
     {
         return $this->container->get('xajax_manager');
     }
@@ -167,8 +168,18 @@ abstract class Component extends ContainerAware
      *
      * @return object \PDO
      */
-    final protected function getPdo ()
+    final protected function getPdo()
     {
         return $this->container->get('database_manager')->getConnection()->getPdo();
+    }
+
+    /**
+     * Shortcut to get PropertyAccessor
+     *
+     * @return \Symfony\Component\PropertyAccess\PropertyAccessor
+     */
+    final protected function getPropertyAccessor()
+    {
+        return PropertyAccess::createPropertyAccessor();
     }
 }

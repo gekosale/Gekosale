@@ -65,6 +65,7 @@ class CurrencyRepository extends Repository
         $currency->decimal_count      = $Data['required_data']['decimal_count'];
         $currency->thousand_separator = $Data['required_data']['thousand_separator'];
         $currency->positive_prefix    = $Data['required_data']['positive_prefix'];
+        $currency->positive_sufix     = $Data['required_data']['positive_sufix'];
         $currency->negative_prefix    = $Data['required_data']['negative_prefix'];
         $currency->negative_sufix     = $Data['required_data']['negative_sufix'];
 
@@ -82,8 +83,8 @@ class CurrencyRepository extends Repository
     {
         $currencyData = $this->find($id)->toArray();
 
-        $populateData = Array(
-            'required_data' => Array(
+        $populateData = [
+            'required_data' => [
                 'name'               => $currencyData['name'],
                 'symbol'             => $currencyData['symbol'],
                 'decimal_separator'  => $currencyData['decimal_separator'],
@@ -93,8 +94,8 @@ class CurrencyRepository extends Repository
                 'positive_sufix'     => $currencyData['positive_sufix'],
                 'negative_prefix'    => $currencyData['negative_prefix'],
                 'negative_sufix'     => $currencyData['negative_sufix']
-            )
-        );
+            ]
+        ];
 
         return $populateData;
     }
@@ -110,7 +111,7 @@ class CurrencyRepository extends Repository
 
         ksort($currencies);
 
-        $Data = Array();
+        $Data = [];
 
         foreach ($currencies as $currencySymbol => $currencyName) {
             $Data[$currencySymbol] = sprintf('%s (%s)', $currencySymbol, $currencyName);

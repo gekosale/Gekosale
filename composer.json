@@ -74,7 +74,8 @@
         "swiftmailer/swiftmailer": "5.1.x-dev",
         "illuminate/database": "4.1",
         "xajax/xajax": "1.0.0",
-        "gekosale/formengine": "dev-master"
+        "gekosale/formengine": "dev-master",
+        "symfony/property-access": "2.4.x-dev"
     },
     "autoload": {
         "psr-0": {
