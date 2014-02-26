@@ -14,6 +14,7 @@
  */
 namespace Gekosale\Plugin\Currency\Repository;
 
+use Gekosale\Core\Model\Currency;
 use Gekosale\Core\Repository;
 use Symfony\Component\Intl\Intl;
 
