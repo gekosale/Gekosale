@@ -20,8 +20,6 @@ class CurrencyController extends AdminController
     {
         $this->datagrid = $this->get('currency.datagrid')->init();
         
-        print_r($this->datagrid);
-        
         return Array(
             'datagrid' => $this->datagrid,
             'datagrid_filter' => Array()

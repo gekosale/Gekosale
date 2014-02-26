@@ -10,7 +10,6 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core;
-use Gekosale\Core\Repository;
 use Gekosale\Core\DataGrid\Column;
 use Gekosale\Core\DataGrid\Renderer;
 use xajaxResponse;
