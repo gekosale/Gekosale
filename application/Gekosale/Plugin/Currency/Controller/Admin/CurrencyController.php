@@ -22,9 +22,7 @@ use Gekosale\Core\Controller\AdminController;
 class CurrencyController extends AdminController
 {
     /**
-     * Get currency datagrid
-     *
-     * @return \Gekosale\Core\DataGrid
+     * Get currency DataGrid
      */
     protected function getDataGrid()
     {
@@ -32,9 +30,7 @@ class CurrencyController extends AdminController
     }
 
     /**
-     * Get currency repository
-     *
-     * @return \Gekosale\Core\Repository
+     * Get currency Repository
      */
     protected function getRepository()
     {
@@ -42,9 +38,7 @@ class CurrencyController extends AdminController
     }
 
     /**
-     * Get currency form
-     *
-     * @return \Gekosale\Core\Form
+     * Get currency Form
      */
     protected function getForm()
     {
@@ -53,11 +47,9 @@ class CurrencyController extends AdminController
 
     /**
      * Get alias for plugin
-     *
-     * @return string
      */
     protected function getPluginAlias()
     {
-        return 'admin.vat';
+        return 'admin.currency';
     }
 }

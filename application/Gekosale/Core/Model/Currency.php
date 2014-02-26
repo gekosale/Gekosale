@@ -27,4 +27,8 @@ class Currency extends Model
     public $timestamps = true;
 
     protected $softDelete = false;
+
+    protected $fillable = array(
+        'id'
+    );
 }

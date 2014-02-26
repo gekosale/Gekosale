@@ -68,4 +68,12 @@ abstract class AdminController extends Controller
         return $this->generateUrl(sprintf('%s.%s', $this->getPluginAlias(), $action));
     }
 
+    abstract protected function getRepository();
+
+    abstract protected function getDataGrid();
+
+    abstract protected function getForm();
+
+    abstract protected function getPluginAlias();
+
 }

@@ -48,6 +48,30 @@ class CurrencyRepository extends Repository
     }
 
     /**
+     * Saves currency data
+     *
+     * @param      $Data
+     * @param null $id
+     */
+    public function save($Data, $id = null)
+    {
+        $currency = Currency::firstOrNew([
+            'id' => $id
+        ]);
+
+        $currency->name               = $Data['required_data']['name'];
+        $currency->symbol             = $Data['required_data']['symbol'];
+        $currency->decimal_separator  = $Data['required_data']['decimal_separator'];
+        $currency->decimal_count      = $Data['required_data']['decimal_count'];
+        $currency->thousand_separator = $Data['required_data']['thousand_separator'];
+        $currency->positive_prefix    = $Data['required_data']['positive_prefix'];
+        $currency->negative_prefix    = $Data['required_data']['negative_prefix'];
+        $currency->negative_sufix     = $Data['required_data']['negative_sufix'];
+
+        $currency->save();
+    }
+
+    /**
      * Returns data required for populating a form
      *
      * @param $id
@@ -76,7 +100,7 @@ class CurrencyRepository extends Repository
     }
 
     /**
-     * Returns all valid currency symbols as key-value pairs
+     * Retrieves all valid currency symbols as key-value pairs
      *
      * @return array
      */
