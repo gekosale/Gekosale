@@ -19,19 +19,19 @@ $controller = 'Gekosale\Plugin\Currency\Controller\Admin\CurrencyController';
 $collection->add('admin.currency.index', new Route('/index', array(
     'controller' => $controller,
     'mode' => 'admin',
-    'action' => 'index'
+    'action' => 'indexAction'
 )));
 
 $collection->add('admin.currency.add', new Route('/add', array(
     'controller' => $controller,
     'mode' => 'admin',
-    'action' => 'add'
+    'action' => 'addAction'
 )));
 
 $collection->add('admin.currency.edit', new Route('/edit/{id}', array(
     'controller' => $controller,
     'mode' => 'admin',
-    'action' => 'edit',
+    'action' => 'editAction',
     'id' => NULL
 )));
 

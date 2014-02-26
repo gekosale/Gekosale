@@ -21,20 +21,13 @@ use Gekosale\Core\Controller\AdminController;
  */
 class CurrencyController extends AdminController
 {
-    public function index()
+    public function indexAction()
     {
         $datagrid = $this->getDataGrid();
 
-        $this->getXajax()->registerFunction([
-            'getCurrencyForAjax',
-            $datagrid,
-            'getData'
-        ]);
-
-        $this->getXajax()->registerFunction([
-            'doDeleteCurrency',
-            $datagrid,
-            'doDeleteCurrency'
+        $this->getXajaxManager()->registerFunctions([
+            'getCurrencyForAjax' => [$datagrid, 'getData'],
+            'doDeleteCurrency'   => [$datagrid, 'doDeleteCurrency']
         ]);
 
         $datagrid->init();
@@ -44,7 +37,7 @@ class CurrencyController extends AdminController
         );
     }
 
-    public function add()
+    public function addAction()
     {
         $form = $this->getForm()->init();
 
@@ -60,7 +53,7 @@ class CurrencyController extends AdminController
         );
     }
 
-    public function edit($id)
+    public function editAction($id)
     {
         $populateData = $this->getRepository()->getPopulateData($id);
         $form         = $this->getForm()->init($populateData);
