@@ -36,7 +36,7 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
             'doDeleteCurrency'
         ]);
 
-        $this->setTableData(Array(
+        $this->setTableData([
             'id'     => Array(
                 'source' => 'C.id'
             ),
@@ -46,14 +46,14 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
             'symbol' => Array(
                 'source' => 'C.symbol'
             )
-        ));
+        ]);
 
         $this->setFrom('
-			currency C
-		');
+            currency C
+        ');
 
         $this->setGroupBy('
-			C.id
-		');
+            C.id
+        ');
     }
 }
