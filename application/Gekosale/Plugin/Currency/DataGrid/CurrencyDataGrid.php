@@ -25,27 +25,20 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
 
     public function init ()
     {
-        $foo = 1;
-
         $this->setName('currency');
         
-        $this->addColumn(new Column([
+        $this->addColumn(new Column(Array(
             'name' => 'id',
             'source' => 'V.id',
             'editable' => true,
             'caption' => $this->trans('TXT_ID'),
             'filter' => DataGridInterface::FILTER_BETWEEN,
-            'appearance' => [
+            'appearance' => Array(
                 'width' => 150,
                 'visible' => false,
                 'align' => DataGridInterface::ALIGN_LEFT
-            ]
-        ]));
-        
-        $this->addColumn(new Column([
-            'name' => 'id2',
-            'source' => 'V.id2'
-        ]));
+            )
+        )));
         
         return $this;
     }

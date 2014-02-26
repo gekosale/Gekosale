@@ -53,36 +53,18 @@ class DataGrid extends Component
 
     protected $warnings;
 
-    protected $additionalRows;
-
     protected $container;
 
     protected $repository;
 
+    /**
+     * Set DataGrid name
+     * 
+     * @param string $name
+     */
     public function setName ($name)
     {
         $this->name = $name;
-    }
-
-    public function render ()
-    {
-        $renderer = new Renderer($this);
-        return $renderer->toHtml();
-    }
-
-    public function getContainer ()
-    {
-        return $this->container;
-    }
-
-    public function setRepository (Repository $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    public function setAdditionalRows ($rows)
-    {
-        $this->additionalRows = $rows;
     }
 
     protected function addColumn (Column $column)
@@ -232,9 +214,6 @@ class DataGrid extends Component
             catch (Exception $e){
                 $rows = Array();
                 $this->warnings[] = $e->getMessage();
-            }
-            if (isset($this->additionalRows) && is_array($this->additionalRows) && count($this->additionalRows)){
-                $rows = array_merge($this->additionalRows, $rows);
             }
             $rowData = $this->processRows($rows);
             
