@@ -6,7 +6,6 @@
 
     <imports>
         <import resource="parameters.xml" />
-        <import resource="services/cache.xml" />
         <import resource="services/core.xml" />
         <import resource="services/database.xml" />
         <import resource="services/routing.xml" />

@@ -35,8 +35,6 @@ class ServiceContainer extends Container
         $this->methodMap = array(
             'admin_menu.subscriber' => 'getAdminMenu_SubscriberService',
             'availability.subscriber' => 'getAvailability_SubscriberService',
-            'cache' => 'getCacheService',
-            'cache_storage' => 'getCacheStorageService',
             'config_locator' => 'getConfigLocatorService',
             'controller_resolver' => 'getControllerResolverService',
             'currency.datagrid' => 'getCurrency_DatagridService',
@@ -100,32 +98,6 @@ class ServiceContainer extends Container
     protected function getAvailability_SubscriberService()
     {
         return $this->services['availability.subscriber'] = new \Gekosale\Plugin\Availability\Event\AvailabilitySubscriber();
-    }
-
-    /**
-     * Gets the 'cache' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Core\Resolver\Controller A Gekosale\Core\Resolver\Controller instance.
-     */
-    protected function getCacheService()
-    {
-        return $this->services['cache'] = new \Gekosale\Core\Resolver\Controller($this->get('cache_storage'));
-    }
-
-    /**
-     * Gets the 'cache_storage' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Core\Cache\Storage\File A Gekosale\Core\Cache\Storage\File instance.
-     */
-    protected function getCacheStorageService()
-    {
-        return $this->services['cache_storage'] = new \Gekosale\Core\Cache\Storage\File($this, 'D:\\Git\\Gekosale3\\var/cache', 'reg');
     }
 
     /**
@@ -723,8 +695,6 @@ class ServiceContainer extends Container
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => '',
             ),
-            'cache.class' => 'Gekosale\\Core\\Resolver\\Controller',
-            'cache_storage.class' => 'Gekosale\\Core\\Cache\\Storage\\File',
             'config_locator.class' => 'Symfony\\Component\\Config\\FileLocator',
             'controller_resolver.class' => 'Gekosale\\Core\\ControllerResolver',
             'event_dispatcher.class' => 'Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher',
