@@ -11,13 +11,15 @@
  */
 namespace Gekosale\Core\Model;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class Currency
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Currency extends Eloquent
+class Currency extends Model
 {
 
     protected $table = 'currency';

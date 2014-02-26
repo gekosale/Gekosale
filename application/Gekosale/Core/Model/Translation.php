@@ -11,13 +11,15 @@
  */
 namespace Gekosale\Core\Model;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class Translation
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Translation extends Eloquent
+class Translation extends Model
 {
 
     protected $table = 'translation';

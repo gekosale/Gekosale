@@ -11,13 +11,15 @@
  */
 namespace Gekosale\Core\Model;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class SuffixType
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class SuffixType extends Eloquent
+class SuffixType extends Model
 {
 
     protected $table = 'suffix_type';

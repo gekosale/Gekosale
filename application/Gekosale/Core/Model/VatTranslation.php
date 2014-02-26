@@ -11,13 +11,15 @@
  */
 namespace Gekosale\Core\Model;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class VatTranslation
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatTranslation extends Eloquent
+class VatTranslation extends Model
 {
 
     protected $table = 'vat_translation';
