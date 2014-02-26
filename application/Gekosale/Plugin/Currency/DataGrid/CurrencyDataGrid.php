@@ -1,45 +1,47 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Plugin
- * @subpackage  Gekosale\Plugin\CurrencyDataGrid
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Currency\DataGrid;
 
-use Gekosale\Core\DataGrid;
-use Gekosale\Core\DataGrid\DataGridInterface;
-use Gekosale\Core\DataGrid\Column;
-use Gekosale\Core\DataGrid\Filter\Between;
-use Foo;
+use Gekosale\Core\DataGrid,
+    Gekosale\Core\DataGrid\DataGridInterface;
 
+/**
+ * Class CurrencyDataGrid
+ *
+ * @package Gekosale\Plugin\Currency\DataGrid
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class CurrencyDataGrid extends DataGrid implements DataGridInterface
 {
-
-    public function init ()
+    public function init()
     {
-        $this->setName('currency');
-        
-        $this->addColumn(new Column(Array(
-            'name' => 'id',
-            'source' => 'V.id',
-            'editable' => true,
-            'caption' => $this->trans('TXT_ID'),
-            'filter' => DataGridInterface::FILTER_BETWEEN,
-            'appearance' => Array(
-                'width' => 150,
-                'visible' => false,
-                'align' => DataGridInterface::ALIGN_LEFT
+        $this->setTableData(Array(
+            'id'     => Array(
+                'source' => 'C.id'
+            ),
+            'name'   => Array(
+                'source' => 'C.name'
+            ),
+            'symbol' => Array(
+                'source' => 'C.symbol'
             )
-        )));
-        
-        return $this;
+        ));
+
+        $this->setFrom('
+			currency C
+		');
+
+        $this->setGroupBy('
+			C.id
+		');
     }
 }

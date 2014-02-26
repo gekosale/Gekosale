@@ -13,6 +13,7 @@
         <parameter key="kernel.class">Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel</parameter>
         <parameter key="translation.class">Gekosale\Core\Translation</parameter>
         <parameter key="xajax_manager.class">Gekosale\Core\XajaxManager</parameter>
+        <parameter key="xajax.class">xajax</parameter>
     </parameters>
     
     <services>
@@ -38,6 +39,8 @@
         <service id="controller_resolver" class="%controller_resolver.class%">
             <argument type="service" id="service_container"/>
         </service>
+        
+        <service id="xajax" class="%xajax.class%" />
         
         <service id="xajax_manager" class="%xajax_manager.class%">
         	<argument type="service" id="service_container"/>

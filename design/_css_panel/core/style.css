@@ -7012,7 +7012,7 @@ form {
     color: #000;
     text-align: center;
     padding: 10px 4px 11px;		/* left/right = 4px - krytyczne dla dzialania */
-    border-bottom: 2px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #ffffff), color-stop(100%, #f6f6f6));
     background-image: -webkit-linear-gradient(#ffffff, #f6f6f6);
     background-image: -moz-linear-gradient(#ffffff, #f6f6f6);
@@ -7300,7 +7300,7 @@ form {
 .GF_Datagrid .body tr.e td,
 .GF_Datagrid .body tr.e th {
     background: #f7f7f7;
-    border-bottom: 1px solid #e4e4e4;
+    border-bottom: 0px solid #e4e4e4;
 }
 
 .GF_Datagrid .body tr.o td,

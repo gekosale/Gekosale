@@ -26,6 +26,27 @@ class CurrencyRepository extends Repository
         return Currency::all();
     }
 
+    public function getPopulateData ($id)
+    {
+        $currencyData = Currency::findOrFail($id)->toArray();
+        
+        $populateData = Array(
+            'required_data' => Array(
+                'name' => $currencyData['name'],
+                'symbol' => $currencyData['symbol'],
+                'decimal_separator' => $currencyData['decimal_separator'],
+                'decimal_count' => $currencyData['decimal_count'],
+                'thousand_separator' => $currencyData['thousand_separator'],
+                'positive_prefix' => $currencyData['positive_prefix'],
+                'positive_sufix' => $currencyData['positive_sufix'],
+                'negative_prefix' => $currencyData['negative_prefix'],
+                'negative_sufix' => $currencyData['negative_sufix']
+            )
+        );
+        
+        return $populateData;
+    }
+
     public function getCurrencySymbols ()
     {
         $currencies = Intl::getCurrencyBundle()->getCurrencyNames();

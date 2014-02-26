@@ -32,9 +32,10 @@ class FormEvent extends Event
      *
      * @param Form $form
      */
-    public function __construct(Form $form)
+    public function __construct (Form $form, $populateData = Array())
     {
         $this->form = $form;
+        $this->populateData = $populateData;
     }
 
     /**
@@ -43,7 +44,7 @@ class FormEvent extends Event
      * @return Form
      *
      */
-    public function getForm()
+    public function getForm ()
     {
         return $this->form;
     }
@@ -53,7 +54,7 @@ class FormEvent extends Event
      *
      * @return array
      */
-    public function getPopulateData()
+    public function getPopulateData ()
     {
         return $this->populateData;
     }
@@ -65,7 +66,7 @@ class FormEvent extends Event
      *
      * @return void
      */
-    public function setPopulateData(array $Data)
+    public function setPopulateData (array $Data)
     {
         $this->populateData = array_merge_recursive($this->populateData, $Data);
     }

@@ -11,9 +11,9 @@
  */
 namespace Gekosale\Core;
 
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\Loader\ArrayLoader;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Translation\Translator,
+    Symfony\Component\Translation\Loader\ArrayLoader,
+    Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class Translation
@@ -56,7 +56,7 @@ class Translation extends Translator
     protected function getResource()
     {
         $Data = Array();
-       
+
         return $Data;
     }
 }

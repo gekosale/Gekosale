@@ -2031,8 +2031,6 @@ var GTabs = function() {
 			overflow: 'hidden'
 		}).tabs('add', '#a', '', 1).tabs('select', 1);
 		
-		setTimeout(function() {
-			setTimeout(function() {
 				setTimeout(function() {
 					$(gThis).tabs('select', 0).tabs('remove', 1).wrap('<div style="clear: both;"/>').css('height', 'auto');
 					$(gThis).parent().css('display', 'none').slideDown(350);
@@ -2041,8 +2039,6 @@ var GTabs = function() {
 						overflow: 'visible'
 					});
 				}, 10);
-			}, 10);
-		}, 10);
 		
 //		if(window.location.hash.length){
 //			setTimeout(function() {

@@ -24,17 +24,6 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 class CurrencyEventSubscriber implements EventSubscriberInterface
 {
 
-    public function onFormInitAction (Event $event)
-    {
-        $repository = $event->getDispatcher()->getContainer()->get('currency.repository');
-        
-        $event->setPopulateData(Array(
-            'required_data' => Array(
-                'value1' => 'required_data1'
-            )
-        ));
-    }
-
     public function onAdminMenuInitAction (Event $event)
     {
         $event->setMenuData(Array(
@@ -47,7 +36,6 @@ class CurrencyEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents ()
     {
         return array(
-            CurrencyFormEvent::FORM_INIT_EVENT => 'onFormInitAction',
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
         );
     }

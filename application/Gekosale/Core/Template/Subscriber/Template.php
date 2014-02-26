@@ -10,6 +10,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core\Template\Subscriber;
+
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -46,6 +47,13 @@ class Template implements EventSubscriberInterface
         $templateVars = $request->attributes->get('_template_vars');
         
         $parameters = array_merge($templateVars, $controllerResult);
+        
+        /*
+         * Always process Xajax requests
+         */
+        $container->get('xajax')->processRequest();
+        
+        $parameters['xajax'] = $container->get('xajax')->getJavascript();
         
         $guesser = $this->getGuesser($request->attributes->get('mode'));
         

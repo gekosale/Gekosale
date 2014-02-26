@@ -1001,7 +1001,7 @@ GF_Autosuggest = GF_Instance.GF_Extend('GF_Autosuggest', function(target, option
 	*/
 	this.InitializeEvents = function() {
 		this.m_jInput.blur(this.BlurInput).focus(this.FocusInput).click(this.ClickedInput).keypress(this.KeyPressed).keydown(this.KeyDown);
-		$('#autosuggest-suggestions li').live('click', this.SuggestionChosen).live('mouseover', this.ChangeActiveSuggestion);
+		$('#autosuggest-suggestions li').on('click', this.SuggestionChosen).on('mouseover', this.ChangeActiveSuggestion);
 	};
 	
 	/**
@@ -4116,10 +4116,10 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 	
 	this._InitializeEvents = function() {
 		this.m_jTarget.keypress(GF.StopPropagation).keydown(GF.StopPropagation);
-		this.m_jTarget.find('.header thead .GF_Datagrid_Col__modify_columns a').live('click', this._HandleToggleColumns);
-		this.m_jTarget.find('.header thead .GF_Datagrid_Col__select input:checkbox').live('click', this._HandleToggleSelectVisible);
-		this.m_jTarget.find('.header thead th.sortable').live('click', this._ChangeOrder);
-		this.m_jTarget.find('.header tbody .GF_Datagrid_Col__retract_filters a').live('click', this.ToggleFilters);
+		this.m_jTarget.find('.header thead .GF_Datagrid_Col__modify_columns a').on('click', this._HandleToggleColumns);
+		this.m_jTarget.find('.header thead .GF_Datagrid_Col__select input:checkbox').on('click', this._HandleToggleSelectVisible);
+		this.m_jTarget.find('.header thead th.sortable').on('click', this._ChangeOrder);
+		this.m_jTarget.find('.header tbody .GF_Datagrid_Col__retract_filters a').on('click', this.ToggleFilters);
 		this.m_jTarget.mousemove(this._SpacerDrag).mouseup(this._SpacerDragStop);
 		if (this.m_jFooter && this.m_jFooter.length) {
 			this.m_jFooter.find('.GF_Datagrid_clear_selection').click(this.ClearSelection);
@@ -4129,9 +4129,9 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 			this.m_jFooter.find('.GF_Datagrid_go_to_last').click(this._HandleGoToLast);
 			this.m_jFooter.find('.GF_Datagrid_page').change(this._HandleGoToPage).keypress(this._HandleGoToPage);
 		}
-		$('.GF_Datagrid_Modify_columns .save a').live('click', this._HandleSaveColumns);
-		$('.GF_Datagrid_Modify_columns .restore a').live('click', this._HandleRestoreColumns);
-		$('.GF_Datagrid_Col__select input').live('mousedown', GF.PreventDefault);
+		$('.GF_Datagrid_Modify_columns .save a').on('click', this._HandleSaveColumns);
+		$('.GF_Datagrid_Modify_columns .restore a').on('click', this._HandleRestoreColumns);
+		$('.GF_Datagrid_Col__select input').on('mousedown', GF.PreventDefault);
 	};
 	
 	this._InitializeRowEvents = function(jTr) {
@@ -4621,52 +4621,6 @@ GF_Action = GF_Config.GF_Extend('GF_Action', function(options) {
 	
 });
 
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.com
- *
- * Copyright (c) 2009 Gekosale
- *
- * This library is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version. 
- * 
- */
- GF_Datagrid.Language = {
-	options: '<span class="hidden">Opcje</span>',
-	select_all: 'Zaznacz wszystkie',
-	modify_columns: 'Zmień ustawienia kolumn',
-	retract_filters: 'Zwiń filtry',
-	expand_filters: 'Rozwiń filtry',
-	from: 'Od:',
-	to: 'Do:',
-	delete_group: 'Usuń wybrane rekordy',
-	delete_row: 'Usuń',
-	edit_row: 'Edytuj',
-	view_row: 'Wyświetl rekord',
-	records_shown: 'Rekordy:',
-	out_of: 'z',
-	choose_page: 'Strona:',
-	go_to_prev_page: 'Przejdź do poprzedniej strony',
-	go_to_next_page: 'Przejdź do następnej strony',
-	go_to_first_page: 'Przejdź do pierwszej strony',
-	go_to_last_page: 'Przejdź do ostatniej strony',
-	selected_records: 'Wybranych:',
-	clear_selection: 'Anuluj wybór',
-	confirm: 'OK',
-	restore_default: 'Przywróć domyślne',
-	restore_default_desc: 'Przywróć domyślne ustawienia kolumn dla tego modułu',
-	save_and_confirm: 'Zapamiętaj ustawienia',
-	save_and_confirm_desc: 'Zapamiętaj ustawienia i szerokości kolumn, aby stały się domyślnymi dla tego modułu',
-	no_rows_selected: 'Nie wybrano żadnego wiersza.',
-	not_all_shown: 'Uwaga! Zastosowano filtrację. Ukrytych rekordów: ',
-	filter_tree_expand: 'Wybierz',
-	filter_tree_retract: 'Zwiń',
-	filter_tree_cancel: 'Usuń z filtra',
-	filter_tree_cancel_all: 'Zresetuj',
-	filter_tree_empty: '(brak filtracji)'
-};
 
 /**
  * Gekosale, Open Source E-Commerce Solution
