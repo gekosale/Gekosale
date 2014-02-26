@@ -21,6 +21,62 @@ use Gekosale\Core\Controller\AdminController;
  */
 class CurrencyController extends AdminController
 {
+    public function index()
+    {
+        $datagrid = $this->getDataGrid();
+
+        $this->getXajax()->registerFunction([
+            'getCurrencyForAjax',
+            $datagrid,
+            'getData'
+        ]);
+
+        $this->getXajax()->registerFunction([
+            'doDeleteCurrency',
+            $datagrid,
+            'doDeleteCurrency'
+        ]);
+
+        $datagrid->init();
+
+        return Array(
+            'datagrid_filter' => $datagrid->getFilterData()
+        );
+    }
+
+    public function add()
+    {
+        $form = $this->getForm()->init();
+
+        if ($form->Validate()) {
+
+            $this->getRepository()->save($form->getSubmitValues());
+
+            return $this->redirect($this->generateUrl('admin.currency.index'));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
+    public function edit($id)
+    {
+        $populateData = $this->getRepository()->getPopulateData($id);
+        $form         = $this->getForm()->init($populateData);
+
+        if ($form->Validate()) {
+
+            $this->getRepository()->save($form->getSubmitValues(), $id);
+
+            return $this->redirect($this->generateUrl('admin.currency.index'));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
     /**
      * Get currency DataGrid
      */

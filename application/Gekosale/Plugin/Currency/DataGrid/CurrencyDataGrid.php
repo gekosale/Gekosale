@@ -24,28 +24,16 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
 {
     public function init()
     {
-        $this->getXajax()->registerFunction([
-            'getCurrencyForAjax',
-            $this,
-            'getData'
-        ]);
-
-        $this->getXajax()->registerFunction([
-            'doDeleteCurrency',
-            $this,
-            'doDeleteCurrency'
-        ]);
-
         $this->setTableData([
-            'id'     => Array(
+            'id'     => [
                 'source' => 'C.id'
-            ),
-            'name'   => Array(
+            ],
+            'name'   => [
                 'source' => 'C.name'
-            ),
-            'symbol' => Array(
+            ],
+            'symbol' => [
                 'source' => 'C.symbol'
-            )
+            ]
         ]);
 
         $this->setFrom('
