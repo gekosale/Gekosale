@@ -83,6 +83,10 @@ class CurrencyRepository extends Repository
     {
         $currencyData = $this->find($id)->toArray();
 
+        if (empty($currencyData)) {
+            throw new \InvalidArgumentException('Currency with such ID does not exists');
+        }
+
         $populateData = [
             'required_data' => [
                 'name'               => $currencyData['name'],
