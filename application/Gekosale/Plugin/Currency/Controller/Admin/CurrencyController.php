@@ -21,61 +21,14 @@ use Gekosale\Core\Controller\AdminController;
  */
 class CurrencyController extends AdminController
 {
-    public function index()
+    /**
+     * Get currency datagrid
+     *
+     * @return \Gekosale\Core\DataGrid
+     */
+    protected function getDataGrid()
     {
-        $datagrid = $this->get('currency.datagrid');
-
-        $this->getXajax()->registerFunction([
-            'getCurrencyForAjax',
-            $datagrid,
-            'getData'
-        ]);
-
-        $this->getXajax()->registerFunction([
-            'doDeleteCurrency',
-            $datagrid,
-            'doDeleteCurrency'
-        ]);
-
-        $datagrid->init();
-
-        return Array(
-            'datagrid_filter' => Array()
-        );
-    }
-
-    public function add()
-    {
-        $form = $this->getForm()->init();
-
-        if ($form->Validate()) {
-
-            $this->getRepository()->save($form->getSubmitValues());
-
-            return $this->redirect($this->generateUrl('admin.vat.index'));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
-    public function edit($id)
-    {
-        $repository   = $this->get('currency.repository');
-        $populateData = $repository->getPopulateData($id);
-        $form         = $this->get('currency.form')->init($populateData);
-
-        if ($form->Validate()) {
-
-            $repository->save($form->getSubmitValues(), $id);
-
-            return $this->redirect($this->generateUrl('admin.vat.index'));
-        }
-
-        return Array(
-            'form' => $form
-        );
+        return $this->get('currency.datagrid');
     }
 
     /**
@@ -96,5 +49,15 @@ class CurrencyController extends AdminController
     protected function getForm()
     {
         return $this->get('currency.form');
+    }
+
+    /**
+     * Get alias for plugin
+     *
+     * @return string
+     */
+    protected function getPluginAlias()
+    {
+        return 'admin.vat';
     }
 }

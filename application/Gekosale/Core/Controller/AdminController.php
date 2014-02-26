@@ -19,6 +19,53 @@ use Gekosale\Core\Controller;
  * @package Gekosale\Core\Controller
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class AdminController extends Controller
+abstract class AdminController extends Controller
 {
+    public function index()
+    {
+        $this->getDataGrid()->init();
+
+        return Array(
+            'datagrid_filter' => $this->getDataGrid()->getFilterData()
+        );
+    }
+
+    public function add()
+    {
+        $form = $this->getForm()->init();
+
+        if ($form->Validate()) {
+
+            $this->getRepository()->save($form->getSubmitValues());
+
+            return $this->redirect($this->getActionRoute('index'));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
+    public function edit($id)
+    {
+        $populateData = $this->getRepository()->getPopulateData($id);
+        $form         = $this->getForm()->init($populateData);
+
+        if ($form->Validate()) {
+
+            $this->getRepository()->save($form->getSubmitValues(), $id);
+
+            return $this->redirect($this->getActionRoute('index'));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
+    protected function getActionRoute($action)
+    {
+        return $this->generateUrl(sprintf('%s.%s', $this->getPluginAlias(), $action));
+    }
+
 }
