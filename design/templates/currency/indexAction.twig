@@ -20,53 +20,22 @@ function processCurrency(row) {
 	};
 };
 
-function updateCurrency(dg, id) {
-    var oRow = theDatagrid.GetRow(id);
-	var title = '{% trans %}TXT_UPDATE_EXCHANGE_RATES{% endtrans %}';
-	var msg = '{% trans %}TXT_UPDATE_EXCHANGE_RATES_HELP{% endtrans %} <strong>' + oRow.currencysymbol +'</strong> ?';
-	var params = {
-		dg: dg,
-		id: id
-	};
-	var func = function(p) {
-		return xajax_doUpdateCurrency(p.dg, p.id);
-	};
-	new GF_Alert(title, msg, func, true, params);
-};
-	 
 function editCurrency(dg, id) {
 	location.href = "{{ path('admin.currency.edit') }}/" + id;
 };
 	
-function calculateCurrencieslist(dg, id) {
-	return xajax_dodeleteCurrency(id);
-};
-	 
 function deleteCurrency(dg, id) {
  	var oRow = theDatagrid.GetRow(id);
-	var topic = '{% trans %}TXT_DELETE{% endtrans %}';
-	var msg = '{% trans %}TXT_DELETE_CONFIRM{% endtrans %} <strong>' + oRow.currencysymbol +'</strong> ?';
+	var topic = '{% trans %}Delete{% endtrans %}';
+	var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.symbol +'</strong> ?';
 	var params = {
 		dg: dg,
 		id: id
 	};
 	var func = function(p) {
-		return xajax_dodeleteCurrency(p.dg, p.id);
+		return xajax_doDeleteCurrency(p.dg, p.id);
 	};
 	new GF_Alert(topic, msg, func, true, params);
-};
-	
-function deleteCurrencyMany(dg, ids) {
-	var title = '{% trans %}TXT_DELETE{% endtrans %}';
-	var msg = '{% trans %}TXT_DELETE_CONFIRM{% endtrans %} ' + ids.join(', ') + '?';
-	var params = {
-		dg: dg,
-		ids: ids
-	};
-	var func = function(p) {
-		return xajax_dodeleteCurrency(p.dg, p.ids);
-	};
-    new GF_Alert(title, msg, func, true, params);
 };
 
 var theDatagrid;
@@ -75,7 +44,7 @@ $(document).ready(function() {
 		
 	var column_id = new GF_Datagrid_Column({
 		id: 'id',
-		caption: '{% trans %}TXT_ID{% endtrans %}',
+		caption: '{% trans %}Id{% endtrans %}',
 		appearance: {
 			width: 90,
 			visible: false
@@ -120,7 +89,6 @@ $(document).ready(function() {
 			load: xajax_getCurrencyForAjax,
 			edit_row: editCurrency,
 			delete_row: deleteCurrency,
-			delete_group: deleteCurrencyMany,
 			process: processCurrency,
 			click_row: editCurrency
 		},

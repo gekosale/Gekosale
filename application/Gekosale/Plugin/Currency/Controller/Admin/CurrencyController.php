@@ -27,7 +27,7 @@ class CurrencyController extends AdminController
 
         $this->getXajaxManager()->registerFunctions([
             'getCurrencyForAjax' => [$datagrid, 'getData'],
-            'doDeleteCurrency'   => [$datagrid, 'doDeleteCurrency']
+            'doDeleteCurrency'   => [$datagrid, 'delete']
         ]);
 
         $datagrid->init();
@@ -92,13 +92,5 @@ class CurrencyController extends AdminController
     protected function getForm()
     {
         return $this->get('currency.form');
-    }
-
-    /**
-     * Get alias for plugin
-     */
-    protected function getPluginAlias()
-    {
-        return 'admin.currency';
     }
 }

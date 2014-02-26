@@ -72,15 +72,6 @@ class DataGrid extends Component
                 }
                 $sql .= ' AS possibility FROM ' . $this->queryFrom . ' ORDER BY possibility';
                 $stmt = $this->db->prepare($sql);
-                if (preg_match('/:languageid/', $sql)) {
-                    $stmt->bindValue('languageid', $this->languageId);
-                }
-                if (preg_match('/:viewid/', $sql)) {
-                    $stmt->bindValue('viewid', ($this->viewId > 0) ? $this->viewId : null);
-                }
-                if (preg_match('/:views/', $sql)) {
-                    $stmt->bindValue('views', implode(',', $this->viewIds));
-                }
 
                 foreach ($this->sqlParams as $key => $val) {
 
@@ -165,13 +156,30 @@ class DataGrid extends Component
         return $objResponse;
     }
 
+    public function deleteRow($datagridId, $rowId, $deleteFunction)
+    {
+        $objResponse = new xajaxResponse();
+        $deleteFunction[0]->$deleteFunction[1]($rowId);
+        $objResponse->script("try { GF_Datagrid.ReturnInstance({$datagridId}).LoadData(); GF_Datagrid.ReturnInstance({$datagridId}).ClearSelection(); GF_ConflictResolver.GetMain().Update(); } catch (x) { GF_Debug.HandleException(x); }");
+        return $objResponse;
+    }
+
     protected function getSelectedRows($request)
     {
         $offset = (int)$request['starting_from'];
         $limit  = (int)$request['limit'];
 
-        list($idColumn, $groupBy, $orderBy, $orderDir, $conditionString, $conditions, $additionalConditionString,
-            $havingString, $having)
+        list(
+            $idColumn,
+            $groupBy,
+            $orderBy,
+            $orderDir,
+            $conditionString,
+            $conditions,
+            $additionalConditionString,
+            $havingString,
+            $having
+            )
             = $this->getQueryData($request);
         $sql
               = "SELECT SQL_CALC_FOUND_ROWS {$this->getColumnsString()} FROM {$this->queryFrom}{$conditionString}{$additionalConditionString}{$groupBy}{$havingString} ORDER BY {$orderBy} {$orderDir} LIMIT {$offset},{$limit}";

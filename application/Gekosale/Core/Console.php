@@ -26,8 +26,6 @@ class Console extends Application
         parent::__construct('Welcome to Gekosale CLI Tool', '1.0');
         
         $this->addCommands(array(
-            new Console\Command\Migrate\Add(),
-            new Console\Command\Migrate\Up(),
             new Console\Command\Routes\Dump()
         ));
     }

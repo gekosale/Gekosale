@@ -48,6 +48,16 @@ class CurrencyRepository extends Repository
     }
 
     /**
+     * Deletes currency model by ID
+     *
+     * @param $id
+     */
+    public function delete($id)
+    {
+        return Currency::destroy($id);
+    }
+
+    /**
      * Saves currency data
      *
      * @param      $Data
