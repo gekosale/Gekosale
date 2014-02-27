@@ -45,7 +45,7 @@ class CurrencyController extends AdminController
 
             $this->getRepository()->save($form->getSubmitValues());
 
-            return $this->redirect($this->generateUrl('admin.currency.index'));
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
         return Array(
@@ -62,7 +62,7 @@ class CurrencyController extends AdminController
 
             $this->getRepository()->save($form->getSubmitValues(), $id);
 
-            return $this->redirect($this->generateUrl('admin.currency.index'));
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
         return Array(
@@ -92,5 +92,10 @@ class CurrencyController extends AdminController
     protected function getForm()
     {
         return $this->get('currency.form');
+    }
+
+    protected function getDefaultRoute()
+    {
+        return 'admin.currency.index';
     }
 }

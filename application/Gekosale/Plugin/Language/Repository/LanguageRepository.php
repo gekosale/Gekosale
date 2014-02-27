@@ -36,7 +36,7 @@ class LanguageRepository extends Repository
     }
 
     /**
-     * Returns a single language data
+     * Returns a language record
      *
      * @param $id
      *
@@ -44,7 +44,7 @@ class LanguageRepository extends Repository
      */
     public function find($id)
     {
-        return Language::findOrFail($id);
+        return Language::with('currency')->findOrFail($id);
     }
 
     /**
@@ -69,15 +69,9 @@ class LanguageRepository extends Repository
             'id' => $id
         ]);
 
-        $language->name               = $Data['required_data']['name'];
-        $language->symbol             = $Data['required_data']['symbol'];
-        $language->decimal_separator  = $Data['required_data']['decimal_separator'];
-        $language->decimal_count      = $Data['required_data']['decimal_count'];
-        $language->thousand_separator = $Data['required_data']['thousand_separator'];
-        $language->positive_prefix    = $Data['required_data']['positive_prefix'];
-        $language->positive_sufix     = $Data['required_data']['positive_sufix'];
-        $language->negative_prefix    = $Data['required_data']['negative_prefix'];
-        $language->negative_sufix     = $Data['required_data']['negative_sufix'];
+        $language->name        = $Data['required_data']['name'];
+        $language->translation = $Data['required_data']['translation'];
+        $language->currency_id = $Data['currency_data']['currency_id'];
 
         $language->save();
     }
@@ -99,15 +93,11 @@ class LanguageRepository extends Repository
 
         $populateData = [
             'required_data' => [
-                'name'               => $languageData['name'],
-                'symbol'             => $languageData['symbol'],
-                'decimal_separator'  => $languageData['decimal_separator'],
-                'decimal_count'      => $languageData['decimal_count'],
-                'thousand_separator' => $languageData['thousand_separator'],
-                'positive_prefix'    => $languageData['positive_prefix'],
-                'positive_sufix'     => $languageData['positive_sufix'],
-                'negative_prefix'    => $languageData['negative_prefix'],
-                'negative_sufix'     => $languageData['negative_sufix']
+                'name'        => $languageData['name'],
+                'translation' => $languageData['translation'],
+            ],
+            'currency_data' => [
+                'currency_id' => $languageData['currency_id']
             ]
         ];
 

@@ -21,18 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Currency extends Model
 {
-
     protected $table = 'currency';
-
     public $timestamps = true;
-
     protected $softDelete = false;
+    protected $fillable = array('id');
 
-    protected $fillable = array(
-        'id'
-    );
-
-    public function toSelect(){
-
-    }
 }

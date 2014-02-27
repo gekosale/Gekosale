@@ -29,22 +29,19 @@ class LanguageDataGrid extends DataGrid implements DataGridInterface
     {
         $this->setTableData([
             'id'     => [
-                'source' => 'C.id'
+                'source' => 'L.id'
             ],
             'name'   => [
-                'source' => 'C.name'
-            ],
-            'symbol' => [
-                'source' => 'C.symbol'
+                'source' => 'L.name'
             ]
         ]);
 
         $this->setFrom('
-            language C
+            language L
         ');
 
         $this->setGroupBy('
-            C.id
+            L.id
         ');
     }
 

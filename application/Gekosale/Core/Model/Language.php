@@ -23,21 +23,12 @@ class Language extends Model
 {
 
     protected $table = 'language';
-
     public $timestamps = true;
-
     protected $softDelete = false;
+    protected $fillable = array('id');
 
-    protected $fillable = array(
-        'name'
-    );
-
-    protected $visible = array(
-        'name'
-    );
-
-    public function currency ()
+    public function currency()
     {
-        return $this->hasOne('Currency');
+        return $this->belongsTo('Gekosale\Core\Model\Currency');
     }
 }

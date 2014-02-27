@@ -30,41 +30,35 @@ class LanguageForm extends Form
             'name' => 'language',
         ]);
 
-        $form = $this->addForm([
-            'name' => 'currency',
-        ]);
-
-        $requiredData = $form->AddChild($this->addFieldset([
+        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
             'name'  => 'required_data',
-            'label' => $this->trans('TXT_MAIN_DATA')
+            'label' => $this->trans('Basic settings')
         ]));
 
         $requiredData->AddChild(new FormEngine\Elements\TextField([
-            'name'    => 'name',
-            'label'   => $this->trans('TXT_NAME'),
-            'comment' => $this->trans('TXT_EXAMPLE') . ': en_EN',
-            'rules'   => [
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_NAME'))
+            'name'  => 'name',
+            'label' => $this->trans('Name'),
+            'rules' => [
+                new FormEngine\Rules\Required($this->trans('Name is required'))
             ]
         ]));
 
         $requiredData->AddChild(new FormEngine\Elements\TextField([
-            'name'    => 'translation',
-            'label'   => $this->trans('TXT_TRANSLATION'),
-            'comment' => $this->trans('TXT_EXAMPLE') . ': TXT_ENGLISH',
-            'rules'   => [
-                new FormEngine\Rules\Required($this->trans('ERR_EMPTY_TRANSLATION'))
+            'name'  => 'translation',
+            'label' => $this->trans('Translation'),
+            'rules' => [
+                new FormEngine\Rules\Required($this->trans('Translation is required'))
             ]
         ]));
 
         $currencyData = $form->AddChild(new FormEngine\Elements\Fieldset([
             'name'  => 'currency_data',
-            'label' => $this->trans('TXT_CURRENCY_DATA')
+            'label' => $this->trans('Currency settings')
         ]));
 
         $currencyData->AddChild(new FormEngine\Elements\Select([
             'name'    => 'currency_id',
-            'label'   => $this->trans('TXT_DEFAULT_LANGUAGE_CURRENCY'),
+            'label'   => $this->trans('Default currency'),
             'options' => FormEngine\Option::Make($this->get('currency.repository')->getAllCurrencyToSelect())
         ]));
 

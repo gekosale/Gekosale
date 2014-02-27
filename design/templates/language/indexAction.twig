@@ -12,14 +12,6 @@
 
 <script type="text/javascript">
 
-function processLanguage(row) {
-	return {
-		id: row.id,
-		name: row.name,
-		symbol: row.symbol
-	};
-};
-
 function editLanguage(dg, id) {
 	location.href = "{{ path('admin.language.edit') }}/" + id;
 };
@@ -64,18 +56,7 @@ $(document).ready(function() {
 			type: GF_Datagrid.FILTER_INPUT
 		}
 	});
-		
-	var column_symbol = new GF_Datagrid_Column({
-		id: 'symbol',
-		caption: '{% trans %}Symbol{% endtrans %}',
-		appearance: {
-			width: 70
-		},
-		filter: {
-			type: GF_Datagrid.FILTER_INPUT
-		}
-	});
-		
+
    	var options = {
 		id: 'language',
 		appearance: {
@@ -89,13 +70,11 @@ $(document).ready(function() {
 			load: xajax_getLanguageForAjax,
 			edit_row: editLanguage,
 			delete_row: deleteLanguage,
-			process: processLanguage,
 			click_row: editLanguage
 		},
 		columns: [
 			column_id,
-			column_name,
-			column_symbol
+			column_name
 		],
 		row_actions: [
 			GF_Datagrid.ACTION_EDIT,
