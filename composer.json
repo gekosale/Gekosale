@@ -6,27 +6,27 @@
         {
             "name": "Adam Piotrowski",
             "email": "adam@gekosale.com",
-            "role": "Developer"
+            "role": "Lead Developer"
         },
         {
             "name": "Rafal Martonik",
             "email": "rafal@gekosale.com",
-            "role": "Developer"
+            "role": "Core Developer"
         },
         {
             "name": "Adrian Potępa",
             "email": "adrian@gekosale.com",
-            "role": "Developer"
+            "role": "Core Developer"
         },
         {
             "name": "Michal Gonciarz",
             "email": "michal@gekosale.com",
-            "role": "Support"
+            "role": "Support Lead"
         },
         {
             "name": "Igor Chudy",
             "email": "igor@gekosale.com",
-            "role": "Design"
+            "role": "Lead Designer"
         }
     ],
     "support": {
@@ -74,7 +74,6 @@
         "swiftmailer/swiftmailer": "5.1.x-dev",
         "illuminate/database": "4.1",
         "xajax/xajax": "1.0.0",
-        "gekosale/formengine": "dev-master",
         "symfony/property-access": "2.4.x-dev"
     },
     "autoload": {

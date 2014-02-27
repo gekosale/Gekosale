@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7c3c44f810791e1002e175bd10152f19",
+    "hash": "6bb2397f99745c8b722fe4042e45ff2f",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -179,60 +179,18 @@
             "time": "2014-02-11 03:21:16"
         },
         {
-            "name": "gekosale/formengine",
-            "version": "dev-master",
-            "target-dir": "FormEngine",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gekosale/FormEngine.git",
-                "reference": "526d5879c23c7194225d46b19c37e5ad6cf8cbe5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gekosale/FormEngine/zipball/526d5879c23c7194225d46b19c37e5ad6cf8cbe5",
-                "reference": "526d5879c23c7194225d46b19c37e5ad6cf8cbe5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "FormEngine": "/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Adam Piotrowski",
-                    "email": "adam@gekosale.com"
-                }
-            ],
-            "description": "Forms implementation for Gekosale platform.",
-            "homepage": "http://gekosale.com",
-            "keywords": [
-                "Forms",
-                "gekosale"
-            ],
-            "time": "2014-02-25 18:44:54"
-        },
-        {
             "name": "illuminate/container",
             "version": "4.1.x-dev",
             "target-dir": "Illuminate/Container",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
-                "reference": "dafb12a0c3c84dbecfac601a9c42547d8cfaa107"
+                "reference": "80383d49aa1c31f36c95abe582eb8fc779a996fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/container/zipball/dafb12a0c3c84dbecfac601a9c42547d8cfaa107",
-                "reference": "dafb12a0c3c84dbecfac601a9c42547d8cfaa107",
+                "url": "https://api.github.com/repos/illuminate/container/zipball/80383d49aa1c31f36c95abe582eb8fc779a996fc",
+                "reference": "80383d49aa1c31f36c95abe582eb8fc779a996fc",
                 "shasum": ""
             },
             "require": {
@@ -264,7 +222,7 @@
                     "role": "Developer"
                 }
             ],
-            "time": "2014-02-19 11:02:32"
+            "time": "2014-02-26 18:55:58"
         },
         {
             "name": "illuminate/database",
@@ -384,12 +342,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "c5dcf0ae3558aea0bfaeda9b3c61bd4e1d1a0465"
+                "reference": "390a3bcb4cf6c819fe13aad21aa5b70028e77ed3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/c5dcf0ae3558aea0bfaeda9b3c61bd4e1d1a0465",
-                "reference": "c5dcf0ae3558aea0bfaeda9b3c61bd4e1d1a0465",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/390a3bcb4cf6c819fe13aad21aa5b70028e77ed3",
+                "reference": "390a3bcb4cf6c819fe13aad21aa5b70028e77ed3",
                 "shasum": ""
             },
             "require": {
@@ -427,7 +385,7 @@
                     "role": "Developer"
                 }
             ],
-            "time": "2014-02-20 23:05:31"
+            "time": "2014-02-26 20:34:16"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -661,12 +619,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/nette.git",
-                "reference": "48a506eeb3b434e85b030795d3c357f16940e6d6"
+                "reference": "376fa942b23593d46e62006da8f83c71be5f987d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/nette/zipball/48a506eeb3b434e85b030795d3c357f16940e6d6",
-                "reference": "48a506eeb3b434e85b030795d3c357f16940e6d6",
+                "url": "https://api.github.com/repos/nette/nette/zipball/376fa942b23593d46e62006da8f83c71be5f987d",
+                "reference": "376fa942b23593d46e62006da8f83c71be5f987d",
                 "shasum": ""
             },
             "require": {
@@ -724,7 +682,7 @@
                 "mvc",
                 "templating"
             ],
-            "time": "2014-02-23 17:46:39"
+            "time": "2014-02-27 19:11:09"
         },
         {
             "name": "predis/predis",
@@ -1257,12 +1215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/expression-language.git",
-                "reference": "e969ce56b986ae291174658396d852c29246d65a"
+                "reference": "68bbeb713e0c08b6e86d1287b1e46e47738758fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/expression-language/zipball/e969ce56b986ae291174658396d852c29246d65a",
-                "reference": "e969ce56b986ae291174658396d852c29246d65a",
+                "url": "https://api.github.com/repos/symfony/expression-language/zipball/68bbeb713e0c08b6e86d1287b1e46e47738758fb",
+                "reference": "68bbeb713e0c08b6e86d1287b1e46e47738758fb",
                 "shasum": ""
             },
             "require": {
@@ -1297,7 +1255,7 @@
             ],
             "description": "Symfony ExpressionLanguage Component",
             "homepage": "http://symfony.com",
-            "time": "2014-02-10 14:27:45"
+            "time": "2014-02-27 13:31:09"
         },
         {
             "name": "symfony/filesystem",
@@ -1454,12 +1412,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "1e1a8e4f1040d744086e9bdaa979f015789b4af6"
+                "reference": "dc857d7c75fb90422c51aff51a94f1089b0fbf63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/1e1a8e4f1040d744086e9bdaa979f015789b4af6",
-                "reference": "1e1a8e4f1040d744086e9bdaa979f015789b4af6",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/dc857d7c75fb90422c51aff51a94f1089b0fbf63",
+                "reference": "dc857d7c75fb90422c51aff51a94f1089b0fbf63",
                 "shasum": ""
             },
             "require": {
@@ -1518,7 +1476,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2014-02-12 21:00:41"
+            "time": "2014-02-24 16:20:54"
         },
         {
             "name": "symfony/icu",
@@ -2176,12 +2134,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "e3349ba996b3aa40aec07dca59d5bb6f783ef8e0"
+                "reference": "723e46ba49cd13d86bdb4f0cc70950b62b8656a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/e3349ba996b3aa40aec07dca59d5bb6f783ef8e0",
-                "reference": "e3349ba996b3aa40aec07dca59d5bb6f783ef8e0",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/723e46ba49cd13d86bdb4f0cc70950b62b8656a1",
+                "reference": "723e46ba49cd13d86bdb4f0cc70950b62b8656a1",
                 "shasum": ""
             },
             "require": {
@@ -2216,7 +2174,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-02-24 16:20:54"
+            "time": "2014-02-27 17:04:59"
         },
         {
             "name": "twig/extensions",
@@ -2364,7 +2322,6 @@
         "symfony/twig-bridge": 20,
         "twig/extensions": 20,
         "swiftmailer/swiftmailer": 20,
-        "gekosale/formengine": 20,
         "symfony/property-access": 20
     },
     "platform": [

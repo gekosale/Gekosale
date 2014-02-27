@@ -13,7 +13,6 @@ namespace Gekosale\Plugin\Vat\Form;
 
 use Gekosale\Core\Form;
 use Gekosale\Plugin\Vat\Event\VatFormEvent;
-use FormEngine;
 
 /**
  * Class VatForm
@@ -26,61 +25,60 @@ class VatForm extends Form
 
     public function init($vatData = [])
     {
-        $form = new FormEngine\Elements\Form([
+        $form = $this->addForm([
             'name' => 'vat',
         ]);
 
-        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
+        $requiredData = $form->AddChild($this->addFieldset([
             'name'  => 'required_data',
             'label' => $this->trans('Basic settings')
         ]));
 
-        $languageData = $requiredData->AddChild(new FormEngine\Elements\FieldsetLanguage([
+        $languageData = $requiredData->AddChild($this->addFieldsetLanguage([
             'name'      => 'language_data',
-            'label'     => $this->trans('Language settings'),
-            'languages' => $this->getLanguages()
+            'label'     => $this->trans('Language settings')
         ]));
 
-        $languageData->AddChild(new FormEngine\Elements\TextField([
+        $languageData->AddChild($this->addTextField([
             'name'  => 'name',
             'label' => $this->trans('Name'),
-            'rules' => [
-                new FormEngine\Rules\Required($this->trans('Name is required')),
-                new FormEngine\Rules\Unique(
-                    $this->container,
-                    [
-                        'message' => $this->trans('Tax rate already exists'),
-                        'table'   => 'vat_translation',
-                        'column'  => 'name',
-                        'exclude' => [
-                            'column' => 'vat_id',
-                            'values' => $this->getParam('id')
-                        ]
-                    ]
-                )
-            ]
+//            'rules' => [
+//                new FormEngine\Rules\Required($this->trans('Name is required')),
+//                new FormEngine\Rules\Unique(
+//                    $this->container,
+//                    [
+//                        'message' => $this->trans('Tax rate already exists'),
+//                        'table'   => 'vat_translation',
+//                        'column'  => 'name',
+//                        'exclude' => [
+//                            'column' => 'vat_id',
+//                            'values' => $this->getParam('id')
+//                        ]
+//                    ]
+//                )
+//            ]
         ]));
 
         $requiredData->AddChild(new FormEngine\Elements\TextField([
             'name'    => 'value',
             'label'   => $this->trans('Tax value'),
             'comment' => $this->trans('Tax value given in %'),
-            'rules'   => [
-                new FormEngine\Rules\Required($this->trans('Tax value is required')),
-                new FormEngine\Rules\Unique($this->trans('Tax value already exists'), 'vat', 'value', null, [
-                    'column' => 'id',
-                    'values' => $this->getParam('id')
-                ])
-            ],
-            'suffix'  => '%',
-            'filters' => [
-                new FormEngine\Filters\CommaToDotChanger()
-            ]
+//            'rules'   => [
+//                new FormEngine\Rules\Required($this->trans('Tax value is required')),
+//                new FormEngine\Rules\Unique($this->trans('Tax value already exists'), 'vat', 'value', null, [
+//                    'column' => 'id',
+//                    'values' => $this->getParam('id')
+//                ])
+//            ],
+//            'suffix'  => '%',
+//            'filters' => [
+//                new FormEngine\Filters\CommaToDotChanger()
+//            ]
         ]));
 
-        $form->AddFilter($this->AddFilterNoCode());
-        $form->AddFilter($this->AddFilterTrim());
-        $form->AddFilter($this->AddFilterSecure());
+        $form->AddFilter($this->addFilterNoCode());
+        $form->AddFilter($this->addFilterTrim());
+        $form->AddFilter($this->addFilterSecure());
 
         $event = new VatFormEvent($form, $vatData);
 
