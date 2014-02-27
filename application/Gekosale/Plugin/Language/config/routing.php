@@ -14,27 +14,27 @@ use Symfony\Component\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$controller = 'Gekosale\Plugin\Vat\Controller\Admin\VatController';
+$controller = 'Gekosale\Plugin\Language\Controller\Admin\LanguageController';
 
-$collection->add('admin.vat.index', new Route('/index', array(
+$collection->add('admin.language.index', new Route('/index', array(
     'controller' => $controller,
     'mode' => 'admin',
     'action' => 'indexAction'
 )));
 
-$collection->add('admin.vat.add', new Route('/add', array(
+$collection->add('admin.language.add', new Route('/add', array(
     'controller' => $controller,
     'mode' => 'admin',
     'action' => 'addAction'
 )));
 
-$collection->add('admin.vat.edit', new Route('/edit/{id}', array(
+$collection->add('admin.language.edit', new Route('/edit/{id}', array(
     'controller' => $controller,
     'mode' => 'admin',
     'action' => 'editAction',
     'id' => NULL
 )));
 
-$collection->addPrefix('/admin/vat');
+$collection->addPrefix('/admin/language');
 
 return $collection;

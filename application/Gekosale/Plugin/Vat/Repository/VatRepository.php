@@ -9,7 +9,7 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Currency\Repository;
+namespace Gekosale\Plugin\Vat\Repository;
 
 use Gekosale\Core\Model\Currency,
     Gekosale\Core\Repository;
@@ -17,12 +17,12 @@ use Gekosale\Core\Model\Currency,
 use Symfony\Component\Intl\Intl;
 
 /**
- * Class CurrencyRepository
+ * Class VatRepository
  *
- * @package Gekosale\Plugin\Currency\Repository
+ * @package Gekosale\Plugin\Vat\Repository
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class CurrencyRepository extends Repository
+class VatRepository extends Repository
 {
 
     /**
@@ -131,21 +131,6 @@ class CurrencyRepository extends Repository
             $Data[$currencySymbol] = sprintf('%s (%s)', $currencySymbol, $currencyName);
         }
 
-        return $Data;
-    }
-
-    /**
-     * Gets all currencies and returns them as key-value pair
-     *
-     * @return array
-     */
-    public function getAllCurrencyToSelect()
-    {
-        $currencies = $this->all()->toArray();
-        $Data       = Array();
-        foreach ($currencies as $currency) {
-            $Data[$currency['id']] = $currency['symbol'];
-        }
         return $Data;
     }
 }

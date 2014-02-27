@@ -47,6 +47,10 @@ class ServiceContainer extends Container
             'finder' => 'getFinderService',
             'helper' => 'getHelperService',
             'kernel' => 'getKernelService',
+            'language.datagrid' => 'getLanguage_DatagridService',
+            'language.form' => 'getLanguage_FormService',
+            'language.repository' => 'getLanguage_RepositoryService',
+            'language.subscriber' => 'getLanguage_SubscriberService',
             'request' => 'getRequestService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
@@ -67,6 +71,10 @@ class ServiceContainer extends Container
             'twig.extension.translation' => 'getTwig_Extension_TranslationService',
             'twig.loader.admin' => 'getTwig_Loader_AdminService',
             'twig.loader.front' => 'getTwig_Loader_FrontService',
+            'vat.datagrid' => 'getVat_DatagridService',
+            'vat.form' => 'getVat_FormService',
+            'vat.repository' => 'getVat_RepositoryService',
+            'vat.subscriber' => 'getVat_SubscriberService',
             'xajax' => 'getXajaxService',
             'xajax_manager' => 'getXajaxManagerService',
         );
@@ -229,6 +237,8 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilitySubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
+        $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
+        $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
 
         return $instance;
     }
@@ -283,6 +293,71 @@ class ServiceContainer extends Container
     protected function getKernelService()
     {
         return $this->services['kernel'] = new \Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel($this->get('event_dispatcher'), $this, $this->get('controller_resolver'));
+    }
+
+    /**
+     * Gets the 'language.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Language\DataGrid\LanguageDataGrid A Gekosale\Plugin\Language\DataGrid\LanguageDataGrid instance.
+     */
+    protected function getLanguage_DatagridService()
+    {
+        $this->services['language.datagrid'] = $instance = new \Gekosale\Plugin\Language\DataGrid\LanguageDataGrid();
+
+        $instance->setRepository($this->get('language.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'language.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Language\Form\LanguageForm A Gekosale\Plugin\Language\Form\LanguageForm instance.
+     */
+    protected function getLanguage_FormService()
+    {
+        $this->services['language.form'] = $instance = new \Gekosale\Plugin\Language\Form\LanguageForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'language.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Language\Repository\LanguageRepository A Gekosale\Plugin\Language\Repository\LanguageRepository instance.
+     */
+    protected function getLanguage_RepositoryService()
+    {
+        $this->services['language.repository'] = $instance = new \Gekosale\Plugin\Language\Repository\LanguageRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'language.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Language\Event\LanguageEventSubscriber A Gekosale\Plugin\Language\Event\LanguageEventSubscriber instance.
+     */
+    protected function getLanguage_SubscriberService()
+    {
+        return $this->services['language.subscriber'] = new \Gekosale\Plugin\Language\Event\LanguageEventSubscriber();
     }
 
     /**
@@ -575,6 +650,71 @@ class ServiceContainer extends Container
     protected function getTwig_Loader_FrontService()
     {
         return $this->services['twig.loader.front'] = new \Twig_Loader_Filesystem(array(0 => 'D:\\Git\\Gekosale3\\design/frontend/Gekosale/templates'));
+    }
+
+    /**
+     * Gets the 'vat.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Vat\DataGrid\VatDataGrid A Gekosale\Plugin\Vat\DataGrid\VatDataGrid instance.
+     */
+    protected function getVat_DatagridService()
+    {
+        $this->services['vat.datagrid'] = $instance = new \Gekosale\Plugin\Vat\DataGrid\VatDataGrid();
+
+        $instance->setRepository($this->get('vat.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'vat.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Vat\Form\VatForm A Gekosale\Plugin\Vat\Form\VatForm instance.
+     */
+    protected function getVat_FormService()
+    {
+        $this->services['vat.form'] = $instance = new \Gekosale\Plugin\Vat\Form\VatForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'vat.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Vat\Repository\VatRepository A Gekosale\Plugin\Vat\Repository\VatRepository instance.
+     */
+    protected function getVat_RepositoryService()
+    {
+        $this->services['vat.repository'] = $instance = new \Gekosale\Plugin\Vat\Repository\VatRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'vat.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Vat\Event\VatEventSubscriber A Gekosale\Plugin\Vat\Event\VatEventSubscriber instance.
+     */
+    protected function getVat_SubscriberService()
+    {
+        return $this->services['vat.subscriber'] = new \Gekosale\Plugin\Vat\Event\VatEventSubscriber();
     }
 
     /**

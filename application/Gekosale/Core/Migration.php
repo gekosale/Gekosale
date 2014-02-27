@@ -18,39 +18,16 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
-abstract class Migrate
+abstract class Migration
 {
 
-    protected $filesystem;
-
-    protected $finder;
-
     protected $container;
-
-    protected $loader;
 
     protected $migrationClass;
 
     public function __construct ()
     {
-        $this->settings = include (ROOTPATH . 'config' . DS . 'settings.php');
-        $this->container = $this->getContainerBuilder();
-        $this->loader = new XmlFileLoader($this->container, new FileLocator(ROOTPATH . 'config'));
-        $this->loader->load('config.xml');
-    }
-
-    protected function getContainerBuilder ()
-    {
-        return new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
-    }
-
-    protected function getKernelParameters ()
-    {
-        return array(
-            'application.root_path' => ROOTPATH,
-            'session.client_data_encription_string' => $this->settings['client_data_encription_string'],
-            'database' => $this->settings['database']
-        );
+        $this->container = new ServiceContainer();
     }
 
     protected function getFilesystem ()
@@ -60,7 +37,7 @@ abstract class Migrate
 
     protected function getDb ()
     {
-        return $this->container->get('db');
+        return $this->container->get('database_manager');
     }
 
     protected function getFinder ()

@@ -9,18 +9,18 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Currency\DataGrid;
+namespace Gekosale\Plugin\Vat\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
 
 /**
- * Class CurrencyDataGrid
+ * Class VatDataGrid
  *
- * @package Gekosale\Plugin\Currency\DataGrid
+ * @package Gekosale\Plugin\Vat\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class CurrencyDataGrid extends DataGrid implements DataGridInterface
+class VatDataGrid extends DataGrid implements DataGridInterface
 {
     /**
      * Initializes DataGrid
@@ -29,22 +29,23 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
     {
         $this->setTableData([
             'id'     => [
-                'source' => 'C.id'
+                'source' => 'V.id'
             ],
             'name'   => [
-                'source' => 'C.name'
+                'source' => 'VT.name'
             ],
-            'symbol' => [
-                'source' => 'C.symbol'
+            'value' => [
+                'source' => 'V.value'
             ]
         ]);
 
         $this->setFrom('
-            currency C
+            vat V
+            LEFT JOIN vat_translation VT ON VT.vat_id = V.id
         ');
 
         $this->setGroupBy('
-            C.id
+            V.id
         ');
     }
 

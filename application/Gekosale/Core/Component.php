@@ -68,7 +68,7 @@ abstract class Component extends ContainerAware
      */
     final protected function getDb()
     {
-        return $this->container->get('database.manager');
+        return $this->container->get('database_manager');
     }
 
     /**

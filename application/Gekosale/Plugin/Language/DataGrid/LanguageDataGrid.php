@@ -9,18 +9,18 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Currency\DataGrid;
+namespace Gekosale\Plugin\Language\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
 
 /**
- * Class CurrencyDataGrid
+ * Class LanguageDataGrid
  *
- * @package Gekosale\Plugin\Currency\DataGrid
+ * @package Gekosale\Plugin\Language\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class CurrencyDataGrid extends DataGrid implements DataGridInterface
+class LanguageDataGrid extends DataGrid implements DataGridInterface
 {
     /**
      * Initializes DataGrid
@@ -40,7 +40,7 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
         ]);
 
         $this->setFrom('
-            currency C
+            language C
         ');
 
         $this->setGroupBy('

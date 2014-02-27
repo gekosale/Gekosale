@@ -5,5 +5,5 @@ namespace Gekosale\Core\DataGrid\Filter;
 interface DataGridFilterInterface
 {
 
-    public function render ();
+    public function renderJs();
 }

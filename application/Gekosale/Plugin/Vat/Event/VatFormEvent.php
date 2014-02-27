@@ -9,11 +9,17 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Event;
+namespace Gekosale\Plugin\Currency\Event;
 
 use Gekosale\Core\Event\FormEvent;
 
-class VatFormEvent extends FormEvent
+/**
+ * Class VatFormEvent
+ *
+ * @package Gekosale\Plugin\Vat\Event
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+final class VatFormEvent extends FormEvent
 {
 
     const FORM_INIT_EVENT = 'vat.form.init';

@@ -1,18 +1,20 @@
 <?php
-
-/**
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * WellCommerce
+ * This file is part of the Gekosale package.
  *
- * @copyright   Copyright (c) 2013 WellCommerce
- * @author      Adam Piotrowski, apiotrowski@wellcommerce.pl
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Console\Command\Command,
+    Symfony\Component\Filesystem\Exception\IOException,
+    Symfony\Component\Filesystem\Filesystem,
+    Symfony\Component\Finder\Finder;
 
 /**
  * Class AbstractCommand
@@ -22,74 +24,32 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractCommand extends Command
 {
-
-    protected $filesystem;
-
-    protected $finder;
-
-    /**
-     * @return Filesystem
-     */
-    protected function getFilesystem ()
+    protected function getMigrationClassesPath()
     {
-        if (null === $this->filesystem) {
-            $this->filesystem = new Filesystem();
-        }
-        
-        return $this->filesystem;
+        return ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Core' . DS . 'Migration';
     }
 
-    /**
-     * @return Finder
-     */
-    protected function getFinder ()
+    protected function getFilesystem()
     {
-        if (null === $this->finder) {
-            $this->finder = new Finder();
-        }
-        
-        return $this->finder;
+        return $this->getApplication()->getContainer()->get('filesystem');
     }
 
-    /**
-     * @param     $directory
-     * @param int $chmod
-     *
-     * @throws \Symfony\Component\Filesystem\Exception\IOException
-     */
-    protected function createDirectory ($directory, $chmod = 0700)
+    protected function getFinder()
     {
-        $filesystem = $this->getFilesystem();
-        
-        try {
-            $filesystem->mkdir($directory, $chmod);
-        }
-        catch (IOException $e) {
-            throw new IOException(sprintf('Unable to write the "%s" directory', $directory), 0, $e);
-        }
+        return $this->getApplication()->getContainer()->get('finder');
     }
 
-    /**
-     * @param $namespace
-     * @param $path
-     *
-     * @return mixed
-     */
-    protected function getMigrationObject ($namespace, $path)
+    protected function getDatabaseManager()
+    {
+        return $this->getApplication()->getContainer()->get('database_manager');
+    }
+
+    protected function getMigrationObject($namespace, $path)
     {
         require_once $path;
         $pathInfo = pathinfo($path);
-        $class = $namespace . '\\Migrate\\' . $pathInfo['filename'];
-        
-        return new $class();
-    }
+        $class    = $namespace . '\\Migrate\\' . $pathInfo['filename'];
 
-    /**
-     * @return mixed
-     */
-    protected function getConfig ()
-    {
-        $config = include ROOTPATH . 'config' . DS . 'settings.php';
-        return $config;
+        return new $class();
     }
 }

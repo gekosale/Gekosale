@@ -31,4 +31,8 @@ class Currency extends Model
     protected $fillable = array(
         'id'
     );
+
+    public function toSelect(){
+
+    }
 }

@@ -1,27 +1,26 @@
 <?php
 /*
  * Gekosale Open-Source E-Commerce Platform
- * 
+ *
  * This file is part of the Gekosale package.
  *
  * (c) Adam Piotrowski <adam@gekosale.com>
- * 
+ *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Core\DataGrid\Filter;
+namespace Gekosale\Plugin\Language\Event;
+
+use Gekosale\Core\Event\FormEvent;
 
 /**
- * Class Between
+ * Class LanguageFormEvent
  *
- * @package Gekosale\Core\DataGrid\Filter
+ * @package Gekosale\Plugin\Language\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Between implements DataGridFilterInterface
+final class LanguageFormEvent extends FormEvent
 {
 
-    public function renderJs()
-    {
-        return 'GF_Datagrid.FILTER_BETWEEN';
-    }
-} 
+    const FORM_INIT_EVENT = 'language.form.init';
+}

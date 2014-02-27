@@ -10,6 +10,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core;
+
 use Symfony\Component\Console\Application;
 
 /**
@@ -21,12 +22,20 @@ use Symfony\Component\Console\Application;
 class Console extends Application
 {
 
-    public function __construct ()
+    public function __construct()
     {
         parent::__construct('Welcome to Gekosale CLI Tool', '1.0');
-        
+
         $this->addCommands(array(
-            new Console\Command\Routes\Dump()
+            new Console\Command\Routes\Dump(),
+            new Console\Command\Migration\Add(),
+            new Console\Command\Migration\Up(),
+            new Console\Command\Migration\Down(),
         ));
+    }
+
+    public function getContainer()
+    {
+        return new ServiceContainer();
     }
 }

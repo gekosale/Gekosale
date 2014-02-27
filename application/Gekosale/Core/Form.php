@@ -11,6 +11,8 @@
  */
 namespace Gekosale\Core;
 
+use FormEngine;
+
 /**
  * Class Form
  *

@@ -94,7 +94,6 @@ class CurrencyForm extends Form
         ]));
 
         $form->AddFilter(new FormEngine\Filters\NoCode());
-
         $form->AddFilter(new FormEngine\Filters\Secure());
 
         $event = new CurrencyFormEvent($form, $currencyData);
