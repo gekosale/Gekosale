@@ -12,8 +12,21 @@
 
 namespace Gekosale\Core\Form\Conditions;
 
+/**
+ * Interface ConditionInterface
+ *
+ * @package Gekosale\Core\Form\Conditions
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 interface ConditionInterface
 {
 
+    /**
+     * Evaluates condition value
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
     public function Evaluate($value);
 } 
