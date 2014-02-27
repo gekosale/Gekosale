@@ -21,6 +21,7 @@ use Gekosale\Core\Controller\AdminController;
  */
 class VatController extends AdminController
 {
+
     public function indexAction()
     {
         $datagrid = $this->getDataGrid();
@@ -45,7 +46,7 @@ class VatController extends AdminController
 
             $this->getRepository()->save($form->getSubmitValues());
 
-            return $this->redirect($this->generateUrl('admin.vat.index'));
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
         return Array(
@@ -62,7 +63,7 @@ class VatController extends AdminController
 
             $this->getRepository()->save($form->getSubmitValues(), $id);
 
-            return $this->redirect($this->generateUrl('admin.vat.index'));
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
         return Array(
@@ -71,7 +72,7 @@ class VatController extends AdminController
     }
 
     /**
-     * Get vat DataGrid
+     * Get DataGrid
      */
     protected function getDataGrid()
     {
@@ -79,7 +80,7 @@ class VatController extends AdminController
     }
 
     /**
-     * Get vat Repository
+     * Get Repository
      */
     protected function getRepository()
     {
@@ -87,10 +88,20 @@ class VatController extends AdminController
     }
 
     /**
-     * Get vat Form
+     * Get Form
      */
     protected function getForm()
     {
         return $this->get('vat.form');
+    }
+
+    /**
+     * Get default route
+     *
+     * @return string
+     */
+    protected function getDefaultRoute()
+    {
+        return 'admin.vat.index';
     }
 }

@@ -18,21 +18,21 @@ $controller = 'Gekosale\Plugin\Vat\Controller\Admin\VatController';
 
 $collection->add('admin.vat.index', new Route('/index', array(
     'controller' => $controller,
-    'mode' => 'admin',
-    'action' => 'indexAction'
+    'mode'       => 'admin',
+    'action'     => 'indexAction'
 )));
 
 $collection->add('admin.vat.add', new Route('/add', array(
     'controller' => $controller,
-    'mode' => 'admin',
-    'action' => 'addAction'
+    'mode'       => 'admin',
+    'action'     => 'addAction'
 )));
 
 $collection->add('admin.vat.edit', new Route('/edit/{id}', array(
     'controller' => $controller,
-    'mode' => 'admin',
-    'action' => 'editAction',
-    'id' => NULL
+    'mode'       => 'admin',
+    'action'     => 'editAction',
+    'id'         => null
 )));
 
 $collection->addPrefix('/admin/vat');

@@ -21,6 +21,7 @@ use Gekosale\Core\Migration;
  */
 class Migration1393512866 extends Migration
 {
+
     public function up()
     {
         if (!$this->getDb()->schema()->hasTable('language')) {
@@ -30,9 +31,7 @@ class Migration1393512866 extends Migration
                 $table->string('name', 12)->unique();
                 $table->string('translation', 255);
                 $table->integer('currency_id')->unsigned();
-                $table->foreign('currency_id')->references('id')->on('currency')
-                    ->onDelete('SET NULL')
-                    ->onUpdate('NO ACTION');
+                $table->foreign('currency_id')->references('id')->on('currency')->onDelete('SET NULL')->onUpdate('NO ACTION');
             });
         }
     }

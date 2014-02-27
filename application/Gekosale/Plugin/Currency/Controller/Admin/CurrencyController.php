@@ -71,7 +71,7 @@ class CurrencyController extends AdminController
     }
 
     /**
-     * Get currency DataGrid
+     * Get DataGrid
      */
     protected function getDataGrid()
     {
@@ -79,7 +79,7 @@ class CurrencyController extends AdminController
     }
 
     /**
-     * Get currency Repository
+     * Get Repository
      */
     protected function getRepository()
     {
@@ -87,13 +87,18 @@ class CurrencyController extends AdminController
     }
 
     /**
-     * Get currency Form
+     * Get Form
      */
     protected function getForm()
     {
         return $this->get('currency.form');
     }
 
+    /**
+     * Get default route
+     *
+     * @return string
+     */
     protected function getDefaultRoute()
     {
         return 'admin.currency.index';

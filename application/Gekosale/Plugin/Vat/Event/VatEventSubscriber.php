@@ -13,7 +13,6 @@ namespace Gekosale\Plugin\Vat\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**
  * Class VatEventSubscriber
@@ -24,19 +23,11 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 class VatEventSubscriber implements EventSubscriberInterface
 {
 
-    public function onAdminMenuInitAction (Event $event)
+    public function onAdminMenuInitAction(Event $event)
     {
-        $event->setMenuData(Array(
-            'menu' => Array(
-                'configuration'
-            )
-        ));
     }
 
-    public static function getSubscribedEvents ()
+    public static function getSubscribedEvents()
     {
-        return array(
-            AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
-        );
     }
 }
