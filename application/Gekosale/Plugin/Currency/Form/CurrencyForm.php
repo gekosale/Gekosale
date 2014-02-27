@@ -26,6 +26,10 @@ class CurrencyForm extends Form
 
     public function init($currencyData = Array())
     {
+        $form = $this->addForm([
+            'name' => 'currency',
+        ]);
+
         $form = new FormEngine\Elements\Form([
             'name' => 'currency',
         ]);

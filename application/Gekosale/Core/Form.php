@@ -11,8 +11,6 @@
  */
 namespace Gekosale\Core;
 
-use FormEngine;
-
 /**
  * Class Form
  *
@@ -21,4 +19,18 @@ use FormEngine;
  */
 abstract class Form extends Component
 {
+    public function addForm(array $options)
+    {
+        return new Form\Elements\Form($options);
+    }
+
+    public function addFieldset(array $options)
+    {
+        return new Form\Elements\Fieldset($options);
+    }
+
+    public function addTextField(array $options)
+    {
+        return new Form\Elements\TextField($options);
+    }
 }

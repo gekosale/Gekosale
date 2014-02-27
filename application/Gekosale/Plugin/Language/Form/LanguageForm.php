@@ -30,7 +30,11 @@ class LanguageForm extends Form
             'name' => 'language',
         ]);
 
-        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
+        $form = $this->addForm([
+            'name' => 'currency',
+        ]);
+
+        $requiredData = $form->AddChild($this->addFieldset([
             'name'  => 'required_data',
             'label' => $this->trans('TXT_MAIN_DATA')
         ]));
