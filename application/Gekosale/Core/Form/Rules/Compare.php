@@ -1,42 +1,51 @@
 <?php
-namespace FormEngine\Rules;
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
-class Compare extends \FormEngine\Rule
+
+namespace Gekosale\Core\Form\Rules;
+
+use Gekosale\Core\Rules\RuleInterface;
+use Gekosale\Core\Form\Rule;
+use Gekosale\Core\Elements\Field;
+
+/**
+ * Class Compare
+ *
+ * Compares two fields
+ *
+ * @package Gekosale\Core\Form\Rules
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Compare extends Rule implements RuleInterface
 {
-	
-	protected $_compareWith;
 
-	public function __construct ($errorMsg,\FormEngine\Elements\Field $compareWith)
-	{
-		parent::__construct($errorMsg);
-		$this->_compareWith = $compareWith;
-	}
+    protected $_compareWith;
 
-	protected function _Check ($value)
-	{
-		return ($value == $this->_compareWith->GetValue());
-	}
+    public function __construct($errorMsg, Field $compareWith)
+    {
+        parent::__construct($errorMsg);
+        $this->_compareWith = $compareWith;
+    }
 
-	public function Render ()
-	{
-		$errorMsg = addslashes($this->_errorMsg);
-		$field = addslashes($this->_compareWith->getName());
-		return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
-	}
+    protected function _Check($value)
+    {
+        return ($value == $this->_compareWith->GetValue());
+    }
+
+    public function Render()
+    {
+        $errorMsg = addslashes($this->_errorMsg);
+        $field    = addslashes($this->_compareWith->getName());
+
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
+    }
 
 }

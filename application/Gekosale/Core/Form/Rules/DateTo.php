@@ -1,45 +1,51 @@
 <?php
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
 
-namespace FormEngine\Rules;
+namespace Gekosale\Core\Form\Rules;
+
+use Gekosale\Core\Rules\RuleInterface;
+use Gekosale\Core\Form\Rule;
+use Gekosale\Core\Elements\Field;
 
 /**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+ * Class DateTo
  *
- * Copyright (c) 2009-2011 Gekosale
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * @package Gekosale\Core\Form\Rules
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class DateTo extends \FormEngine\Rule
+class DateTo extends Rule implements RuleInterface
 {
-	protected $_compareWith;
+    protected $_compareWith;
 
-	public function __construct ($errorMsg,\FormEngine\Elements\Field $compareWith)
-	{
-		parent::__construct($errorMsg);
-		$this->_compareWith = $compareWith;
-	}
+    public function __construct($errorMsg, Field $compareWith)
+    {
+        parent::__construct($errorMsg);
+        $this->_compareWith = $compareWith;
+    }
 
-	protected function _Check ($value)
-	{
-		if (strlen($value) > 0 && strlen($this->_compareWith->GetValue()) > 0){
-			return ($value >= $this->_compareWith->GetValue());
-		}
-		return true;
-	}
+    protected function _Check($value)
+    {
+        if (strlen($value) > 0 && strlen($this->_compareWith->GetValue()) > 0) {
+            return ($value >= $this->_compareWith->GetValue());
+        }
 
-	public function Render ()
-	{
-		$errorMsg = addslashes($this->_errorMsg);
-		$field = addslashes($this->_compareWith->getName());
-		return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
-	}
+        return true;
+    }
+
+    public function Render()
+    {
+        $errorMsg = addslashes($this->_errorMsg);
+        $field    = addslashes($this->_compareWith->getName());
+
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
+    }
 }

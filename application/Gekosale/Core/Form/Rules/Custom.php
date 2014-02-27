@@ -1,79 +1,84 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Rules;
-use Gekosale\App as App;
+namespace Gekosale\Core\Form\Rules;
 
-class Custom extends \FormEngine\Rule
+use Gekosale\Core\Rules\RuleInterface;
+use Gekosale\Core\Form\Rule;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Class Custom
+ *
+ * Validates field using callback function
+ *
+ * @package Gekosale\Core\Form\Rules
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Custom extends Rule implements RuleInterface
 {
-	
-	protected $_checkFunction;
-	protected $_jsFunction;
-	protected $_params;
-	
-	protected static $_nextId = 0;
 
-	public function __construct ($errorMsg, $checkFunctionCallback, $params = Array())
-	{
-		parent::__construct($errorMsg);
-		$this->_checkFunction = $checkFunctionCallback;
-		$this->_jsFunction = App::getRegistry()->xajaxInterface->registerFunction(array(
-			'CheckCustomRule_' . self::$_nextId ++,
-			$this,
-			'doAjaxCheck'
-		));
-		$this->_params = $params;
-	}
+    protected $_checkFunction;
+    protected $_jsFunction;
+    protected $_params;
 
-	public function doAjaxCheck ($request)
-	{
-		return Array(
-			'unique' => call_user_func($this->_checkFunction, $request['value'], $request['params'])
-		);
-	}
+    protected static $_nextId = 0;
 
-	protected function _Check ($value)
-	{
-		$params = Array();
-		foreach ($this->_params as $paramName => $paramValue){
-			if ($paramValue instanceof Node){
-				$params[$paramName] = $paramValue->GetValue();
-			}
-			else{
-				$params[$paramName] = $paramValue;
-			}
-		}
-		return call_user_func($this->_checkFunction, $value, $params);
-	}
+    public function __construct(ContainerInterface $container, $options)
+    {
+        parent::__construct($errorMsg);
+        $this->_checkFunction = $checkFunctionCallback;
+        $this->_jsFunction    = App::getRegistry()->xajaxInterface->registerFunction(array(
+            'CheckCustomRule_' . self::$_nextId++,
+            $this,
+            'doAjaxCheck'
+        ));
+        $this->_params        = $params;
+    }
 
-	public function Render ()
-	{
-		$errorMsg = addslashes($this->_errorMsg);
-		$params = Array();
-		foreach ($this->_params as $paramName => $paramValue){
-			if ($paramValue instanceof \FormEngine\Node){
-				$params['_field_' . $paramName] = $paramValue->GetName();
-			}
-			else{
-				$params[$paramName] = $paramValue;
-			}
-		}
-		return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: {$this->_jsFunction}, oParams: " . json_encode($params) . "}";
-	}
+    public function doAjaxCheck($request)
+    {
+        return Array(
+            'unique' => call_user_func($this->_checkFunction, $request['value'], $request['params'])
+        );
+    }
+
+    protected function _Check($value)
+    {
+        $params = Array();
+        foreach ($this->_params as $paramName => $paramValue) {
+            if ($paramValue instanceof Node) {
+                $params[$paramName] = $paramValue->GetValue();
+            } else {
+                $params[$paramName] = $paramValue;
+            }
+        }
+
+        return call_user_func($this->_checkFunction, $value, $params);
+    }
+
+    public function Render()
+    {
+        $errorMsg = addslashes($this->_errorMsg);
+        $params   = Array();
+        foreach ($this->_params as $paramName => $paramValue) {
+            if ($paramValue instanceof \FormEngine\Node) {
+                $params['_field_' . $paramName] = $paramValue->GetName();
+            } else {
+                $params[$paramName] = $paramValue;
+            }
+        }
+
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: {$this->_jsFunction}, oParams: " . json_encode($params) . "}";
+    }
 
 }
