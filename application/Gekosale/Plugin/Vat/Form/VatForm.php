@@ -24,50 +24,59 @@ use FormEngine;
 class VatForm extends Form
 {
 
-    public function init($vatData = Array())
+    public function init($vatData = [])
     {
-        $form = new $this->addForm(Array(
-            'name'   => 'vat',
-        ));
+        $form = new FormEngine\Elements\Form([
+            'name' => 'vat',
+        ]);
 
-        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset(Array(
+        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
             'name'  => 'required_data',
-            'label' => _('TXT_MAIN_DATA')
-        )));
+            'label' => $this->trans('Basic settings')
+        ]));
 
-        $languageData = $requiredData->AddChild(new FormEngine\Elements\FieldsetLanguage(Array(
-            'name'  => 'language_data',
-            'label' => _('TXT_LANGUAGE_DATA')
-        )));
+        $languageData = $requiredData->AddChild(new FormEngine\Elements\FieldsetLanguage([
+            'name'      => 'language_data',
+            'label'     => $this->trans('Language settings'),
+            'languages' => $this->getLanguages()
+        ]));
 
-        $languageData->AddChild(new FormEngine\Elements\TextField(Array(
+        $languageData->AddChild(new FormEngine\Elements\TextField([
             'name'  => 'name',
-            'label' => _('TXT_NAME'),
-            'rules' => Array(
-                new FormEngine\Rules\Required(_('ERR_EMPTY_NAME')),
-                new FormEngine\Rules\Unique(_('ERR_VAT_ALREADY_EXISTS'), 'vattranslation', 'name', null, Array(
-                    'column' => 'vatid',
-                    'values' => (int)$this->registry->core->getParam()
-                ))
-            )
-        )));
+            'label' => $this->trans('Name'),
+            'rules' => [
+                new FormEngine\Rules\Required($this->trans('Name is required')),
+                new FormEngine\Rules\Unique(
+                    $this->container,
+                    [
+                        'message' => $this->trans('Tax rate already exists'),
+                        'table'   => 'vat_translation',
+                        'column'  => 'name',
+                        'exclude' => [
+                            'column' => 'vat_id',
+                            'values' => $this->getParam('id')
+                        ]
+                    ]
+                )
+            ]
+        ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField(Array(
+        $requiredData->AddChild(new FormEngine\Elements\TextField([
             'name'    => 'value',
-            'label'   => _('TXT_VALUE'),
-            'comment' => _('TXT_VALUE_IN_PERCENT'),
-            'rules'   => Array(
-                new FormEngine\Rules\Required(_('ERR_EMPTY_VALUE')),
-                new FormEngine\Rules\Unique(_('ERR_VALUE_ALREADY_EXISTS'), 'vat', 'value', null, Array(
-                    'column' => 'idvat',
-                    'values' => (int)$this->registry->core->getParam()
-                ))
-            ),
+            'label'   => $this->trans('Tax value'),
+            'comment' => $this->trans('Tax value given in %'),
+            'rules'   => [
+                new FormEngine\Rules\Required($this->trans('Tax value is required')),
+                new FormEngine\Rules\Unique($this->trans('Tax value already exists'), 'vat', 'value', null, [
+                    'column' => 'id',
+                    'values' => $this->getParam('id')
+                ])
+            ],
             'suffix'  => '%',
-            'filters' => Array(
+            'filters' => [
                 new FormEngine\Filters\CommaToDotChanger()
-            )
-        )));
+            ]
+        ]));
 
         $form->AddFilter($this->AddFilterNoCode());
         $form->AddFilter($this->AddFilterTrim());

@@ -140,7 +140,7 @@ abstract class Component extends ContainerAware
      */
     final protected function getParam($index)
     {
-        return $this->container->get('request')->attributes->getParameter($index);
+        return $this->container->get('request')->attributes->get($index);
     }
 
     /**
@@ -181,5 +181,10 @@ abstract class Component extends ContainerAware
     final protected function getPropertyAccessor()
     {
         return PropertyAccess::createPropertyAccessor();
+    }
+
+    final protected function getLanguages()
+    {
+        return $this->container->get('language.repository')->all()->toArray();
     }
 }

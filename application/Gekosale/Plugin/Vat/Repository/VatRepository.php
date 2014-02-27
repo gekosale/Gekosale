@@ -11,10 +11,8 @@
  */
 namespace Gekosale\Plugin\Vat\Repository;
 
-use Gekosale\Core\Model\Currency,
+use Gekosale\Core\Model\Vat,
     Gekosale\Core\Repository;
-
-use Symfony\Component\Intl\Intl;
 
 /**
  * Class VatRepository
@@ -32,11 +30,11 @@ class VatRepository extends Repository
      */
     public function all()
     {
-        return Currency::all();
+        return Vat::all();
     }
 
     /**
-     * Returns a single currency data
+     * Returns a single vat data
      *
      * @param $id
      *
@@ -44,42 +42,42 @@ class VatRepository extends Repository
      */
     public function find($id)
     {
-        return Currency::findOrFail($id);
+        return Vat::findOrFail($id);
     }
 
     /**
-     * Deletes currency model by ID
+     * Deletes vat model by ID
      *
      * @param $id
      */
     public function delete($id)
     {
-        return Currency::destroy($id);
+        return Vat::destroy($id);
     }
 
     /**
-     * Saves currency data
+     * Saves vat data
      *
      * @param      $Data
      * @param null $id
      */
     public function save($Data, $id = null)
     {
-        $currency = Currency::firstOrNew([
+        $vat = Vat::firstOrNew([
             'id' => $id
         ]);
 
-        $currency->name               = $Data['required_data']['name'];
-        $currency->symbol             = $Data['required_data']['symbol'];
-        $currency->decimal_separator  = $Data['required_data']['decimal_separator'];
-        $currency->decimal_count      = $Data['required_data']['decimal_count'];
-        $currency->thousand_separator = $Data['required_data']['thousand_separator'];
-        $currency->positive_prefix    = $Data['required_data']['positive_prefix'];
-        $currency->positive_sufix     = $Data['required_data']['positive_sufix'];
-        $currency->negative_prefix    = $Data['required_data']['negative_prefix'];
-        $currency->negative_sufix     = $Data['required_data']['negative_sufix'];
+        $vat->name               = $Data['required_data']['name'];
+        $vat->symbol             = $Data['required_data']['symbol'];
+        $vat->decimal_separator  = $Data['required_data']['decimal_separator'];
+        $vat->decimal_count      = $Data['required_data']['decimal_count'];
+        $vat->thousand_separator = $Data['required_data']['thousand_separator'];
+        $vat->positive_prefix    = $Data['required_data']['positive_prefix'];
+        $vat->positive_sufix     = $Data['required_data']['positive_sufix'];
+        $vat->negative_prefix    = $Data['required_data']['negative_prefix'];
+        $vat->negative_sufix     = $Data['required_data']['negative_sufix'];
 
-        $currency->save();
+        $vat->save();
     }
 
     /**
@@ -91,46 +89,18 @@ class VatRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $currencyData = $this->find($id)->toArray();
+        $vatData = $this->find($id)->toArray();
 
-        if (empty($currencyData)) {
-            throw new \InvalidArgumentException('Currency with such ID does not exists');
+        if (empty($vatData)) {
+            throw new \InvalidArgumentException('Vat with such ID does not exists');
         }
 
         $populateData = [
             'required_data' => [
-                'name'               => $currencyData['name'],
-                'symbol'             => $currencyData['symbol'],
-                'decimal_separator'  => $currencyData['decimal_separator'],
-                'decimal_count'      => $currencyData['decimal_count'],
-                'thousand_separator' => $currencyData['thousand_separator'],
-                'positive_prefix'    => $currencyData['positive_prefix'],
-                'positive_sufix'     => $currencyData['positive_sufix'],
-                'negative_prefix'    => $currencyData['negative_prefix'],
-                'negative_sufix'     => $currencyData['negative_sufix']
+                'value' => $vatData['value'],
             ]
         ];
 
         return $populateData;
-    }
-
-    /**
-     * Retrieves all valid currency symbols as key-value pairs
-     *
-     * @return array
-     */
-    public function getCurrencySymbols()
-    {
-        $currencies = Intl::getCurrencyBundle()->getCurrencyNames();
-
-        ksort($currencies);
-
-        $Data = [];
-
-        foreach ($currencies as $currencySymbol => $currencyName) {
-            $Data[$currencySymbol] = sprintf('%s (%s)', $currencySymbol, $currencyName);
-        }
-
-        return $Data;
     }
 }

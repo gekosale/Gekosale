@@ -25,26 +25,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Down extends AbstractCommand
 {
 
-    protected function configure ()
+    protected function configure()
     {
         $this->setName('migration:down');
-        
+
         $this->setDescription('Executes migration classes');
-        
+
         $this->setHelp(sprintf('%Executes "down" command in migration classes.%s', PHP_EOL, PHP_EOL));
     }
 
     /**
+     * Executes migration:down command
+     *
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
      */
-    protected function execute (InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        print_r($this->getApplication());
-        die();
+        $files = $this->getFinder()->files()->in($this->getMigrationClassesPath());
 
-
+        foreach ($files as $file) {
+            $migrationClass = '\\Gekosale\\Core\\Migration\\' . $file->getBasename('.php');
+            $migrationObj   = new $migrationClass();
+            $migrationObj->down();
+        }
     }
 }

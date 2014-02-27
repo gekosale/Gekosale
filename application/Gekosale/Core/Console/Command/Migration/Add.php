@@ -35,6 +35,8 @@ class Add extends AbstractCommand
     }
 
     /**
+     * Executes migration:add command
+     *
      * @param InputInterface  $input
      * @param OutputInterface $output
      *

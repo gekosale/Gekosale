@@ -29,7 +29,7 @@ class Vat extends Model
     protected $softDelete = false;
 
     protected $fillable = array(
-        'value'
+        'id'
     );
 
     public function translation ()

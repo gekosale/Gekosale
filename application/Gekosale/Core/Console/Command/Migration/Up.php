@@ -35,6 +35,8 @@ class Up extends AbstractCommand
     }
 
     /**
+     * Executes migration:up command
+     *
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
