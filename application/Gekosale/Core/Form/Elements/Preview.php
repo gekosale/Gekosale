@@ -19,13 +19,13 @@ class FE_Preview extends FE_Node {
 		$this->_attributes['name'] = '';
 	}
 	
-	protected function _PrepareAttributes_JS() {
+	protected function prepareAttributesJs() {
 		$attributes = Array(
-			$this->_FormatAttribute_JS('url', 'sUrl'),
-			$this->_FormatAttribute_JS('width', 'iWidth'),
-			$this->_FormatAttribute_JS('height', 'iHeight'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('url', 'sUrl'),
+			$this->formatAttributeJs('width', 'iWidth'),
+			$this->formatAttributeJs('height', 'iHeight'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

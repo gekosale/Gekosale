@@ -21,19 +21,19 @@ namespace FormEngine\Elements;
 class Textarea extends TextField
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('rows', 'iRows', \FormEngine\FE::TYPE_NUMBER),
-			$this->_FormatAttribute_JS('cols', 'iCols', \FormEngine\FE::TYPE_NUMBER),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('rows', 'iRows', \FormEngine\FE::TYPE_NUMBER),
+			$this->formatAttributeJs('cols', 'iCols', \FormEngine\FE::TYPE_NUMBER),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

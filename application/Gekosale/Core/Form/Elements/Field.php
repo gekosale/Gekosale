@@ -102,7 +102,7 @@ class Field extends \FormEngine\Node
 		return $this->_value;
 	}
 
-	protected function _FormatDefaults_JS ()
+	protected function formatDefaultsJs ()
 	{
 		$values = $this->GetValue();
 		if (empty($values)){
@@ -116,7 +116,7 @@ class Field extends \FormEngine\Node
 		}
 	}
 
-	protected function _FormatRules_JS ()
+	protected function formatRulesJs ()
 	{
 		if (! isset($this->_attributes['rules']) or ! is_array($this->_attributes['rules'])){
 			return '';

@@ -17,25 +17,25 @@ namespace FormEngine\Elements;
 class Select extends OptionedField
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('suffix', 'sSuffix'),
-			$this->_FormatAttribute_JS('prefix', 'sPrefix'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('selector', 'sSelector'),
-			$this->_FormatAttribute_JS('css_attribute', 'sCssAttribute'),
-			$this->_FormatAttribute_JS('addable', 'bAddable'),
-			$this->_FormatAttribute_JS('onAdd', 'fOnAdd', \FormEngine\FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('add_item_prompt', 'sAddItemPrompt'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('suffix', 'sSuffix'),
+			$this->formatAttributeJs('prefix', 'sPrefix'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('selector', 'sSelector'),
+			$this->formatAttributeJs('css_attribute', 'sCssAttribute'),
+			$this->formatAttributeJs('addable', 'bAddable'),
+			$this->formatAttributeJs('onAdd', 'fOnAdd', \FormEngine\FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('add_item_prompt', 'sAddItemPrompt'),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
 			$this->_FormatOptions_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatDefaultsJs()
 		);
 
 		

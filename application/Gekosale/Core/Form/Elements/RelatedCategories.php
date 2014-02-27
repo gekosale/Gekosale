@@ -78,10 +78,10 @@ class RelatedCategories extends FavouriteCategories
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
-		$attributes = parent::_PrepareAttributes_JS();
-		$attributes[] = $this->_FormatAttribute_JS('shop_categories', 'aoShopCategories', FE::TYPE_OBJECT);
+		$attributes = parent::prepareAttributesJs();
+		$attributes[] = $this->formatAttributeJs('shop_categories', 'aoShopCategories', FE::TYPE_OBJECT);
 		return $attributes;
 	}
 }

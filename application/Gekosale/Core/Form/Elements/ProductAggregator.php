@@ -57,15 +57,15 @@ class ProductAggregator extends Field
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('products_source_field_name', 'sProductsSourceField'),
-			$this->_FormatAttribute_JS('suffix', 'sSuffix'),
-			$this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-			$this->_FormatAttribute_JS('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('jsfunction', 'fLoadProductData', \FormEngine\FE::TYPE_FUNCTION)
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('products_source_field_name', 'sProductsSourceField'),
+			$this->formatAttributeJs('suffix', 'sSuffix'),
+			$this->formatAttributeJs('prefixes', 'asPrefixes'),
+			$this->formatAttributeJs('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
+			$this->formatAttributeJs('jsfunction', 'fLoadProductData', \FormEngine\FE::TYPE_FUNCTION)
 		);
 		return $attributes;
 	}

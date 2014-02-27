@@ -33,15 +33,15 @@ class Tip extends \FormEngine\Node
 		}
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('tip', 'sTip'),
-			$this->_FormatAttribute_JS('direction', 'sDirection'),
-			$this->_FormatAttribute_JS('short_tip', 'sShortTip'),
-			$this->_FormatAttribute_JS('retractable', 'bRetractable', FE::TYPE_BOOLEAN),
-			$this->_FormatAttribute_JS('default_state', 'sDefaultState'),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('tip', 'sTip'),
+			$this->formatAttributeJs('direction', 'sDirection'),
+			$this->formatAttributeJs('short_tip', 'sShortTip'),
+			$this->formatAttributeJs('retractable', 'bRetractable', FE::TYPE_BOOLEAN),
+			$this->formatAttributeJs('default_state', 'sDefaultState'),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

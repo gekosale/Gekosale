@@ -17,18 +17,18 @@ namespace FormEngine\Elements;
 class Constant extends TextField
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('suffix', 'sSuffix'),
-			$this->_FormatAttribute_JS('prefix', 'sPrefix'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('suffix', 'sSuffix'),
+			$this->formatAttributeJs('prefix', 'sPrefix'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

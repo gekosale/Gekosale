@@ -21,13 +21,13 @@ namespace FormEngine\Elements;
 class Fieldset extends Container
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('class', 'sClass'),
-			$this->_FormatDependency_JS(),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('class', 'sClass'),
+			$this->formatDependencyJs(),
 			'aoFields: [' . $this->_RenderChildren() . ']'
 		);
 		return $attributes;

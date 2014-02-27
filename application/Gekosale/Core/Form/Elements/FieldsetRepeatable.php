@@ -17,13 +17,13 @@ namespace FormEngine\Elements;
 class FieldsetRepeatable extends Fieldset
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatDependency_JS(),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatRepeatableJs(),
+			$this->formatDependencyJs(),
 			'aoFields: [' . $this->_RenderChildren() . ']'
 		);
 		return $attributes;

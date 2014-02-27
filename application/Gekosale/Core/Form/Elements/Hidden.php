@@ -17,12 +17,12 @@ namespace FormEngine\Elements;
 class Hidden extends Field
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

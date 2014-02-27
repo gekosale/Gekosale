@@ -14,19 +14,19 @@
 
 class FE_LayerSelect extends FE_OptionedField {
 	
-	protected function _PrepareAttributes_JS() {
+	protected function prepareAttributesJs() {
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('suffix', 'sSuffix'),
-			$this->_FormatAttribute_JS('prefix', 'sPrefix'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('suffix', 'sSuffix'),
+			$this->formatAttributeJs('prefix', 'sPrefix'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
 			$this->_FormatOptions_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

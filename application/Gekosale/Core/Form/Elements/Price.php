@@ -31,19 +31,19 @@ class Price extends TextField
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('suffix', 'sSuffix'),
-			$this->_FormatAttribute_JS('prefixes', 'asPrefixes'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('vat_field_name', 'sVatField'),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('suffix', 'sSuffix'),
+			$this->formatAttributeJs('prefixes', 'asPrefixes'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('vat_field_name', 'sVatField'),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

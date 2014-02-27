@@ -70,11 +70,11 @@ class FavouriteCategories extends Tree
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
-		$attributes = parent::_PrepareAttributes_JS();
-		$attributes[] = $this->_FormatAttribute_JS('get_selected_info', 'fGetSelectedInfo', FE::TYPE_FUNCTION);
-		$attributes[] = $this->_FormatAttribute_JS('columns', 'aoColumns', FE::TYPE_OBJECT);
+		$attributes = parent::prepareAttributesJs();
+		$attributes[] = $this->formatAttributeJs('get_selected_info', 'fGetSelectedInfo', FE::TYPE_FUNCTION);
+		$attributes[] = $this->formatAttributeJs('columns', 'aoColumns', FE::TYPE_OBJECT);
 		return $attributes;
 	}
 }

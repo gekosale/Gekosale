@@ -29,18 +29,18 @@ class LayoutBoxSchemePreview extends Field
 		}
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('triggers', 'asTriggers'),
-			$this->_FormatAttribute_JS('layout_box_tpl', 'sLayoutBoxTpl'),
-			$this->_FormatAttribute_JS('box_scheme', 'sBoxScheme'),
-			$this->_FormatAttribute_JS('box_name', 'sBoxName'),
-			$this->_FormatAttribute_JS('box_title', 'sBoxTitle'),
-			$this->_FormatAttribute_JS('box_content', 'sBoxContent'),
-			$this->_FormatAttribute_JS('stylesheets', 'asStylesheets'),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('triggers', 'asTriggers'),
+			$this->formatAttributeJs('layout_box_tpl', 'sLayoutBoxTpl'),
+			$this->formatAttributeJs('box_scheme', 'sBoxScheme'),
+			$this->formatAttributeJs('box_name', 'sBoxName'),
+			$this->formatAttributeJs('box_title', 'sBoxTitle'),
+			$this->formatAttributeJs('box_content', 'sBoxContent'),
+			$this->formatAttributeJs('stylesheets', 'asStylesheets'),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

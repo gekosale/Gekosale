@@ -44,23 +44,23 @@ class RightsTable extends Field
 		}
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('controllers', 'asControllers', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('actions', 'asActions', FE::TYPE_OBJECT),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('controllers', 'asControllers', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('actions', 'asActions', FE::TYPE_OBJECT),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}
 
-	protected function _FormatDefaults_JS ()
+	protected function formatDefaultsJs ()
 	{
 		$values = $this->GetValue();
 		if (empty($values)){

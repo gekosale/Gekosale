@@ -238,7 +238,7 @@ abstract class Node
         return substr($attributesString, 0, - 2) . "\n";
     }
 
-    protected function _FormatAttribute_JS ($attributeName, $name = null, $type = FE::TYPE_STRING)
+    protected function formatAttributeJs ($attributeName, $name = null, $type = FE::TYPE_STRING)
     {
         if ($name == null){
             if (! isset($this->_attributes[$attributeName])){
@@ -322,7 +322,7 @@ abstract class Node
         }
     }
 
-    protected function _FormatRepeatable_JS ()
+    protected function formatRepeatableJs ()
     {
         if ((isset($this->_attributes['repeat_min']) and ($this->_attributes['repeat_min'] != 1)) or (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] != 1))){
             $min = (isset($this->_attributes['repeat_min']) and is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
@@ -335,7 +335,7 @@ abstract class Node
         return '';
     }
 
-    protected function _FormatDependency_JS ()
+    protected function formatDependencyJs ()
     {
         $dependencies = Array();
         if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])){
@@ -349,7 +349,7 @@ abstract class Node
         return '';
     }
 
-    protected function _FormatFactor_JS ($factor, $name)
+    protected function formatFactorJs ($factor, $name)
     {
         return "{$name}: {$this->_attributes[$factor]->Render()}";
     }
@@ -357,12 +357,12 @@ abstract class Node
     public function Render_JS ()
     {
         $render = "
-			{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->_PrepareAttributes_JS())}}
+			{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->prepareAttributesJs())}}
 		";
         return $render;
     }
 
-    protected function _PrepareAttributes_JS ()
+    protected function prepareAttributesJs ()
     {
         return Array();
     }
@@ -404,7 +404,7 @@ abstract class Node
             $callback[0],
             $callback[1]
         ));
-        $this->_xajaxMethods[] = $this->_FormatAttribute_JS($name, $name, FE::TYPE_FUNCTION);
+        $this->_xajaxMethods[] = $this->formatAttributeJs($name, $name, FE::TYPE_FUNCTION);
     }
 
     public function __get ($attributeName)

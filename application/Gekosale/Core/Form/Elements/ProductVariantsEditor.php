@@ -119,33 +119,33 @@ class ProductVariantsEditor extends Field
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('get_sets_for_categories', 'fGetSetsForCategories', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('get_attributes_for_set', 'fGetAttributesForSet', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('get_values_for_attribute', 'fGetValuesForAttribute', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('get_cartesian', 'fGetCartesian', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('add_attribute', 'fAddAttribute', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('add_value', 'fAddValue', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('category_field', 'sCategoryField'),
-			$this->_FormatAttribute_JS('price_field', 'sPriceField'),
-			$this->_FormatAttribute_JS('allow_generate', 'bAllowGenerate'),
-			$this->_FormatAttribute_JS('vat_field_name', 'sVatField'),
-			$this->_FormatAttribute_JS('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('currency', 'sCurrency'),
-			$this->_FormatAttribute_JS('photos', 'aoPhotos', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('availablity', 'aoAvailablity', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('suffixes', 'aoSuffixes', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('set', 'sSet'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('get_sets_for_categories', 'fGetSetsForCategories', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('get_attributes_for_set', 'fGetAttributesForSet', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('get_values_for_attribute', 'fGetValuesForAttribute', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('get_cartesian', 'fGetCartesian', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('add_attribute', 'fAddAttribute', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('add_value', 'fAddValue', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('category_field', 'sCategoryField'),
+			$this->formatAttributeJs('price_field', 'sPriceField'),
+			$this->formatAttributeJs('allow_generate', 'bAllowGenerate'),
+			$this->formatAttributeJs('vat_field_name', 'sVatField'),
+			$this->formatAttributeJs('vat_values', 'aoVatValues', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('currency', 'sCurrency'),
+			$this->formatAttributeJs('photos', 'aoPhotos', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('availablity', 'aoAvailablity', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('suffixes', 'aoSuffixes', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('set', 'sSet'),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

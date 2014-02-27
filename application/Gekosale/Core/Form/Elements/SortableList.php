@@ -25,32 +25,32 @@ class SortableList extends Field
 		parent::__construct($attributes);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('clickable', 'bClickable'),
-			$this->_FormatAttribute_JS('deletable', 'bDeletable'),
-			$this->_FormatAttribute_JS('sortable', 'bSortable'),
-			$this->_FormatAttribute_JS('addable', 'bAddable'),
-			$this->_FormatAttribute_JS('items', 'oItems', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('total', 'iTotal'),
-			$this->_FormatAttribute_JS('onClick', 'fOnClick', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('onAdd', 'fOnAdd', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('onAfterAdd', 'fOnAfterAdd', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('onDelete', 'fOnDelete', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('onSaveOrder', 'fOnSaveOrder', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('active', 'sActive'),
-			$this->_FormatAttribute_JS('add_item_prompt', 'sAddItemPrompt'),
-			$this->_FormatAttribute_JS('delete_item_prompt', 'sDeleteItemPrompt'),
-			$this->_FormatAttribute_JS('set', 'sSet'),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('clickable', 'bClickable'),
+			$this->formatAttributeJs('deletable', 'bDeletable'),
+			$this->formatAttributeJs('sortable', 'bSortable'),
+			$this->formatAttributeJs('addable', 'bAddable'),
+			$this->formatAttributeJs('items', 'oItems', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('total', 'iTotal'),
+			$this->formatAttributeJs('onClick', 'fOnClick', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('onAdd', 'fOnAdd', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('onAfterAdd', 'fOnAfterAdd', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('onDelete', 'fOnDelete', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('onSaveOrder', 'fOnSaveOrder', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('active', 'sActive'),
+			$this->formatAttributeJs('add_item_prompt', 'sAddItemPrompt'),
+			$this->formatAttributeJs('delete_item_prompt', 'sDeleteItemPrompt'),
+			$this->formatAttributeJs('set', 'sSet'),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

@@ -69,30 +69,30 @@ class ColourSchemePicker extends TextField
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('selector', 'sSelector'),
-			$this->_FormatAttribute_JS('gradient_height', 'iGradientHeight'),
-			$this->_FormatAttribute_JS('type_colour', 'bAllowColour', \FormEngine\FE::TYPE_BOOLEAN),
-			$this->_FormatAttribute_JS('type_gradient', 'bAllowGradient', \FormEngine\FE::TYPE_BOOLEAN),
-			$this->_FormatAttribute_JS('type_image', 'bAllowImage', \FormEngine\FE::TYPE_BOOLEAN),
-			$this->_FormatAttribute_JS('file_source', 'sFilePath'),
-			$this->_FormatAttribute_JS('upload_url', 'sUploadUrl'),
-			$this->_FormatAttribute_JS('session_name', 'sSessionName'),
-			$this->_FormatAttribute_JS('session_id', 'sSessionId'),
-			$this->_FormatAttribute_JS('file_types', 'asFileTypes'),
-			$this->_FormatAttribute_JS('type_icons', 'oTypeIcons', \FormEngine\FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('file_types_description', 'sFileTypesDescription'),
-			$this->_FormatAttribute_JS('delete_handler', 'fDeleteFile', \FormEngine\FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('load_handler', 'fLoadFiles', \FormEngine\FE::TYPE_FUNCTION),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('selector', 'sSelector'),
+			$this->formatAttributeJs('gradient_height', 'iGradientHeight'),
+			$this->formatAttributeJs('type_colour', 'bAllowColour', \FormEngine\FE::TYPE_BOOLEAN),
+			$this->formatAttributeJs('type_gradient', 'bAllowGradient', \FormEngine\FE::TYPE_BOOLEAN),
+			$this->formatAttributeJs('type_image', 'bAllowImage', \FormEngine\FE::TYPE_BOOLEAN),
+			$this->formatAttributeJs('file_source', 'sFilePath'),
+			$this->formatAttributeJs('upload_url', 'sUploadUrl'),
+			$this->formatAttributeJs('session_name', 'sSessionName'),
+			$this->formatAttributeJs('session_id', 'sSessionId'),
+			$this->formatAttributeJs('file_types', 'asFileTypes'),
+			$this->formatAttributeJs('type_icons', 'oTypeIcons', \FormEngine\FE::TYPE_OBJECT),
+			$this->formatAttributeJs('file_types_description', 'sFileTypesDescription'),
+			$this->formatAttributeJs('delete_handler', 'fDeleteFile', \FormEngine\FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('load_handler', 'fLoadFiles', \FormEngine\FE::TYPE_FUNCTION),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

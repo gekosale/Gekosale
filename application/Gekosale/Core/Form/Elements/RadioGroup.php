@@ -17,17 +17,17 @@ namespace FormEngine\Elements;
 class RadioGroup extends OptionedField
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
 			$this->_FormatOptions_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

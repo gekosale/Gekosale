@@ -23,16 +23,16 @@ class StaticListing extends Field
 		parent::__construct($attributes);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('title', 'sTitle'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('title', 'sTitle'),
 			$this->_FormatListItems_JS('values', 'aoValues'),
-			$this->_FormatAttribute_JS('collapsible', 'bCollapsible', FE::TYPE_BOOLEAN),
-			$this->_FormatAttribute_JS('expanded', 'bExpanded', FE::TYPE_BOOLEAN),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('collapsible', 'bCollapsible', FE::TYPE_BOOLEAN),
+			$this->formatAttributeJs('expanded', 'bExpanded', FE::TYPE_BOOLEAN),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

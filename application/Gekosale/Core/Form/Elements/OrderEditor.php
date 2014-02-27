@@ -41,22 +41,22 @@ class OrderEditor extends Select
 		$this->_attributes['datagrid_filter'] = $this->getDatagridFilterData();
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('on_change', 'fOnChange', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('on_before_change', 'fOnBeforeChange', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('on_change', 'fOnChange', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('on_before_change', 'fOnBeforeChange', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('jsfunction', 'fLoadProducts', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('datagrid_filter', 'oFilterData', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('load_category_children', 'fLoadCategoryChildren', FE::TYPE_FUNCTION),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

@@ -20,14 +20,14 @@ namespace FormEngine\Elements;
 class Submit extends \FormEngine\Node
 {
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('class', 'sClass'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('icon', 'sIcon'),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('class', 'sClass'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('icon', 'sIcon'),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

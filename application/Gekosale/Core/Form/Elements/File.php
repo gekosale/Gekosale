@@ -136,26 +136,26 @@ class File extends Field
 
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('main_id', 'sMainId'),
-			$this->_FormatAttribute_JS('visibility_change', 'bVisibilityChangeable'),
-			$this->_FormatAttribute_JS('upload_url', 'sUploadUrl'),
-			$this->_FormatAttribute_JS('session_name', 'sSessionName'),
-			$this->_FormatAttribute_JS('session_id', 'sSessionId'),
-			$this->_FormatAttribute_JS('file_types', 'asFileTypes'),
-			$this->_FormatAttribute_JS('file_types_description', 'sFileTypesDescription'),
-			$this->_FormatAttribute_JS('delete_handler', 'fDeleteHandler', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('load_handler', 'fLoadFiles', FE::TYPE_FUNCTION),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('main_id', 'sMainId'),
+			$this->formatAttributeJs('visibility_change', 'bVisibilityChangeable'),
+			$this->formatAttributeJs('upload_url', 'sUploadUrl'),
+			$this->formatAttributeJs('session_name', 'sSessionName'),
+			$this->formatAttributeJs('session_id', 'sSessionId'),
+			$this->formatAttributeJs('file_types', 'asFileTypes'),
+			$this->formatAttributeJs('file_types_description', 'sFileTypesDescription'),
+			$this->formatAttributeJs('delete_handler', 'fDeleteHandler', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('load_handler', 'fLoadFiles', FE::TYPE_FUNCTION),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}

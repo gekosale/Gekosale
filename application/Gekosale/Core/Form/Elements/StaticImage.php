@@ -18,12 +18,12 @@ class FE_StaticImage extends FE_Field {
 		parent::__construct($attributes);
 	}
 	
-	protected function _PrepareAttributes_JS() {
+	protected function prepareAttributesJs() {
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('src', 'sSrc'),
-			$this->_FormatAttribute_JS('alt', 'sAlt'),
-			$this->_FormatDependency_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('src', 'sSrc'),
+			$this->formatAttributeJs('alt', 'sAlt'),
+			$this->formatDependencyJs()
 		);
 		return $attributes;
 	}

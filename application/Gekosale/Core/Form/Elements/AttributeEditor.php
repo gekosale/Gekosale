@@ -103,23 +103,23 @@ class AttributeEditor extends Field
 		);
 	}
 
-	protected function _PrepareAttributes_JS ()
+	protected function prepareAttributesJs ()
 	{
 		$attributes = Array(
-			$this->_FormatAttribute_JS('name', 'sName'),
-			$this->_FormatAttribute_JS('label', 'sLabel'),
-			$this->_FormatAttribute_JS('comment', 'sComment'),
-			$this->_FormatAttribute_JS('error', 'sError'),
-			$this->_FormatAttribute_JS('set', 'sSetId'),
-			$this->_FormatAttribute_JS('attributes', 'aoAttributes', FE::TYPE_OBJECT),
-			$this->_FormatAttribute_JS('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('deleteAttributeFunction', 'fDeleteAttribute', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('renameAttributeFunction', 'fRenameAttribute', FE::TYPE_FUNCTION),
-			$this->_FormatAttribute_JS('renameValueFunction', 'fRenameValue', FE::TYPE_FUNCTION),
-			$this->_FormatRepeatable_JS(),
-			$this->_FormatRules_JS(),
-			$this->_FormatDependency_JS(),
-			$this->_FormatDefaults_JS()
+			$this->formatAttributeJs('name', 'sName'),
+			$this->formatAttributeJs('label', 'sLabel'),
+			$this->formatAttributeJs('comment', 'sComment'),
+			$this->formatAttributeJs('error', 'sError'),
+			$this->formatAttributeJs('set', 'sSetId'),
+			$this->formatAttributeJs('attributes', 'aoAttributes', FE::TYPE_OBJECT),
+			$this->formatAttributeJs('onAfterDelete', 'fOnAfterDelete', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('deleteAttributeFunction', 'fDeleteAttribute', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('renameAttributeFunction', 'fRenameAttribute', FE::TYPE_FUNCTION),
+			$this->formatAttributeJs('renameValueFunction', 'fRenameValue', FE::TYPE_FUNCTION),
+			$this->formatRepeatableJs(),
+			$this->formatRulesJs(),
+			$this->formatDependencyJs(),
+			$this->formatDefaultsJs()
 		);
 		return $attributes;
 	}
