@@ -42,6 +42,10 @@ class ServiceContainer extends Container
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
             'database_manager' => 'getDatabaseManagerService',
+            'deliverer.datagrid' => 'getDeliverer_DatagridService',
+            'deliverer.form' => 'getDeliverer_FormService',
+            'deliverer.repository' => 'getDeliverer_RepositoryService',
+            'deliverer.subscriber' => 'getDeliverer_SubscriberService',
             'event_dispatcher' => 'getEventDispatcherService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
@@ -219,6 +223,71 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'deliverer.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Deliverer\DataGrid\DelivererDataGrid A Gekosale\Plugin\Deliverer\DataGrid\DelivererDataGrid instance.
+     */
+    protected function getDeliverer_DatagridService()
+    {
+        $this->services['deliverer.datagrid'] = $instance = new \Gekosale\Plugin\Deliverer\DataGrid\DelivererDataGrid();
+
+        $instance->setRepository($this->get('deliverer.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'deliverer.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Deliverer\Form\DelivererForm A Gekosale\Plugin\Deliverer\Form\DelivererForm instance.
+     */
+    protected function getDeliverer_FormService()
+    {
+        $this->services['deliverer.form'] = $instance = new \Gekosale\Plugin\Deliverer\Form\DelivererForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'deliverer.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Deliverer\Repository\DelivererRepository A Gekosale\Plugin\Deliverer\Repository\DelivererRepository instance.
+     */
+    protected function getDeliverer_RepositoryService()
+    {
+        $this->services['deliverer.repository'] = $instance = new \Gekosale\Plugin\Deliverer\Repository\DelivererRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'deliverer.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Deliverer\Event\DelivererEventSubscriber A Gekosale\Plugin\Deliverer\Event\DelivererEventSubscriber instance.
+     */
+    protected function getDeliverer_SubscriberService()
+    {
+        return $this->services['deliverer.subscriber'] = new \Gekosale\Plugin\Deliverer\Event\DelivererEventSubscriber();
+    }
+
+    /**
      * Gets the 'event_dispatcher' service.
      *
      * This service is shared.
@@ -237,6 +306,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilitySubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
+        $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
         $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
 

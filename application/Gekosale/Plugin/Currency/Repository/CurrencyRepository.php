@@ -11,9 +11,8 @@
  */
 namespace Gekosale\Plugin\Currency\Repository;
 
-use Gekosale\Core\Model\Currency,
-    Gekosale\Core\Repository;
-
+use Gekosale\Core\Model\Currency;
+use Gekosale\Core\Repository;
 use Symfony\Component\Intl\Intl;
 
 /**
@@ -48,7 +47,7 @@ class CurrencyRepository extends Repository
     }
 
     /**
-     * Deletes currency model by ID
+     * Deletes currency by ID
      *
      * @param $id
      */
@@ -58,7 +57,7 @@ class CurrencyRepository extends Repository
     }
 
     /**
-     * Saves currency data
+     * Saves currency
      *
      * @param      $Data
      * @param null $id
@@ -69,15 +68,17 @@ class CurrencyRepository extends Repository
             'id' => $id
         ]);
 
-        $currency->name               = $Data['required_data']['name'];
-        $currency->symbol             = $Data['required_data']['symbol'];
-        $currency->decimal_separator  = $Data['required_data']['decimal_separator'];
-        $currency->decimal_count      = $Data['required_data']['decimal_count'];
-        $currency->thousand_separator = $Data['required_data']['thousand_separator'];
-        $currency->positive_prefix    = $Data['required_data']['positive_prefix'];
-        $currency->positive_suffix    = $Data['required_data']['positive_suffix'];
-        $currency->negative_prefix    = $Data['required_data']['negative_prefix'];
-        $currency->negative_suffix    = $Data['required_data']['negative_suffix'];
+        $requiredData = $Data['required_data'];
+
+        $currency->name               = $requiredData['name'];
+        $currency->symbol             = $requiredData['symbol'];
+        $currency->decimal_separator  = $requiredData['decimal_separator'];
+        $currency->decimal_count      = $requiredData['decimal_count'];
+        $currency->thousand_separator = $requiredData['thousand_separator'];
+        $currency->positive_prefix    = $requiredData['positive_prefix'];
+        $currency->positive_suffix    = $requiredData['positive_suffix'];
+        $currency->negative_prefix    = $requiredData['negative_prefix'];
+        $currency->negative_suffix    = $requiredData['negative_suffix'];
 
         $currency->save();
     }
@@ -131,7 +132,7 @@ class CurrencyRepository extends Repository
     }
 
     /**
-     * Gets all currencies and returns them as key-value pair
+     * Gets all currencies and returns them as key-value pairs
      *
      * @return array
      */

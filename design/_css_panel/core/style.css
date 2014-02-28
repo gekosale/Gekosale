@@ -7300,7 +7300,7 @@ form {
 .GF_Datagrid .body tr.e td,
 .GF_Datagrid .body tr.e th {
     background: #f7f7f7;
-    border-bottom: 0px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
 }
 
 .GF_Datagrid .body tr.o td,

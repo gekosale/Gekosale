@@ -183,6 +183,11 @@ abstract class Component extends ContainerAware
         return PropertyAccess::createPropertyAccessor();
     }
 
+    /**
+     * Shortcut to get all available languages
+     *
+     * @return mixed
+     */
     final protected function getLanguages()
     {
         return $this->container->get('language.repository')->all()->toArray();
