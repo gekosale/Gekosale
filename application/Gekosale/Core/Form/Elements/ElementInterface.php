@@ -21,6 +21,14 @@ namespace Gekosale\Core\Form\Elements;
 interface ElementInterface
 {
 
+    const INFINITE      = 'inf';
+    const TYPE_NUMBER   = 'number';
+    const TYPE_STRING   = 'string';
+    const TYPE_FUNCTION = 'function';
+    const TYPE_ARRAY    = 'array';
+    const TYPE_OBJECT   = 'object';
+    const TYPE_BOOLEAN  = 'boolean';
+
     /**
      * Prepares form element attributes for Javascript rendering
      *

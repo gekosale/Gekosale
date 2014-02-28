@@ -1,72 +1,71 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
-use Exception;
-use Gekosale\App as App;
-use Gekosale\Translation as Translation;
+namespace Gekosale\Core\Form\Elements;
 
-class ProductAggregator extends Field
+/**
+ * Class ProductAggregator
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class ProductAggregator extends Field implements ElementInterface
 {
-	protected $_jsFunction;
+    protected $_jsFunction;
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		if (! isset($this->_attributes['products_source_field']) || ! ($this->_attributes['products_source_field'] instanceof ProductSelect)){
-			throw new Exception("Source field (attribute: products_source_field) not set for field '{$this->_attributes['name']}'.");
-		}
-		$this->_attributes['products_source_field_name'] = $this->_attributes['products_source_field']->GetName();
-		$this->_attributes['vat_values'] = App::getModel('vat/vat')->getVATAll();
-		$this->_attributes['prefixes'] = Array(
-			Translation::get('TXT_PRICE_NET'),
-			Translation::get('TXT_PRICE_GROSS')
-		);
-		$this->_jsFunction = 'LoadProductDataForAggregation_' . $this->_id;
-		$this->_attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
-		App::getRegistry()->xajaxInterface->registerFunction(array(
-			$this->_jsFunction,
-			$this,
-			'loadProductData'
-		));
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        if (!isset($this->_attributes['products_source_field']) || !($this->_attributes['products_source_field'] instanceof ProductSelect)) {
+            throw new Exception("Source field (attribute: products_source_field) not set for field '{$this->_attributes['name']}'.");
+        }
+        $this->_attributes['products_source_field_name'] = $this->_attributes['products_source_field']->GetName();
+        $this->_attributes['vat_values']                 = App::getModel('vat/vat')->getVATAll();
+        $this->_attributes['prefixes']                   = Array(
+            Translation::get('TXT_PRICE_NET'),
+            Translation::get('TXT_PRICE_GROSS')
+        );
+        $this->_jsFunction                               = 'LoadProductDataForAggregation_' . $this->_id;
+        $this->_attributes['jsfunction']                 = 'xajax_' . $this->_jsFunction;
+        App::getRegistry()->xajaxInterface->registerFunction(array(
+            $this->_jsFunction,
+            $this,
+            'loadProductData'
+        ));
+    }
 
-	public function loadProductData ($request)
-	{
-		$products = Array();
-		foreach ($request['products'] as $product){
-			$products[] = App::getModel('product/product')->getProductVariantDetails($product);
-		}
-		return Array(
-			'products' => $products
-		);
-	}
+    public function loadProductData($request)
+    {
+        $products = Array();
+        foreach ($request['products'] as $product) {
+            $products[] = App::getModel('product/product')->getProductVariantDetails($product);
+        }
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('name', 'sName'),
-			$this->formatAttributeJs('products_source_field_name', 'sProductsSourceField'),
-			$this->formatAttributeJs('suffix', 'sSuffix'),
-			$this->formatAttributeJs('prefixes', 'asPrefixes'),
-			$this->formatAttributeJs('vat_values', 'aoVatValues', \FormEngine\FE::TYPE_OBJECT),
-			$this->formatAttributeJs('jsfunction', 'fLoadProductData', \FormEngine\FE::TYPE_FUNCTION)
-		);
-		return $attributes;
-	}
+        return Array(
+            'products' => $products
+        );
+    }
+
+    public function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('name', 'sName'),
+            $this->formatAttributeJs('products_source_field_name', 'sProductsSourceField'),
+            $this->formatAttributeJs('suffix', 'sSuffix'),
+            $this->formatAttributeJs('prefixes', 'asPrefixes'),
+            $this->formatAttributeJs('vat_values', 'aoVatValues', ElementInterface::TYPE_OBJECT),
+            $this->formatAttributeJs('jsfunction', 'fLoadProductData', ElementInterface::TYPE_FUNCTION)
+        );
+
+        return $attributes;
+    }
 }

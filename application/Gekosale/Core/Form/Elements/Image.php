@@ -1,34 +1,42 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms 
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the 
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
-use Gekosale\Translation as Translation;
+namespace Gekosale\Core\Form\Elements;
 
-class Image extends File
+/**
+ * Class Image
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Image extends File implements ElementInterface
 {
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		$this->_attributes['file_types'] = Array(
-			'jpg',
-			'jpeg',
-			'png',
-			'gif',
-			'swf'
-		);
-		$this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        $this->_attributes['file_types']             = Array(
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'swf'
+        );
+        $this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
+    }
+
+    protected function prepareAttributesJs()
+    {
+        parent::prepareAttributesJs();
+    }
 
 }

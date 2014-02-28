@@ -1,57 +1,63 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms 
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the 
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
-use FormEngine\FE as FE;
+namespace Gekosale\Core\Form\Elements;
 
-class Tip extends \FormEngine\Node
+use Gekosale\Core\Form\Node;
+
+/**
+ * Class Tip
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Tip extends Node implements ElementInterface
 {
-	
-	const UP = 'up';
-	const DOWN = 'down';
-	
-	const EXPANDED = 'expanded';
-	const RETRACTED = 'retracted';
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		$this->_attributes['name'] = '';
-		if (isset($this->_attributes['short_tip']) && strlen($this->_attributes['short_tip'])){
-			$this->_attributes['retractable'] = true;
-		}
-	}
+    const UP   = 'up';
+    const DOWN = 'down';
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('tip', 'sTip'),
-			$this->formatAttributeJs('direction', 'sDirection'),
-			$this->formatAttributeJs('short_tip', 'sShortTip'),
-			$this->formatAttributeJs('retractable', 'bRetractable', FE::TYPE_BOOLEAN),
-			$this->formatAttributeJs('default_state', 'sDefaultState'),
-			$this->formatDependencyJs()
-		);
-		return $attributes;
-	}
+    const EXPANDED  = 'expanded';
+    const RETRACTED = 'retracted';
 
-	public function Render_Static ()
-	{
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        $this->_attributes['name'] = '';
+        if (isset($this->_attributes['short_tip']) && strlen($this->_attributes['short_tip'])) {
+            $this->_attributes['retractable'] = true;
+        }
+    }
 
-	public function Populate ($value)
-	{
-	}
+    public function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('tip', 'sTip'),
+            $this->formatAttributeJs('direction', 'sDirection'),
+            $this->formatAttributeJs('short_tip', 'sShortTip'),
+            $this->formatAttributeJs('retractable', 'bRetractable', ElementInterface::TYPE_BOOLEAN),
+            $this->formatAttributeJs('default_state', 'sDefaultState'),
+            $this->formatDependencyJs()
+        );
+
+        return $attributes;
+    }
+
+    public function Render_Static()
+    {
+    }
+
+    public function Populate($value)
+    {
+    }
 
 }

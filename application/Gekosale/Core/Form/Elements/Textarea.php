@@ -1,41 +1,42 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
+namespace Gekosale\Core\Form\Elements;
 
-class Textarea extends TextField
+/**
+ * Class Textarea
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Textarea extends TextField implements ElementInterface
 {
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('name', 'sName'),
-			$this->formatAttributeJs('label', 'sLabel'),
-			$this->formatAttributeJs('rows', 'iRows', \FormEngine\FE::TYPE_NUMBER),
-			$this->formatAttributeJs('cols', 'iCols', \FormEngine\FE::TYPE_NUMBER),
-			$this->formatAttributeJs('comment', 'sComment'),
-			$this->formatAttributeJs('error', 'sError'),
-			$this->formatRepeatableJs(),
-			$this->formatRulesJs(),
-			$this->formatDependencyJs(),
-			$this->formatDefaultsJs()
-		);
-		return $attributes;
-	}
+    public function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('name', 'sName'),
+            $this->formatAttributeJs('label', 'sLabel'),
+            $this->formatAttributeJs('rows', 'iRows', ElementInterface::TYPE_NUMBER),
+            $this->formatAttributeJs('cols', 'iCols', ElementInterface::TYPE_NUMBER),
+            $this->formatAttributeJs('comment', 'sComment'),
+            $this->formatAttributeJs('error', 'sError'),
+            $this->formatRepeatableJs(),
+            $this->formatRulesJs(),
+            $this->formatDependencyJs(),
+            $this->formatDefaultsJs()
+        );
+
+        return $attributes;
+    }
 
 }

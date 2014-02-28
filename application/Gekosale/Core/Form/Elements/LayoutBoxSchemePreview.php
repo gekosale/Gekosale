@@ -1,56 +1,59 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms 
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the 
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
-use Gekosale\App as App;
+namespace Gekosale\Core\Form\Elements;
 
-class LayoutBoxSchemePreview extends Field
+/**
+ * Class LayoutBoxSchemePreview
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class LayoutBoxSchemePreview extends Field implements ElementInterface
 {
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		if (! isset($this->_attributes['name'])){
-			$this->_attributes['name'] = 'LayoutBoxSchemePreview_' . $this->_id;
-		}
-		if (isset($this->_attributes['layout_box_tpl']) && is_file($this->_attributes['layout_box_tpl'])){
-			$this->_attributes['layout_box_tpl'] = file_get_contents($this->_attributes['layout_box_tpl']);
-		}
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        if (!isset($this->_attributes['name'])) {
+            $this->_attributes['name'] = 'LayoutBoxSchemePreview_' . $this->_id;
+        }
+        if (isset($this->_attributes['layout_box_tpl']) && is_file($this->_attributes['layout_box_tpl'])) {
+            $this->_attributes['layout_box_tpl'] = file_get_contents($this->_attributes['layout_box_tpl']);
+        }
+    }
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('name', 'sName'),
-			$this->formatAttributeJs('triggers', 'asTriggers'),
-			$this->formatAttributeJs('layout_box_tpl', 'sLayoutBoxTpl'),
-			$this->formatAttributeJs('box_scheme', 'sBoxScheme'),
-			$this->formatAttributeJs('box_name', 'sBoxName'),
-			$this->formatAttributeJs('box_title', 'sBoxTitle'),
-			$this->formatAttributeJs('box_content', 'sBoxContent'),
-			$this->formatAttributeJs('stylesheets', 'asStylesheets'),
-			$this->formatDependencyJs()
-		);
-		return $attributes;
-	}
+    protected function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('name', 'sName'),
+            $this->formatAttributeJs('triggers', 'asTriggers'),
+            $this->formatAttributeJs('layout_box_tpl', 'sLayoutBoxTpl'),
+            $this->formatAttributeJs('box_scheme', 'sBoxScheme'),
+            $this->formatAttributeJs('box_name', 'sBoxName'),
+            $this->formatAttributeJs('box_title', 'sBoxTitle'),
+            $this->formatAttributeJs('box_content', 'sBoxContent'),
+            $this->formatAttributeJs('stylesheets', 'asStylesheets'),
+            $this->formatDependencyJs()
+        );
 
-	public function Render_Static ()
-	{
-	}
+        return $attributes;
+    }
 
-	public function Populate ($value)
-	{
-	}
+    public function Render_Static()
+    {
+    }
 
+    public function Populate($value)
+    {
+    }
 }

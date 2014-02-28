@@ -1,40 +1,45 @@
 <?php
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms 
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the 
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace FormEngine\Elements;
+namespace Gekosale\Core\Form\Elements;
 
-class Combo extends OptionedField
+/**
+ * Class Combo
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Combo extends OptionedField implements ElementInterface
 {
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('name', 'sName'),
-			$this->formatAttributeJs('label', 'sLabel'),
-			$this->formatAttributeJs('comment', 'sComment'),
-			$this->formatAttributeJs('suffix', 'sSuffix'),
-			$this->formatAttributeJs('prefix', 'sPrefix'),
-			$this->formatAttributeJs('error', 'sError'),
-			$this->formatAttributeJs('selector', 'sSelector'),
-			$this->formatAttributeJs('css_attribute', 'sCssAttribute'),
-			$this->formatRepeatableJs(),
-			$this->formatRulesJs(),
-			$this->formatDependencyJs(),
-			$this->_FormatOptions_JS(),
-			$this->formatDefaultsJs()
-		);
-		return $attributes;
-	}
+    protected function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('name', 'sName'),
+            $this->formatAttributeJs('label', 'sLabel'),
+            $this->formatAttributeJs('comment', 'sComment'),
+            $this->formatAttributeJs('suffix', 'sSuffix'),
+            $this->formatAttributeJs('prefix', 'sPrefix'),
+            $this->formatAttributeJs('error', 'sError'),
+            $this->formatAttributeJs('selector', 'sSelector'),
+            $this->formatAttributeJs('css_attribute', 'sCssAttribute'),
+            $this->formatRepeatableJs(),
+            $this->formatRulesJs(),
+            $this->formatDependencyJs(),
+            $this->formatOptionsJs(),
+            $this->formatDefaultsJs()
+        );
+
+        return $attributes;
+    }
 
 }

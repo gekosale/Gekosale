@@ -11,7 +11,7 @@
  */
 namespace FormEngine\Rules;
 
-Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Unique extends \FormEngine\Rule
 {

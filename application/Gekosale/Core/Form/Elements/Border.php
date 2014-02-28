@@ -13,7 +13,6 @@
 namespace Gekosale\Core\Form\Elements;
 
 use Gekosale\Core\Form\Elements\TextField;
-use Gekosale\Core\Form\Elements\ElementInterface;
 
 /**
  * Class Border

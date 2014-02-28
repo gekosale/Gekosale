@@ -1,47 +1,51 @@
 <?php
-namespace FormEngine\Elements;
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-class StaticText extends \FormEngine\Node
+namespace Gekosale\Core\Form\Elements;
+
+use Gekosale\Core\Form\Node;
+
+/**
+ * Class StaticText
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class StaticText extends Node implements ElementInterface
 {
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		$this->_attributes['name'] = '';
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        $this->_attributes['name'] = '';
+    }
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = Array(
-			$this->formatAttributeJs('text', 'sText'),
-			$this->formatAttributeJs('class', 'sClass'),
-			$this->formatDependencyJs()
-		);
-		return $attributes;
-	}
+    public function prepareAttributesJs()
+    {
+        $attributes = Array(
+            $this->formatAttributeJs('text', 'sText'),
+            $this->formatAttributeJs('class', 'sClass'),
+            $this->formatDependencyJs()
+        );
 
-	public function Render_Static ()
-	{
-	}
+        return $attributes;
+    }
 
-	public function Populate ($value)
-	{
-	}
+    public function Render_Static()
+    {
+    }
+
+    public function Populate($value)
+    {
+    }
 
 }

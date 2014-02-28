@@ -1,80 +1,82 @@
 <?php
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace Gekosale\Core\Form\Elements;
 
 /**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.com
+ * Class FavouriteCategories
  *
- * Copyright (c) 2009 Gekosale
- *
- * This program is free software; you can redistribute it and/or modify it under the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
-namespace FormEngine\Elements;
-
-use Gekosale\App as App;
-use Gekosale\Translation as Translation;
-use FormEngine\FE as FE;
-
-class FavouriteCategories extends Tree
+class FavouriteCategories extends Tree implements ElementInterface
 {
-	protected $_jsGetSelectedInfo;
+    protected $_jsGetSelectedInfo;
 
-	public function __construct ($attributes)
-	{
-		parent::__construct($attributes);
-		$this->_jsGetSelectedInfo = 'GetSelectedInfo_' . $this->_id;
-		if (isset($this->_attributes['load_selected_info']) && is_callable($this->_attributes['load_selected_info'])){
-			$this->_attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
-			App::getRegistry()->xajaxInterface->registerFunction(array(
-				$this->_jsGetSelectedInfo,
-				$this,
-				'getSelectedInfo'
-			));
-		}
-	}
+    public function __construct($attributes)
+    {
+        parent::__construct($attributes);
+        $this->_jsGetSelectedInfo = 'GetSelectedInfo_' . $this->_id;
+        if (isset($this->_attributes['load_selected_info']) && is_callable($this->_attributes['load_selected_info'])) {
+            $this->_attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
+            App::getRegistry()->xajaxInterface->registerFunction(array(
+                $this->_jsGetSelectedInfo,
+                $this,
+                'getSelectedInfo'
+            ));
+        }
+    }
 
-	public function getSelectedInfo ($request)
-	{
-		$rows = Array();
-		if (! is_array($request['id'])){
-			$request['id'] = Array(
-				$request['id']
-			);
-		}
-		foreach ($request['id'] as $rowId){
-			$path = call_user_func($this->_attributes['load_selected_info'], $rowId);
-			$pathSize = count($path);
-			if ($pathSize === 0) {
-				$path = array();
-			}
-			else {
-				$path[$pathSize - 1] = '<strong>' . $path[$pathSize - 1] . '</strong>';
-				if ($pathSize > 5){
-					$path = array_slice($path, $pathSize - 5);
-					array_unshift($path, '...');
-				}
-			}
+    public function getSelectedInfo($request)
+    {
+        $rows = Array();
+        if (!is_array($request['id'])) {
+            $request['id'] = Array(
+                $request['id']
+            );
+        }
+        foreach ($request['id'] as $rowId) {
+            $path     = call_user_func($this->_attributes['load_selected_info'], $rowId);
+            $pathSize = count($path);
+            if ($pathSize === 0) {
+                $path = array();
+            } else {
+                $path[$pathSize - 1] = '<strong>' . $path[$pathSize - 1] . '</strong>';
+                if ($pathSize > 5) {
+                    $path = array_slice($path, $pathSize - 5);
+                    array_unshift($path, '...');
+                }
+            }
 
-			$rows[] = Array(
-				'id' => $rowId,
-				'values' => Array(
-					implode(' / ', $path)
-				)
-			);
-		}
-		return Array(
-			'rows' => $rows
-		);
-	}
+            $rows[] = Array(
+                'id'     => $rowId,
+                'values' => Array(
+                    implode(' / ', $path)
+                )
+            );
+        }
 
-	protected function prepareAttributesJs ()
-	{
-		$attributes = parent::prepareAttributesJs();
-		$attributes[] = $this->formatAttributeJs('get_selected_info', 'fGetSelectedInfo', FE::TYPE_FUNCTION);
-		$attributes[] = $this->formatAttributeJs('columns', 'aoColumns', FE::TYPE_OBJECT);
-		return $attributes;
-	}
+        return Array(
+            'rows' => $rows
+        );
+    }
+
+    public function prepareAttributesJs()
+    {
+        $attributes = parent::prepareAttributesJs();
+        $attributes[]
+                      = $this->formatAttributeJs('get_selected_info', 'fGetSelectedInfo', ElementInterface::TYPE_FUNCTION);
+        $attributes[] = $this->formatAttributeJs('columns', 'aoColumns', ElementInterface::TYPE_OBJECT);
+
+        return $attributes;
+    }
 }
