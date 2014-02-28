@@ -14,9 +14,9 @@ namespace Gekosale\Plugin\Availability\Event;
 use Gekosale\Core\Event\FormEvent;
 
 /**
- * Class CurrencyFormEvent
+ * Class AvailabilityFormEvent
  *
- * @package Gekosale\Plugin\Currency\Event
+ * @package Gekosale\Plugin\Availability\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
 final class AvailabilityFormEvent extends FormEvent

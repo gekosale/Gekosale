@@ -77,9 +77,9 @@ class CategoryForm extends Form
             'label' => $this->trans('Hierarchy')
         ]));
 
-        $requiredData->addChild(new FormEngine\Elements\StaticText(Array(
-            'text' => '<p>' . _('TXT_PARENT_CATEGORY') . '</p>'
-        )));
+        $requiredData->addChild($this->addStaticText([
+            'text' => '<p>' . $this->trans('Parent category') . '</p>'
+        ]));
 
         if ($this->populateData['required_data']['categoryid']) {
             $active = $this->populateData['required_data']['categoryid'];
@@ -173,14 +173,15 @@ class CategoryForm extends Form
             'rows'       => 30
         )));
 
-        $form->AddFilter($this->addFilterNoCode());
-        $form->AddFilter($this->addFilterSecure());
+        $form->addFilter($this->addFilterNoCode());
+
+        $form->addFilter($this->addFilterSecure());
 
         $event = new CategoryFormEvent($form, $categoryData);
 
         $this->getDispatcher()->dispatch(CategoryFormEvent::FORM_INIT_EVENT, $event);
 
-        $form->Populate($event->getPopulateData());
+        $form->populate($event->getPopulateData());
 
         return $form;
     }

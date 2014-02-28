@@ -1,9 +1,0 @@
-{% extends "layout.twig" %}
-{% block content %}
-    <h2>{% trans %}TXT_EDIT_AVAILABILITY{% endtrans %}</h2>
-    <ul class="possibilities">
-        <li><a href="{{ path('admin.availability.index') }}" class="button return"><span></span></a></li>
-        <li><a href="#availability" rel="submit" class="button"><span>{% trans %}TXT_SAVE_AND_FINISH{% endtrans %}</span></a></li>
-    </ul>
-    {{ form(form) }}
-{% endblock %} 

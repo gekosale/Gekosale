@@ -1,22 +1,22 @@
 {% extends "layout.twig" %}
 {% block content %}
-<h2>{% trans %}Deliverers{% endtrans %}</h2>
+<h2>{% trans %}Availability{% endtrans %}</h2>
 
 <ul class="possibilities">
-	<li><a href="{{ path('admin.deliverer.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+	<li><a href="{{ path('admin.availability.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
 </ul>
 
 <div class="block">
-	<div id="datagrid-deliverer"></div>
+	<div id="datagrid-availability"></div>
 </div>
 
 <script type="text/javascript">
 
-function editDeliverer(dg, id) {
-	location.href = "{{ path('admin.deliverer.edit') }}/" + id;
+function editAvailability(dg, id) {
+	location.href = '{{ path('admin.availability.edit') }}/' + id;
 };
 	
-function deleteDeliverer(dg, id) {
+function deleteAvailability(dg, id) {
  	var oRow = theDatagrid.GetRow(id);
 	var topic = '{% trans %}Delete{% endtrans %}';
 	var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.symbol +'</strong> ?';
@@ -25,7 +25,7 @@ function deleteDeliverer(dg, id) {
 		id: id
 	};
 	var func = function(p) {
-		return xajax_doDeleteDeliverer(p.dg, p.id);
+		return xajax_doDeleteAvailability(p.dg, p.id);
 	};
 	new GF_Alert(topic, msg, func, true, params);
 };
@@ -58,7 +58,7 @@ $(document).ready(function() {
 	});
 
     var options = {
-		id: 'deliverer',
+		id: 'availability',
 		appearance: {
 			column_select: false
 		},
@@ -67,10 +67,10 @@ $(document).ready(function() {
 			rows_per_page: 25
 		},
 		event_handlers: {
-			load: xajax_getDelivererForAjax,
-			edit_row: editDeliverer,
-			delete_row: deleteDeliverer,
-			click_row: editDeliverer
+			load: xajax_getAvailabilityForAjax,
+			edit_row: editAvailability,
+			delete_row: deleteAvailability,
+			click_row: editAvailability
 		},
 		columns: [
 			column_id,
@@ -83,10 +83,10 @@ $(document).ready(function() {
 		context_actions: [
 			GF_Datagrid.ACTION_EDIT,
 			GF_Datagrid.ACTION_DELETE
-		],
+		]
 	};
     
-    theDatagrid = new GF_Datagrid($('#datagrid-deliverer'), options);
+    theDatagrid = new GF_Datagrid($('#datagrid-availability'), options);
     
 });
 </script>

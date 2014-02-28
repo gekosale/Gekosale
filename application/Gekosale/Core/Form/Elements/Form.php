@@ -86,9 +86,14 @@ class Form extends Container
     {
     }
 
-    public function getSubmitValues($flags = 0)
+    public function getSubmitValuesFlat()
     {
-        return $this->getValues($flags);
+        return $this->getValues(self::FORMAT_FLAT);
+    }
+
+    public function getSubmitValuesGrouped()
+    {
+        return $this->getValues(self::FORMAT_GROUPED);
     }
 
     public function getElementValue($element)
@@ -102,13 +107,13 @@ class Form extends Container
             $values = Array();
             foreach ($this->fields as $field) {
                 if (is_object($field)) {
-                    if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
+                    if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
                             $field->getName() => $field->getValue()
                         ));
                     }
                 } else {
-                    if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
+                    if ($field instanceof Field) {
                         $values = array_merge_recursive($values, Array(
                             $field->getName() => $field->getValue()
                         ));

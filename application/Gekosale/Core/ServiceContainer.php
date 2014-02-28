@@ -114,13 +114,13 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid A Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid instance.
+     * @return Gekosale\Plugin\Availability\DataGrid\AvailabilityDataGrid A Gekosale\Plugin\Availability\DataGrid\AvailabilityDataGrid instance.
      */
     protected function getAvailability_DatagridService()
     {
-        $this->services['availability.datagrid'] = $instance = new \Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid();
+        $this->services['availability.datagrid'] = $instance = new \Gekosale\Plugin\Availability\DataGrid\AvailabilityDataGrid();
 
-        $instance->setRepository($this->get('currency.repository'));
+        $instance->setRepository($this->get('availability.repository'));
         $instance->setContainer($this);
 
         return $instance;
@@ -132,11 +132,11 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Plugin\Currency\Form\CurrencyForm A Gekosale\Plugin\Currency\Form\CurrencyForm instance.
+     * @return Gekosale\Plugin\Availability\Form\AvailabilityForm A Gekosale\Plugin\Availability\Form\AvailabilityForm instance.
      */
     protected function getAvailability_FormService()
     {
-        $this->services['availability.form'] = $instance = new \Gekosale\Plugin\Currency\Form\CurrencyForm();
+        $this->services['availability.form'] = $instance = new \Gekosale\Plugin\Availability\Form\AvailabilityForm();
 
         $instance->setContainer($this);
 
@@ -149,11 +149,11 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Plugin\Currency\Repository\CurrencyRepository A Gekosale\Plugin\Currency\Repository\CurrencyRepository instance.
+     * @return Gekosale\Plugin\Availability\Repository\AvailabilityRepository A Gekosale\Plugin\Availability\Repository\AvailabilityRepository instance.
      */
     protected function getAvailability_RepositoryService()
     {
-        $this->services['availability.repository'] = $instance = new \Gekosale\Plugin\Currency\Repository\CurrencyRepository();
+        $this->services['availability.repository'] = $instance = new \Gekosale\Plugin\Availability\Repository\AvailabilityRepository();
 
         $instance->setContainer($this);
 
@@ -166,11 +166,11 @@ class ServiceContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber A Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber instance.
+     * @return Gekosale\Plugin\Availability\Event\AvailabilityEventSubscriber A Gekosale\Plugin\Availability\Event\AvailabilityEventSubscriber instance.
      */
     protected function getAvailability_SubscriberService()
     {
-        return $this->services['availability.subscriber'] = new \Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber();
+        return $this->services['availability.subscriber'] = new \Gekosale\Plugin\Availability\Event\AvailabilityEventSubscriber();
     }
 
     /**
@@ -446,7 +446,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
-        $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
+        $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilityEventSubscriber');
         $instance->addSubscriberService('category.subscriber', 'Gekosale\\Plugin\\Category\\Event\\CategoryEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');

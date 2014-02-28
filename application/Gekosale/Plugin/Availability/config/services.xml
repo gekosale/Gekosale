@@ -4,29 +4,29 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="availability.repository" class="Gekosale\Plugin\Currency\Repository\CurrencyRepository">
+        <service id="availability.repository" class="Gekosale\Plugin\Availability\Repository\AvailabilityRepository">
             <call method="setContainer">
-                <argument type="service" id="service_container" />
+                <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="availability.datagrid" class="Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid">
+        <service id="availability.datagrid" class="Gekosale\Plugin\Availability\DataGrid\AvailabilityDataGrid">
             <call method="setRepository">
-                <argument type="service" id="currency.repository" />
+                <argument type="service" id="availability.repository"/>
             </call>
             <call method="setContainer">
-                <argument type="service" id="service_container" />
+                <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="availability.form" class="Gekosale\Plugin\Currency\Form\CurrencyForm">
+        <service id="availability.form" class="Gekosale\Plugin\Availability\Form\AvailabilityForm">
             <call method="setContainer">
-                <argument type="service" id="service_container" />
+                <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="availability.subscriber" class="Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber">
-            <tag name="kernel.event_subscriber" />
+        <service id="availability.subscriber" class="Gekosale\Plugin\Availability\Event\AvailabilityEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
         </service>
     </services>
 </container>

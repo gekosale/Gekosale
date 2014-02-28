@@ -12,7 +12,6 @@
 
 namespace Gekosale\Core\Form\Rules;
 
-use Gekosale\Core\Rules\RuleInterface;
 use Gekosale\Core\Form\Rule;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,31 +24,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class LanguageUnique extends Rule implements RuleInterface
 {
 
-    protected $_table;
-    protected $_column;
-    protected $_id;
-    protected $_exclude;
-    protected $_jsFunction;
-    protected $_valueProcessFunction;
-    protected $_language;
-
+    protected $errorMsg;
+    protected $container;
+    protected $options;
+    protected $language;
+    protected $jsFunction;
     protected static $_nextId = 0;
 
-    public function __construct(ContainerInterface $container, $options)
+    public function __construct($errorMsg, $options, ContainerInterface $container)
     {
         parent::__construct($errorMsg);
-        $this->_table                = $table;
-        $this->_column               = $column;
-        $this->_exclude              = $exclude;
-        $this->_id                   = self::$_nextId++;
-        $this->_valueProcessFunction = $valueProcessFunction;
-        $this->_jsFunction           = 'CheckUniqueness_' . $this->_id;
-        App::getRegistry()->xajaxInterface->registerFunction(array(
-            $this->_jsFunction,
+
+        $this->errorMsg   = $errorMsg;
+        $this->container  = $container;
+        $this->options    = $options;
+        $this->id         = self::$_nextId++;
+        $this->jsFunction = 'CheckUniqueness_' . $this->id;
+        $this->pdo        = $this->container->get('database_manager')->getConnection()->getPdo();
+
+        $this->container->get('xajax_manager')->registerFunction([
+            $this->jsFunction,
             $this,
             'doAjaxCheck'
-        ));
-        $this->_language = '0';
+        ]);
     }
 
     public function doAjaxCheck($request)
@@ -61,56 +58,47 @@ class LanguageUnique extends Rule implements RuleInterface
         );
     }
 
-    public function setLanguage($language)
+    protected function setLanguage($language)
     {
-        $this->_language = $language;
+        $this->language = $language;
     }
 
-    protected function checkValue($value)
+    public function checkValue($value)
     {
-        if ($this->_valueProcessFunction) {
-            $f     = $this->_valueProcessFunction;
-            $value = $f($value);
-        }
-        $sql = "
-			SELECT
-				COUNT(*) AS items_count
-			FROM
-				{$this->_table}
-			WHERE
-				{$this->_column} = :value
-				AND languageid = :language
+        $sql = "SELECT
+				  COUNT(*) AS items_count
+			    FROM
+				  {$this->options['table']}
+			    WHERE
+				  {$this->options['column']} = :value
+				  AND language_id = :language
 		";
-        if ($this->_exclude && is_array($this->_exclude)) {
-            if (!is_array($this->_exclude['values'])) {
-                $this->_exclude['values'] = Array(
-                    $this->_exclude['values']
-                );
+        if (isset($this->options['exclude']) && is_array($this->options['exclude'])) {
+            if (!is_array($this->options['exclude']['values'])) {
+                $this->options['exclude']['values'] = [$this->options['exclude']['values']];
             }
-            $excludedValues = implode(', ', $this->_exclude['values']);
-            $sql .= "AND NOT {$this->_exclude['column']} IN ({$excludedValues})";
-        }
-        $stmt = Db::getInstance()->prepare($sql);
-        $stmt->bindValue('value', $value);
-        $stmt->bindValue('language', $this->_language);
-        try {
-            $stmt->execute();
-            $rs = $stmt->fetch();
-            if ($rs['items_count'] == 0) {
-                return true;
-            }
-        } catch (Exception $e) {
-            throw new Exception('Error while executing sql query: ' . $e->getMessage());
-        }
 
-        return false;
+            $values = array_filter($this->options['exclude']['values']);
+
+            if (count($values)) {
+                $excludedValues = implode(', ', $this->options['exclude']['values']);
+                $sql .= " AND NOT {$this->options['exclude']['column']} IN ({$excludedValues})";
+            }
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue('value', $value);
+        $stmt->bindValue('language', $this->language);
+        $stmt->execute();
+        $rs = $stmt->fetch();
+
+        return ($rs['items_count'] == 0);
     }
 
     public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->_jsFunction}}";
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}}";
     }
 
 }

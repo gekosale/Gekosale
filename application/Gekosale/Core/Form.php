@@ -68,6 +68,18 @@ abstract class Form extends Component
     }
 
     /**
+     * Shortcut for adding Textarea element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\Textarea
+     */
+    public function addTextArea(array $options)
+    {
+        return new Form\Elements\Textarea($options);
+    }
+
+    /**
      * Shortcut for adding Select element
      *
      * @param array $options
