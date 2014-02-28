@@ -11,7 +11,6 @@
  */
 namespace Gekosale\Plugin\Country\Repository;
 
-use Gekosale\Core\Model\Country;
 use Gekosale\Core\Repository;
 use Symfony\Component\Intl\Intl;
 
@@ -25,12 +24,14 @@ class CountryRepository extends Repository
 {
 
     /**
-     * Returns all countries
+     * Returns all country names for given locale
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @param string $locale
+     *
+     * @return \string[]
      */
-    public function all()
+    public function all($locale = 'en')
     {
-        return Intl::getRegionBundle()->getCountryNames();
+        return Intl::getRegionBundle()->getCountryNames($locale);
     }
 }

@@ -11,9 +11,8 @@
  */
 namespace Gekosale\Plugin\Language\Repository;
 
-use Gekosale\Core\Model\Language,
-    Gekosale\Core\Repository;
-
+use Gekosale\Core\Model\Language;
+use Gekosale\Core\Repository;
 use Symfony\Component\Intl\Intl;
 
 /**
@@ -65,11 +64,12 @@ class LanguageRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $language = Language::firstOrNew([
+        $language = Language::firstOrCreate([
             'id' => $id
         ]);
 
         $language->name        = $Data['required_data']['name'];
+        $language->locale      = $Data['required_data']['locale'];
         $language->translation = $Data['required_data']['translation'];
         $language->currency_id = $Data['currency_data']['currency_id'];
 
@@ -85,22 +85,37 @@ class LanguageRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $languageData = $this->find($id)->toArray();
-
-        if (empty($languageData)) {
-            throw new \InvalidArgumentException('Language with such ID does not exists');
-        }
+        $languageData = $this->find($id);
 
         $populateData = [
             'required_data' => [
-                'name'        => $languageData['name'],
-                'translation' => $languageData['translation'],
+                'name'        => $languageData->name,
+                'translation' => $languageData->translation,
+                'locale'      => $languageData->locale,
             ],
             'currency_data' => [
-                'currency_id' => $languageData['currency_id']
+                'currency_id' => $languageData->currency_id
             ]
         ];
 
         return $populateData;
+    }
+
+    /**
+     * Gets all currencies and returns them as key-value pairs
+     *
+     * @return array
+     */
+    public function getAllLocaleToSelect()
+    {
+        $locales = Intl::getLocaleBundle()->getLocaleNames();
+
+        $Data = [];
+
+        foreach ($locales as $locale => $name) {
+            $Data[$locale] = sprintf('%s (%s)', $name, $locale);
+        }
+
+        return $Data;
     }
 }

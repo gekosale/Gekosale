@@ -30,6 +30,7 @@ class Migration1393512866 extends Migration
                 $table->timestamps();
                 $table->string('name', 12)->unique();
                 $table->string('translation', 255);
+                $table->string('locale', 12);
                 $table->integer('currency_id')->unsigned();
                 $table->foreign('currency_id')->references('id')->on('currency')->onDelete('SET NULL')->onUpdate('NO ACTION');
             });

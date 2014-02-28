@@ -14,9 +14,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * Controller provides common methods needed only in controllers
- * 
- * @author Adam Piotrowski <adam@gekosale.com>
+ * Class Controller
+ *
+ * Provides common methods needed in controllers
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
 class Controller extends Component
 {

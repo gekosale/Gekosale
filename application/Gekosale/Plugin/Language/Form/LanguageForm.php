@@ -13,7 +13,6 @@ namespace Gekosale\Plugin\Language\Form;
 
 use Gekosale\Core\Form;
 use Gekosale\Plugin\Language\Event\LanguageFormEvent;
-use FormEngine;
 
 /**
  * Class LanguageForm
@@ -26,44 +25,50 @@ class LanguageForm extends Form
 
     public function init($languageData = [])
     {
-        $form = new FormEngine\Elements\Form([
+        $form = $this->addForm([
             'name' => 'language',
         ]);
 
-        $requiredData = $form->addChild(new FormEngine\Elements\Fieldset([
+        $requiredData = $form->addChild($this->addFieldset([
             'name'  => 'required_data',
             'label' => $this->trans('Basic settings')
         ]));
 
-        $requiredData->addChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild($this->addTextField([
             'name'  => 'name',
             'label' => $this->trans('Name'),
             'rules' => [
-                new FormEngine\Rules\Required($this->trans('Name is required'))
+                $this->addRuleRequired($this->trans('Name is required'))
             ]
         ]));
 
-        $requiredData->addChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild($this->addTextField([
             'name'  => 'translation',
             'label' => $this->trans('Translation'),
             'rules' => [
-                new FormEngine\Rules\Required($this->trans('Translation is required'))
+                $this->addRuleRequired($this->trans('Translation is required'))
             ]
         ]));
 
-        $currencyData = $form->addChild(new FormEngine\Elements\Fieldset([
+        $requiredData->addChild($this->addSelect([
+            'name'    => 'locale',
+            'label'   => $this->trans('Preferred locale'),
+            'options' => $this->makeOptions($this->get('language.repository')->getAllLocaleToSelect())
+        ]));
+
+        $currencyData = $form->addChild($this->addFieldset([
             'name'  => 'currency_data',
             'label' => $this->trans('Currency settings')
         ]));
 
-        $currencyData->addChild(new FormEngine\Elements\Select([
+        $currencyData->addChild($this->addSelect([
             'name'    => 'currency_id',
             'label'   => $this->trans('Default currency'),
-            'options' => FormEngine\Option::Make($this->get('currency.repository')->getAllCurrencyToSelect())
+            'options' => $this->makeOptions($this->get('currency.repository')->getAllCurrencyToSelect())
         ]));
 
-        $form->AddFilter(new FormEngine\Filters\NoCode());
-        $form->AddFilter(new FormEngine\Filters\Secure());
+        $form->AddFilter($this->addFilterNoCode());
+        $form->AddFilter($this->addFilterSecure());
 
         $event = new LanguageFormEvent($form, $languageData);
 

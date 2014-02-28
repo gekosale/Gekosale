@@ -57,6 +57,17 @@ $(document).ready(function() {
 		}
 	});
 
+    var column_locale = new GF_Datagrid_Column({
+		id: 'locale',
+		caption: '{% trans %}Locale{% endtrans %}',
+		appearance: {
+			width: 70
+		},
+		filter: {
+			type: GF_Datagrid.FILTER_INPUT
+		}
+	});
+
    	var options = {
 		id: 'language',
 		appearance: {
@@ -74,7 +85,8 @@ $(document).ready(function() {
 		},
 		columns: [
 			column_id,
-			column_name
+			column_name,
+            column_locale
 		],
 		row_actions: [
 			GF_Datagrid.ACTION_EDIT,

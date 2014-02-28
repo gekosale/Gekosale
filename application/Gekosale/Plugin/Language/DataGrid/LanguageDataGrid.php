@@ -33,6 +33,9 @@ class LanguageDataGrid extends DataGrid implements DataGridInterface
             ],
             'name'   => [
                 'source' => 'L.name'
+            ],
+            'locale'   => [
+                'source' => 'L.locale'
             ]
         ]);
 
