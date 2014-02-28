@@ -31,7 +31,7 @@ class Option
         $this->label = $label;
     }
 
-    public static function Make($array, $default = '')
+    public static function make($array, $default = '')
     {
         $result = Array();
         if ($default && is_array($default)) {

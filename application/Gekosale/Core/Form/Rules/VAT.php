@@ -29,7 +29,7 @@ class VAT extends Format implements RuleInterface
         parent::__construct($errorMsg, '/^\.*/');
     }
 
-    public function Render()
+    public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 

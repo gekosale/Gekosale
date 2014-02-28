@@ -36,7 +36,7 @@ class PriceFactor
         $this->_value = $value;
     }
 
-    public function Render()
+    public function render()
     {
         return "new GPriceFactor({$this->_type}, {$this->_value})";
     }

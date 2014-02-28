@@ -10,23 +10,23 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace Gekosale\Core\Form\Filters;
+namespace Gekosale\Core\Form\filters;
 
-use Gekosale\Core\Filters\FilterInterface;
-use Gekosale\Core\Form\Filter;
+use Gekosale\Core\filters\filterInterface;
+use Gekosale\Core\Form\filter;
 
 /**
  * Class Trim
  *
  * Removes whitespaces from submitted value
  *
- * @package Gekosale\Core\Form\Filters
+ * @package Gekosale\Core\Form\filters
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Trim extends Filter implements FilterInterface
+class Trim extends filter implements filterInterface
 {
 
-    protected function _FilterValue($value)
+    protected function filterValue($value)
     {
         return trim($value);
     }

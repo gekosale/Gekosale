@@ -41,12 +41,12 @@ class ProductSelect extends Select implements ElementInterface
             'loadCategoryChildren'
         ));
         if (isset($this->_attributes['exclude_from'])) {
-            $this->_attributes['exclude_from_field'] = $this->_attributes['exclude_from']->GetName();
+            $this->_attributes['exclude_from_field'] = $this->_attributes['exclude_from']->getName();
         }
         if (!isset($this->_attributes['exclude'])) {
             $this->_attributes['exclude'] = Array(0);
         }
-        $this->_attributes['datagrid_filter'] = $this->getDatagridFilterData();
+        $this->_attributes['datagrid_filter'] = $this->getDatagridfilterData();
     }
 
     public function __call($function, $arguments)
@@ -69,7 +69,7 @@ class ProductSelect extends Select implements ElementInterface
             $this->formatAttributeJs('exclude_from_field', 'sExcludeFrom'),
             $this->formatAttributeJs('jsfunction', 'fLoadProducts', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('advanced_editor', 'bAdvancedEditor', ElementInterface::TYPE_BOOLEAN),
-            $this->formatAttributeJs('datagrid_filter', 'oFilterData', ElementInterface::TYPE_OBJECT),
+            $this->formatAttributeJs('datagrid_filter', 'ofilterData', ElementInterface::TYPE_OBJECT),
             $this->formatAttributeJs('load_category_children', 'fLoadCategoryChildren', ElementInterface::TYPE_FUNCTION),
             $this->formatRepeatableJs(),
             $this->formatRulesJs(),
@@ -129,9 +129,9 @@ class ProductSelect extends Select implements ElementInterface
         return $this->datagrid;
     }
 
-    public function getDatagridFilterData()
+    public function getDatagridfilterData()
     {
-        return $this->getDatagrid()->getFilterData();
+        return $this->getDatagrid()->getfilterData();
     }
 
     public function processVariants($productId)

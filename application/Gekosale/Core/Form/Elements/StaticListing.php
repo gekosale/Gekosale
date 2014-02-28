@@ -51,11 +51,11 @@ class StaticListing extends Field implements ElementInterface
         return $name . ': [' . implode(', ', $options) . ']';
     }
 
-    public function Render_Static()
+    public function renderStatic()
     {
     }
 
-    public function Populate($value)
+    public function populate($value)
     {
     }
 

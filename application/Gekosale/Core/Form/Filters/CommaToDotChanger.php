@@ -10,23 +10,23 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace Gekosale\Core\Form\Filters;
+namespace Gekosale\Core\Form\filters;
 
-use Gekosale\Core\Filters\FilterInterface;
-use Gekosale\Core\Form\Filter;
+use Gekosale\Core\filters\filterInterface;
+use Gekosale\Core\Form\filter;
 
 /**
  * Class CommaToDotChanger
  *
  * Replaces commas with dots. Required to normalize submitted decimals.
  *
- * @package Gekosale\Core\Form\Filters
+ * @package Gekosale\Core\Form\filters
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class CommaToDotChanger extends Filter implements FilterInterface
+class CommaToDotChanger extends filter implements filterInterface
 {
 
-    protected function _FilterValue($value)
+    protected function filterValue($value)
     {
         return str_replace(',', '.', $value);
     }

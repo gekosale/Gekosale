@@ -31,15 +31,15 @@ abstract class Condition
         $this->_argument        = $argument;
     }
 
-    public function Render_JS()
+    public function renderJs()
     {
         if ($this->_argument instanceof Condition) {
-            return "new GFormCondition({$this->_jsConditionName}, {$this->_argument->Render_JS()})";
+            return "new GFormCondition({$this->_jsConditionName}, {$this->_argument->renderJs()})";
         }
         if (is_array($this->_argument) && isset($this->_argument[0]) && ($this->_argument[0] instanceof Condition)) {
             $parts = Array();
             foreach ($this->_argument as $part) {
-                $parts[] = $part->Render_JS();
+                $parts[] = $part->renderJs();
             }
             $argument = '[' . implode(', ', $parts) . ']';
         } else {

@@ -21,7 +21,7 @@ namespace Gekosale\Core\Form\Elements;
 class RightsTable extends Field implements ElementInterface
 {
 
-    public function Populate($value)
+    public function populate($value)
     {
         if (is_array($this->_value)) {
             foreach ($this->_value as $c => &$cV) {

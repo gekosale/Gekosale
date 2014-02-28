@@ -27,7 +27,7 @@ class PriceModifier extends Price implements ElementInterface
         if (!isset($this->_attributes['base_price_field']) || !($this->_attributes['base_price_field'] instanceof Field)) {
             throw new Exception("Base price source field (attribute: base_price_field) not set for field '{$this->_attributes['name']}'.");
         }
-        $this->_attributes['base_price_field_name'] = $this->_attributes['base_price_field']->GetName();
+        $this->_attributes['base_price_field_name'] = $this->_attributes['base_price_field']->getName();
         $this->_attributes['suffixes']              = App::getModel('suffix/suffix')->getSuffixTypesForSelect();
     }
 

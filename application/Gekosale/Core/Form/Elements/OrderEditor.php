@@ -38,7 +38,7 @@ class OrderEditor extends Select implements ElementInterface
             $this,
             'loadCategoryChildren'
         ));
-        $this->_attributes['datagrid_filter']        = $this->getDatagridFilterData();
+        $this->_attributes['datagrid_filter']        = $this->getDatagridfilterData();
     }
 
     protected function prepareAttributesJs()
@@ -51,7 +51,7 @@ class OrderEditor extends Select implements ElementInterface
             $this->formatAttributeJs('on_change', 'fOnChange', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('on_before_change', 'fOnBeforeChange', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('jsfunction', 'fLoadProducts', ElementInterface::TYPE_FUNCTION),
-            $this->formatAttributeJs('datagrid_filter', 'oFilterData', ElementInterface::TYPE_OBJECT),
+            $this->formatAttributeJs('datagrid_filter', 'ofilterData', ElementInterface::TYPE_OBJECT),
             $this->formatAttributeJs('load_category_children', 'fLoadCategoryChildren', ElementInterface::TYPE_FUNCTION),
             $this->formatRepeatableJs(),
             $this->formatRulesJs(),
@@ -100,9 +100,9 @@ class OrderEditor extends Select implements ElementInterface
         return $this->datagrid;
     }
 
-    public function getDatagridFilterData()
+    public function getDatagridfilterData()
     {
-        return $this->getDatagrid()->getFilterData();
+        return $this->getDatagrid()->getfilterData();
     }
 
     public function processVariants($productId)

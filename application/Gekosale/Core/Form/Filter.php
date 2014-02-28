@@ -13,27 +13,27 @@
 namespace Gekosale\Core\Form;
 
 /**
- * Class Filter
+ * Class filter
  *
  * @package Gekosale\Core\Form
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-abstract class Filter
+abstract class filter
 {
-    public function Filter($values)
+    public function filter($values)
     {
         if (is_array($values)) {
             foreach ($values as &$value) {
-                $value = $this->Filter($value);
+                $value = $this->filter($value);
             }
         } else {
-            $values = $this->_FilterValue($values);
+            $values = $this->filterValue($values);
         }
 
         return $values;
     }
 
-    protected function _FilterValue($value)
+    protected function filterValue($value)
     {
         return $value;
     }

@@ -31,9 +31,9 @@ interface RuleInterface
     public function _Check($value);
 
     /**
-     * Renders rules javascript part
+     * renders rules javascript part
      *
      * @return mixed
      */
-    public function Render();
+    public function render();
 } 

@@ -40,11 +40,11 @@ class StaticText extends Node implements ElementInterface
         return $attributes;
     }
 
-    public function Render_Static()
+    public function renderStatic()
     {
     }
 
-    public function Populate($value)
+    public function populate($value)
     {
     }
 

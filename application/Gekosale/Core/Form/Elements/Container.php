@@ -38,7 +38,7 @@ abstract class Container extends Node
         $this->_children[] = $child;
         $child->form       = $this->form;
         $child->parent     = $this;
-        $childName         = $child->GetName();
+        $childName         = $child->getName();
         if (isset($this->form->fields[$childName])) {
             if (is_array($this->form->fields[$childName])) {
                 $this->form->fields[$childName][] = $child;
@@ -90,7 +90,7 @@ abstract class Container extends Node
         }
     }
 
-    public function Populate($value)
+    public function populate($value)
     {
         if (isset($value) && is_array($value) && $this->isIterated($value)) { // iterated
             // value
@@ -98,7 +98,7 @@ abstract class Container extends Node
                 $valueArray = Array();
                 if (isset($value) && is_array($value)) {
                     foreach ($value as $i => $repetition) {
-                        $name = $child->GetName();
+                        $name = $child->getName();
                         if (!empty($name)) {
                             if (isset($repetition[$name])) {
                                 $valueArray[$i] = $repetition[$name];
@@ -108,18 +108,18 @@ abstract class Container extends Node
                         }
                     }
                 }
-                $child->Populate($valueArray);
+                $child->populate($valueArray);
             }
         } else { // simple value
             foreach ($this->_children as $child) {
-                $name = $child->GetName();
+                $name = $child->getName();
                 if (empty($name)) {
                     continue;
                 }
                 if (isset($value[$name])) {
-                    $child->Populate($value[$name]);
+                    $child->populate($value[$name]);
                 } elseif ($this->form->_populatingWholeForm) {
-                    $child->Populate(null);
+                    $child->populate(null);
                 }
             }
         }
@@ -129,7 +129,7 @@ abstract class Container extends Node
     {
         $render = Array();
         foreach ($this->_children as $child) {
-            $render[] = $child->Render($this->_renderMode, $this->_tabs . $this->_tabsOffset);
+            $render[] = $child->render($this->_renderMode, $this->_tabs . $this->_tabsOffset);
         }
 
         return implode(',', $render);
@@ -152,9 +152,9 @@ abstract class Container extends Node
         $values = Array();
         foreach ($this->_children as $child) {
             if ($child instanceof Container) {
-                $values[$child->GetName()] = $child->getValues();
-            } elseif ($child instanceof Field)) {
-                $values[$child->GetName()] = $child->getValue();
+                $values[$child->getName()] = $child->getValues();
+            } elseif ($child instanceof Field) {
+                $values[$child->getName()] = $child->getValue();
             }
         }
 

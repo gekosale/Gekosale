@@ -81,7 +81,7 @@ class Unique extends \FormEngine\Rule
         return false;
     }
 
-    public function Render()
+    public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 

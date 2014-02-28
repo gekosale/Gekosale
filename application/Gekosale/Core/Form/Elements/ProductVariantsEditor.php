@@ -30,9 +30,9 @@ class ProductVariantsEditor extends Field implements ElementInterface
         if (!isset($this->_attributes['allow_generate'])) {
             $this->_attributes['allow_generate'] = 1;
         }
-        $this->_attributes['category_field']           = $this->_attributes['category']->GetName();
-        $this->_attributes['price_field']              = $this->_attributes['price']->GetName();
-        $this->_attributes['vat_field_name']           = $this->_attributes['vat_field']->GetName();
+        $this->_attributes['category_field']           = $this->_attributes['category']->getName();
+        $this->_attributes['price_field']              = $this->_attributes['price']->getName();
+        $this->_attributes['vat_field_name']           = $this->_attributes['vat_field']->getName();
         $this->_attributes['vat_values']               = App::getModel('vat/vat')->getVATValuesAll();
         $this->_attributes['suffixes']                 = App::getModel('suffix/suffix')->getSuffixTypes();
         $this->_jsGetAttributeSetsForCategories        = 'GetAttributeSetsForCategories_' . $this->_id;

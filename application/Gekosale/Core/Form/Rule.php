@@ -51,7 +51,7 @@ abstract class Rule
         return $this->_errorMsg;
     }
 
-    public function Render()
+    public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 

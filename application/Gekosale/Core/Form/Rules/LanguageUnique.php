@@ -106,7 +106,7 @@ class LanguageUnique extends Rule implements RuleInterface
         return false;
     }
 
-    public function Render()
+    public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 

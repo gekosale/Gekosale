@@ -41,7 +41,7 @@ class Submit extends Node implements ElementInterface
         return '';
     }
 
-    public function Populate($value)
+    public function populate($value)
     {
     }
 

@@ -34,13 +34,13 @@ class Field extends Node
         $this->_value       = '';
         $this->_globalvalue = '';
         if (isset($this->_attributes['default'])) {
-            $this->Populate($attributes['default']);
+            $this->populate($attributes['default']);
         }
     }
 
     public function isValid($values = Array())
     {
-        if (!isset($this->_attributes['rules']) or !is_array($this->_attributes['rules'])) {
+        if (!isset($this->_attributes['rules']) || !is_array($this->_attributes['rules'])) {
             return true;
         }
         $result = true;
@@ -89,15 +89,15 @@ class Field extends Node
         return $result;
     }
 
-    public function Populate($value)
+    public function populate($value)
     {
-        $value        = $this->_Filter($value);
+        $value        = $this->_filter($value);
         $this->_value = $value;
     }
 
-    public function PopulateGlobal($globalvalue)
+    public function populateGlobal($globalvalue)
     {
-        $globalvalue        = $this->_Filter($globalvalue);
+        $globalvalue        = $this->_filter($globalvalue);
         $this->_globalvalue = $globalvalue;
     }
 
@@ -125,12 +125,12 @@ class Field extends Node
 
     protected function formatRulesJs()
     {
-        if (!isset($this->_attributes['rules']) or !is_array($this->_attributes['rules'])) {
+        if (!isset($this->_attributes['rules']) || !is_array($this->_attributes['rules'])) {
             return '';
         }
         $rules = Array();
         foreach ($this->_attributes['rules'] as $rule) {
-            $rules[] = $rule->Render();
+            $rules[] = $rule->render();
         }
 
         return 'aoRules: [' . implode(', ', $rules) . ']';

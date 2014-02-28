@@ -40,7 +40,7 @@ class Compare extends Rule implements RuleInterface
         return ($value == $this->_compareWith->getValue());
     }
 
-    public function Render()
+    public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
         $field    = addslashes($this->_compareWith->getName());

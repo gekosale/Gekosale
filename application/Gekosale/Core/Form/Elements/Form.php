@@ -21,12 +21,9 @@ namespace Gekosale\Core\Form\Elements;
 class Form extends Container
 {
 
-    const FORMAT_GROUPED = 0;
-
-    const FORMAT_FLAT = 1;
-
-    const TABS_VERTICAL = 0;
-
+    const FORMAT_GROUPED  = 0;
+    const FORMAT_FLAT     = 1;
+    const TABS_VERTICAL   = 0;
     const TABS_HORIZONTAL = 1;
 
     public $fields;
@@ -60,7 +57,7 @@ class Form extends Container
         }
     }
 
-    public function Render_JS()
+    public function renderJs()
     {
         return "
 			<form id=\"{$this->_attributes['name']}\" method=\"{$this->_attributes['method']}\" action=\"{$this->_attributes['action']}\">
@@ -77,7 +74,7 @@ class Form extends Container
 								{$this->renderChildren()}
 							],
 							oValues: " . json_encode($this->getValues()) . ",
-							oErrors: " . json_encode($this->GetErrors()) . "
+							oErrors: " . json_encode($this->getErrors()) . "
 						});
 					});
 				/*]]>*/
@@ -85,7 +82,7 @@ class Form extends Container
 		";
     }
 
-    public function Render_Static()
+    public function renderStatic()
     {
     }
 
@@ -107,13 +104,13 @@ class Form extends Container
                 if (is_object($field)) {
                     if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
                         $values = array_merge_recursive($values, Array(
-                            $field->GetName() => $field->getValue()
+                            $field->getName() => $field->getValue()
                         ));
                     }
                 } else {
                     if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
                         $values = array_merge_recursive($values, Array(
-                            $field->GetName() => $field->getValue()
+                            $field->getName() => $field->getValue()
                         ));
                     }
                 }
@@ -121,27 +118,27 @@ class Form extends Container
 
             return $values;
         } else {
-            return $this->_Harvest(Array(
+            return $this->harvest(Array(
                 $this,
-                '_HarvestValues'
+                'harvestValues'
             ));
         }
 
         return Array();
     }
 
-    public function GetErrors()
+    public function getErrors()
     {
-        return $this->_Harvest(Array(
+        return $this->harvest(Array(
             $this,
-            '_HarvestErrors'
+            'harvestErrors'
         ));
     }
 
     public function getValue($element)
     {
         foreach ($this->fields as $field) {
-            if ($field->GetName() == $element) {
+            if ($field->getName() == $element) {
                 return $field->getValue();
             }
         }
@@ -152,7 +149,7 @@ class Form extends Container
         return $this->_flags;
     }
 
-    public function Populate($value, $flags = 0)
+    public function populate($value, $flags = 0)
     {
         if ($flags & self::FORMAT_FLAT) {
             return;
@@ -160,28 +157,28 @@ class Form extends Container
             $this->_values = $this->_values + $value;
         }
         $this->_populatingWholeForm = true;
-        parent::Populate($value);
+        parent::populate($value);
         $this->_populatingWholeForm = false;
     }
 
     public function isValid($values = Array())
     {
-        $values = $this->SubmittedData();
+        $values = $this->getSubmittedData();
 
-        if (!isset($values[$this->_attributes['name'] . '_submitted']) or !$values[$this->_attributes['name'] . '_submitted']) {
+        if (!isset($values[$this->_attributes['name'] . '_submitted']) || !$values[$this->_attributes['name'] . '_submitted']) {
             return false;
         }
-        $this->Populate($values);
+        $this->populate($values);
 
         return parent::isValid();
     }
 
-    public function SubmittedData()
+    public function getSubmittedData()
     {
         return $_POST;
     }
 
-    public function IsAction($actionName)
+    public function isAction($actionName)
     {
         $actionName = '_Action_' . $actionName;
 

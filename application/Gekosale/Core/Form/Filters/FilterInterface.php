@@ -10,23 +10,23 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace Gekosale\Core\Form\Filters;
+namespace Gekosale\Core\Form\filters;
 
 /**
- * Interface FilterInterface
+ * Interface filterInterface
  *
- * @package Gekosale\Core\Form\Filters
+ * @package Gekosale\Core\Form\filters
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-interface FilterInterface
+interface filterInterface
 {
 
     /**
-     * Filters given value
+     * filters given value
      *
      * @param $value
      *
      * @return mixed
      */
-    public function _FilterValue($value);
+    public function filterValue($value);
 } 
