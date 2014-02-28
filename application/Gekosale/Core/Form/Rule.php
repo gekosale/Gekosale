@@ -30,14 +30,14 @@ abstract class Rule
 
     public function Check($value)
     {
-        if ($this->_Check($value) === true) {
+        if ($this->checkValue($value) === true) {
             return true;
         }
 
         return $this->GetFailureMessage();
     }
 
-    abstract protected function _Check($value);
+    abstract protected function checkValue($value);
 
     public function GetType()
     {

@@ -52,7 +52,7 @@ abstract class Form extends Component
      */
     public function addFieldsetLanguage(array $options)
     {
-        return new Form\Elements\FieldsetLanguage($this->container, $options);
+        return new Form\Elements\FieldsetLanguage($options);
     }
 
     /**
@@ -105,5 +105,30 @@ abstract class Form extends Component
     public function addFilterSecure()
     {
         return new Form\Filters\Secure();
+    }
+
+    /**
+     * Shortcut for adding rule Required
+     *
+     * @param $errorMessage
+     *
+     * @return Form\Rules\Required
+     */
+    public function addRuleRequired($errorMessage)
+    {
+        return new Form\Rules\Required($errorMessage);
+    }
+
+    /**
+     * Shortcut for adding rule Unique
+     *
+     * @param       $errorMessage
+     * @param array $options
+     *
+     * @return Form\Rules\Unique
+     */
+    public function addRuleUnique($errorMessage, array $options)
+    {
+        return new Form\Rules\Unique($errorMessage, $options, $this->container);
     }
 }

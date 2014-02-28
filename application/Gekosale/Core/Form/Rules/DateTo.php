@@ -32,7 +32,7 @@ class DateTo extends Rule implements RuleInterface
         $this->_compareWith = $compareWith;
     }
 
-    protected function _Check($value)
+    protected function checkValue($value)
     {
         if (strlen($value) > 0 && strlen($this->_compareWith->getValue()) > 0) {
             return ($value >= $this->_compareWith->getValue());

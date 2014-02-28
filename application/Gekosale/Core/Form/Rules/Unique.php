@@ -9,82 +9,91 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace FormEngine\Rules;
 
+namespace Gekosale\Core\Form\Rules;
+
+use Gekosale\Core\Form\Rule;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Unique extends \FormEngine\Rule
+class Unique extends Rule implements RuleInterface
 {
+    protected $errorMsg;
     protected $container;
-    protected $_table;
-    protected $_column;
-    protected $_id;
-    protected $_exclude;
-    protected $_jsFunction;
+    protected $options;
+    protected $jsFunction;
     protected static $_nextId = 0;
 
-    public function __construct($container, $options)
+    /**
+     * Constructor
+     *
+     * @param                    $errorMsg
+     * @param array              $options
+     * @param ContainerInterface $container
+     */
+    public function __construct($errorMsg, array $options, ContainerInterface $container)
     {
-
         parent::__construct($errorMsg);
 
-        $this->_table      = $table;
-        $this->_column     = $column;
-        $this->_exclude    = $exclude;
-        $this->_id         = self::$_nextId++;
-        $this->_jsFunction = 'CheckUniqueness_' . $this->_id;
-        App::getRegistry()->xajaxInterface->registerFunction(array(
-            $this->_jsFunction,
+        $this->errorMsg   = $errorMsg;
+        $this->container  = $container;
+        $this->options    = $options;
+        $this->id         = self::$_nextId++;
+        $this->jsFunction = 'CheckUniqueness_' . $this->id;
+        $this->pdo        = $this->container->get('database_manager')->getConnection()->getPdo();
+
+        $this->container->get('xajax_manager')->registerFunction([
+            $this->jsFunction,
             $this,
             'doAjaxCheck'
-        ));
+        ]);
     }
 
+    /**
+     * Checks value for uniqueness
+     *
+     * @param $request
+     *
+     * @return array
+     */
     public function doAjaxCheck($request)
     {
         return Array(
-            'unique' => $this->_Check($request['value'])
+            'unique' => $this->checkValue($request['value'])
         );
     }
 
-    protected function _Check($value)
+    public function checkValue($value)
     {
-        $sql = "
-			SELECT
-				COUNT(*) AS items_count
-			FROM
-				{$this->_table}
-			WHERE
-				{$this->_column} = :value
-		";
-        if ($this->_exclude && is_array($this->_exclude)) {
-            if (!is_array($this->_exclude['values'])) {
-                $this->_exclude['values'] = Array(
-                    $this->_exclude['values']
-                );
+        $sql = "SELECT
+                  COUNT(*) AS items_count
+			    FROM {$this->options['table']}
+			    WHERE {$this->options['column']} = :value";
+
+        if (isset($this->options['exclude']) && is_array($this->options['exclude'])) {
+            if (!is_array($this->options['exclude']['values'])) {
+                $this->options['exclude']['values'] = [$this->options['exclude']['values']];
             }
-            $excludedValues = implode(', ', $this->_exclude['values']);
-            $sql .= "AND NOT {$this->_exclude['column']} IN ({$excludedValues})";
-        }
-        $stmt = Db::getInstance()->prepare($sql);
-        $stmt->bindValue('value', $value);
-        try {
-            $stmt->execute();
-            $rs = $stmt->fetch();
-            if ($rs['items_count'] == 0) {
-                return true;
+
+            $values = array_filter($this->options['exclude']['values']);
+
+            if (count($values)) {
+                $excludedValues = implode(', ', $this->options['exclude']['values']);
+                $sql .= " AND NOT {$this->options['exclude']['column']} IN ({$excludedValues})";
             }
-        } catch (Exception $e) {
-            throw new Exception('Error while executing sql query: ' . $e->getMessage());
         }
 
-        return false;
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue('value', $value);
+        $stmt->execute();
+        $rs = $stmt->fetch();
+
+        return ($rs['items_count'] == 0);
     }
 
     public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->_jsFunction}}";
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}}";
     }
 }

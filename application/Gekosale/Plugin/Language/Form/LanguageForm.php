@@ -30,12 +30,12 @@ class LanguageForm extends Form
             'name' => 'language',
         ]);
 
-        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
+        $requiredData = $form->addChild(new FormEngine\Elements\Fieldset([
             'name'  => 'required_data',
             'label' => $this->trans('Basic settings')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'name',
             'label' => $this->trans('Name'),
             'rules' => [
@@ -43,7 +43,7 @@ class LanguageForm extends Form
             ]
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'translation',
             'label' => $this->trans('Translation'),
             'rules' => [
@@ -51,12 +51,12 @@ class LanguageForm extends Form
             ]
         ]));
 
-        $currencyData = $form->AddChild(new FormEngine\Elements\Fieldset([
+        $currencyData = $form->addChild(new FormEngine\Elements\Fieldset([
             'name'  => 'currency_data',
             'label' => $this->trans('Currency settings')
         ]));
 
-        $currencyData->AddChild(new FormEngine\Elements\Select([
+        $currencyData->addChild(new FormEngine\Elements\Select([
             'name'    => 'currency_id',
             'label'   => $this->trans('Default currency'),
             'options' => FormEngine\Option::Make($this->get('currency.repository')->getAllCurrencyToSelect())

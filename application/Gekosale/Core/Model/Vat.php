@@ -28,12 +28,14 @@ class Vat extends Model
 
     protected $softDelete = false;
 
-    protected $fillable = array(
-        'id'
-    );
+    protected $fillable
+        = array(
+            'id',
+            'value'
+        );
 
-    public function translation ()
+    public function translation()
     {
-        return $this->hasMany('VatTranslation');
+        return $this->hasMany('Gekosale\Core\Model\VatTranslation');
     }
 }

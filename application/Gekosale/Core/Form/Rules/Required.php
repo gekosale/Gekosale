@@ -1,36 +1,32 @@
 <?php
-
-namespace FormEngine\Rules;
-
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
-class Required extends \FormEngine\Rule
+
+namespace Gekosale\Core\Form\Rules;
+
+use Gekosale\Core\Form\Rule;
+
+class Required extends Rule implements RuleInterface
 {
 
-	protected function _Check ($value)
-	{
-		if (is_array($value)){
-			return ! empty($value);
-		}
-		else{
-			if (strlen($value) > 0){
-				return true;
-			}
-			return false;
-		}
-	}
+    public function checkValue($value)
+    {
+        if (is_array($value)) {
+            return !empty($value);
+        } else {
+            if (strlen($value) > 0) {
+                return true;
+            }
+
+            return false;
+        }
+    }
 }

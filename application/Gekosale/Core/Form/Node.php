@@ -56,7 +56,7 @@ abstract class Node
     {
         $this->_tabs       = $tabs;
         $this->_renderMode = $mode;
-        $renderFunction    = 'render_' . $mode;
+        $renderFunction    = 'render' . $mode;
         $lines             = explode("\n", $this->$renderFunction());
         foreach ($lines as &$line) {
             $line = $this->_tabs . $line;

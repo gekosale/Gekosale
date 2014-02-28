@@ -57,7 +57,7 @@ class LanguageUnique extends Rule implements RuleInterface
         $this->setLanguage($request['language']);
 
         return Array(
-            'unique' => $this->_Check($request['value'])
+            'unique' => $this->checkValue($request['value'])
         );
     }
 
@@ -66,7 +66,7 @@ class LanguageUnique extends Rule implements RuleInterface
         $this->_language = $language;
     }
 
-    protected function _Check($value)
+    protected function checkValue($value)
     {
         if ($this->_valueProcessFunction) {
             $f     = $this->_valueProcessFunction;

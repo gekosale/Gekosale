@@ -9,7 +9,7 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Currency\Event;
+namespace Gekosale\Plugin\Vat\Event;
 
 use Gekosale\Core\Event\FormEvent;
 

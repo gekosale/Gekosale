@@ -12,7 +12,6 @@
 
 namespace Gekosale\Core\Form\Rules;
 
-use Gekosale\Core\Rules\RuleInterface;
 use Gekosale\Core\Form\Rules\Format;
 
 /**

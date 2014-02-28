@@ -28,7 +28,7 @@ class Format extends \FormEngine\Rule
 		$this->_format = $format;
 	}
 
-	protected function _Check ($value)
+	protected function checkValue ($value)
 	{
 		if (strlen($value) == 0){
 			return true;

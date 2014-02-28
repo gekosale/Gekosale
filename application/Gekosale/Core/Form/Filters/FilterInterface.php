@@ -10,15 +10,15 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace Gekosale\Core\Form\filters;
+namespace Gekosale\Core\Form\Filters;
 
 /**
- * Interface filterInterface
+ * Interface FilterInterface
  *
  * @package Gekosale\Core\Form\filters
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-interface filterInterface
+interface FilterInterface
 {
 
     /**

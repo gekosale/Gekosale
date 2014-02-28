@@ -34,12 +34,12 @@ class CurrencyForm extends Form
             'name' => 'currency',
         ]);
 
-        $requiredData = $form->AddChild(new FormEngine\Elements\Fieldset([
+        $requiredData = $form->addChild(new FormEngine\Elements\Fieldset([
             'name'  => 'required_data',
             'label' => $this->trans('Basic information')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'name',
             'label' => $this->trans('Name'),
             'rules' => [
@@ -47,7 +47,7 @@ class CurrencyForm extends Form
             ]
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\Select([
+        $requiredData->addChild(new FormEngine\Elements\Select([
             'name'    => 'symbol',
             'label'   => $this->trans('Symbol'),
             'options' => FormEngine\Option::Make($this->get('currency.repository')->getCurrencySymbols()),
@@ -56,7 +56,7 @@ class CurrencyForm extends Form
             ]
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'decimal_separator',
             'label' => $this->trans('Decimal separator'),
             'rules' => [
@@ -64,7 +64,7 @@ class CurrencyForm extends Form
             ]
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'decimal_count',
             'label' => $this->trans('Decimal count'),
             'rules' => [
@@ -72,27 +72,27 @@ class CurrencyForm extends Form
             ]
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'thousand_separator',
             'label' => $this->trans('Thousands separator')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'positive_prefix',
             'label' => $this->trans('Positive prefix')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'positive_sufix',
             'label' => $this->trans('Positive sufix')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'negative_prefix',
             'label' => $this->trans('Negative prefix')
         ]));
 
-        $requiredData->AddChild(new FormEngine\Elements\TextField([
+        $requiredData->addChild(new FormEngine\Elements\TextField([
             'name'  => 'negative_sufix',
             'label' => $this->trans('Negative sufix')
         ]));

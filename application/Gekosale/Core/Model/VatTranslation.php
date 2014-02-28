@@ -24,17 +24,24 @@ class VatTranslation extends Model
 
     protected $table = 'vat_translation';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
-    protected $softDelete = FALSE;
+    protected $softDelete = false;
 
-    protected $fillable = array(
-        'language_id',
-        'name'
-    );
+    protected $fillable
+        = array(
+            'vat_id',
+            'language_id',
+            'name'
+        );
 
-    protected $visible = array(
-        'language_id',
-        'name'
-    );
+    public function vat()
+    {
+        return $this->belongsTo('Gekosale\Core\Model\Vat');
+    }
+
+    public function language()
+    {
+        return $this->belongsTo('Gekosale\Core\Model\Language');
+    }
 }

@@ -52,7 +52,7 @@ class Custom extends Rule implements RuleInterface
         );
     }
 
-    protected function _Check($value)
+    protected function checkValue($value)
     {
         $params = Array();
         foreach ($this->_params as $paramName => $paramValue) {

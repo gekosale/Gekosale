@@ -28,7 +28,7 @@ interface RuleInterface
      *
      * @return bool
      */
-    public function _Check($value);
+    public function checkValue($value);
 
     /**
      * renders rules javascript part

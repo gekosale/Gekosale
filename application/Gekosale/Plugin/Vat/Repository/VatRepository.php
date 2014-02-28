@@ -11,8 +11,9 @@
  */
 namespace Gekosale\Plugin\Vat\Repository;
 
-use Gekosale\Core\Model\Vat,
-    Gekosale\Core\Repository;
+use Gekosale\Core\Model\Vat;
+use Gekosale\Core\Repository;
+use Gekosale\Core\Model\VatTranslation;
 
 /**
  * Class VatRepository
@@ -24,7 +25,7 @@ class VatRepository extends Repository
 {
 
     /**
-     * Returns all currencies
+     * Returns all tax rates
      *
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
@@ -34,7 +35,7 @@ class VatRepository extends Repository
     }
 
     /**
-     * Returns a single vat data
+     * Returns a single tax rate
      *
      * @param $id
      *
@@ -42,11 +43,11 @@ class VatRepository extends Repository
      */
     public function find($id)
     {
-        return Vat::findOrFail($id);
+        return Vat::with('translation')->findOrFail($id);
     }
 
     /**
-     * Deletes vat model by ID
+     * Deletes tax rate by ID
      *
      * @param $id
      */
@@ -56,32 +57,38 @@ class VatRepository extends Repository
     }
 
     /**
-     * Saves vat data
+     * Saves tax rate
      *
      * @param      $Data
      * @param null $id
      */
     public function save($Data, $id = null)
     {
-        $vat = Vat::firstOrNew([
+        $vat = Vat::firstOrCreate([
             'id' => $id
         ]);
 
-        $vat->name               = $Data['required_data']['name'];
-        $vat->symbol             = $Data['required_data']['symbol'];
-        $vat->decimal_separator  = $Data['required_data']['decimal_separator'];
-        $vat->decimal_count      = $Data['required_data']['decimal_count'];
-        $vat->thousand_separator = $Data['required_data']['thousand_separator'];
-        $vat->positive_prefix    = $Data['required_data']['positive_prefix'];
-        $vat->positive_sufix     = $Data['required_data']['positive_sufix'];
-        $vat->negative_prefix    = $Data['required_data']['negative_prefix'];
-        $vat->negative_sufix     = $Data['required_data']['negative_sufix'];
+        $vat->value = $Data['required_data']['value'];
+
+        $translations = $Data['required_data']['language_data']['name'];
+
+        foreach ($translations as $languageId => $name) {
+
+            $translation = VatTranslation::firstOrCreate([
+                'vat_id'      => $vat->id,
+                'language_id' => $languageId
+            ]);
+
+            $translation->name = $name;
+
+            $translation->save();
+        }
 
         $vat->save();
     }
 
     /**
-     * Returns data required for populating a form
+     * Returns data required for populating the form
      *
      * @param $id
      *
@@ -95,9 +102,15 @@ class VatRepository extends Repository
             throw new \InvalidArgumentException('Vat with such ID does not exists');
         }
 
+        $languageData = [];
+        foreach ($vatData['translation'] as $translation) {
+            $languageData['name'][$translation['language_id']] = $translation['name'];
+        }
+
         $populateData = [
             'required_data' => [
-                'value' => $vatData['value'],
+                'value'         => $vatData['value'],
+                'language_data' => $languageData
             ]
         ];
 

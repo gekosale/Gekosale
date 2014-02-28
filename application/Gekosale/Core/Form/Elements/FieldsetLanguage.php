@@ -12,8 +12,6 @@
 
 namespace Gekosale\Core\Form\Elements;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
  * Class FieldsetLanguage
  *
@@ -25,7 +23,7 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
 
     protected $languages = Array();
 
-    public function __construct(ContainerInterface $container, $attributes)
+    public function __construct($attributes)
     {
         parent::__construct($attributes);
 
@@ -43,7 +41,7 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
         foreach ($this->languages as $language) {
             $value     = addslashes($language['id']);
             $label     = addslashes($language['translation']);
-            $flag      = addslashes($language['flag']);
+            $flag      = addslashes(sprintf('%s.png', substr($language['name'], 0, 2)));
             $options[] = "{sValue: '{$value}', sLabel: '{$label}',sFlag: '{$flag}' }";
         }
 

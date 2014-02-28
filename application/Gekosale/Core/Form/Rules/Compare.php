@@ -35,7 +35,7 @@ class Compare extends Rule implements RuleInterface
         $this->_compareWith = $compareWith;
     }
 
-    protected function _Check($value)
+    protected function checkValue($value)
     {
         return ($value == $this->_compareWith->getValue());
     }
