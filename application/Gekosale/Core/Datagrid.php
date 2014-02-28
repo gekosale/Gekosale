@@ -107,6 +107,11 @@ class DataGrid extends Component
         $this->repository = $repository;
     }
 
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
     public function setTableData($columns)
     {
         $this->queryColumnsOptions = $columns;
@@ -161,6 +166,7 @@ class DataGrid extends Component
         $objResponse = new xajaxResponse();
         $deleteFunction[0]->$deleteFunction[1]($rowId);
         $objResponse->script("try { GF_Datagrid.ReturnInstance({$datagridId}).LoadData(); GF_Datagrid.ReturnInstance({$datagridId}).ClearSelection(); GF_ConflictResolver.GetMain().Update(); } catch (x) { GF_Debug.HandleException(x); }");
+
         return $objResponse;
     }
 
@@ -339,6 +345,7 @@ class DataGrid extends Component
         foreach ($this->queryColumnsOptions as $name => $options) {
             $columns[] = $options['source'] . ' AS ' . $name;
         }
+
         return implode(', ', $columns);
     }
 

@@ -47,9 +47,6 @@ class AdminMenuEventSubscriber implements EventSubscriberInterface
         
         $templateVars = $event->getRequest()->attributes->get('_template_vars');
 
-        print_r($adminMenuData);
-        die();
-
         $event->getRequest()->attributes->set('_template_vars', array_merge($templateVars, $adminMenuData));
     }
 

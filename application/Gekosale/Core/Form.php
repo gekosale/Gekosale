@@ -32,7 +32,7 @@ abstract class Form extends Component
     }
 
     /**
-     * Shortcut for adding Fieldset
+     * Shortcut for adding Fieldset node
      *
      * @param array $options
      *
@@ -44,7 +44,7 @@ abstract class Form extends Component
     }
 
     /**
-     * Shortcut for adding FieldsetLanguage
+     * Shortcut for adding FieldsetLanguage node
      *
      * @param array $options
      *
@@ -56,7 +56,7 @@ abstract class Form extends Component
     }
 
     /**
-     * Shortcut for adding TextField
+     * Shortcut for adding TextField element
      *
      * @param array $options
      *
@@ -68,7 +68,7 @@ abstract class Form extends Component
     }
 
     /**
-     * Shortcut for adding Select
+     * Shortcut for adding Select element
      *
      * @param array $options
      *
@@ -77,6 +77,30 @@ abstract class Form extends Component
     public function addSelect(array $options)
     {
         return new Form\Elements\Select($options);
+    }
+
+    /**
+     * Shortcut for adding Checkbox element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\Checkbox
+     */
+    public function addCheckBox(array $options)
+    {
+        return new Form\Elements\Checkbox($options);
+    }
+
+    /**
+     * Shortcut for adding StaticText element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\StaticText
+     */
+    public function addStaticText(array $options)
+    {
+        return new Form\Elements\StaticText($options);
     }
 
     /**
@@ -120,6 +144,19 @@ abstract class Form extends Component
     }
 
     /**
+     * Shortcut for adding rule Format
+     *
+     * @param $errorMessage
+     * @param $pattern
+     *
+     * @return Form\Rules\Format
+     */
+    public function addRuleFormat($errorMessage, $pattern)
+    {
+        return new Form\Rules\Format($errorMessage, $pattern);
+    }
+
+    /**
      * Shortcut for adding rule Required
      *
      * @param $errorMessage
@@ -145,6 +182,19 @@ abstract class Form extends Component
     }
 
     /**
+     * Shortcut for adding rule LanguageUnique
+     *
+     * @param       $errorMessage
+     * @param array $options
+     *
+     * @return Form\Rules\LanguageUnique
+     */
+    public function addRuleLanguageUnique($errorMessage, array $options)
+    {
+        return new Form\Rules\LanguageUnique($errorMessage, $options, $this->container);
+    }
+
+    /**
      * Processes options for using them in Select
      *
      * @param $options
@@ -154,5 +204,17 @@ abstract class Form extends Component
     public function makeOptions($options)
     {
         return Form\Option::Make($options);
+    }
+
+    /**
+     * Shortcut for adding Tree element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\Tree
+     */
+    public function addTree(array $options)
+    {
+        return new Form\Elements\Tree($options, $this->container);
     }
 }

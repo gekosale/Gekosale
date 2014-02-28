@@ -1,0 +1,17 @@
+{% extends "layout.twig" %}
+{% block content %}
+    <h2>{% trans %}Categories{% endtrans %}</h2>
+    <script type="text/javascript">
+        function openCategoryEditor(sId) {
+            if (sId == undefined) {
+                window.location = '{{ path('admin.category.index') }}';
+            }
+            else {
+                window.location = "{{ path('admin.category.edit') }}/" + sId;
+            }
+        };
+    </script>
+    <div class="block">
+        {{ form(tree) }}
+    </div>
+{% endblock %}

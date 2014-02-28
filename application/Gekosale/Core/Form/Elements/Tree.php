@@ -12,6 +12,8 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class Tree
  *
@@ -21,40 +23,20 @@ namespace Gekosale\Core\Form\Elements;
 class Tree extends Field implements ElementInterface
 {
 
-    protected $_jsGetChildren;
+    protected $jsGetChildren;
+    protected $container;
 
-    public function __construct($attributes)
+    public function __construct($attributes, ContainerInterface $container)
     {
         parent::__construct($attributes);
+        $this->container      = $container;
         $this->_jsGetChildren = 'GetChildren_' . $this->_id;
-        if (isset($this->_attributes['load_children']) && is_callable($this->_attributes['load_children'])) {
-            $this->_attributes['get_children'] = 'xajax_' . $this->_jsGetChildren;
-            App::getRegistry()->xajaxInterface->registerFunction(array(
-                $this->_jsGetChildren,
-                $this,
-                'getChildren'
-            ));
-        }
-        if (!isset($this->_attributes['addLabel'])) {
-            $this->_attributes['addLabel'] = \Gekosale\Translation::get('TXT_ADD');
-        }
+
         if (!isset($this->_attributes['retractable'])) {
             $this->_attributes['retractable'] = true;
         }
 
         $this->_attributes['total'] = count($this->_attributes['items']);
-    }
-
-    public function getChildren($request)
-    {
-        $children = call_user_func($this->_attributes['load_children'], $request['parent']);
-        if (!is_array($children)) {
-            $children = Array();
-        }
-
-        return Array(
-            'children' => $children
-        );
     }
 
     public function prepareAttributesJs()

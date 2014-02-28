@@ -34,7 +34,14 @@ class ServiceContainer extends Container
         $this->scopeChildren = array();
         $this->methodMap = array(
             'admin_menu.subscriber' => 'getAdminMenu_SubscriberService',
+            'availability.datagrid' => 'getAvailability_DatagridService',
+            'availability.form' => 'getAvailability_FormService',
+            'availability.repository' => 'getAvailability_RepositoryService',
             'availability.subscriber' => 'getAvailability_SubscriberService',
+            'category.form' => 'getCategory_FormService',
+            'category.repository' => 'getCategory_RepositoryService',
+            'category.subscriber' => 'getCategory_SubscriberService',
+            'category.tree' => 'getCategory_TreeService',
             'config_locator' => 'getConfigLocatorService',
             'controller_resolver' => 'getControllerResolverService',
             'country.repository' => 'getCountry_RepositoryService',
@@ -48,6 +55,7 @@ class ServiceContainer extends Container
             'deliverer.repository' => 'getDeliverer_RepositoryService',
             'deliverer.subscriber' => 'getDeliverer_SubscriberService',
             'event_dispatcher' => 'getEventDispatcherService',
+            'file.repository' => 'getFile_RepositoryService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
             'helper' => 'getHelperService',
@@ -101,16 +109,132 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'availability.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid A Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid instance.
+     */
+    protected function getAvailability_DatagridService()
+    {
+        $this->services['availability.datagrid'] = $instance = new \Gekosale\Plugin\Currency\DataGrid\CurrencyDataGrid();
+
+        $instance->setRepository($this->get('currency.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'availability.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Currency\Form\CurrencyForm A Gekosale\Plugin\Currency\Form\CurrencyForm instance.
+     */
+    protected function getAvailability_FormService()
+    {
+        $this->services['availability.form'] = $instance = new \Gekosale\Plugin\Currency\Form\CurrencyForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'availability.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Currency\Repository\CurrencyRepository A Gekosale\Plugin\Currency\Repository\CurrencyRepository instance.
+     */
+    protected function getAvailability_RepositoryService()
+    {
+        $this->services['availability.repository'] = $instance = new \Gekosale\Plugin\Currency\Repository\CurrencyRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
      * Gets the 'availability.subscriber' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return Gekosale\Plugin\Availability\Event\AvailabilitySubscriber A Gekosale\Plugin\Availability\Event\AvailabilitySubscriber instance.
+     * @return Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber A Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber instance.
      */
     protected function getAvailability_SubscriberService()
     {
-        return $this->services['availability.subscriber'] = new \Gekosale\Plugin\Availability\Event\AvailabilitySubscriber();
+        return $this->services['availability.subscriber'] = new \Gekosale\Plugin\Currency\Event\CurrencyEventSubscriber();
+    }
+
+    /**
+     * Gets the 'category.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Category\Form\CategoryForm A Gekosale\Plugin\Category\Form\CategoryForm instance.
+     */
+    protected function getCategory_FormService()
+    {
+        $this->services['category.form'] = $instance = new \Gekosale\Plugin\Category\Form\CategoryForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'category.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Category\Repository\CategoryRepository A Gekosale\Plugin\Category\Repository\CategoryRepository instance.
+     */
+    protected function getCategory_RepositoryService()
+    {
+        $this->services['category.repository'] = $instance = new \Gekosale\Plugin\Category\Repository\CategoryRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'category.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Category\Event\CategoryEventSubscriber A Gekosale\Plugin\Category\Event\CategoryEventSubscriber instance.
+     */
+    protected function getCategory_SubscriberService()
+    {
+        return $this->services['category.subscriber'] = new \Gekosale\Plugin\Category\Event\CategoryEventSubscriber();
+    }
+
+    /**
+     * Gets the 'category.tree' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Category\Form\CategoryTree A Gekosale\Plugin\Category\Form\CategoryTree instance.
+     */
+    protected function getCategory_TreeService()
+    {
+        $this->services['category.tree'] = $instance = new \Gekosale\Plugin\Category\Form\CategoryTree();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -322,11 +446,29 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
-        $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilitySubscriber');
+        $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
+        $instance->addSubscriberService('category.subscriber', 'Gekosale\\Plugin\\Category\\Event\\CategoryEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
         $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'file.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\File\Repository\FileRepository A Gekosale\Plugin\File\Repository\FileRepository instance.
+     */
+    protected function getFile_RepositoryService()
+    {
+        $this->services['file.repository'] = $instance = new \Gekosale\Plugin\File\Repository\FileRepository();
+
+        $instance->setContainer($this);
 
         return $instance;
     }
