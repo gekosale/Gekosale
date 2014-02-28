@@ -98,7 +98,6 @@ class DelivererRepository extends Repository
 
         return [
             'required_data' => [
-                'value'         => $delivererData->value,
                 'language_data' => $delivererData->getLanguageData()
             ]
         ];

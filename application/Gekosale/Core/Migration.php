@@ -25,48 +25,53 @@ abstract class Migration
 
     protected $migrationClass;
 
-    public function __construct ()
+    public function __construct()
     {
         $this->container = new ServiceContainer();
     }
 
-    protected function getFilesystem ()
+    protected function getFilesystem()
     {
         return $this->container->get('filesystem');
     }
 
-    protected function getDb ()
+    protected function get($service)
+    {
+        return $this->container->get($service);
+    }
+
+    protected function getDb()
     {
         return $this->container->get('database_manager');
     }
 
-    protected function getFinder ()
+    protected function getFinder()
     {
         return $this->container->get('finder');
     }
 
-    public function check ()
+    public function check()
     {
         $this->migrationClass = get_class($this);
-        
-        $sql = 'SELECT COUNT(idmigration) AS total FROM migration WHERE migrationclass = :migrationclass';
+
+        $sql  = 'SELECT COUNT(idmigration) AS total FROM migration WHERE migrationclass = :migrationclass';
         $stmt = $this->getDb()->getConnection()->prepare($sql);
         $stmt->bindValue('migrationclass', $this->migrationClass);
         $stmt->execute();
         $rs = $stmt->fetch();
-        
+
         return $rs['total'];
     }
 
-    public function save ()
+    public function save()
     {
-        $sql = 'INSERT INTO migration SET migrationclass = :migrationclass';
+        $sql  = 'INSERT INTO migration SET migrationclass = :migrationclass';
         $stmt = $this->getDb()->getConnection()->prepare($sql);
         $stmt->bindValue('migrationclass', $this->migrationClass);
         $stmt->execute();
     }
 
-    abstract function up ();
+    abstract function up();
 
-    abstract function down ();
+    abstract function down();
 }

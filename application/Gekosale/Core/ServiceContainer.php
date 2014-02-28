@@ -37,6 +37,7 @@ class ServiceContainer extends Container
             'availability.subscriber' => 'getAvailability_SubscriberService',
             'config_locator' => 'getConfigLocatorService',
             'controller_resolver' => 'getControllerResolverService',
+            'country.repository' => 'getCountry_RepositoryService',
             'currency.datagrid' => 'getCurrency_DatagridService',
             'currency.form' => 'getCurrency_FormService',
             'currency.repository' => 'getCurrency_RepositoryService',
@@ -136,6 +137,23 @@ class ServiceContainer extends Container
     protected function getControllerResolverService()
     {
         return $this->services['controller_resolver'] = new \Gekosale\Core\ControllerResolver($this);
+    }
+
+    /**
+     * Gets the 'country.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Country\Repository\CountryRepository A Gekosale\Plugin\Country\Repository\CountryRepository instance.
+     */
+    protected function getCountry_RepositoryService()
+    {
+        $this->services['country.repository'] = $instance = new \Gekosale\Plugin\Country\Repository\CountryRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
