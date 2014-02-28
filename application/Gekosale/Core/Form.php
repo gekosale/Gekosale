@@ -68,6 +68,18 @@ abstract class Form extends Component
     }
 
     /**
+     * Shortcut for adding Select
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\Select
+     */
+    public function addSelect(array $options)
+    {
+        return new Form\Elements\Select($options);
+    }
+
+    /**
      * Shortcut for adding filter CommaToDotChanger
      *
      * @return Form\Filters\CommaToDotChanger
@@ -130,5 +142,17 @@ abstract class Form extends Component
     public function addRuleUnique($errorMessage, array $options)
     {
         return new Form\Rules\Unique($errorMessage, $options, $this->container);
+    }
+
+    /**
+     * Processes options for using them in Select
+     *
+     * @param $options
+     *
+     * @return array
+     */
+    public function makeOptions($options)
+    {
+        return Form\Option::Make($options);
     }
 }

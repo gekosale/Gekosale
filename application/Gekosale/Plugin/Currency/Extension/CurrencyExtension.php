@@ -25,18 +25,18 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class CurrencyExtension extends Extension
 {
 
-    public function load (array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../config'));
         $loader->load('services.xml');
     }
 
-    public function getNamespace ()
+    public function getNamespace()
     {
         return 'http://symfony.com/schema/dic/services';
     }
 
-    public function getAlias ()
+    public function getAlias()
     {
         return 'gekosale.plugin.currency';
     }

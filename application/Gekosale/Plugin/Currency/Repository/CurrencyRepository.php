@@ -65,7 +65,7 @@ class CurrencyRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $currency = Currency::firstOrNew([
+        $currency = Currency::firstOrCreate([
             'id' => $id
         ]);
 
@@ -75,9 +75,9 @@ class CurrencyRepository extends Repository
         $currency->decimal_count      = $Data['required_data']['decimal_count'];
         $currency->thousand_separator = $Data['required_data']['thousand_separator'];
         $currency->positive_prefix    = $Data['required_data']['positive_prefix'];
-        $currency->positive_sufix     = $Data['required_data']['positive_sufix'];
+        $currency->positive_suffix    = $Data['required_data']['positive_suffix'];
         $currency->negative_prefix    = $Data['required_data']['negative_prefix'];
-        $currency->negative_sufix     = $Data['required_data']['negative_sufix'];
+        $currency->negative_suffix    = $Data['required_data']['negative_suffix'];
 
         $currency->save();
     }
@@ -91,23 +91,19 @@ class CurrencyRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $currencyData = $this->find($id)->toArray();
-
-        if (empty($currencyData)) {
-            throw new \InvalidArgumentException('Currency with such ID does not exists');
-        }
+        $currencyData = $this->find($id);
 
         $populateData = [
             'required_data' => [
-                'name'               => $currencyData['name'],
-                'symbol'             => $currencyData['symbol'],
-                'decimal_separator'  => $currencyData['decimal_separator'],
-                'decimal_count'      => $currencyData['decimal_count'],
-                'thousand_separator' => $currencyData['thousand_separator'],
-                'positive_prefix'    => $currencyData['positive_prefix'],
-                'positive_sufix'     => $currencyData['positive_sufix'],
-                'negative_prefix'    => $currencyData['negative_prefix'],
-                'negative_sufix'     => $currencyData['negative_sufix']
+                'name'               => $currencyData->name,
+                'symbol'             => $currencyData->symbol,
+                'decimal_separator'  => $currencyData->decimal_separator,
+                'decimal_count'      => $currencyData->decimal_count,
+                'thousand_separator' => $currencyData->thousand_separator,
+                'positive_prefix'    => $currencyData->positive_prefix,
+                'positive_suffix'    => $currencyData->positive_suffix,
+                'negative_prefix'    => $currencyData->negative_prefix,
+                'negative_suffix'    => $currencyData->negative_suffix
             ]
         ];
 
@@ -141,11 +137,12 @@ class CurrencyRepository extends Repository
      */
     public function getAllCurrencyToSelect()
     {
-        $currencies = $this->all()->toArray();
+        $currencies = $this->all();
         $Data       = Array();
         foreach ($currencies as $currency) {
-            $Data[$currency['id']] = $currency['symbol'];
+            $Data[$currency->id] = $currency->symbol;
         }
+
         return $Data;
     }
 }
