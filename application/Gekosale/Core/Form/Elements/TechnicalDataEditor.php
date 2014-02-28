@@ -58,9 +58,9 @@ class TechnicalDataEditor extends Field implements ElementInterface
             $this,
             'DeleteAttribute'
         ));
-        $this->_RegisterXajaxMethod('fGetValuesForAttribute', Array(
+        $this->_RegisterXajaxMethod('fgetValuesForAttribute', Array(
             $this,
-            'GetValuesForAttribute'
+            'getValuesForAttribute'
         ));
     }
 
@@ -158,7 +158,7 @@ class TechnicalDataEditor extends Field implements ElementInterface
         return App::GetModel('TechnicalData')->GetAttributes();
     }
 
-    public function GetValuesForAttribute($request)
+    public function getValuesForAttribute($request)
     {
         $request['attributeId'];
 

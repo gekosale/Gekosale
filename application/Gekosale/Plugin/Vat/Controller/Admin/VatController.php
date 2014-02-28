@@ -42,7 +42,7 @@ class VatController extends AdminController
     {
         $form = $this->getForm()->init();
 
-        if ($form->Validate()) {
+        if ($form->isValid()) {
 
             $this->getRepository()->save($form->getSubmitValues());
 
@@ -59,7 +59,7 @@ class VatController extends AdminController
         $populateData = $this->getRepository()->getPopulateData($id);
         $form         = $this->getForm()->init($populateData);
 
-        if ($form->Validate()) {
+        if ($form->isValid()) {
 
             $this->getRepository()->save($form->getSubmitValues(), $id);
 

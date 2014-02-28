@@ -58,7 +58,7 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
             $this->formatRepeatableJs(),
             $this->formatDependencyJs(),
             $this->formatLanguagesJs(),
-            'aoFields: [' . $this->_RenderChildren() . ']'
+            'aoFields: [' . $this->renderChildren() . ']'
         );
 
         return $attributes;

@@ -24,17 +24,17 @@ use Gekosale\Core\Form\Condition;
 class OrElse extends Condition implements ConditionInterface
 {
 
-    public function Evaluate($value)
+    public function evaluate($value)
     {
         if ($this->_argument instanceof Condition) {
-            return $this->_argument->Evaluate($value);
+            return $this->_argument->evaluate($value);
         }
         if (is_array($this->_argument)) {
             foreach ($this->_argument as $part) {
                 if (!$part instanceof Condition) {
                     return false;
                 }
-                if ($part->Evaluate($value)) {
+                if ($part->evaluate($value)) {
                     return true;
                 }
             }

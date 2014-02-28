@@ -24,10 +24,10 @@ use Gekosale\Core\Form\Condition;
 class Not extends Condition implements ConditionInterface
 {
 
-    public function Evaluate($value)
+    public function evaluate($value)
     {
         if ($this->_argument instanceof Condition) {
-            return !$this->_argument->Evaluate($value);
+            return !$this->_argument->evaluate($value);
         }
 
         return false;

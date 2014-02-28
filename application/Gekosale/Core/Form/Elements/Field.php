@@ -38,7 +38,7 @@ class Field extends Node
         }
     }
 
-    public function Validate($values = Array())
+    public function isValid($values = Array())
     {
         if (!isset($this->_attributes['rules']) or !is_array($this->_attributes['rules'])) {
             return true;
@@ -50,7 +50,7 @@ class Field extends Node
                     $skip = false;
                     if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
                         foreach ($this->_attributes['dependencies'] as $dependency) {
-                            if ((($dependency->type == Dependency::HIDE) && $dependency->Evaluate($value, $i)) || (($dependency->type == Dependency::SHOW) && !$dependency->Evaluate($value, $i)) || (($dependency->type == Dependency::IGNORE) && $dependency->Evaluate($value, $i))) {
+                            if ((($dependency->type == Dependency::HIDE) && $dependency->evaluate($value, $i)) || (($dependency->type == Dependency::SHOW) && !$dependency->evaluate($value, $i)) || (($dependency->type == Dependency::IGNORE) && $dependency->evaluate($value, $i))) {
                                 $skip = true;
                                 break;
                             }
@@ -74,7 +74,7 @@ class Field extends Node
             } else {
                 if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
                     foreach ($this->_attributes['dependencies'] as $dependency) {
-                        if ((($dependency->type == Dependency::HIDE) && $dependency->Evaluate($this->_value)) || (($dependency->type == Dependency::SHOW) && !$dependency->Evaluate($this->_value)) || (($dependency->type == Dependency::IGNORE) && $dependency->Evaluate($this->_value))) {
+                        if ((($dependency->type == Dependency::HIDE) && $dependency->evaluate($this->_value)) || (($dependency->type == Dependency::SHOW) && !$dependency->evaluate($this->_value)) || (($dependency->type == Dependency::IGNORE) && $dependency->evaluate($this->_value))) {
                             return $result;
                         }
                     }
@@ -101,7 +101,7 @@ class Field extends Node
         $this->_globalvalue = $globalvalue;
     }
 
-    public function GetValue()
+    public function getValue()
     {
         if (!isset($this->_value)) {
             return null;
@@ -112,7 +112,7 @@ class Field extends Node
 
     protected function formatDefaultsJs()
     {
-        $values = $this->GetValue();
+        $values = $this->getValue();
         if (empty($values)) {
             return '';
         }

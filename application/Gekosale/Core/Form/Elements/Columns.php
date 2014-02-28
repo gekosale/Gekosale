@@ -28,7 +28,7 @@ class Columns extends Container implements ElementInterface
             $this->formatAttributeJs('label', 'sLabel'),
             $this->formatAttributeJs('class', 'sClass'),
             $this->formatDependencyJs(),
-            'aoFields: [' . $this->_RenderChildren() . ']'
+            'aoFields: [' . $this->renderChildren() . ']'
         );
 
         return $attributes;

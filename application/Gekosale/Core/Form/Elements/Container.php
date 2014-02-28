@@ -33,7 +33,7 @@ abstract class Container extends Node
         $this->_tabsOffset = '';
     }
 
-    public function AddChild($child)
+    public function addChild($child)
     {
         $this->_children[] = $child;
         $child->form       = $this->form;
@@ -55,44 +55,44 @@ abstract class Container extends Node
         return $child;
     }
 
-    final public function AddChildren($children)
+    final public function addChildren($children)
     {
         foreach ($children as $child) {
-            $this->AddChild($child);
+            $this->addChild($child);
         }
     }
 
-    public function AddRule($rule)
+    public function addRule($rule)
     {
         foreach ($this->_children as $child) {
-            $child->AddRule($rule);
+            $child->addRule($rule);
         }
     }
 
-    public function ClearRules()
+    public function clearRules()
     {
         foreach ($this->_children as $child) {
-            $child->ClearRules();
+            $child->clearRules();
         }
     }
 
-    public function AddFilter($filter)
+    public function addFilter($filter)
     {
         foreach ($this->_children as $child) {
-            $child->AddFilter($filter);
+            $child->addFilter($filter);
         }
     }
 
-    public function ClearFilters()
+    public function clearFilters()
     {
         foreach ($this->_children as $child) {
-            $child->ClearFilters();
+            $child->clearFilters();
         }
     }
 
     public function Populate($value)
     {
-        if (isset($value) && is_array($value) && $this->_IsIterated($value)) { // iterated
+        if (isset($value) && is_array($value) && $this->isIterated($value)) { // iterated
             // value
             foreach ($this->_children as $child) {
                 $valueArray = Array();
@@ -125,7 +125,7 @@ abstract class Container extends Node
         }
     }
 
-    protected function _RenderChildren()
+    protected function renderChildren()
     {
         $render = Array();
         foreach ($this->_children as $child) {
@@ -135,11 +135,11 @@ abstract class Container extends Node
         return implode(',', $render);
     }
 
-    public function Validate($values = Array())
+    public function isValid($values = Array())
     {
         $result = true;
         foreach ($this->_children as $child) {
-            if (!$child->Validate()) {
+            if (!$child->isValid()) {
                 $result = false;
             }
         }
@@ -147,14 +147,14 @@ abstract class Container extends Node
         return $result;
     }
 
-    protected function _GetValues()
+    protected function getValues()
     {
         $values = Array();
         foreach ($this->_children as $child) {
-            if (is_subclass_of($child, 'FormEngine\Elements\Container')) {
-                $values[$child->GetName()] = $child->_GetValues();
-            } elseif (is_subclass_of($child, 'FormEngine\Elements\Field')) {
-                $values[$child->GetName()] = $child->GetValue();
+            if ($child instanceof Container) {
+                $values[$child->GetName()] = $child->getValues();
+            } elseif ($child instanceof Field)) {
+                $values[$child->GetName()] = $child->getValue();
             }
         }
 

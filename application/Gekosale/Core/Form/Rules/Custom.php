@@ -57,7 +57,7 @@ class Custom extends Rule implements RuleInterface
         $params = Array();
         foreach ($this->_params as $paramName => $paramValue) {
             if ($paramValue instanceof Node) {
-                $params[$paramName] = $paramValue->GetValue();
+                $params[$paramName] = $paramValue->getValue();
             } else {
                 $params[$paramName] = $paramValue;
             }

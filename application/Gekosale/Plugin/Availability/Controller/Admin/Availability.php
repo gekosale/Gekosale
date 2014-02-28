@@ -41,7 +41,7 @@ class Availability extends Admin
     {
         $form = $this->form->init();
         
-        if ($form->Validate()) {
+        if ($form->isValid()) {
             
             $this->model->save($form->getSubmitValues());
             
@@ -57,7 +57,7 @@ class Availability extends Admin
     {
         $form = $this->form->init($id, $this->model->getPopulateData($id));
         
-        if ($form->Validate()) {
+        if ($form->isValid()) {
             
             $this->model->save($form->getSubmitValues(), $id);
             

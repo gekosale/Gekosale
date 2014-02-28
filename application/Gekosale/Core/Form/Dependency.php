@@ -72,25 +72,25 @@ class Dependency
 		$this->_field = $field;
 	}
 
-	public function Evaluate ($value, $i = null)
+	public function evaluate ($value, $i = null)
 	{
 		if (! is_subclass_of($this->_condition, 'FormEngine\Condition')){
 			return false;
 		}
 		
 		if ($i === null){
-			return $this->_condition->Evaluate($this->_field->GetValue());
+			return $this->_condition->evaluate($this->_field->getValue());
 		}
-		$matchingValues = $this->_field->GetValue();
+		$matchingValues = $this->_field->getValue();
 		if (is_array($matchingValues)){
 			if (isset($matchingValues[$i])){
-				return $this->_condition->Evaluate($matchingValues[$i]);
+				return $this->_condition->evaluate($matchingValues[$i]);
 			}
 			else{
-				return $this->_condition->Evaluate('');
+				return $this->_condition->evaluate('');
 			}
 		}
-		return $this->_condition->Evaluate($matchingValues);
+		return $this->_condition->evaluate($matchingValues);
 	}
 
 	public function doAjaxSuggestionRequest ($request, $responseHandler)

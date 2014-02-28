@@ -36,7 +36,7 @@ class Submit extends Node implements ElementInterface
         return $attributes;
     }
 
-    public function GetValue()
+    public function getValue()
     {
         return '';
     }

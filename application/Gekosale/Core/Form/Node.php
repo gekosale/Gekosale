@@ -65,7 +65,7 @@ abstract class Node
         return implode("\n", $lines);
     }
 
-    public function AddRule($rule)
+    public function addRule($rule)
     {
         if (!isset($this->_attributes['rules']) or !is_array($this->_attributes['rules'])) {
             $this->_attributes['rules'] = Array();
@@ -73,12 +73,12 @@ abstract class Node
         $this->_attributes['rules'][] = $rule;
     }
 
-    public function ClearRules()
+    public function clearRules()
     {
         $this->_attributes['rules'] = Array();
     }
 
-    public function AddFilter($filter)
+    public function addFilter($filter)
     {
         if (!isset($this->_attributes['filters']) or !is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
@@ -94,7 +94,7 @@ abstract class Node
         $this->_attributes['filters'][] = $filter;
     }
 
-    public function ClearFilters()
+    public function clearFilters()
     {
         $this->_attributes['filters'] = Array();
     }
@@ -134,7 +134,7 @@ abstract class Node
 
     protected function _HarvestValues($node, $levels)
     {
-        $value = $node->GetValue();
+        $value = $node->getValue();
         foreach ($levels as $level) {
             if (isset($value[$level])) {
                 $value = $value[$level];
@@ -205,7 +205,7 @@ abstract class Node
 
             return array_unique($array);
         } else {
-            $value       = $this->GetValue();
+            $value       = $this->getValue();
             $repetitions = $this->_ExtractRepetitions($value, $level);
 
             return array_unique($repetitions);
@@ -368,12 +368,12 @@ abstract class Node
     {
     }
 
-    public function Validate($values = Array())
+    public function isValid($values = Array())
     {
         return true;
     }
 
-    protected function _IsIterated($array)
+    protected function isIterated($array)
     {
         if (is_numeric(key($array)) or substr(key($array), 0, 4) == 'new-') {
             return true;

@@ -56,7 +56,7 @@ abstract class Condition
      *
      * @return bool
      */
-    public function Evaluate($value)
+    public function evaluate($value)
     {
         return true;
     }

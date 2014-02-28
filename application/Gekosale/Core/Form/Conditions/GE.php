@@ -23,7 +23,7 @@ use Gekosale\Core\Form\Condition;
  */
 class GE extends Condition implements ConditionInterface
 {
-    public function Evaluate($value)
+    public function evaluate($value)
     {
         if ($this->_argument instanceof Condition) {
             return false;

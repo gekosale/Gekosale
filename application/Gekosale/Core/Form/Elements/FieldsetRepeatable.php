@@ -28,7 +28,7 @@ class FieldsetRepeatable extends Fieldset implements ElementInterface
             $this->formatAttributeJs('label', 'sLabel'),
             $this->formatRepeatableJs(),
             $this->formatDependencyJs(),
-            'aoFields: [' . $this->_RenderChildren() . ']'
+            'aoFields: [' . $this->renderChildren() . ']'
         );
 
         return $attributes;

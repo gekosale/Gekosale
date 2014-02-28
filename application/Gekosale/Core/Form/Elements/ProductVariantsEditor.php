@@ -22,7 +22,7 @@ class ProductVariantsEditor extends Field implements ElementInterface
 {
     protected $_jsGetAttributeSetsForCategories;
     protected $_jsGetAttributesForSet;
-    protected $_jsGetValuesForAttribute;
+    protected $_jsgetValuesForAttribute;
 
     public function __construct($attributes)
     {
@@ -37,13 +37,13 @@ class ProductVariantsEditor extends Field implements ElementInterface
         $this->_attributes['suffixes']                 = App::getModel('suffix/suffix')->getSuffixTypes();
         $this->_jsGetAttributeSetsForCategories        = 'GetAttributeSetsForCategories_' . $this->_id;
         $this->_jsGetAttributesForSet                  = 'GetAttributesForSet_' . $this->_id;
-        $this->_jsGetValuesForAttribute                = 'GetValuesForAttribute_' . $this->_id;
+        $this->_jsgetValuesForAttribute                = 'getValuesForAttribute_' . $this->_id;
         $this->_jsGetCartesian                         = 'GetCartesian_' . $this->_id;
         $this->_jsAddAttribute                         = 'AddAttribute_' . $this->_id;
         $this->_jsAddValue                             = 'AddValue_' . $this->_id;
         $this->_attributes['get_sets_for_categories']  = 'xajax_' . $this->_jsGetAttributeSetsForCategories;
         $this->_attributes['get_attributes_for_set']   = 'xajax_' . $this->_jsGetAttributesForSet;
-        $this->_attributes['get_values_for_attribute'] = 'xajax_' . $this->_jsGetValuesForAttribute;
+        $this->_attributes['get_values_for_attribute'] = 'xajax_' . $this->_jsgetValuesForAttribute;
         $this->_attributes['get_cartesian']            = 'xajax_' . $this->_jsGetCartesian;
         $this->_attributes['add_attribute']            = 'xajax_' . $this->_jsAddAttribute;
         $this->_attributes['add_value']                = 'xajax_' . $this->_jsAddValue;
@@ -58,7 +58,7 @@ class ProductVariantsEditor extends Field implements ElementInterface
             'getAttributesForSet'
         ));
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            $this->_jsGetValuesForAttribute,
+            $this->_jsgetValuesForAttribute,
             $this,
             'getValuesForAttribute'
         ));
@@ -129,7 +129,7 @@ class ProductVariantsEditor extends Field implements ElementInterface
             $this->formatAttributeJs('error', 'sError'),
             $this->formatAttributeJs('get_sets_for_categories', 'fGetSetsForCategories', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('get_attributes_for_set', 'fGetAttributesForSet', ElementInterface::TYPE_FUNCTION),
-            $this->formatAttributeJs('get_values_for_attribute', 'fGetValuesForAttribute', ElementInterface::TYPE_FUNCTION),
+            $this->formatAttributeJs('get_values_for_attribute', 'fgetValuesForAttribute', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('get_cartesian', 'fGetCartesian', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('add_attribute', 'fAddAttribute', ElementInterface::TYPE_FUNCTION),
             $this->formatAttributeJs('add_value', 'fAddValue', ElementInterface::TYPE_FUNCTION),

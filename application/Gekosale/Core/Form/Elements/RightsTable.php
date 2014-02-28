@@ -64,7 +64,7 @@ class RightsTable extends Field implements ElementInterface
 
     protected function formatDefaultsJs()
     {
-        $values = $this->GetValue();
+        $values = $this->getValue();
         if (empty($values)) {
             return '';
         }

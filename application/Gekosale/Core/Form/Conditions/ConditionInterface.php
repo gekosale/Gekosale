@@ -22,11 +22,11 @@ interface ConditionInterface
 {
 
     /**
-     * Evaluates condition value
+     * evaluates condition value
      *
      * @param $value
      *
      * @return mixed
      */
-    public function Evaluate($value);
+    public function evaluate($value);
 } 
