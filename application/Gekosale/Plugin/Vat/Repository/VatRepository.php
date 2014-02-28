@@ -88,7 +88,7 @@ class VatRepository extends Repository
     }
 
     /**
-     * Returns data required for populating the form
+     * Returns array containing values needed to populate the form
      *
      * @param $id
      *
@@ -96,24 +96,13 @@ class VatRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $vatData = $this->find($id)->toArray();
+        $vatData = $this->find($id);
 
-        if (empty($vatData)) {
-            throw new \InvalidArgumentException('Vat with such ID does not exists');
-        }
-
-        $languageData = [];
-        foreach ($vatData['translation'] as $translation) {
-            $languageData['name'][$translation['language_id']] = $translation['name'];
-        }
-
-        $populateData = [
+        return [
             'required_data' => [
-                'value'         => $vatData['value'],
-                'language_data' => $languageData
+                'value'         => $vatData->value,
+                'language_data' => $vatData->getLanguageData()
             ]
         ];
-
-        return $populateData;
     }
 }
