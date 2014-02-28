@@ -36,7 +36,7 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
         $this->_attributes['repeat_max'] = $count;
     }
 
-    protected function _FormatLanguages_JS()
+    protected function formatLanguagesJs()
     {
 
         $options = Array();
@@ -50,14 +50,14 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
         return 'aoLanguages: [' . implode(', ', $options) . ']';
     }
 
-    protected function prepareAttributesJs()
+    public function prepareAttributesJs()
     {
         $attributes = Array(
             $this->formatAttributeJs('name', 'sName'),
             $this->formatAttributeJs('label', 'sLabel'),
             $this->formatRepeatableJs(),
             $this->formatDependencyJs(),
-            $this->_FormatLanguages_JS(),
+            $this->formatLanguagesJs(),
             'aoFields: [' . $this->_RenderChildren() . ']'
         );
 

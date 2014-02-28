@@ -1,19 +1,23 @@
 <?php
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace Gekosale\Core\Form;
 
 /**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+ * Class Option
  *
- * Copyright (c) 2009-2011 Gekosale
- *
- * This program is free software; you can redistribute it and/or modify it under the terms 
- * of the GNU General Public License Version 3, 29 June 2007 as published by the Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it through the 
- * world-wide-web, please send an email to license@verison.pl so we can send you a copy immediately.
+ * @package Gekosale\Core\Form
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
-namespace FormEngine;
-
 class Option
 {
 
@@ -21,28 +25,30 @@ class Option
 
     public $label;
 
-    public function __construct ($value, $label)
+    public function __construct($value, $label)
     {
         $this->value = $value;
         $this->label = $label;
     }
 
-    public static function Make ($array, $default = '')
+    public static function Make($array, $default = '')
     {
         $result = Array();
-        if ($default and is_array($default)){
+        if ($default and is_array($default)) {
             $result[] = new self('', $default[0]);
         }
-        foreach ($array as $key => $value){
+        foreach ($array as $key => $value) {
             $result[] = new self($key, $value);
         }
+
         return $result;
     }
 
-    public function __toString ()
+    public function __toString()
     {
         $value = addslashes($this->value);
         $label = addslashes($this->label);
+
         return "{sValue: '{$value}', sLabel: '{$label}'}";
     }
 }

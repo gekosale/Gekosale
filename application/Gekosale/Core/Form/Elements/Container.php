@@ -12,6 +12,14 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Gekosale\Core\Form\Node;
+
+/**
+ * Class Container
+ *
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>s
+ */
 abstract class Container extends Node
 {
 

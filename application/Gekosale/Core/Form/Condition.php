@@ -11,6 +11,12 @@
  */
 namespace Gekosale\Core\Form;
 
+/**
+ * Class Condition
+ *
+ * @package Gekosale\Core\Form
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 abstract class Condition
 {
 

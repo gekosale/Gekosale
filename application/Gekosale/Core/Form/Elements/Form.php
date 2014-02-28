@@ -1,27 +1,23 @@
 <?php
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace Gekosale\Core\Form\Elements;
 
 /**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+ * Class Form
  *
- * Copyright (c) 2009-2011 Gekosale
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * @package Gekosale\Core\Form\Elements
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
-namespace FormEngine\Elements;
-
-use Gekosale\App as App;
-use Gekosale\Translation;
-use FormEngine\Rules;
-
 class Form extends Container
 {
 
@@ -41,30 +37,30 @@ class Form extends Container
 
     protected $_populatingWholeForm;
 
-    public function __construct ($attributes)
+    public function __construct($attributes)
     {
         parent::__construct($attributes);
         $this->_populatingWholeForm = false;
-        $this->fields = Array();
-        $this->_values = Array();
-        $this->_flags = Array();
-        $this->form = $this;
+        $this->fields               = Array();
+        $this->_values              = Array();
+        $this->_flags               = Array();
+        $this->form                 = $this;
 
-        if (! isset($this->_attributes['class'])){
+        if (!isset($this->_attributes['class'])) {
             $this->_attributes['class'] = '';
         }
-        if (! isset($this->_attributes['action'])){
+        if (!isset($this->_attributes['action'])) {
             $this->_attributes['action'] = '';
         }
-        if (! isset($this->_attributes['method'])){
+        if (!isset($this->_attributes['method'])) {
             $this->_attributes['method'] = 'post';
         }
-        if (! isset($this->_attributes['tabs'])){
+        if (!isset($this->_attributes['tabs'])) {
             $this->_attributes['tabs'] = self::TABS_VERTICAL;
         }
     }
 
-    public function Render_JS ()
+    public function Render_JS()
     {
         return "
 			<form id=\"{$this->_attributes['name']}\" method=\"{$this->_attributes['method']}\" action=\"{$this->_attributes['action']}\">
@@ -89,51 +85,52 @@ class Form extends Container
 		";
     }
 
-    public function Render_Static ()
+    public function Render_Static()
     {
     }
 
-    public function getSubmitValues ($flags = 0)
+    public function getSubmitValues($flags = 0)
     {
         return $this->GetValues($flags);
     }
 
-    public function getElementValue ($element)
+    public function getElementValue($element)
     {
         return $this->GetValue($element);
     }
 
-    public function GetValues ($flags = 0)
+    public function GetValues($flags = 0)
     {
-        if ($flags & self::FORMAT_FLAT){
+        if ($flags & self::FORMAT_FLAT) {
             $values = Array();
-            foreach ($this->fields as $field){
-                if (is_object($field)){
-                    if (is_subclass_of($field, 'FormEngine\Elements\Field')){
+            foreach ($this->fields as $field) {
+                if (is_object($field)) {
+                    if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
+                        $values = array_merge_recursive($values, Array(
+                            $field->GetName() => $field->GetValue()
+                        ));
+                    }
+                } else {
+                    if (is_subclass_of($field, 'FormEngine\Elements\Field')) {
                         $values = array_merge_recursive($values, Array(
                             $field->GetName() => $field->GetValue()
                         ));
                     }
                 }
-                else
-                    if (is_subclass_of($field, 'FormEngine\Elements\Field')){
-                        $values = array_merge_recursive($values, Array(
-                            $field->GetName() => $field->GetValue()
-                        ));
-                    }
             }
+
             return $values;
-        }
-        else{
+        } else {
             return $this->_Harvest(Array(
                 $this,
                 '_HarvestValues'
             ));
         }
+
         return Array();
     }
 
-    public function GetErrors ()
+    public function GetErrors()
     {
         return $this->_Harvest(Array(
             $this,
@@ -141,26 +138,25 @@ class Form extends Container
         ));
     }
 
-    public function GetValue ($element)
+    public function GetValue($element)
     {
-        foreach ($this->fields as $field){
-            if ($field->GetName() == $element){
+        foreach ($this->fields as $field) {
+            if ($field->GetName() == $element) {
                 return $field->GetValue();
             }
         }
     }
 
-    public function GetFlags ()
+    public function GetFlags()
     {
         return $this->_flags;
     }
 
-    public function Populate ($value, $flags = 0)
+    public function Populate($value, $flags = 0)
     {
-        if ($flags & self::FORMAT_FLAT){
+        if ($flags & self::FORMAT_FLAT) {
             return;
-        }
-        else{
+        } else {
             $this->_values = $this->_values + $value;
         }
         $this->_populatingWholeForm = true;
@@ -168,14 +164,27 @@ class Form extends Container
         $this->_populatingWholeForm = false;
     }
 
-    public function Validate ($values = Array())
+    public function Validate($values = Array())
     {
-        $values = $_POST;
+        $values = $this->SubmittedData();
 
-        if (! isset($values[$this->_attributes['name'] . '_submitted']) or ! $values[$this->_attributes['name'] . '_submitted']){
+        if (!isset($values[$this->_attributes['name'] . '_submitted']) or !$values[$this->_attributes['name'] . '_submitted']) {
             return false;
         }
         $this->Populate($values);
+
         return parent::Validate();
+    }
+
+    public function SubmittedData()
+    {
+        return $_POST;
+    }
+
+    public function IsAction($actionName)
+    {
+        $actionName = '_Action_' . $actionName;
+
+        return (isset($_POST[$actionName]) and ($_POST[$actionName] == '1'));
     }
 }
