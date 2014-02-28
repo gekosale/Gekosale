@@ -63,7 +63,7 @@ class RightsTable extends Field implements ElementInterface
     }
 
     protected function formatDefaultsJs()
-    {s
+    {
         $values = $this->GetValue();
         if (empty($values)) {
             return '';
@@ -71,5 +71,4 @@ class RightsTable extends Field implements ElementInterface
 
         return 'aabDefaults: ' . json_encode($values);
     }
-
 }

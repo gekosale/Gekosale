@@ -315,12 +315,12 @@ abstract class Node
 
     protected function formatRepeatableJs()
     {
-        if ((isset($this->_attributes['repeat_min']) and ($this->_attributes['repeat_min'] != 1)) or (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] != 1))) {
+        if ((isset($this->_attributes['repeat_min']) && ($this->_attributes['repeat_min'] != 1)) || (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] != 1))) {
             $min
-                = (isset($this->_attributes['repeat_min']) and is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
+                = (isset($this->_attributes['repeat_min']) && is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
             $max
-                = (isset($this->_attributes['repeat_max']) and is_numeric($this->_attributes['repeat_max'])) ? $this->_attributes['repeat_max'] : 1;
-            if (isset($this->_attributes['repeat_max']) and ($this->_attributes['repeat_max'] == FE::INFINITE)) {
+                = (isset($this->_attributes['repeat_max']) && is_numeric($this->_attributes['repeat_max'])) ? $this->_attributes['repeat_max'] : 1;
+            if (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] == FE::INFINITE)) {
                 $max = 'GForm.INFINITE';
             }
 
@@ -333,7 +333,7 @@ abstract class Node
     protected function formatDependencyJs()
     {
         $dependencies = Array();
-        if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])) {
+        if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
             foreach ($this->_attributes['dependencies'] as $dependency) {
                 $dependencies[] = $dependency->Render_JS();
             }

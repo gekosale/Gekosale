@@ -185,6 +185,6 @@ class Form extends Container
     {
         $actionName = '_Action_' . $actionName;
 
-        return (isset($_POST[$actionName]) and ($_POST[$actionName] == '1'));
+        return (isset($_POST[$actionName]) && ($_POST[$actionName] == '1'));
     }
 }

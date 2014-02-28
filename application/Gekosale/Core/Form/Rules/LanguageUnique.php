@@ -81,7 +81,7 @@ class LanguageUnique extends Rule implements RuleInterface
 				{$this->_column} = :value
 				AND languageid = :language
 		";
-        if ($this->_exclude and is_array($this->_exclude)) {
+        if ($this->_exclude && is_array($this->_exclude)) {
             if (!is_array($this->_exclude['values'])) {
                 $this->_exclude['values'] = Array(
                     $this->_exclude['values']

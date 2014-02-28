@@ -112,7 +112,7 @@ class ClientSelect extends Select implements ElementInterface
                 'source'    => 'CD.phone2',
                 'encrypted' => true
             ),
-            'adddate'     => Array(s
+            'adddate'     => Array(
                 'source' => 'CD.adddate'
             ),
         ));

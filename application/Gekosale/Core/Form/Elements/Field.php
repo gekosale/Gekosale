@@ -12,8 +12,9 @@
 
 namespace Gekosale\Core\Form\Elements;
 
-use Gekosale\Core\Form\Dependency;
-use Gekosale\Core\Form\Rules\LanguageUnique;
+use Gekosale\Core\Form\Dependency,
+    Gekosale\Core\Form\Node,
+    Gekosale\Core\Form\Rules\LanguageUnique;
 
 /**
  * Class Field
@@ -44,12 +45,12 @@ class Field extends Node
         }
         $result = true;
         foreach ($this->_attributes['rules'] as $rule) {
-            if (isset($this->_value) and is_array($this->_value)) {
+            if (isset($this->_value) && is_array($this->_value)) {
                 foreach ($this->_value as $i => $value) {
                     $skip = false;
-                    if (isset($this->_attributes['dependencies']) and is_array($this->_attributes['dependencies'])) {
+                    if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
                         foreach ($this->_attributes['dependencies'] as $dependency) {
-                            if ((($dependency->type == Dependency::HIDE) and $dependency->Evaluate($value, $i)) or (($dependency->type == Dependency::SHOW) and !$dependency->Evaluate($value, $i)) or (($dependency->type == Dependency::IGNORE) and $dependency->Evaluate($value, $i))) {
+                            if ((($dependency->type == Dependency::HIDE) && $dependency->Evaluate($value, $i)) || (($dependency->type == Dependency::SHOW) && !$dependency->Evaluate($value, $i)) || (($dependency->type == Dependency::IGNORE) && $dependency->Evaluate($value, $i))) {
                                 $skip = true;
                                 break;
                             }
@@ -134,5 +135,4 @@ class Field extends Node
 
         return 'aoRules: [' . implode(', ', $rules) . ']';
     }
-
 }
