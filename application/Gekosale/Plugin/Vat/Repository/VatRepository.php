@@ -11,8 +11,8 @@
  */
 namespace Gekosale\Plugin\Vat\Repository;
 
-use Gekosale\Core\Model\Vat;
 use Gekosale\Core\Repository;
+use Gekosale\Core\Model\Vat;
 use Gekosale\Core\Model\VatTranslation;
 
 /**

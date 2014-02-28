@@ -62,22 +62,28 @@ class VatForm extends Form
             'name'    => 'value',
             'label'   => $this->trans('Tax value'),
             'comment' => $this->trans('Tax value given in %'),
-            //            'rules'   => [
-            //                new FormEngine\Rules\Required($this->trans('Tax value is required')),
-            //                new FormEngine\Rules\Unique($this->trans('Tax value already exists'), 'vat', 'value', null, [
-            //                    'column' => 'id',
-            //                    'values' => $this->getParam('id')
-            //                ])
-            //            ],
-            //            'suffix'  => '%',
-            //            'filters' => [
-            //                new FormEngine\Filters\CommaToDotChanger()
-            //            ]
+            'rules'   => [
+                $this->addRuleRequired($this->trans('Tax value is required')),
+                $this->addRuleUnique($this->trans('Tax value already exists'),
+                    [
+                        'table'   => 'vat',
+                        'column'  => 'value',
+                        'exclude' => [
+                            'column' => 'id',
+                            'values' => $this->getParam('id')
+                        ]
+                    ]
+                )
+            ],
+            'suffix'  => '%',
+            'filters' => [
+                $this->addFilterCommaToDotChanger()
+            ]
         ]));
 
-        $form->AddFilter($this->addFilterNoCode());
-        $form->AddFilter($this->addFilterTrim());
-        $form->AddFilter($this->addFilterSecure());
+        $form->addFilter($this->addFilterNoCode());
+        $form->addFilter($this->addFilterTrim());
+        $form->addFilter($this->addFilterSecure());
 
         $event = new VatFormEvent($form, $vatData);
 
