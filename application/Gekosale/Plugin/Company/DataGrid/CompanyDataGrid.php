@@ -9,53 +9,52 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Language\DataGrid;
+namespace Gekosale\Plugin\Company\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
 
 /**
- * Class LanguageDataGrid
+ * Class CompanyDataGrid
  *
- * @package Gekosale\Plugin\Language\DataGrid
+ * @package Gekosale\Plugin\Company\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class LanguageDataGrid extends DataGrid implements DataGridInterface
+class CompanyDataGrid extends DataGrid implements DataGridInterface
 {
     /**
-     * {@inheritdoc}
+     * Initializes DataGrid
      */
     public function init()
     {
         $this->setTableData([
-            'id'     => [
-                'source' => 'L.id'
+            'id'   => [
+                'source' => 'C.id'
             ],
-            'name'   => [
-                'source' => 'L.name'
+            'name' => [
+                'source' => 'C.name'
             ],
-            'locale' => [
-                'source' => 'L.locale'
-            ]
         ]);
 
         $this->setFrom('
-            language L
+            company C
         ');
 
         $this->setGroupBy('
-            L.id
+            C.id
         ');
     }
 
     /**
-     * {@inheritdoc}
+     * Registers DataGrid event handlers
+     *
+     * @return mixed|void
      */
     public function registerEventHandlers()
     {
         $this->getXajaxManager()->registerFunctions([
-            'getLanguageForAjax' => [$this, 'getData'],
-            'doDeleteLanguage'   => [$this, 'delete']
+            'getCompanyForAjax' => [$this, 'getData'],
+            'doDeleteCompany'   => [$this, 'delete']
         ]);
     }
 }

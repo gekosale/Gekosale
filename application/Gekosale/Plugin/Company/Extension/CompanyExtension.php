@@ -9,7 +9,8 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Currency\Extension;
+
+namespace Gekosale\Plugin\Company\Extension;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
@@ -17,12 +18,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class CurrencyExtension
+ * Class CompanyExtension
  *
- * @package Gekosale\Plugin\Currency\Extension
+ * @package Gekosale\Plugin\Company\Extension
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class CurrencyExtension extends Extension
+class CompanyExtension extends Extension
 {
 
     public function load(array $config, ContainerBuilder $container)
@@ -38,6 +39,6 @@ class CurrencyExtension extends Extension
 
     public function getAlias()
     {
-        return 'gekosale.plugin.currency';
+        return 'gekosale.plugin.company';
     }
 }

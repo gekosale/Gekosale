@@ -23,7 +23,7 @@ use Gekosale\Core\DataGrid,
 class AvailabilityDataGrid extends DataGrid implements DataGridInterface
 {
     /**
-     * Initializes DataGrid
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -46,8 +46,14 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
         ');
     }
 
-    public function delete($datagrid, $id)
+    /**
+     * {@inheritdoc}
+     */
+    public function registerEventHandlers()
     {
-        return $this->deleteRow($datagrid, $id, [$this->repository, 'delete']);
+        $this->getXajaxManager()->registerFunctions([
+            'getAvailabilityForAjax' => [$this, 'getData'],
+            'doDeleteAvailability'   => [$this, 'delete']
+        ]);
     }
 }

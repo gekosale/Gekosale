@@ -9,24 +9,24 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Availability\Controller\Admin;
+namespace Gekosale\Plugin\Company\Controller\Admin;
 
 use Gekosale\Core\Controller\AdminController;
 
 /**
- * Class AvailabilityController
+ * Class CompanyController
  *
- * @package Gekosale\Plugin\Availability\Controller\Admin
+ * @package Gekosale\Plugin\Company\Controller\Admin
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class AvailabilityController extends AdminController
+class CompanyController extends AdminController
 {
     /**
      * {@inheritdoc}
      */
     protected function getDataGrid()
     {
-        return $this->get('availability.datagrid');
+        return $this->get('company.datagrid');
     }
 
     /**
@@ -34,7 +34,7 @@ class AvailabilityController extends AdminController
      */
     protected function getRepository()
     {
-        return $this->get('availability.repository');
+        return $this->get('company.repository');
     }
 
     /**
@@ -42,7 +42,7 @@ class AvailabilityController extends AdminController
      */
     protected function getForm()
     {
-        return $this->get('availability.form');
+        return $this->get('company.form');
     }
 
     /**
@@ -50,6 +50,6 @@ class AvailabilityController extends AdminController
      */
     protected function getDefaultRoute()
     {
-        return 'admin.availability.index';
+        return 'admin.company.index';
     }
 }

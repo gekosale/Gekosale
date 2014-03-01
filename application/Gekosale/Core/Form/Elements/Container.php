@@ -92,8 +92,7 @@ abstract class Container extends Node
 
     public function populate($value)
     {
-        if (isset($value) && is_array($value) && $this->isIterated($value)) { // iterated
-            // value
+        if (isset($value) && is_array($value) && $this->isIterated($value)) {
             foreach ($this->_children as $child) {
                 $valueArray = Array();
                 if (isset($value) && is_array($value)) {

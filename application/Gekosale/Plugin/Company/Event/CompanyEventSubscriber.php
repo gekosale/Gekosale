@@ -9,22 +9,20 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Language\Event;
+namespace Gekosale\Plugin\Company\Event;
 
-use Symfony\Component\EventDispatcher\Event,
-    Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**
- * Class LanguageEventSubscriber
+ * Class CompanyEventSubscriber
  *
- * @package Gekosale\Plugin\Language\Event
+ * @package Gekosale\Plugin\Company\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class LanguageEventSubscriber implements EventSubscriberInterface
+class CompanyEventSubscriber implements EventSubscriberInterface
 {
-
     public function onAdminMenuInitAction(Event $event)
     {
 

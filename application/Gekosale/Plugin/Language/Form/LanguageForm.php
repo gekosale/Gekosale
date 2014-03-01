@@ -11,8 +11,8 @@
  */
 namespace Gekosale\Plugin\Language\Form;
 
-use Gekosale\Core\Form;
-use Gekosale\Plugin\Language\Event\LanguageFormEvent;
+use Gekosale\Core\Form,
+    Gekosale\Plugin\Language\Event\LanguageFormEvent;
 
 /**
  * Class LanguageForm
@@ -23,6 +23,13 @@ use Gekosale\Plugin\Language\Event\LanguageFormEvent;
 class LanguageForm extends Form
 {
 
+    /**
+     * Initializes language Form
+     *
+     * @param array $languageData
+     *
+     * @return Form\Elements\Form
+     */
     public function init($languageData = [])
     {
         $form = $this->addForm([

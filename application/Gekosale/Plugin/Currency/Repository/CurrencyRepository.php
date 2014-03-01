@@ -68,17 +68,15 @@ class CurrencyRepository extends Repository
             'id' => $id
         ]);
 
-        $requiredData = $Data['required_data'];
-
-        $currency->name               = $requiredData['name'];
-        $currency->symbol             = $requiredData['symbol'];
-        $currency->decimal_separator  = $requiredData['decimal_separator'];
-        $currency->decimal_count      = $requiredData['decimal_count'];
-        $currency->thousand_separator = $requiredData['thousand_separator'];
-        $currency->positive_prefix    = $requiredData['positive_prefix'];
-        $currency->positive_suffix    = $requiredData['positive_suffix'];
-        $currency->negative_prefix    = $requiredData['negative_prefix'];
-        $currency->negative_suffix    = $requiredData['negative_suffix'];
+        $currency->name               = $Data['name'];
+        $currency->symbol             = $Data['symbol'];
+        $currency->decimal_separator  = $Data['decimal_separator'];
+        $currency->decimal_count      = $Data['decimal_count'];
+        $currency->thousand_separator = $Data['thousand_separator'];
+        $currency->positive_prefix    = $Data['positive_prefix'];
+        $currency->positive_suffix    = $Data['positive_suffix'];
+        $currency->negative_prefix    = $Data['negative_prefix'];
+        $currency->negative_suffix    = $Data['negative_suffix'];
 
         $currency->save();
     }

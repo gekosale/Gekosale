@@ -11,8 +11,8 @@
  */
 namespace Gekosale\Plugin\File\Repository;
 
-use Gekosale\Core\Repository;
-use Gekosale\Core\Model\File;
+use Gekosale\Core\Repository,
+    Gekosale\Core\Model\File;
 
 /**
  * Class FileRepository

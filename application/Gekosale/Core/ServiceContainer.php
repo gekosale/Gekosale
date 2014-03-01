@@ -42,6 +42,10 @@ class ServiceContainer extends Container
             'category.repository' => 'getCategory_RepositoryService',
             'category.subscriber' => 'getCategory_SubscriberService',
             'category.tree' => 'getCategory_TreeService',
+            'company.datagrid' => 'getCompany_DatagridService',
+            'company.form' => 'getCompany_FormService',
+            'company.repository' => 'getCompany_RepositoryService',
+            'company.subscriber' => 'getCompany_SubscriberService',
             'config_locator' => 'getConfigLocatorService',
             'controller_resolver' => 'getControllerResolverService',
             'country.repository' => 'getCountry_RepositoryService',
@@ -235,6 +239,71 @@ class ServiceContainer extends Container
         $instance->setContainer($this);
 
         return $instance;
+    }
+
+    /**
+     * Gets the 'company.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Company\DataGrid\CompanyDataGrid A Gekosale\Plugin\Company\DataGrid\CompanyDataGrid instance.
+     */
+    protected function getCompany_DatagridService()
+    {
+        $this->services['company.datagrid'] = $instance = new \Gekosale\Plugin\Company\DataGrid\CompanyDataGrid();
+
+        $instance->setRepository($this->get('company.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'company.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Company\Form\CompanyForm A Gekosale\Plugin\Company\Form\CompanyForm instance.
+     */
+    protected function getCompany_FormService()
+    {
+        $this->services['company.form'] = $instance = new \Gekosale\Plugin\Company\Form\CompanyForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'company.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Company\Repository\CompanyRepository A Gekosale\Plugin\Company\Repository\CompanyRepository instance.
+     */
+    protected function getCompany_RepositoryService()
+    {
+        $this->services['company.repository'] = $instance = new \Gekosale\Plugin\Company\Repository\CompanyRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'company.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Company\Event\CompanyEventSubscriber A Gekosale\Plugin\Company\Event\CompanyEventSubscriber instance.
+     */
+    protected function getCompany_SubscriberService()
+    {
+        return $this->services['company.subscriber'] = new \Gekosale\Plugin\Company\Event\CompanyEventSubscriber();
     }
 
     /**
@@ -448,6 +517,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilityEventSubscriber');
         $instance->addSubscriberService('category.subscriber', 'Gekosale\\Plugin\\Category\\Event\\CategoryEventSubscriber');
+        $instance->addSubscriberService('company.subscriber', 'Gekosale\\Plugin\\Company\\Event\\CompanyEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');

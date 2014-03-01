@@ -66,7 +66,7 @@ class DelivererForm extends Form
 
         $this->getDispatcher()->dispatch(DelivererFormEvent::FORM_INIT_EVENT, $event);
 
-        $form->Populate($event->getPopulateData());
+        $form->populate($event->getPopulateData());
 
         return $form;
     }

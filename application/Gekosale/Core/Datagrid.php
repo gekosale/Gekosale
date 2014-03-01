@@ -102,6 +102,17 @@ class DataGrid extends Component
         return $filters;
     }
 
+    /**
+     * @param $datagrid
+     * @param $id
+     *
+     * @return xajaxResponse
+     */
+    public function delete($datagrid, $id)
+    {
+        return $this->deleteRow($datagrid, $id, [$this->repository, 'delete']);
+    }
+
     public function setRepository(Repository $repository)
     {
         $this->repository = $repository;

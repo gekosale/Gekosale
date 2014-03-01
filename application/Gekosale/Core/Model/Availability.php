@@ -44,8 +44,12 @@ class Availability extends Model
     {
         $languageData = [];
         foreach ($this->translation as $translation) {
-            $languageData['name'][$translation->language_id]        = $translation->name;
-            $languageData['description'][$translation->language_id] = $translation->description;
+            $languageData = [
+                $translation->language_id => [
+                    'name'        => $translation->name,
+                    'description' => $translation->description,
+                ]
+            ];
         }
 
         return $languageData;

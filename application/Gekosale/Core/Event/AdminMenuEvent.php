@@ -12,7 +12,6 @@
 namespace Gekosale\Core\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use FormEngine\Elements\Form;
 
 /**
  * Class FormEvent
@@ -36,7 +35,7 @@ class AdminMenuEvent extends Event
     }
 
     /**
-     * Returns an array containing all data fetched from bound form events
+     * Returns an array containing current menu data
      *
      * @return array
      */
@@ -46,7 +45,7 @@ class AdminMenuEvent extends Event
     }
 
     /**
-     * Feeds an array containing data needed to populate the form
+     * Appends data to menu
      *
      * @param array $Data
      *

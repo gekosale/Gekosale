@@ -1,48 +1,40 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Plugin
- * @subpackage  Gekosale\Plugin\Company
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-$this->collection = new RouteCollection();
+$collection = new RouteCollection();
 
-$this->collection->add('admin.company.index', new Route('/admin/company', array(
-    'controller' => 'Gekosale\Plugin\Company\Controller\Admin\Company',
-    'mode' => 'admin',
-    'action' => 'index',
-    'param' => NULL
+$controller = 'Gekosale\Plugin\Company\Controller\Admin\CompanyController';
+
+$collection->add('admin.company.index', new Route('/index', array(
+    'controller' => $controller,
+    'mode'       => 'admin',
+    'action'     => 'indexAction'
 )));
 
-$this->collection->add('admin.company.add', new Route('/admin/company/add', array(
-    'controller' => 'Gekosale\Plugin\Company\Controller\Admin\Company',
-    'mode' => 'admin',
-    'action' => 'add',
-    'param' => NULL
+$collection->add('admin.company.add', new Route('/add', array(
+    'controller' => $controller,
+    'mode'       => 'admin',
+    'action'     => 'addAction'
 )));
 
-$this->collection->add('admin.company.edit', new Route('/admin/company/edit/{id}', array(
-    'controller' => 'Gekosale\Plugin\Company\Controller\Admin\Company',
-    'mode' => 'admin',
-    'action' => 'edit',
-    'id' => NULL
+$collection->add('admin.company.edit', new Route('/edit/{id}', array(
+    'controller' => $controller,
+    'mode'       => 'admin',
+    'action'     => 'editAction',
+    'id'         => null
 )));
 
-$this->collection->add('admin.company.delete', new Route('/admin/company/delete/{id}', array(
-    'controller' => 'Gekosale\Plugin\Company\Controller\Admin\Company',
-    'mode' => 'admin',
-    'action' => 'delete',
-    'id' => NULL
-)));
+$collection->addPrefix('/admin/company');
 
-return $this->collection;
+return $collection;

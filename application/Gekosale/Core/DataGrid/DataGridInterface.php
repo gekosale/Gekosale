@@ -36,7 +36,32 @@ interface DataGridInterface
     /**
      * DataGrid initialization
      */
-    public function init ();
+    public function init();
 
-    public function getData ($request, $processFunction);
+    /**
+     * Registers event handlers needed for DataGrid
+     *
+     * @return mixed
+     */
+    public function registerEventHandlers();
+
+    /**
+     * Load handler for DataGrid
+     *
+     * @param $request
+     * @param $processFunction
+     *
+     * @return mixed
+     */
+    public function getData($request, $processFunction);
+
+    /**
+     * Delete handler for DataGrid
+     *
+     * @param $datagrid
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function delete($datagrid, $id);
 }

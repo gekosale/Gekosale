@@ -21,58 +21,8 @@ use Gekosale\Core\Controller\AdminController;
  */
 class DelivererController extends AdminController
 {
-
-    public function indexAction()
-    {
-        $datagrid = $this->getDataGrid();
-
-        $this->getXajaxManager()->registerFunctions([
-            'getDelivererForAjax' => [$datagrid, 'getData'],
-            'doDeleteDeliverer'   => [$datagrid, 'delete']
-        ]);
-
-        $datagrid->init();
-
-        return Array(
-            'datagrid_filter' => $datagrid->getFilterData()
-        );
-    }
-
-    public function addAction()
-    {
-        $form = $this->getForm()->init();
-
-        if ($form->isValid()) {
-
-            $this->getRepository()->save($form->getSubmitValues());
-
-            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
-    public function editAction($id)
-    {
-        $populateData = $this->getRepository()->getPopulateData($id);
-        $form         = $this->getForm()->init($populateData);
-
-        if ($form->isValid()) {
-
-            $this->getRepository()->save($form->getSubmitValues(), $id);
-
-            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
     /**
-     * Get DataGrid
+     * {@inheritdoc}
      */
     protected function getDataGrid()
     {
@@ -80,7 +30,7 @@ class DelivererController extends AdminController
     }
 
     /**
-     * Get Repository
+     * {@inheritdoc}
      */
     protected function getRepository()
     {
@@ -88,7 +38,7 @@ class DelivererController extends AdminController
     }
 
     /**
-     * Get Form
+     * {@inheritdoc}
      */
     protected function getForm()
     {
@@ -96,9 +46,7 @@ class DelivererController extends AdminController
     }
 
     /**
-     * Get default route
-     *
-     * @return string
+     * {@inheritdoc}
      */
     protected function getDefaultRoute()
     {

@@ -1,29 +1,26 @@
 {% extends "layout.twig" %}
 {% block content %}
-    <h2>
-        {% trans %}TXT_COMPANY_LIST{% endtrans %}
-    </h2>
+    <h2>{% trans %}Companies{% endtrans %}</h2>
 
     <ul class="possibilities">
-        <li>
-            <a href="{{ path('admin.company.add') }}" class="button"><span>{% trans %}TXT_ADD_COMPANY{% endtrans %}</a>
-        </li>
+        <li><a href="{{ path('admin.company.add') }}" class="button"
+               title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
     </ul>
 
     <div class="block">
-        <div id="list-company"></div>
+        <div id="datagrid-company"></div>
     </div>
 
     <script type="text/javascript">
 
         function editCompany(dg, id) {
-            location.href = '{{ path('admin.company.edit') }}/' + id + '';
+            location.href = "{{ path('admin.company.edit') }}/" + id;
         }
 
         function deleteCompany(dg, id) {
-            var oRow = oDatagrid.GetRow(id);
-            var title = '{% trans %}TXT_DELETE{% endtrans %}';
-            var msg = '{% trans %}TXT_DELETE_CONFIRM{% endtrans %} <strong>' + oRow.name + '</strong> ?';
+            var oRow = theDatagrid.GetRow(id);
+            var topic = '{% trans %}Delete{% endtrans %}';
+            var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.name + '</strong> ?';
             var params = {
                 dg: dg,
                 id: id
@@ -31,30 +28,30 @@
             var func = function (p) {
                 return xajax_doDeleteCompany(p.dg, p.id);
             };
-            new GF_Alert(title, msg, func, true, params);
+            new GF_Alert(topic, msg, func, true, params);
         }
 
-        var oDatagrid;
+        var theDatagrid;
 
         $(document).ready(function () {
 
             var column_id = new GF_Datagrid_Column({
                 id: 'id',
-                caption: '{% trans %}TXT_ID{% endtrans %}',
+                caption: '{% trans %}Id{% endtrans %}',
                 appearance: {
                     width: 90,
                     visible: false
                 },
                 filter: {
-                    type: GF_Datagrid.FILTER_BETWEEN
+                    type: GF_Datagrid.FILTER_BETWEEN,
                 }
             });
 
-            var column_company_name = new GF_Datagrid_Column({
-                id: 'company_name',
-                caption: '{% trans %}TXT_COMPANY_NAME{% endtrans %}',
+            var column_name = new GF_Datagrid_Column({
+                id: 'name',
+                caption: '{% trans %}Name{% endtrans %}',
                 appearance: {
-                    width: 140
+                    width: 70
                 },
                 filter: {
                     type: GF_Datagrid.FILTER_INPUT
@@ -71,14 +68,14 @@
                     rows_per_page: 25
                 },
                 event_handlers: {
-                    load: xajax_doLoadCompany,
+                    load: xajax_getCompanyForAjax,
                     edit_row: editCompany,
                     delete_row: deleteCompany,
                     click_row: editCompany
                 },
                 columns: [
                     column_id,
-                    column_company_name
+                    column_name
                 ],
                 row_actions: [
                     GF_Datagrid.ACTION_EDIT,
@@ -90,7 +87,7 @@
                 ]
             };
 
-            oDatagrid = new GF_Datagrid($('#list-company'), options);
+            theDatagrid = new GF_Datagrid($('#datagrid-company'), options);
 
         });
     </script>

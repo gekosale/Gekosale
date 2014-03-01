@@ -11,8 +11,9 @@
  */
 namespace Gekosale\Plugin\Language\Repository;
 
-use Gekosale\Core\Model\Language;
-use Gekosale\Core\Repository;
+use Gekosale\Core\Model\Language,
+    Gekosale\Core\Repository;
+
 use Symfony\Component\Intl\Intl;
 
 /**
@@ -68,10 +69,10 @@ class LanguageRepository extends Repository
             'id' => $id
         ]);
 
-        $language->name        = $Data['required_data']['name'];
-        $language->locale      = $Data['required_data']['locale'];
-        $language->translation = $Data['required_data']['translation'];
-        $language->currency_id = $Data['currency_data']['currency_id'];
+        $language->name        = $Data['name'];
+        $language->locale      = $Data['locale'];
+        $language->translation = $Data['translation'];
+        $language->currency_id = $Data['currency_id'];
 
         $language->save();
     }

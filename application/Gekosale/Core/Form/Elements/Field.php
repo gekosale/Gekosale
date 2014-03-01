@@ -95,12 +95,6 @@ class Field extends Node
         $this->_value = $value;
     }
 
-    public function populateGlobal($globalvalue)
-    {
-        $globalvalue        = $this->_filter($globalvalue);
-        $this->_globalvalue = $globalvalue;
-    }
-
     public function getValue()
     {
         if (!isset($this->_value)) {

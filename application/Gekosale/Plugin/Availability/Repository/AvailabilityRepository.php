@@ -76,7 +76,7 @@ class AvailabilityRepository extends Repository
             ]);
 
             $translation->name        = $name;
-            $translation->description = $Data[$languageId]['description'];
+            $translation->description = $Data['description'][$languageId];
 
             $translation->save();
         }

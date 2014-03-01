@@ -1,25 +1,34 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @category    Gekosale
- * @package     Gekosale\Component
- * @subpackage  Gekosale\Plugin\Availability
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Plugin\Availability\Form;
 
 use Gekosale\Core\Form;
 use Gekosale\Plugin\Availability\Event\AvailabilityFormEvent;
 
+/**
+ * Class AvailabilityForm
+ *
+ * @package Gekosale\Plugin\Availability\Form
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class AvailabilityForm extends Form
 {
-
+    /**
+     * Initializes availability Form
+     *
+     * @param array $availabilityData
+     *
+     * @return Form\Elements\Form
+     */
     public function init($availabilityData = [])
     {
         $form = $this->addForm(Array(
@@ -72,7 +81,7 @@ class AvailabilityForm extends Form
 
         $this->getDispatcher()->dispatch(AvailabilityFormEvent::FORM_INIT_EVENT, $event);
 
-        $form->Populate($event->getPopulateData());
+        $form->populate($event->getPopulateData());
 
         return $form;
     }

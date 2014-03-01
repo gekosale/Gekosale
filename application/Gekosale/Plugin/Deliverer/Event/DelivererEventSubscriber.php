@@ -11,8 +11,9 @@
  */
 namespace Gekosale\Plugin\Deliverer\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Event,
+    Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**

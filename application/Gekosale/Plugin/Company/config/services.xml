@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="company.repository" class="Gekosale\Plugin\Company\Repository\CompanyRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="company.datagrid" class="Gekosale\Plugin\Company\DataGrid\CompanyDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="company.repository"/>
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="company.form" class="Gekosale\Plugin\Company\Form\CompanyForm">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="company.subscriber" class="Gekosale\Plugin\Company\Event\CompanyEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+</container>

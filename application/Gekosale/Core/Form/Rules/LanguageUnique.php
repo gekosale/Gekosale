@@ -58,7 +58,7 @@ class LanguageUnique extends Rule implements RuleInterface
         );
     }
 
-    protected function setLanguage($language)
+    public function setLanguage($language)
     {
         $this->language = $language;
     }

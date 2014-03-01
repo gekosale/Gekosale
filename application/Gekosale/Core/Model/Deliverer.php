@@ -14,7 +14,7 @@ namespace Gekosale\Core\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Vat
+ * Class Deliverer
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
@@ -44,7 +44,11 @@ class Deliverer extends Model
     {
         $languageData = [];
         foreach ($this->translation as $translation) {
-            $languageData['name'][$translation->language_id] = $translation->name;
+            $languageData = [
+                $translation->language_id => [
+                    'name' => $translation->name,
+                ]
+            ];
         }
 
         return $languageData;

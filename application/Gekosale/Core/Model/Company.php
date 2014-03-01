@@ -9,18 +9,24 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Company\Event;
+namespace Gekosale\Core\Model;
 
-use Gekosale\Core\Event\FormEvent;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class CompanyFormEvent
+ * Class Company
  *
- * @package Gekosale\Plugin\Company\Event
+ * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-final class CompanyFormEvent extends FormEvent
+class Company extends Model
 {
 
-    const FORM_INIT_EVENT = 'company.form.init';
+    protected $table = 'company';
+
+    public $timestamps = true;
+
+    protected $softDelete = false;
+
+    protected $fillable = ['id'];
 }

@@ -23,7 +23,7 @@ use Gekosale\Core\DataGrid,
 class CurrencyDataGrid extends DataGrid implements DataGridInterface
 {
     /**
-     * Initializes DataGrid
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -48,8 +48,14 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
         ');
     }
 
-    public function delete($datagrid, $id)
+    /**
+     * {@inheritdoc}
+     */
+    public function registerEventHandlers()
     {
-        return $this->deleteRow($datagrid, $id, [$this->repository, 'delete']);
+        $this->getXajaxManager()->registerFunctions([
+            'getCurrencyForAjax' => [$this, 'getData'],
+            'doDeleteCurrency'   => [$this, 'delete']
+        ]);
     }
 }

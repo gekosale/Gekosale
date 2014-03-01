@@ -21,9 +21,88 @@ use Gekosale\Core\Controller;
  */
 abstract class AdminController extends Controller
 {
+
+    /**
+     * Default indexAction logic for all controllers
+     *
+     * @return array
+     */
+    public function indexAction()
+    {
+        $datagrid = $this->getDataGrid();
+
+        $datagrid->init();
+
+        $datagrid->registerEventHandlers();
+
+        return Array(
+            'datagrid_filter' => $datagrid->getFilterData()
+        );
+    }
+
+    /**
+     * Default addAction logic for all controllers
+     *
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addAction()
+    {
+        $form = $this->getForm()->init();
+
+        if ($form->isValid()) {
+
+            $this->getRepository()->save($form->getSubmitValuesFlat());
+
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
+    /**
+     * Default editAction logic for all controllers
+     *
+     * @param $id
+     *
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function editAction($id)
+    {
+        $populateData = $this->getRepository()->getPopulateData($id);
+        $form         = $this->getForm()->init($populateData);
+
+        if ($form->isValid()) {
+
+            $this->getRepository()->save($form->getSubmitValuesFlat(), $id);
+
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
+        }
+
+        return Array(
+            'form' => $form
+        );
+    }
+
+    /**
+     * Returns repository service for controller
+     *
+     * @return \Gekosale\Core\Repository|object
+     */
     abstract protected function getRepository();
 
+    /**
+     * Returns DataGrid service for controller
+     *
+     * @return \Gekosale\Core\DataGrid|object
+     */
     abstract protected function getDataGrid();
 
+    /**
+     * Returns Form service for controller
+     *
+     * @return \Gekosale\Core\Form|object
+     */
     abstract protected function getForm();
 }
