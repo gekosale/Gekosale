@@ -14,29 +14,29 @@ namespace Gekosale\Core\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Vat
+ * Class Unit
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Vat extends Model
+class Unit extends Model
 {
 
-    protected $table = 'vat';
+    protected $table = 'unit';
 
     public $timestamps = true;
 
     protected $softDelete = false;
 
-    protected $fillable = ['id', 'value'];
+    protected $fillable = ['id'];
 
     public function translation()
     {
-        return $this->hasMany('Gekosale\Core\Model\VatTranslation');
+        return $this->hasMany('Gekosale\Core\Model\UnitTranslation');
     }
 
     /**
-     * Get translations for tax rate
+     * Get translations
      *
      * @return array
      */

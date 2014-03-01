@@ -10,7 +10,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace Gekosale\Plugin\Availability\Extension;
+namespace Gekosale\Plugin\Unit\Extension;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
@@ -18,12 +18,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class AvailabilityExtension
+ * Class UnitExtension
  *
- * @package Gekosale\Plugin\Availability\Extension
+ * @package Gekosale\Plugin\Unit\Extension
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class AvailabilityExtension extends Extension
+class UnitExtension extends Extension
 {
 
     public function load(array $config, ContainerBuilder $container)
@@ -39,6 +39,6 @@ class AvailabilityExtension extends Extension
 
     public function getAlias()
     {
-        return 'gekosale.plugin.availability';
+        return 'gekosale.plugin.unit';
     }
 }

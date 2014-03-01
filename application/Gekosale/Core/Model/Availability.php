@@ -14,7 +14,7 @@ namespace Gekosale\Core\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Vat
+ * Class Availability
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
@@ -44,11 +44,9 @@ class Availability extends Model
     {
         $languageData = [];
         foreach ($this->translation as $translation) {
-            $languageData = [
-                $translation->language_id => [
-                    'name'        => $translation->name,
-                    'description' => $translation->description,
-                ]
+            $languageData[$translation->language_id] = [
+                'name'        => $translation->name,
+                'description' => $translation->description
             ];
         }
 

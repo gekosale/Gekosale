@@ -88,6 +88,10 @@ class ServiceContainer extends Container
             'twig.extension.translation' => 'getTwig_Extension_TranslationService',
             'twig.loader.admin' => 'getTwig_Loader_AdminService',
             'twig.loader.front' => 'getTwig_Loader_FrontService',
+            'unit.datagrid' => 'getUnit_DatagridService',
+            'unit.form' => 'getUnit_FormService',
+            'unit.repository' => 'getUnit_RepositoryService',
+            'unit.subscriber' => 'getUnit_SubscriberService',
             'vat.datagrid' => 'getVat_DatagridService',
             'vat.form' => 'getVat_FormService',
             'vat.repository' => 'getVat_RepositoryService',
@@ -521,6 +525,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
+        $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
         $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
 
         return $instance;
@@ -950,6 +955,71 @@ class ServiceContainer extends Container
     protected function getTwig_Loader_FrontService()
     {
         return $this->services['twig.loader.front'] = new \Twig_Loader_Filesystem(array(0 => 'D:\\Git\\Gekosale3\\design/frontend/Gekosale/templates'));
+    }
+
+    /**
+     * Gets the 'unit.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Unit\DataGrid\UnitDataGrid A Gekosale\Plugin\Unit\DataGrid\UnitDataGrid instance.
+     */
+    protected function getUnit_DatagridService()
+    {
+        $this->services['unit.datagrid'] = $instance = new \Gekosale\Plugin\Unit\DataGrid\UnitDataGrid();
+
+        $instance->setRepository($this->get('unit.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'unit.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Unit\Form\UnitForm A Gekosale\Plugin\Unit\Form\UnitForm instance.
+     */
+    protected function getUnit_FormService()
+    {
+        $this->services['unit.form'] = $instance = new \Gekosale\Plugin\Unit\Form\UnitForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'unit.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Unit\Repository\UnitRepository A Gekosale\Plugin\Unit\Repository\UnitRepository instance.
+     */
+    protected function getUnit_RepositoryService()
+    {
+        $this->services['unit.repository'] = $instance = new \Gekosale\Plugin\Unit\Repository\UnitRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'unit.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Unit\Event\UnitEventSubscriber A Gekosale\Plugin\Unit\Event\UnitEventSubscriber instance.
+     */
+    protected function getUnit_SubscriberService()
+    {
+        return $this->services['unit.subscriber'] = new \Gekosale\Plugin\Unit\Event\UnitEventSubscriber();
     }
 
     /**
