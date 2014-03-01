@@ -12,18 +12,42 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
- * Class LayerSelector
+ * Class ShopSelector
  *
  * @package Gekosale\Core\Form\Elements
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class LayerSelector extends Field implements ElementInterface
+class ShopSelector extends Field implements ElementInterface
 {
-
-    public function __construct($attributes)
+    public function __construct($attributes, $shops)
     {
         parent::__construct($attributes);
+
+        print_r($shops->toArray());
+        die();
+
+        $shopsArray = [];
+        foreach ($shops as $shop) {
+
+            $shopsArray['v' . $shop->id] = [
+                'id'   => $shop->id,
+                'name' => $shop->translation
+            ];
+
+            print_r($shopsArray);
+            die();
+            $storesArray['v' . $viewRaw['id']]['id']     = $viewRaw['id'];
+            $storesArray['v' . $viewRaw['id']]['name']   = $viewRaw['name'];
+            $storesArray['v' . $viewRaw['id']]['label']  = 'v' . $viewRaw['id'];
+            $storesArray['v' . $viewRaw['id']]['parent'] = 's' . $viewRaw['parent'];
+            $storesArray['v' . $viewRaw['id']]['weight'] = $viewRaw['id'];
+            $storesArray['v' . $viewRaw['id']]['type']   = 'view';
+
+            print_r($shop->company->name);
+        }
 
         $storesArray = Array();
         $storesRaw   = App::getModel('stores')->getStoresAll();

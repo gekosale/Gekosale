@@ -47,6 +47,10 @@ class ServiceContainer extends Container
             'company.repository' => 'getCompany_RepositoryService',
             'company.subscriber' => 'getCompany_SubscriberService',
             'config_locator' => 'getConfigLocatorService',
+            'contact.datagrid' => 'getContact_DatagridService',
+            'contact.form' => 'getContact_FormService',
+            'contact.repository' => 'getContact_RepositoryService',
+            'contact.subscriber' => 'getContact_SubscriberService',
             'controller_resolver' => 'getControllerResolverService',
             'country.repository' => 'getCountry_RepositoryService',
             'currency.datagrid' => 'getCurrency_DatagridService',
@@ -62,12 +66,17 @@ class ServiceContainer extends Container
             'file.repository' => 'getFile_RepositoryService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
+            'form_helper' => 'getFormHelperService',
             'helper' => 'getHelperService',
             'kernel' => 'getKernelService',
             'language.datagrid' => 'getLanguage_DatagridService',
             'language.form' => 'getLanguage_FormService',
             'language.repository' => 'getLanguage_RepositoryService',
             'language.subscriber' => 'getLanguage_SubscriberService',
+            'plugin_manager.datagrid' => 'getPluginManager_DatagridService',
+            'plugin_manager.form' => 'getPluginManager_FormService',
+            'plugin_manager.repository' => 'getPluginManager_RepositoryService',
+            'plugin_manager.subscriber' => 'getPluginManager_SubscriberService',
             'request' => 'getRequestService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
@@ -75,6 +84,10 @@ class ServiceContainer extends Container
             'session' => 'getSessionService',
             'session.handler' => 'getSession_HandlerService',
             'session.storage' => 'getSession_StorageService',
+            'shop.datagrid' => 'getShop_DatagridService',
+            'shop.form' => 'getShop_FormService',
+            'shop.repository' => 'getShop_RepositoryService',
+            'shop.subscriber' => 'getShop_SubscriberService',
             'template.subscriber' => 'getTemplate_SubscriberService',
             'translation' => 'getTranslationService',
             'twig' => 'getTwigService',
@@ -324,6 +337,71 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'contact.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Contact\DataGrid\ContactDataGrid A Gekosale\Plugin\Contact\DataGrid\ContactDataGrid instance.
+     */
+    protected function getContact_DatagridService()
+    {
+        $this->services['contact.datagrid'] = $instance = new \Gekosale\Plugin\Contact\DataGrid\ContactDataGrid();
+
+        $instance->setRepository($this->get('contact.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'contact.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Contact\Form\ContactForm A Gekosale\Plugin\Contact\Form\ContactForm instance.
+     */
+    protected function getContact_FormService()
+    {
+        $this->services['contact.form'] = $instance = new \Gekosale\Plugin\Contact\Form\ContactForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'contact.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Contact\Repository\ContactRepository A Gekosale\Plugin\Contact\Repository\ContactRepository instance.
+     */
+    protected function getContact_RepositoryService()
+    {
+        $this->services['contact.repository'] = $instance = new \Gekosale\Plugin\Contact\Repository\ContactRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'contact.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Contact\Event\ContactEventSubscriber A Gekosale\Plugin\Contact\Event\ContactEventSubscriber instance.
+     */
+    protected function getContact_SubscriberService()
+    {
+        return $this->services['contact.subscriber'] = new \Gekosale\Plugin\Contact\Event\ContactEventSubscriber();
+    }
+
+    /**
      * Gets the 'controller_resolver' service.
      *
      * This service is shared.
@@ -522,9 +600,12 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilityEventSubscriber');
         $instance->addSubscriberService('category.subscriber', 'Gekosale\\Plugin\\Category\\Event\\CategoryEventSubscriber');
         $instance->addSubscriberService('company.subscriber', 'Gekosale\\Plugin\\Company\\Event\\CompanyEventSubscriber');
+        $instance->addSubscriberService('contact.subscriber', 'Gekosale\\Plugin\\Contact\\Event\\ContactEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
+        $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
+        $instance->addSubscriberService('shop.subscriber', 'Gekosale\\Plugin\\Shop\\Event\\ShopEventSubscriber');
         $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
         $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
 
@@ -572,6 +653,23 @@ class ServiceContainer extends Container
     protected function getFinderService()
     {
         return $this->services['finder'] = new \Symfony\Component\Finder\Finder();
+    }
+
+    /**
+     * Gets the 'form_helper' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\Form A Gekosale\Core\Form instance.
+     */
+    protected function getFormHelperService()
+    {
+        $this->services['form_helper'] = $instance = new \Gekosale\Core\Form();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -663,6 +761,71 @@ class ServiceContainer extends Container
     protected function getLanguage_SubscriberService()
     {
         return $this->services['language.subscriber'] = new \Gekosale\Plugin\Language\Event\LanguageEventSubscriber();
+    }
+
+    /**
+     * Gets the 'plugin_manager.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PluginManager\DataGrid\PluginManagerDataGrid A Gekosale\Plugin\PluginManager\DataGrid\PluginManagerDataGrid instance.
+     */
+    protected function getPluginManager_DatagridService()
+    {
+        $this->services['plugin_manager.datagrid'] = $instance = new \Gekosale\Plugin\PluginManager\DataGrid\PluginManagerDataGrid();
+
+        $instance->setRepository($this->get('plugin_manager.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'plugin_manager.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PluginManager\Form\PluginManagerForm A Gekosale\Plugin\PluginManager\Form\PluginManagerForm instance.
+     */
+    protected function getPluginManager_FormService()
+    {
+        $this->services['plugin_manager.form'] = $instance = new \Gekosale\Plugin\PluginManager\Form\PluginManagerForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'plugin_manager.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PluginManager\Repository\PluginManagerRepository A Gekosale\Plugin\PluginManager\Repository\PluginManagerRepository instance.
+     */
+    protected function getPluginManager_RepositoryService()
+    {
+        $this->services['plugin_manager.repository'] = $instance = new \Gekosale\Plugin\PluginManager\Repository\PluginManagerRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'plugin_manager.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PluginManager\Event\PluginManagerEventSubscriber A Gekosale\Plugin\PluginManager\Event\PluginManagerEventSubscriber instance.
+     */
+    protected function getPluginManager_SubscriberService()
+    {
+        return $this->services['plugin_manager.subscriber'] = new \Gekosale\Plugin\PluginManager\Event\PluginManagerEventSubscriber();
     }
 
     /**
@@ -758,6 +921,71 @@ class ServiceContainer extends Container
     protected function getSession_StorageService()
     {
         return $this->services['session.storage'] = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage(array(), $this->get('session.handler'));
+    }
+
+    /**
+     * Gets the 'shop.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Shop\DataGrid\ShopDataGrid A Gekosale\Plugin\Shop\DataGrid\ShopDataGrid instance.
+     */
+    protected function getShop_DatagridService()
+    {
+        $this->services['shop.datagrid'] = $instance = new \Gekosale\Plugin\Shop\DataGrid\ShopDataGrid();
+
+        $instance->setRepository($this->get('shop.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'shop.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Shop\Form\ShopForm A Gekosale\Plugin\Shop\Form\ShopForm instance.
+     */
+    protected function getShop_FormService()
+    {
+        $this->services['shop.form'] = $instance = new \Gekosale\Plugin\Shop\Form\ShopForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'shop.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Shop\Repository\ShopRepository A Gekosale\Plugin\Shop\Repository\ShopRepository instance.
+     */
+    protected function getShop_RepositoryService()
+    {
+        $this->services['shop.repository'] = $instance = new \Gekosale\Plugin\Shop\Repository\ShopRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'shop.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Shop\Event\ShopEventSubscriber A Gekosale\Plugin\Shop\Event\ShopEventSubscriber instance.
+     */
+    protected function getShop_SubscriberService()
+    {
+        return $this->services['shop.subscriber'] = new \Gekosale\Plugin\Shop\Event\ShopEventSubscriber();
     }
 
     /**
@@ -1210,6 +1438,7 @@ class ServiceContainer extends Container
             'event_dispatcher.class' => 'Symfony\\Component\\EventDispatcher\\ContainerAwareEventDispatcher',
             'finder.class' => 'Symfony\\Component\\Finder\\Finder',
             'filesystem.class' => 'Symfony\\Component\\Filesystem\\Filesystem',
+            'form_helper.class' => 'Gekosale\\Core\\Form',
             'helper.class' => 'Gekosale\\Core\\Helper',
             'kernel.class' => 'Symfony\\Component\\HttpKernel\\DependencyInjection\\ContainerAwareHttpKernel',
             'translation.class' => 'Gekosale\\Core\\Translation',

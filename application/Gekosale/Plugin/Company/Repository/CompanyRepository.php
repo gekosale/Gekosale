@@ -107,4 +107,20 @@ class CompanyRepository extends Repository
             ]
         ];
     }
+
+    /**
+     * Gets all companies and returns them as key-value pairs
+     *
+     * @return array
+     */
+    public function getAllCompanyToSelect()
+    {
+        $companies = $this->all();
+        $Data      = Array();
+        foreach ($companies as $company) {
+            $Data[$company->id] = $company->name;
+        }
+
+        return $Data;
+    }
 }

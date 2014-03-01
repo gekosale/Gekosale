@@ -3,23 +3,24 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-	<parameters>
-		<parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
-		<parameter key="controller_resolver.class">Gekosale\Core\ControllerResolver</parameter>
-		<parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
+    <parameters>
+        <parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
+        <parameter key="controller_resolver.class">Gekosale\Core\ControllerResolver</parameter>
+        <parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
         <parameter key="finder.class">Symfony\Component\Finder\Finder</parameter>
         <parameter key="filesystem.class">Symfony\Component\Filesystem\Filesystem</parameter>
+        <parameter key="form_helper.class">Gekosale\Core\Form</parameter>
         <parameter key="helper.class">Gekosale\Core\Helper</parameter>
         <parameter key="kernel.class">Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel</parameter>
         <parameter key="translation.class">Gekosale\Core\Translation</parameter>
         <parameter key="xajax_manager.class">Gekosale\Core\XajaxManager</parameter>
         <parameter key="xajax.class">xajax</parameter>
     </parameters>
-    
+
     <services>
 
         <service id="request" synthetic="true"/>
-        
+
         <service id="finder" class="%finder.class%"/>
 
         <service id="filesystem" class="%filesystem.class%"/>
@@ -36,14 +37,20 @@
             <argument type="service" id="service_container"/>
         </service>
 
+        <service id="form_helper" class="%form_helper.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="controller_resolver" class="%controller_resolver.class%">
             <argument type="service" id="service_container"/>
         </service>
-        
-        <service id="xajax" class="%xajax.class%" />
-        
+
+        <service id="xajax" class="%xajax.class%"/>
+
         <service id="xajax_manager" class="%xajax_manager.class%">
-        	<argument type="service" id="service_container"/>
+            <argument type="service" id="service_container"/>
         </service>
 
         <service id="kernel" class="%kernel.class%">

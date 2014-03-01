@@ -21,7 +21,7 @@ namespace Gekosale\Core\Form\Elements;
 class Checkbox extends Field implements ElementInterface
 {
 
-    protected function prepareAttributesJs()
+    public function prepareAttributesJs()
     {
         $attributes = Array(
             $this->formatAttributeJs('name', 'sName'),

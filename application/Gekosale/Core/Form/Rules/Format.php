@@ -1,46 +1,51 @@
 <?php
-namespace FormEngine\Rules;
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.pl
+/*
+ * Gekosale Open-Source E-Commerce Platform
  *
- * Copyright (c) 2009-2011 Gekosale
+ * This file is part of the Gekosale package.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms
- * of the GNU General Public License Version 3, 29 June 2007 as published by the
- * Free Software
- * Foundation (http://opensource.org/licenses/gpl-3.0.html).
- * If you did not receive a copy of the license and are unable to obtain it
- * through the
- * world-wide-web, please send an email to license@verison.pl so we can send you
- * a copy immediately.
+ * (c) Adam Piotrowski <adam@gekosale.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  */
 
-class Format extends \FormEngine\Rule
+namespace Gekosale\Core\Form\Rules;
+
+use Gekosale\Core\Form\Rule;
+
+/**
+ * Class Format
+ *
+ * @package Gekosale\Core\Form\Rules
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
+class Format extends Rule
 {
-	
-	protected $_format;
 
-	public function __construct ($errorMsg, $format)
-	{
-		parent::__construct($errorMsg);
-		$this->_format = $format;
-	}
+    protected $_format;
 
-	protected function checkValue ($value)
-	{
-		if (strlen($value) == 0){
-			return true;
-		}
-		return (preg_match($this->_format, $value) == 1);
-	}
+    public function __construct($errorMsg, $format)
+    {
+        parent::__construct($errorMsg);
+        $this->_format = $format;
+    }
 
-	public function render ()
-	{
-		$format = addslashes($this->_format);
-		$errorMsg = addslashes($this->_errorMsg);
-		return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFormat: '{$format}'}";
-	}
+    protected function checkValue($value)
+    {
+        if (strlen($value) == 0) {
+            return true;
+        }
+
+        return (preg_match($this->_format, $value) == 1);
+    }
+
+    public function render()
+    {
+        $format   = addslashes($this->_format);
+        $errorMsg = addslashes($this->_errorMsg);
+
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFormat: '{$format}'}";
+    }
 
 }

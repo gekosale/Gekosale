@@ -1,0 +1,9 @@
+{% extends "layout.twig" %}
+{% block content %}
+    <h2>{% trans %}Edit plugin_manager{% endtrans %}</h2>
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.plugin_manager.index') }}" class="button return"><span></span></a></li>
+        <li><a href="#plugin_manager" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
+    </ul>
+    {{ form(form) }}
+{% endblock %}

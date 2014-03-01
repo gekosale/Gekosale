@@ -29,7 +29,7 @@ class FrontendTemplateGuesser implements TemplateGuesserInterface
      */
     public function check ($controller)
     {
-        if (! preg_match('/Controller\\\Frontend\\\(.+)$/', $controller, $matches)) {
+        if (! preg_match('/Controller\\\Frontend\\\(.+)Controller$/', $controller, $matches)) {
             throw new \InvalidArgumentException(sprintf('The "%s" class does not look like an frontend controller class', $controller));
         }
         

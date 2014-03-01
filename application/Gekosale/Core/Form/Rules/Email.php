@@ -30,6 +30,15 @@ class Email extends Format implements RuleInterface
         parent::__construct($errorMsg, '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|pro)$/i');
     }
 
+    public function checkValue($value)
+    {
+        if (strlen($value) == 0) {
+            return true;
+        }
+
+        return (preg_match($this->_format, $value) == 1);
+    }
+
     public function render()
     {
         $errorMsg = addslashes($this->_errorMsg);

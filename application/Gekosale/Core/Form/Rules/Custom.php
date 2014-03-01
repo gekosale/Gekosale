@@ -12,8 +12,9 @@
 
 namespace Gekosale\Core\Form\Rules;
 
-use Gekosale\Core\Rules\RuleInterface;
 use Gekosale\Core\Form\Rule;
+use Gekosale\Core\Form\Node;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -27,35 +28,43 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Custom extends Rule implements RuleInterface
 {
 
-    protected $_checkFunction;
-    protected $_jsFunction;
-    protected $_params;
+    protected $errorMsg;
+    protected $container;
+    protected $checkFunction;
+    protected $jsFunction;
+    protected $params;
 
     protected static $_nextId = 0;
 
-    public function __construct(ContainerInterface $container, $options)
+    public function __construct($errorMsg, $checkFunctionCallback, $params, ContainerInterface $container)
     {
         parent::__construct($errorMsg);
-        $this->_checkFunction = $checkFunctionCallback;
-        $this->_jsFunction    = App::getRegistry()->xajaxInterface->registerFunction(array(
-            'CheckCustomRule_' . self::$_nextId++,
+
+        $this->errorMsg      = $errorMsg;
+        $this->checkFunction = $checkFunctionCallback;
+        $this->params        = $params;
+        $this->container     = $container;
+        $this->id            = self::$_nextId++;
+        $this->jsFunction    = 'CheckCustomRule_' . $this->id;
+
+        $this->container->get('xajax_manager')->registerFunction([
+            $this->jsFunction,
             $this,
             'doAjaxCheck'
-        ));
-        $this->_params        = $params;
+        ]);
     }
 
     public function doAjaxCheck($request)
     {
         return Array(
-            'unique' => call_user_func($this->_checkFunction, $request['value'], $request['params'])
+            'unique' => call_user_func($this->checkFunction, $request['value'], $request['params'])
         );
     }
 
-    protected function checkValue($value)
+    public function checkValue($value)
     {
         $params = Array();
-        foreach ($this->_params as $paramName => $paramValue) {
+        foreach ($this->params as $paramName => $paramValue) {
             if ($paramValue instanceof Node) {
                 $params[$paramName] = $paramValue->getValue();
             } else {
@@ -63,22 +72,22 @@ class Custom extends Rule implements RuleInterface
             }
         }
 
-        return call_user_func($this->_checkFunction, $value, $params);
+        return (bool)call_user_func($this->checkFunction, $value, $params);
     }
 
     public function render()
     {
-        $errorMsg = addslashes($this->_errorMsg);
+        $errorMsg = addslashes($this->errorMsg);
         $params   = Array();
-        foreach ($this->_params as $paramName => $paramValue) {
-            if ($paramValue instanceof \FormEngine\Node) {
+        foreach ($this->params as $paramName => $paramValue) {
+            if ($paramValue instanceof Node) {
                 $params['_field_' . $paramName] = $paramValue->getName();
             } else {
                 $params[$paramName] = $paramValue;
             }
         }
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: {$this->_jsFunction}, oParams: " . json_encode($params) . "}";
+        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}, oParams: " . json_encode($params) . "}";
     }
 
 }

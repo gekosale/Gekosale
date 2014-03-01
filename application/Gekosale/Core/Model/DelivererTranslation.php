@@ -14,7 +14,7 @@ namespace Gekosale\Core\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class VatTranslation
+ * Class DelivererTranslation
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>

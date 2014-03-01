@@ -19,66 +19,112 @@ use Symfony\Component\HttpFoundation\Response;
 use Gekosale\Core\Template\Guesser\AdminTemplateGuesser;
 use Gekosale\Core\Template\Guesser\FrontendTemplateGuesser;
 
+/**
+ * Class Template
+ *
+ * @package Gekosale\Core\Template\Subscriber
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Template implements EventSubscriberInterface
 {
 
+    /**
+     * @var string
+     */
     protected $engine = 'twig';
 
-    public function onKernelController (FilterControllerEvent $event)
+    /**
+     * Called through KernelEvents::CONTROLLER event
+     *
+     * @param FilterControllerEvent $event
+     */
+    public function onKernelController(FilterControllerEvent $event)
     {
         $event->getRequest()->attributes->set('_template_vars', Array());
     }
 
-    public function onKernelView (GetResponseForControllerResultEvent $event)
+    /**
+     * Called through KernelEvents::VIEW event
+     *
+     * @param GetResponseForControllerResultEvent $event
+     */
+    public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         /*
          * Fetch Service Container
          */
         $container = $event->getDispatcher()->getContainer();
-        
+
         /*
          * Fetch Request object
          */
         $request = $event->getRequest();
-        
-        $controller = $request->attributes->get('controller');
-        $action = $request->attributes->get('action');
+
+        $controller       = $request->attributes->get('controller');
+        $action           = $request->attributes->get('action');
         $controllerResult = $event->getControllerResult();
-        $templateVars = $request->attributes->get('_template_vars');
-        
-        $parameters = array_merge($templateVars, $controllerResult);
-        
+        $templateVars     = $request->attributes->get('_template_vars');
+        $mode             = $request->attributes->get('mode');
+        $parameters       = array_merge($templateVars, $controllerResult);
+
         /*
          * Always process Xajax requests
          */
         $container->get('xajax')->processRequest();
-        
+
         $parameters['xajax'] = $container->get('xajax')->getJavascript();
-        
-        $guesser = $this->getGuesser($request->attributes->get('mode'));
-        
+
+        /*
+         * Guess template name
+         */
+        $guesser = $this->getGuesser($mode);
+
         $template = $guesser->guess($controller, $action);
-        
-        $container->get($this->engine)->setLoader($container->get('twig.loader.admin'));
-        
+
+        $container->get($this->engine)->setLoader($container->get($this->getTemplateLoaderServiceName($mode)));
+
         $response = $container->get($this->engine)->render($template, $parameters);
-        
+
         $event->setResponse(new Response($response));
     }
 
-    protected function getGuesser ($mode)
+    /**
+     * Resolves template loader service name
+     *
+     * @param $mode
+     *
+     * @return string
+     */
+    protected function getTemplateLoaderServiceName($mode)
+    {
+        return ('admin' === $mode) ? 'twig.loader.admin' : 'twig.loader.front';
+    }
+
+    /**
+     * Resolves guesser
+     *
+     * @param $mode
+     *
+     * @return AdminTemplateGuesser|FrontendTemplateGuesser
+     */
+    protected function getGuesser($mode)
     {
         return ('admin' === $mode) ? new AdminTemplateGuesser() : new FrontendTemplateGuesser();
     }
 
-    public static function getSubscribedEvents ()
+    /**
+     * Returns subscribed events
+     *
+     * @return array
+     */
+    public static function getSubscribedEvents()
     {
         return array(
             KernelEvents::CONTROLLER => array(
                 'onKernelController',
-                - 128
+                -128
             ),
-            KernelEvents::VIEW => 'onKernelView'
+            KernelEvents::VIEW       => 'onKernelView'
         );
     }
 }

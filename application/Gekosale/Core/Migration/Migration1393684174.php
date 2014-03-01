@@ -24,26 +24,33 @@ class Migration1393684174 extends Migration
     public function up()
     {
         /*
-         * Create unit table
+         * Create shop table
         */
-        if (!$this->getDb()->schema()->hasTable('unit')) {
-            $this->getDb()->schema()->create('unit', function ($table) {
+        if (!$this->getDb()->schema()->hasTable('shop')) {
+            $this->getDb()->schema()->create('shop', function ($table) {
                 $table->increments('id');
+                $table->string('url', 255);
+                $table->integer('is_offline')->default(0);
+                $table->integer('company_id')->unsigned();
                 $table->timestamps();
+                $table->foreign('company_id')->references('id')->on('company')->onDelete('cascade')->onUpdate('no action');
             });
         }
 
         /*
-         * Create unit_translation table
+         * Create shop_translation table
          */
-        if (!$this->getDb()->schema()->hasTable('unit_translation')) {
-            $this->getDb()->schema()->create('unit_translation', function ($table) {
+        if (!$this->getDb()->schema()->hasTable('shop_translation')) {
+            $this->getDb()->schema()->create('shop_translation', function ($table) {
                 $table->increments('id');
                 $table->string('name', 64);
-                $table->integer('unit_id')->unsigned();
+                $table->text('meta_keywords');
+                $table->string('meta_title', 255);
+                $table->text('meta_description');
+                $table->integer('shop_id')->unsigned();
                 $table->integer('language_id')->unsigned();
                 $table->timestamps();
-                $table->foreign('unit_id')->references('id')->on('unit')->onDelete('cascade')->onUpdate('no action');
+                $table->foreign('shop_id')->references('id')->on('shop')->onDelete('cascade')->onUpdate('no action');
                 $table->foreign('language_id')->references('id')->on('language')->onDelete('cascade')->onUpdate('no action');
                 $table->unique(Array('name', 'language_id'));
             });
@@ -53,17 +60,17 @@ class Migration1393684174 extends Migration
     public function down()
     {
         /*
-         * Drop unit_translation table
+         * Drop shop_translation table
          */
-        if ($this->getDb()->schema()->hasTable('unit_translation')) {
-            $this->getDb()->schema()->drop('unit_translation');
+        if ($this->getDb()->schema()->hasTable('shop_translation')) {
+            $this->getDb()->schema()->drop('shop_translation');
         }
 
         /*
-         * Drop unit table
+         * Drop shop table
         */
-        if ($this->getDb()->schema()->hasTable('unit')) {
-            $this->getDb()->schema()->drop('unit');
+        if ($this->getDb()->schema()->hasTable('shop')) {
+            $this->getDb()->schema()->drop('shop');
         }
     }
 }

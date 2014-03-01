@@ -47,7 +47,7 @@ class Dump extends AbstractCommand
         $files = $this->getFinder()
             ->files()
             ->in(ROOTPATH . 'application')
-            ->name('routing.php')
+            ->name('routing*.php')
             ->contains('Symfony\Component\Routing\Route');
         foreach ($files as $file) {
             $collection = include_once ($file->getRealpath());

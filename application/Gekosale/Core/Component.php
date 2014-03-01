@@ -122,16 +122,6 @@ abstract class Component extends ContainerAware
     }
 
     /**
-     * Shortcut to return language IDs
-     *
-     * @return array
-     */
-    final protected function getLocales()
-    {
-        return array_keys($this->container->getParameter('locales'));
-    }
-
-    /**
      * Shortcut to get param from current route
      *
      * @param string $index
@@ -160,6 +150,10 @@ abstract class Component extends ContainerAware
      */
     final protected function getXajaxManager()
     {
+        if (!$this->container->has('xajax_manager')) {
+            throw new \LogicException('Method getXajaxManager requires Container to have xajax_manager service');
+        }
+
         return $this->container->get('xajax_manager');
     }
 
@@ -170,6 +164,10 @@ abstract class Component extends ContainerAware
      */
     final protected function getPdo()
     {
+        if (!$this->container->has('database_manager')) {
+            throw new \LogicException('Method getPdo requires Container to have database_manager service');
+        }
+
         return $this->container->get('database_manager')->getConnection()->getPdo();
     }
 
@@ -187,9 +185,29 @@ abstract class Component extends ContainerAware
      * Shortcut to get all available languages
      *
      * @return mixed
+     * @throws \LogicException
      */
     final protected function getLanguages()
     {
+        if (!$this->container->has('language.repository')) {
+            throw new \LogicException('Method getLanguages requires Container to have language.repository service');
+        }
+
         return $this->container->get('language.repository')->all()->toArray();
+    }
+
+    /**
+     * Shortcut to get all available shops
+     *
+     * @return mixed
+     * @throws \LogicException
+     */
+    final protected function getShops()
+    {
+        if (!$this->container->has('shop.repository')) {
+            throw new \LogicException('Method getShops requires Container to have shop.repository service');
+        }
+
+        return $this->container->get('shop.repository')->all();
     }
 }

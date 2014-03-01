@@ -35,9 +35,9 @@ abstract class AdminController extends Controller
 
         $datagrid->registerEventHandlers();
 
-        return Array(
+        return [
             'datagrid_filter' => $datagrid->getFilterData()
-        );
+        ];
     }
 
     /**
@@ -49,16 +49,16 @@ abstract class AdminController extends Controller
     {
         $form = $this->getForm()->init();
 
-        if ($form->isValid()) {
+        if ($this->getRequest()->isMethod('POST') && $form->isValid()) {
 
             $this->getRepository()->save($form->getSubmitValuesFlat());
 
             return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
-        return Array(
+        return [
             'form' => $form
-        );
+        ];
     }
 
     /**
@@ -73,16 +73,16 @@ abstract class AdminController extends Controller
         $populateData = $this->getRepository()->getPopulateData($id);
         $form         = $this->getForm()->init($populateData);
 
-        if ($form->isValid()) {
+        if ($this->getRequest()->isMethod('POST') && $form->isValid()) {
 
             $this->getRepository()->save($form->getSubmitValuesFlat(), $id);
 
             return $this->redirect($this->generateUrl($this->getDefaultRoute()));
         }
 
-        return Array(
+        return [
             'form' => $form
-        );
+        ];
     }
 
     /**

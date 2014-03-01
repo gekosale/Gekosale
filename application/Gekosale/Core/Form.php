@@ -11,13 +11,15 @@
  */
 namespace Gekosale\Core;
 
+use Closure;
+
 /**
  * Class Form
  *
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-abstract class Form extends Component
+class Form extends Component
 {
     /**
      * Shortcut for adding Form
@@ -77,6 +79,18 @@ abstract class Form extends Component
     public function addTextArea(array $options)
     {
         return new Form\Elements\Textarea($options);
+    }
+
+    /**
+     * Shortcut for adding ShopSelector element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\ShopSelector
+     */
+    public function addShopSelector(array $options)
+    {
+        return new Form\Elements\ShopSelector($options, $this->getShops());
     }
 
     /**
@@ -166,6 +180,32 @@ abstract class Form extends Component
     public function addRuleFormat($errorMessage, $pattern)
     {
         return new Form\Rules\Format($errorMessage, $pattern);
+    }
+
+    /**
+     * Shortcut for adding rule Email
+     *
+     * @param $errorMessage
+     *
+     * @return Form\Rules\Email
+     */
+    public function addRuleEmail($errorMessage)
+    {
+        return new Form\Rules\Email($errorMessage);
+    }
+
+    /**
+     * Shortcut for adding rule Custom
+     *
+     * @param          $errorMessage
+     * @param callable $function
+     * @param array    $params
+     *
+     * @return Form\Rules\Custom
+     */
+    public function addRuleCustom($errorMessage, Closure $function, array $params = [])
+    {
+        return new Form\Rules\Custom($errorMessage, $function, $params, $this->container);
     }
 
     /**
