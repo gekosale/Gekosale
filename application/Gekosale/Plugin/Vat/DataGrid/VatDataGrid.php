@@ -23,15 +23,15 @@ use Gekosale\Core\DataGrid,
 class VatDataGrid extends DataGrid implements DataGridInterface
 {
     /**
-     * Initializes DataGrid
+     * {@inheritdoc}
      */
     public function init()
     {
         $this->setTableData([
-            'id'     => [
+            'id'    => [
                 'source' => 'V.id'
             ],
-            'name'   => [
+            'name'  => [
                 'source' => 'VT.name'
             ],
             'value' => [
@@ -49,8 +49,14 @@ class VatDataGrid extends DataGrid implements DataGridInterface
         ');
     }
 
-    public function delete($datagrid, $id)
+    /**
+     * {@inheritdoc}
+     */
+    public function registerEventHandlers()
     {
-        return $this->deleteRow($datagrid, $id, [$this->repository, 'delete']);
+        $this->getXajaxManager()->registerFunctions([
+            'getVatForAjax' => [$this, 'getData'],
+            'doDeleteVat'   => [$this, 'delete']
+        ]);
     }
 }

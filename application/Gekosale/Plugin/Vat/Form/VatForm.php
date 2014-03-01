@@ -11,8 +11,8 @@
  */
 namespace Gekosale\Plugin\Vat\Form;
 
-use Gekosale\Core\Form;
-use Gekosale\Plugin\Vat\Event\VatFormEvent;
+use Gekosale\Core\Form,
+    Gekosale\Plugin\Vat\Event\VatFormEvent;
 
 /**
  * Class VatForm
@@ -23,6 +23,13 @@ use Gekosale\Plugin\Vat\Event\VatFormEvent;
 class VatForm extends Form
 {
 
+    /**
+     * Initializes VatForm
+     *
+     * @param array $vatData
+     *
+     * @return Form\Elements\Form
+     */
     public function init($vatData = [])
     {
         $form = $this->addForm([

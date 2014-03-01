@@ -24,7 +24,7 @@ class LanguageForm extends Form
 {
 
     /**
-     * Initializes language Form
+     * Initializes LanguageForm
      *
      * @param array $languageData
      *

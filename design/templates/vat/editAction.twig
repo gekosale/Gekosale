@@ -1,9 +1,9 @@
 {% extends "layout.twig" %}
 {% block content %}
-<h2>{% trans %}Edit VAT{% endtrans %}</h2>
-<ul class="possibilities">
-	<li><a href="{{ path('admin.vat.index') }}" class="button return"><span></span></a></li>
-	<li><a href="#vat" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
-</ul>
-{{ form(form) }}
+    <h2>{% trans %}Edit VAT{% endtrans %}</h2>
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.vat.index') }}" class="button return"><span></span></a></li>
+        <li><a href="#vat" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
+    </ul>
+    {{ form(form) }}
 {% endblock %}

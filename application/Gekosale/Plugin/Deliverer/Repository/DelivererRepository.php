@@ -68,13 +68,11 @@ class DelivererRepository extends Repository
             'id' => $id
         ]);
 
-        $translations = $Data['required_data']['language_data']['name'];
-
-        foreach ($translations as $languageId => $name) {
+        foreach ($Data['name'] as $languageId => $name) {
 
             $translation = DelivererTranslation::firstOrCreate([
-                'deliverer_id'      => $deliverer->id,
-                'language_id' => $languageId
+                'deliverer_id' => $deliverer->id,
+                'language_id'  => $languageId
             ]);
 
             $translation->name = $name;

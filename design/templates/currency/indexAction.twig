@@ -1,114 +1,114 @@
 {% extends "layout.twig" %}
 {% block content %}
-<h2>{% trans %}Currencies{% endtrans %}</h2>
+    <h2>{% trans %}Currencies{% endtrans %}</h2>
 
-<ul class="possibilities">
-	<li><a href="{{ path('admin.currency.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
-</ul>
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.currency.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+    </ul>
 
-<div class="block">
-	<div id="datagrid-currency"></div>
-</div>
+    <div class="block">
+        <div id="datagrid-currency"></div>
+    </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-function processCurrency(row) {
-	return {
-		id: row.id,
-		name: row.name,
-		symbol: row.symbol
-	};
-};
+        function processCurrency(row) {
+            return {
+                id: row.id,
+                name: row.name,
+                symbol: row.symbol
+            };
+        }
 
-function editCurrency(dg, id) {
-	location.href = "{{ path('admin.currency.edit') }}/" + id;
-};
-	
-function deleteCurrency(dg, id) {
- 	var oRow = theDatagrid.GetRow(id);
-	var topic = '{% trans %}Delete{% endtrans %}';
-	var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.symbol +'</strong> ?';
-	var params = {
-		dg: dg,
-		id: id
-	};
-	var func = function(p) {
-		return xajax_doDeleteCurrency(p.dg, p.id);
-	};
-	new GF_Alert(topic, msg, func, true, params);
-};
+        function editCurrency(dg, id) {
+            location.href = "{{ path('admin.currency.edit') }}/" + id;
+        }
 
-var theDatagrid;
-	
-$(document).ready(function() {
-		
-	var column_id = new GF_Datagrid_Column({
-		id: 'id',
-		caption: '{% trans %}Id{% endtrans %}',
-		appearance: {
-			width: 90,
-			visible: false
-		},
-		filter: {
-			type: GF_Datagrid.FILTER_BETWEEN,
-		}
-	});
-		
-	var column_name = new GF_Datagrid_Column({
-		id: 'name',
-		caption: '{% trans %}Name{% endtrans %}',
-		appearance: {
-			width: 70
-		},
-		filter: {
-			type: GF_Datagrid.FILTER_INPUT
-		}
-	});
-		
-	var column_symbol = new GF_Datagrid_Column({
-		id: 'symbol',
-		caption: '{% trans %}Symbol{% endtrans %}',
-		appearance: {
-			width: 70
-		},
-		filter: {
-			type: GF_Datagrid.FILTER_INPUT
-		}
-	});
-		
-   	var options = {
-		id: 'currency',
-		appearance: {
-			column_select: false
-		},
-		mechanics: {
-			key: 'id',
-			rows_per_page: 25
-		},
-		event_handlers: {
-			load: xajax_getCurrencyForAjax,
-			edit_row: editCurrency,
-			delete_row: deleteCurrency,
-			process: processCurrency,
-			click_row: editCurrency
-		},
-		columns: [
-			column_id,
-			column_name,
-			column_symbol
-		],
-		row_actions: [
-			GF_Datagrid.ACTION_EDIT,
-			GF_Datagrid.ACTION_DELETE
-		],
-		context_actions: [
-			GF_Datagrid.ACTION_EDIT,
-			GF_Datagrid.ACTION_DELETE
-		],
-	};
-    
-    theDatagrid = new GF_Datagrid($('#datagrid-currency'), options);
-    
-});
-</script>
+        function deleteCurrency(dg, id) {
+            var oRow = theDatagrid.GetRow(id);
+            var topic = '{% trans %}Delete{% endtrans %}';
+            var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.name + '</strong> ?';
+            var params = {
+                dg: dg,
+                id: id
+            };
+            var func = function (p) {
+                return xajax_doDeleteCurrency(p.dg, p.id);
+            };
+            new GF_Alert(topic, msg, func, true, params);
+        }
+
+        var theDatagrid;
+
+        $(document).ready(function () {
+
+            var column_id = new GF_Datagrid_Column({
+                id: 'id',
+                caption: '{% trans %}Id{% endtrans %}',
+                appearance: {
+                    width: 90,
+                    visible: false
+                },
+                filter: {
+                    type: GF_Datagrid.FILTER_BETWEEN
+                }
+            });
+
+            var column_name = new GF_Datagrid_Column({
+                id: 'name',
+                caption: '{% trans %}Name{% endtrans %}',
+                appearance: {
+                    width: 70
+                },
+                filter: {
+                    type: GF_Datagrid.FILTER_INPUT
+                }
+            });
+
+            var column_symbol = new GF_Datagrid_Column({
+                id: 'symbol',
+                caption: '{% trans %}Symbol{% endtrans %}',
+                appearance: {
+                    width: 70
+                },
+                filter: {
+                    type: GF_Datagrid.FILTER_INPUT
+                }
+            });
+
+            var options = {
+                id: 'currency',
+                appearance: {
+                    column_select: false
+                },
+                mechanics: {
+                    key: 'id',
+                    rows_per_page: 25
+                },
+                event_handlers: {
+                    load: xajax_getCurrencyForAjax,
+                    edit_row: editCurrency,
+                    delete_row: deleteCurrency,
+                    process: processCurrency,
+                    click_row: editCurrency
+                },
+                columns: [
+                    column_id,
+                    column_name,
+                    column_symbol
+                ],
+                row_actions: [
+                    GF_Datagrid.ACTION_EDIT,
+                    GF_Datagrid.ACTION_DELETE
+                ],
+                context_actions: [
+                    GF_Datagrid.ACTION_EDIT,
+                    GF_Datagrid.ACTION_DELETE
+                ]
+            };
+
+            theDatagrid = new GF_Datagrid($('#datagrid-currency'), options);
+
+        });
+    </script>
 {% endblock %}

@@ -1,9 +1,9 @@
 {% extends "layout.twig" %}
 {% block content %}
-<h2>{% trans %}Add new company{% endtrans %}</h2>
-<ul class="possibilities">
-	<li><a href="{{ path('admin.company.index') }}" class="button return"><span></span></a></li>
-	<li><a href="#company" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
-</ul>
-{{ form(form) }}
+    <h2>{% trans %}Add new company{% endtrans %}</h2>
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.company.index') }}" class="button return"><span></span></a></li>
+        <li><a href="#company" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
+    </ul>
+    {{ form(form) }}
 {% endblock %}

@@ -22,9 +22,8 @@ use Gekosale\Plugin\Company\Event\CompanyFormEvent;
  */
 class CompanyForm extends Form
 {
-
     /**
-     * Initializes company Form
+     * Initializes CompanyForm
      *
      * @param array $companyData
      *
@@ -32,11 +31,9 @@ class CompanyForm extends Form
      */
     public function init($companyData = [])
     {
-        $form = $this->addForm(Array(
-            'name'   => 'company',
-            'action' => '',
-            'method' => 'post'
-        ));
+        $form = $this->addForm([
+            'name' => 'company',
+        ]);
 
         $requiredData = $form->addChild($this->addFieldset([
             'name'  => 'required_data',

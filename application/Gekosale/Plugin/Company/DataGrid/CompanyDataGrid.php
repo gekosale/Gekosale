@@ -23,7 +23,7 @@ use Gekosale\Core\DataGrid,
 class CompanyDataGrid extends DataGrid implements DataGridInterface
 {
     /**
-     * Initializes DataGrid
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -46,9 +46,7 @@ class CompanyDataGrid extends DataGrid implements DataGridInterface
     }
 
     /**
-     * Registers DataGrid event handlers
-     *
-     * @return mixed|void
+     * {@inheritdoc}
      */
     public function registerEventHandlers()
     {

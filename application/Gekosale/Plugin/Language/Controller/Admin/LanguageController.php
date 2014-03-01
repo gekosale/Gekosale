@@ -21,67 +21,35 @@ use Gekosale\Core\Controller\AdminController;
  */
 class LanguageController extends AdminController
 {
-    public function indexAction()
-    {
-        $datagrid = $this->getDataGrid();
-
-        $this->getXajaxManager()->registerFunctions([
-            'getLanguageForAjax' => [$datagrid, 'getData'],
-            'doDeleteLanguage'   => [$datagrid, 'delete']
-        ]);
-
-        $datagrid->init();
-
-        return Array(
-            'datagrid_filter' => $datagrid->getFilterData()
-        );
-    }
-
-    public function addAction()
-    {
-        $form = $this->getForm()->init();
-
-        if ($form->isValid()) {
-
-            $this->getRepository()->save($form->getSubmitValues());
-
-            return $this->redirect($this->generateUrl('admin.language.index'));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
-    public function editAction($id)
-    {
-        $populateData = $this->getRepository()->getPopulateData($id);
-        $form         = $this->getForm()->init($populateData);
-
-        if ($form->isValid()) {
-
-            $this->getRepository()->save($form->getSubmitValues(), $id);
-
-            return $this->redirect($this->generateUrl('admin.language.index'));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     protected function getDataGrid()
     {
         return $this->get('language.datagrid');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getRepository()
     {
         return $this->get('language.repository');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getForm()
     {
         return $this->get('language.form');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultRoute()
+    {
+        return 'admin.language.index';
     }
 }

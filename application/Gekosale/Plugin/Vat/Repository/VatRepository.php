@@ -11,9 +11,9 @@
  */
 namespace Gekosale\Plugin\Vat\Repository;
 
-use Gekosale\Core\Repository;
-use Gekosale\Core\Model\Vat;
-use Gekosale\Core\Model\VatTranslation;
+use Gekosale\Core\Repository,
+    Gekosale\Core\Model\Vat,
+    Gekosale\Core\Model\VatTranslation;
 
 /**
  * Class VatRepository
@@ -23,7 +23,6 @@ use Gekosale\Core\Model\VatTranslation;
  */
 class VatRepository extends Repository
 {
-
     /**
      * Returns all tax rates
      *
@@ -68,11 +67,9 @@ class VatRepository extends Repository
             'id' => $id
         ]);
 
-        $vat->value = $Data['required_data']['value'];
+        $vat->value = $Data['value'];
 
-        $translations = $Data['required_data']['language_data']['name'];
-
-        foreach ($translations as $languageId => $name) {
+        foreach ($Data['name'] as $languageId => $name) {
 
             $translation = VatTranslation::firstOrCreate([
                 'vat_id'      => $vat->id,

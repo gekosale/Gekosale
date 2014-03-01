@@ -31,9 +31,15 @@ class Console extends Application
             new Console\Command\Migration\Add(),
             new Console\Command\Migration\Up(),
             new Console\Command\Migration\Down(),
+            new Console\Command\Plugin\Add(),
         ));
     }
 
+    /**
+     * Creates ServiceContainer for using in Console applications
+     *
+     * @return ServiceContainer
+     */
     public function getContainer()
     {
         return new ServiceContainer();

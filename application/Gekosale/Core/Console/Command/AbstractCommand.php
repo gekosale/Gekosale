@@ -12,9 +12,7 @@
 namespace Gekosale\Core\Console\Command;
 
 use Symfony\Component\Console\Command\Command,
-    Symfony\Component\Filesystem\Exception\IOException,
-    Symfony\Component\Filesystem\Filesystem,
-    Symfony\Component\Finder\Finder;
+    Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Class AbstractCommand
@@ -27,6 +25,19 @@ abstract class AbstractCommand extends Command
     protected function getMigrationClassesPath()
     {
         return ROOTPATH . 'application' . DS . 'Gekosale' . DS . 'Core' . DS . 'Migration';
+    }
+
+    /**
+     * Returns plugin directory
+     *
+     * @param $namespace
+     * @param $plugin
+     *
+     * @return string
+     */
+    protected function getPluginDirectory($namespace, $plugin)
+    {
+        return ROOTPATH . 'application' . DS . $namespace . DS . 'Plugin' . DS . $plugin . DS;
     }
 
     protected function getFilesystem()
@@ -44,12 +55,14 @@ abstract class AbstractCommand extends Command
         return $this->getApplication()->getContainer()->get('database_manager');
     }
 
-    protected function getMigrationObject($namespace, $path)
+    protected function createDirectory($directory, $chmod = 0700)
     {
-        require_once $path;
-        $pathInfo = pathinfo($path);
-        $class    = $namespace . '\\Migrate\\' . $pathInfo['filename'];
+        $filesystem = $this->getFilesystem();
 
-        return new $class();
+        try {
+            $filesystem->mkdir($directory, $chmod);
+        } catch (IOException $e) {
+            throw new IOException(sprintf('Unable to write the "%s" directory', $directory), 0, $e);
+        }
     }
 }
