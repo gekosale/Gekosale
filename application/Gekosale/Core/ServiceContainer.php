@@ -93,6 +93,7 @@ class ServiceContainer extends Container
             'twig' => 'getTwigService',
             'twig.extension.asset' => 'getTwig_Extension_AssetService',
             'twig.extension.box' => 'getTwig_Extension_BoxService',
+            'twig.extension.contact' => 'getTwig_Extension_ContactService',
             'twig.extension.datagrid' => 'getTwig_Extension_DatagridService',
             'twig.extension.debug' => 'getTwig_Extension_DebugService',
             'twig.extension.form' => 'getTwig_Extension_FormService',
@@ -1051,6 +1052,7 @@ class ServiceContainer extends Container
         $instance->addExtension($f);
         $instance->addExtension($g);
         $instance->addExtension($h);
+        $instance->addExtension($this->get('twig.extension.contact'));
 
         return $instance;
     }
@@ -1079,6 +1081,19 @@ class ServiceContainer extends Container
     protected function getTwig_Extension_BoxService()
     {
         return $this->services['twig.extension.box'] = new \Gekosale\Core\Template\Extension\Box($this);
+    }
+
+    /**
+     * Gets the 'twig.extension.contact' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Contact\Twig\Contact A Gekosale\Plugin\Contact\Twig\Contact instance.
+     */
+    protected function getTwig_Extension_ContactService()
+    {
+        return $this->services['twig.extension.contact'] = new \Gekosale\Plugin\Contact\Twig\Contact($this);
     }
 
     /**
