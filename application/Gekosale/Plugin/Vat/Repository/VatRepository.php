@@ -52,7 +52,9 @@ class VatRepository extends Repository
      */
     public function delete($id)
     {
-        return Vat::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Vat::destroy($id);
+        });
     }
 
     /**
@@ -63,25 +65,28 @@ class VatRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $vat = Vat::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        $vat->value = $Data['value'];
-
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = VatTranslation::firstOrCreate([
-                'vat_id'      => $vat->id,
-                'language_id' => $languageId
+            $vat = Vat::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name = $name;
+            $vat->value = $Data['value'];
+            $vat->save();
 
-            $translation->save();
-        }
+            foreach ($Data['name'] as $languageId => $name) {
 
-        $vat->save();
+                $translation = VatTranslation::firstOrNew([
+                    'vat_id'      => $vat->id,
+                    'language_id' => $languageId
+                ]);
+
+                $translation->name = $name;
+
+                $translation->save();
+            }
+
+        });
     }
 
     /**

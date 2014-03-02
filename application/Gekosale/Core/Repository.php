@@ -11,6 +11,8 @@
  */
 namespace Gekosale\Core;
 
+use Closure;
+
 /**
  * Class Repository
  *
@@ -19,4 +21,15 @@ namespace Gekosale\Core;
  */
 abstract class Repository extends Component
 {
+    /**
+     * Wraps callback function into DB transaction
+     *
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    final protected function transaction(Closure $callback)
+    {
+        return $this->container->get('database_manager')->getConnection()->transaction($callback);
+    }
 }

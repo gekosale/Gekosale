@@ -53,7 +53,9 @@ class AvailabilityRepository extends Repository
      */
     public function delete($id)
     {
-        return Availability::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Availability::destroy($id);
+        });
     }
 
     /**
@@ -64,24 +66,28 @@ class AvailabilityRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $availability = Availability::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = AvailabilityTranslation::firstOrCreate([
-                'availability_id' => $availability->id,
-                'language_id'     => $languageId
+            $availability = Availability::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name        = $name;
-            $translation->description = $Data['description'][$languageId];
+            $availability->save();
 
-            $translation->save();
-        }
+            foreach ($Data['name'] as $languageId => $name) {
 
-        $availability->save();
+                $translation = AvailabilityTranslation::firstOrNew([
+                    'availability_id' => $availability->id,
+                    'language_id'     => $languageId
+                ]);
+
+                $translation->name        = $name;
+                $translation->description = $Data['description'][$languageId];
+
+                $translation->save();
+            }
+
+        });
     }
 
     /**

@@ -53,7 +53,9 @@ class CurrencyRepository extends Repository
      */
     public function delete($id)
     {
-        return Currency::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Currency::destroy($id);
+        });
     }
 
     /**
@@ -64,21 +66,24 @@ class CurrencyRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $currency = Currency::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        $currency->name               = $Data['name'];
-        $currency->symbol             = $Data['symbol'];
-        $currency->decimal_separator  = $Data['decimal_separator'];
-        $currency->decimal_count      = $Data['decimal_count'];
-        $currency->thousand_separator = $Data['thousand_separator'];
-        $currency->positive_prefix    = $Data['positive_prefix'];
-        $currency->positive_suffix    = $Data['positive_suffix'];
-        $currency->negative_prefix    = $Data['negative_prefix'];
-        $currency->negative_suffix    = $Data['negative_suffix'];
+            $currency = Currency::firstOrNew([
+                'id' => $id
+            ]);
 
-        $currency->save();
+            $currency->name               = $Data['name'];
+            $currency->symbol             = $Data['symbol'];
+            $currency->decimal_separator  = $Data['decimal_separator'];
+            $currency->decimal_count      = $Data['decimal_count'];
+            $currency->thousand_separator = $Data['thousand_separator'];
+            $currency->positive_prefix    = $Data['positive_prefix'];
+            $currency->positive_suffix    = $Data['positive_suffix'];
+            $currency->negative_prefix    = $Data['negative_prefix'];
+            $currency->negative_suffix    = $Data['negative_suffix'];
+            $currency->save();
+
+        });
     }
 
     /**

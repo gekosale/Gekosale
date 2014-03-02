@@ -42,16 +42,10 @@ class Contact extends Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('contact_form', array(
-                $this,
-                'renderContactForm'
-            ), array(
-                'is_safe' => Array(
-                    'html'
-                )
-            ))
-        );
+        return [
+            new \Twig_SimpleFunction('contact_form', [$this, 'renderContactForm'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('contact_list', [$this, 'renderContactList'], ['is_safe' => ['html']])
+        ];
     }
 
     /**
@@ -64,6 +58,11 @@ class Contact extends Twig_Extension
         $form = $this->container->get('contact.form')->init();
 
         return $form->renderStatic();
+    }
+
+    public function renderContactList()
+    {
+        return 'Contact list';
     }
 
     public function getName()

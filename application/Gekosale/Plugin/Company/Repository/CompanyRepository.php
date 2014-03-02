@@ -52,7 +52,9 @@ class CompanyRepository extends Repository
      */
     public function delete($id)
     {
-        return Company::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Company::destroy($id);
+        });
     }
 
     /**
@@ -63,21 +65,25 @@ class CompanyRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $company = Company::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        $company->name       = $Data['name'];
-        $company->short_name = $Data['short_name'];
-        $company->street     = $Data['street'];
-        $company->streetno   = $Data['streetno'];
-        $company->flatno     = $Data['flatno'];
-        $company->province   = $Data['province'];
-        $company->postcode   = $Data['postcode'];
-        $company->city       = $Data['city'];
-        $company->country    = $Data['country'];
+            $company = Company::firstOrNew([
+                'id' => $id
+            ]);
 
-        $company->save();
+            $company->name       = $Data['name'];
+            $company->short_name = $Data['short_name'];
+            $company->street     = $Data['street'];
+            $company->streetno   = $Data['streetno'];
+            $company->flatno     = $Data['flatno'];
+            $company->province   = $Data['province'];
+            $company->postcode   = $Data['postcode'];
+            $company->city       = $Data['city'];
+            $company->country    = $Data['country'];
+
+            $company->save();
+
+        });
     }
 
     /**

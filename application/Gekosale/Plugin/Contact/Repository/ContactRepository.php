@@ -53,7 +53,9 @@ class ContactRepository extends Repository
      */
     public function delete($id)
     {
-        return Contact::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Contact::destroy($id);
+        });
     }
 
     /**
@@ -64,31 +66,35 @@ class ContactRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $contact = Contact::firstOrNew([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        $contact->is_enabled = $Data['is_enabled'];
-        $contact->save();
-
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = ContactTranslation::firstOrNew([
-                'contact_id'  => $contact->id,
-                'language_id' => $languageId
+            $contact = Contact::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name     = $name;
-            $translation->email    = $Data['email'][$languageId];
-            $translation->phone    = $Data['phone'][$languageId];
-            $translation->street   = $Data['street'][$languageId];
-            $translation->streetno = $Data['streetno'][$languageId];
-            $translation->flatno   = $Data['flatno'][$languageId];
-            $translation->province = $Data['province'][$languageId];
-            $translation->city     = $Data['city'][$languageId];
-            $translation->country  = $Data['country'][$languageId];
-            $translation->save();
-        }
+            $contact->is_enabled = $Data['is_enabled'];
+            $contact->save();
+
+            foreach ($Data['name'] as $languageId => $name) {
+
+                $translation = ContactTranslation::firstOrNew([
+                    'contact_id'  => $contact->id,
+                    'language_id' => $languageId
+                ]);
+
+                $translation->name     = $name;
+                $translation->email    = $Data['email'][$languageId];
+                $translation->phone    = $Data['phone'][$languageId];
+                $translation->street   = $Data['street'][$languageId];
+                $translation->streetno = $Data['streetno'][$languageId];
+                $translation->flatno   = $Data['flatno'][$languageId];
+                $translation->province = $Data['province'][$languageId];
+                $translation->city     = $Data['city'][$languageId];
+                $translation->country  = $Data['country'][$languageId];
+                $translation->save();
+            }
+
+        });
     }
 
     /**

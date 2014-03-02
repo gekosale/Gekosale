@@ -53,7 +53,10 @@ class UnitRepository extends Repository
      */
     public function delete($id)
     {
-        return Unit::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Unit::destroy($id);
+        });
+
     }
 
     /**
@@ -64,23 +67,26 @@ class UnitRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $unit = Unit::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = UnitTranslation::firstOrCreate([
-                'unit_id'     => $unit->id,
-                'language_id' => $languageId
+            $unit = Unit::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name = $name;
+            $unit->save();
 
-            $translation->save();
-        }
+            foreach ($Data['name'] as $languageId => $name) {
 
-        $unit->save();
+                $translation = UnitTranslation::firstOrCreate([
+                    'unit_id'     => $unit->id,
+                    'language_id' => $languageId
+                ]);
+
+                $translation->name = $name;
+
+                $translation->save();
+            }
+        });
     }
 
     /**

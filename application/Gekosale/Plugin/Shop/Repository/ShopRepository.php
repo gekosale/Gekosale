@@ -53,7 +53,9 @@ class ShopRepository extends Repository
      */
     public function delete($id)
     {
-        return Shop::destroy($id);
+        $this->transaction(function () use ($id) {
+            return Shop::destroy($id);
+        });
     }
 
     /**
@@ -64,28 +66,31 @@ class ShopRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $shop = Shop::firstOrNew([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id) {
 
-        $shop->url        = $Data['url'];
-        $shop->is_offline = $Data['is_offline'];
-        $shop->company_id = $Data['company_id'];
-        $shop->save();
-
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = ShopTranslation::firstOrNew([
-                'shop_id'     => $shop->id,
-                'language_id' => $languageId
+            $shop = Shop::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name             = $name;
-            $translation->meta_title       = $Data['meta_title'][$languageId];
-            $translation->meta_keywords    = $Data['meta_keywords'][$languageId];
-            $translation->meta_description = $Data['meta_description'][$languageId];
-            $translation->save();
-        }
+            $shop->url        = $Data['url'];
+            $shop->is_offline = $Data['is_offline'];
+            $shop->company_id = $Data['company_id'];
+            $shop->save();
+
+            foreach ($Data['name'] as $languageId => $name) {
+
+                $translation = ShopTranslation::firstOrNew([
+                    'shop_id'     => $shop->id,
+                    'language_id' => $languageId
+                ]);
+
+                $translation->name             = $name;
+                $translation->meta_title       = $Data['meta_title'][$languageId];
+                $translation->meta_keywords    = $Data['meta_keywords'][$languageId];
+                $translation->meta_description = $Data['meta_description'][$languageId];
+                $translation->save();
+            }
+        });
     }
 
     /**

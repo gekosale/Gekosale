@@ -53,7 +53,10 @@ class DelivererRepository extends Repository
      */
     public function delete($id)
     {
-        return Deliverer::destroy($id);
+        $this->transaction(function () use ($id)
+        {
+            return Deliverer::destroy($id);
+        });
     }
 
     /**
@@ -64,23 +67,27 @@ class DelivererRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $deliverer = Deliverer::firstOrCreate([
-            'id' => $id
-        ]);
-
-        foreach ($Data['name'] as $languageId => $name) {
-
-            $translation = DelivererTranslation::firstOrCreate([
-                'deliverer_id' => $deliverer->id,
-                'language_id'  => $languageId
+        $this->transaction(function () use ($Data, $id)
+        {
+            $deliverer = Deliverer::firstOrNew([
+                'id' => $id
             ]);
 
-            $translation->name = $name;
+            $deliverer->save();
 
-            $translation->save();
-        }
+            foreach ($Data['name'] as $languageId => $name)
+            {
 
-        $deliverer->save();
+                $translation = DelivererTranslation::firstOrCreate([
+                    'deliverer_id' => $deliverer->id,
+                    'language_id'  => $languageId
+                ]);
+
+                $translation->name = $name;
+
+                $translation->save();
+            }
+        });
     }
 
     /**

@@ -54,7 +54,10 @@ class LanguageRepository extends Repository
      */
     public function delete($id)
     {
-        return Language::destroy($id);
+        $this->transaction(function () use ($id)
+        {
+            return Language::destroy($id);
+        });
     }
 
     /**
@@ -65,16 +68,18 @@ class LanguageRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $language = Language::firstOrCreate([
-            'id' => $id
-        ]);
+        $this->transaction(function () use ($Data, $id)
+        {
+            $language = Language::firstOrCreate([
+                'id' => $id
+            ]);
 
-        $language->name        = $Data['name'];
-        $language->locale      = $Data['locale'];
-        $language->translation = $Data['translation'];
-        $language->currency_id = $Data['currency_id'];
-
-        $language->save();
+            $language->name        = $Data['name'];
+            $language->locale      = $Data['locale'];
+            $language->translation = $Data['translation'];
+            $language->currency_id = $Data['currency_id'];
+            $language->save();
+        });
     }
 
     /**
@@ -113,7 +118,8 @@ class LanguageRepository extends Repository
 
         $Data = [];
 
-        foreach ($locales as $locale => $name) {
+        foreach ($locales as $locale => $name)
+        {
             $Data[$locale] = sprintf('%s (%s)', $name, $locale);
         }
 
