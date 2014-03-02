@@ -16,10 +16,13 @@ $collection = new RouteCollection();
 
 $controller = 'Gekosale\Plugin\Contact\Controller\Frontend\ContactController';
 
-$collection->add('frontend.contact.index', new Route('/contact', array(
+$collection->add('frontend.contact.index', new Route('/{_locale}/contact', [
     'controller' => $controller,
     'mode'       => 'frontend',
-    'action'     => 'indexAction'
-)));
+    'action'     => 'indexAction',
+    '_locale'     => 'pl',
+], [
+    '_locale' => 'en|fr|de|pl',
+]));
 
 return $collection;

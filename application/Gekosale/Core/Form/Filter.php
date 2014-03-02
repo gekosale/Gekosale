@@ -18,7 +18,7 @@ namespace Gekosale\Core\Form;
  * @package Gekosale\Core\Form
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-abstract class filter
+abstract class Filter
 {
     public function filter($values)
     {

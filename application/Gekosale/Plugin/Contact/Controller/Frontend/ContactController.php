@@ -24,6 +24,7 @@ class ContactController extends FrontendController
 
     public function indexAction()
     {
+        echo $this->getRequest()->getLocale();
         return [];
     }
 }

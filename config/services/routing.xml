@@ -25,6 +25,10 @@
     		<argument type="expression">service('router').getMatcher()</argument>
 			<tag name="kernel.event_subscriber" />
 		</service>
+
+        <service id="locale.listener" class="Symfony\Component\HttpKernel\EventListener\LocaleListener">
+            <tag name="kernel.event_subscriber" />
+        </service>
 		
     </services>
 </container>

@@ -12,7 +12,9 @@
 namespace Gekosale\Plugin\Language\Event;
 
 use Symfony\Component\EventDispatcher\Event,
-    Symfony\Component\EventDispatcher\EventSubscriberInterface;
+    Symfony\Component\EventDispatcher\EventSubscriberInterface,
+    Symfony\Component\HttpKernel\KernelEvents,
+    Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
@@ -24,15 +26,37 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
  */
 class LanguageEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * Resolves language id from Request using current locale
+     *
+     * @param GetResponseEvent $event
+     */
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        $request = $event->getRequest();
+//        echo $request->getHttpHost();
+//        echo $request->getLocale();
+    }
 
+    /**
+     * Appends items to admin menu
+     *
+     * @param Event $event
+     */
     public function onAdminMenuInitAction(Event $event)
     {
 
     }
 
+    /**
+     * Return array containing all subscribed events
+     *
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
+            KernelEvents::REQUEST                     => 'onKernelRequest',
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
         );
     }

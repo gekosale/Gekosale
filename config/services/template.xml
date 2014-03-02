@@ -33,6 +33,7 @@
 
 		<service id="twig.extension.routing" class="Gekosale\Core\Template\Extension\Routing">
 			<argument type="service" id="router" />
+            <argument type="service" id="request" />
 			<tag name="twig.extension" />
 		</service>
 

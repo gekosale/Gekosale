@@ -73,6 +73,7 @@ class ServiceContainer extends Container
             'language.form' => 'getLanguage_FormService',
             'language.repository' => 'getLanguage_RepositoryService',
             'language.subscriber' => 'getLanguage_SubscriberService',
+            'locale.listener' => 'getLocale_ListenerService',
             'plugin_manager.datagrid' => 'getPluginManager_DatagridService',
             'plugin_manager.form' => 'getPluginManager_FormService',
             'plugin_manager.repository' => 'getPluginManager_RepositoryService',
@@ -594,8 +595,10 @@ class ServiceContainer extends Container
         $this->services['event_dispatcher'] = $instance = new \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher($this);
 
         $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
+        $instance->addSubscriberService('locale.listener', 'Symfony\\Component\\HttpKernel\\EventListener\\LocaleListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
         $instance->addSubscriberService('router.subscriber', 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener');
+        $instance->addSubscriberService('locale.listener', 'Symfony\\Component\\HttpKernel\\EventListener\\LocaleListener');
         $instance->addSubscriberService('template.subscriber', 'Gekosale\\Core\\Template\\Subscriber\\Template');
         $instance->addSubscriberService('admin_menu.subscriber', 'Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuEventSubscriber');
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilityEventSubscriber');
@@ -762,6 +765,19 @@ class ServiceContainer extends Container
     protected function getLanguage_SubscriberService()
     {
         return $this->services['language.subscriber'] = new \Gekosale\Plugin\Language\Event\LanguageEventSubscriber();
+    }
+
+    /**
+     * Gets the 'locale.listener' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Symfony\Component\HttpKernel\EventListener\LocaleListener A Symfony\Component\HttpKernel\EventListener\LocaleListener instance.
+     */
+    protected function getLocale_ListenerService()
+    {
+        return $this->services['locale.listener'] = new \Symfony\Component\HttpKernel\EventListener\LocaleListener();
     }
 
     /**
@@ -1158,7 +1174,7 @@ class ServiceContainer extends Container
      */
     protected function getTwig_Extension_RoutingService()
     {
-        return $this->services['twig.extension.routing'] = new \Gekosale\Core\Template\Extension\Routing($this->get('router'));
+        return $this->services['twig.extension.routing'] = new \Gekosale\Core\Template\Extension\Routing($this->get('router'), $this->get('request'));
     }
 
     /**
