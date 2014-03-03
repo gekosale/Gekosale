@@ -1,0 +1,102 @@
+{
+    "name": "Gekosale\\Core\\Form\\Rules\\VAT",
+    "line": 24,
+    "short_desc": "Class VAT",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Rules"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Rules",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Rules\\VAT.php",
+    "hash": "8e3673214a2c6837e1b89a76fa44694de1ec3aad",
+    "parent": "Gekosale\\Core\\Form\\Rules\\Format",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "RuleInterface": "Gekosale\\Core\\Rules\\RuleInterface",
+        "Format": "Gekosale\\Core\\Form\\Rules\\Format"
+    },
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Rules\\RuleInterface": "Gekosale\\Core\\Rules\\RuleInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "__construct": {
+            "name": "__construct",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "errorMsg": {
+                    "name": "errorMsg",
+                    "line": 27,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "render": {
+            "name": "render",
+            "line": 32,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

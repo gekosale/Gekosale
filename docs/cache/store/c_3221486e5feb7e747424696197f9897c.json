@@ -1,0 +1,67 @@
+{
+    "name": "Gekosale\\Core\\DataGrid\\Filter\\Between",
+    "line": 20,
+    "short_desc": "Class Between",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\DataGrid\\Filter"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\DataGrid\\Filter",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\DataGrid\\Filter\\Between.php",
+    "hash": "99d3399de1445834113f1bdebf4adfcffb99911c",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\DataGrid\\Filter\\DataGridFilterInterface": "Gekosale\\Core\\DataGrid\\Filter\\DataGridFilterInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "renderJs": {
+            "name": "renderJs",
+            "line": 23,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

@@ -1,0 +1,128 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\StaticListing",
+    "line": 21,
+    "short_desc": "Class StaticListing",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\StaticListing.php",
+    "hash": "f3c7473a8f073c8384981658a5bc23fd9307f653",
+    "parent": "Gekosale\\Core\\Form\\Elements\\Field",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Form\\Elements\\ElementInterface": "Gekosale\\Core\\Form\\Elements\\ElementInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "prepareAttributesJs": {
+            "name": "prepareAttributesJs",
+            "line": 24,
+            "short_desc": "Prepares form element attributes for Javascript rendering",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "renderStatic": {
+            "name": "renderStatic",
+            "line": 54,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "populate": {
+            "name": "populate",
+            "line": 58,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "value": {
+                    "name": "value",
+                    "line": 58,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

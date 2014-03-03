@@ -1,0 +1,148 @@
+{
+    "name": "Gekosale\\Core\\Template\\Guesser\\AdminTemplateGuesser",
+    "line": 14,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [
+
+    ],
+    "namespace": "Gekosale\\Core\\Template\\Guesser",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Template\\Guesser\\AdminTemplateGuesser.php",
+    "hash": "de74c4c0a7df32541b0d84956332e6a2afa1d128",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Template\\Guesser\\TemplateGuesserInterface": "Gekosale\\Core\\Template\\Guesser\\TemplateGuesserInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "guess": {
+            "name": "guess",
+            "line": 22,
+            "short_desc": "Guesses template name for action in controller",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "Template name",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "controller": {
+                    "name": "controller",
+                    "line": 22,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "action": {
+                    "name": "action",
+                    "line": 22,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "check": {
+            "name": "check",
+            "line": 30,
+            "short_desc": "Checks controller type",
+            "long_desc": "",
+            "hint": [
+                [
+                    "array",
+                    false
+                ]
+            ],
+            "hint_desc": "Controller name parts",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+                [
+                    "\\InvalidArgumentException",
+                    "if controller doesn't match pattern"
+                ]
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "controller": {
+                    "name": "controller",
+                    "line": 30,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": {
+        "TEMPLATING_SERVICE_NAME": {
+            "name": "TEMPLATING_SERVICE_NAME",
+            "line": 17,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

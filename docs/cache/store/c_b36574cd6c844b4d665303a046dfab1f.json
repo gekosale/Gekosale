@@ -1,0 +1,95 @@
+{
+    "name": "Gekosale\\Plugin\\Availability\\DataGrid\\AvailabilityDataGrid",
+    "line": 23,
+    "short_desc": "Class AvailabilityDataGrid",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Availability\\DataGrid"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Availability\\DataGrid",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Availability\\DataGrid\\AvailabilityDataGrid.php",
+    "hash": "8597223ef3ad831abccbacf9f8cd5748ed6af884",
+    "parent": "Gekosale\\Core\\DataGrid",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "DataGrid": "Gekosale\\Core\\DataGrid",
+        "DataGridInterface": "Gekosale\\Core\\DataGrid\\DataGridInterface"
+    },
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\DataGrid\\DataGridInterface": "Gekosale\\Core\\DataGrid\\DataGridInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "init": {
+            "name": "init",
+            "line": 28,
+            "short_desc": "DataGrid initialization",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "registerEventHandlers": {
+            "name": "registerEventHandlers",
+            "line": 52,
+            "short_desc": "Registers event handlers needed for DataGrid",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

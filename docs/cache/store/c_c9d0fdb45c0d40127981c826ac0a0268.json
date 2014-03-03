@@ -1,0 +1,106 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\RangeEditor",
+    "line": 21,
+    "short_desc": "Class RangeEditor",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\RangeEditor.php",
+    "hash": "d07d967fdae5fff7998c40f74710785dc638646d",
+    "parent": "Gekosale\\Core\\Form\\Elements\\OptionedField",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Form\\Elements\\ElementInterface": "Gekosale\\Core\\Form\\Elements\\ElementInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "__construct": {
+            "name": "__construct",
+            "line": 24,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "attributes": {
+                    "name": "attributes",
+                    "line": 24,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "prepareAttributesJs": {
+            "name": "prepareAttributesJs",
+            "line": 44,
+            "short_desc": "Prepares form element attributes for Javascript rendering",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

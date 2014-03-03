@@ -1,0 +1,72 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\RadioGroup",
+    "line": 21,
+    "short_desc": "Class RadioGroup",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\RadioGroup.php",
+    "hash": "503745d9b0d790877e8d4b15f0d3038fa0afe784",
+    "parent": "Gekosale\\Core\\Form\\Elements\\OptionedField",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Form\\Elements\\ElementInterface": "Gekosale\\Core\\Form\\Elements\\ElementInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "prepareAttributesJs": {
+            "name": "prepareAttributesJs",
+            "line": 24,
+            "short_desc": "Prepares form element attributes for Javascript rendering",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

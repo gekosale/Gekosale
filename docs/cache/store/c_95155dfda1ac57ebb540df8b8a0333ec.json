@@ -1,0 +1,89 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\TextField",
+    "line": 21,
+    "short_desc": "Class TextField",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\TextField.php",
+    "hash": "bd0daf6d74290c4b33ce1366d9760a6b95815018",
+    "parent": "Gekosale\\Core\\Form\\Elements\\Field",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Form\\Elements\\ElementInterface": "Gekosale\\Core\\Form\\Elements\\ElementInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "prepareAttributesJs": {
+            "name": "prepareAttributesJs",
+            "line": 27,
+            "short_desc": "Prepares form element attributes for Javascript rendering",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": {
+        "SIZE_SHORT": {
+            "name": "SIZE_SHORT",
+            "line": 23,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "SIZE_MEDIUM": {
+            "name": "SIZE_MEDIUM",
+            "line": 24,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "SIZE_LONG": {
+            "name": "SIZE_LONG",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

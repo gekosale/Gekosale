@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Core\\Form\\Conditions\\GE",
+    "line": 24,
+    "short_desc": "Class GE",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Conditions"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Conditions",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Conditions\\GE.php",
+    "hash": "00e947102ae9324b50e071fb7d17a35d03728e74",
+    "parent": "Gekosale\\Core\\Form\\Condition",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "ConditionInterface": "Gekosale\\Core\\ConditionInterface",
+        "Condition": "Gekosale\\Core\\Form\\Condition"
+    },
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\ConditionInterface": "Gekosale\\Core\\ConditionInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "evaluate": {
+            "name": "evaluate",
+            "line": 26,
+            "short_desc": "Evaluates condition value",
+            "long_desc": "",
+            "hint": [
+                [
+                    "bool",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "value": {
+                    "name": "value",
+                    "line": 26,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Gekosale\\Core\\Form\\$value",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

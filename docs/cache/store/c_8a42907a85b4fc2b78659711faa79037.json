@@ -1,0 +1,275 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\DatagridSelect",
+    "line": 21,
+    "short_desc": "Class DatagridSelect",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\DatagridSelect.php",
+    "hash": "e2a06540b4f906e2eb3c69cb316c68734cc12a15",
+    "parent": "Gekosale\\Core\\Form\\Elements\\Select",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Gekosale\\Core\\Form\\Elements\\ElementInterface": "Gekosale\\Core\\Form\\Elements\\ElementInterface"
+    },
+    "properties": {
+        "datagrid": {
+            "name": "datagrid",
+            "line": 24,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": 1,
+            "default": null,
+            "errors": [
+
+            ]
+        }
+    },
+    "methods": {
+        "__construct": {
+            "name": "__construct",
+            "line": 43,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "attributes": {
+                    "name": "attributes",
+                    "line": 43,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "loadRecords": {
+            "name": "loadRecords",
+            "line": 84,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "request": {
+                    "name": "request",
+                    "line": 84,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "processFunction": {
+                    "name": "processFunction",
+                    "line": 84,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getDatagrid": {
+            "name": "getDatagrid",
+            "line": 89,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "__call": {
+            "name": "__call",
+            "line": 99,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "name": {
+                    "name": "name",
+                    "line": 99,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "args": {
+                    "name": "args",
+                    "line": 99,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": {
+        "SORT_DIR_ASC": {
+            "name": "SORT_DIR_ASC",
+            "line": 28,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "SORT_DIR_DESC": {
+            "name": "SORT_DIR_DESC",
+            "line": 29,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "ALIGN_LEFT": {
+            "name": "ALIGN_LEFT",
+            "line": 31,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "ALIGN_CENTER": {
+            "name": "ALIGN_CENTER",
+            "line": 32,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "ALIGN_RIGHT": {
+            "name": "ALIGN_RIGHT",
+            "line": 33,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "FILTER_NONE": {
+            "name": "FILTER_NONE",
+            "line": 35,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "FILTER_INPUT": {
+            "name": "FILTER_INPUT",
+            "line": 36,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "FILTER_BETWEEN": {
+            "name": "FILTER_BETWEEN",
+            "line": 37,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "FILTER_SELECT": {
+            "name": "FILTER_SELECT",
+            "line": 38,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "FILTER_AUTOSUGGEST": {
+            "name": "FILTER_AUTOSUGGEST",
+            "line": 39,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "WIDTH_AUTO": {
+            "name": "WIDTH_AUTO",
+            "line": 41,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}
