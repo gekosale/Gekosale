@@ -1,0 +1,63 @@
+{
+    "name": "Gekosale\\Core\\Model\\Company",
+    "line": 22,
+    "short_desc": "Class Company",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Model"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Model",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Model\\Company.php",
+    "hash": "a0263f5a24bd55821d1e9e0ddec779f207922855",
+    "parent": "Illuminate\\Database\\Eloquent\\Model",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Model": "Illuminate\\Database\\Eloquent\\Model"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": {
+        "timestamps": {
+            "name": "timestamps",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": 1,
+            "default": {
+
+            },
+            "errors": [
+
+            ]
+        }
+    },
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

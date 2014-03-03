@@ -47,9 +47,9 @@ class AvailabilityRepository extends Repository
     }
 
     /**
-     * Deletes tax rate by ID
+     * Deletes availability record by ID
      *
-     * @param $id
+     * @param int $id availability ID to delete
      */
     public function delete($id)
     {

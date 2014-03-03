@@ -1,0 +1,57 @@
+{
+    "name": "Gekosale\\Plugin\\Category\\Event\\CategoryFormEvent",
+    "line": 22,
+    "short_desc": "Class CategoryFormEvent",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Category\\Event"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Category\\Event",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Category\\Event\\CategoryFormEvent.php",
+    "hash": "3e3febdec5d658e97d540bacd5add4939157d450",
+    "parent": "Gekosale\\Core\\Event\\FormEvent",
+    "modifiers": 32,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "FormEvent": "Gekosale\\Core\\Event\\FormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": {
+        "FORM_INIT_EVENT": {
+            "name": "FORM_INIT_EVENT",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        },
+        "TREE_INIT_EVENT": {
+            "name": "TREE_INIT_EVENT",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

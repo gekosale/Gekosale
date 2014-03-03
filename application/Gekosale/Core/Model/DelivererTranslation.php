@@ -12,14 +12,13 @@
 namespace Gekosale\Core\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class DelivererTranslation
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class DelivererTranslation extends Model
+class DelivererTranslation extends Model implements TranslationModelInterface
 {
 
     protected $table = 'deliverer_translation';
@@ -28,20 +27,31 @@ class DelivererTranslation extends Model
 
     protected $softDelete = false;
 
-    protected $fillable
-        = array(
-            'deliverer_id',
-            'language_id',
-            'name'
-        );
+    protected $fillable = ['deliverer_id', 'language_id', 'name'];
 
+    /**
+     * Relation with deliverer table
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function deliverer()
     {
         return $this->belongsTo('Gekosale\Core\Model\Deliverer');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function language()
     {
         return $this->belongsTo('Gekosale\Core\Model\Language');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scopeHasLanguageId($query, $language)
+    {
+        return $query->whereLanguageId($language)->first();
     }
 }

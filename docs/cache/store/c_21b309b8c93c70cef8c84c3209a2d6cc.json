@@ -1,0 +1,51 @@
+{
+    "name": "Gekosale\\Plugin\\Vat\\Event\\VatFormEvent",
+    "line": 22,
+    "short_desc": "Class VatFormEvent",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Vat\\Event"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Vat\\Event",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Vat\\Event\\VatFormEvent.php",
+    "hash": "46c182ff8b7587caa3e1f04dc729352e6cc3810a",
+    "parent": "Gekosale\\Core\\Event\\FormEvent",
+    "modifiers": 32,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "FormEvent": "Gekosale\\Core\\Event\\FormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": {
+        "FORM_INIT_EVENT": {
+            "name": "FORM_INIT_EVENT",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

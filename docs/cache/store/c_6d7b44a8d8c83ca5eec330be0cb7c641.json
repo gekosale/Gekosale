@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Plugin\\Availability\\Form\\AvailabilityForm",
+    "line": 23,
+    "short_desc": "Class AvailabilityForm",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Availability\\Form"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Availability\\Form",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Availability\\Form\\AvailabilityForm.php",
+    "hash": "a38338bb299053e8fec3464b7115e0e0da9e9f93",
+    "parent": "Gekosale\\Core\\Form",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Form": "Gekosale\\Core\\Form",
+        "AvailabilityFormEvent": "Gekosale\\Plugin\\Availability\\Event\\AvailabilityFormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "init": {
+            "name": "init",
+            "line": 32,
+            "short_desc": "Initializes availability Form",
+            "long_desc": "",
+            "hint": [
+                [
+                    "Gekosale\\Plugin\\Availability\\Form\\Form\\Elements\\Form",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "availabilityData": {
+                    "name": "availabilityData",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": "array()",
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Plugin\\Contact\\Form\\ContactForm",
+    "line": 23,
+    "short_desc": "Class ContactForm",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Contact\\Form"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Contact\\Form",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Contact\\Form\\ContactForm.php",
+    "hash": "3f9b68724648b441fa6fd2b8b46d6bed09908a87",
+    "parent": "Gekosale\\Core\\Form",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Form": "Gekosale\\Core\\Form",
+        "ContactFormEvent": "Gekosale\\Plugin\\Contact\\Event\\ContactFormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "init": {
+            "name": "init",
+            "line": 32,
+            "short_desc": "Initializes contact Form",
+            "long_desc": "",
+            "hint": [
+                [
+                    "Gekosale\\Plugin\\Contact\\Form\\Form\\Elements\\Form",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "contactData": {
+                    "name": "contactData",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": "array()",
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

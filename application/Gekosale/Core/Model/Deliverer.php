@@ -30,6 +30,11 @@ class Deliverer extends Model
 
     protected $fillable = ['id'];
 
+    /**
+     * Relation with deliverer_translation table
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function translation()
     {
         return $this->hasMany('Gekosale\Core\Model\DelivererTranslation');
@@ -44,10 +49,8 @@ class Deliverer extends Model
     {
         $languageData = [];
         foreach ($this->translation as $translation) {
-            $languageData = [
-                $translation->language_id => [
-                    'name' => $translation->name,
-                ]
+            $languageData[$translation->language_id] = [
+                'name' => $translation->name,
             ];
         }
 

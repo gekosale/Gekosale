@@ -22,56 +22,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ShopSelector extends Field implements ElementInterface
 {
-    public function __construct($attributes, $shops)
+    public function __construct($attributes)
     {
+        $attributes['stores'] = $this->prepareShopsTree($attributes['stores']);
         parent::__construct($attributes);
-
-        print_r($shops->toArray());
-        die();
-
-        $shopsArray = [];
-        foreach ($shops as $shop) {
-
-            $shopsArray['v' . $shop->id] = [
-                'id'   => $shop->id,
-                'name' => $shop->translation
-            ];
-
-            print_r($shopsArray);
-            die();
-            $storesArray['v' . $viewRaw['id']]['id']     = $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['name']   = $viewRaw['name'];
-            $storesArray['v' . $viewRaw['id']]['label']  = 'v' . $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['parent'] = 's' . $viewRaw['parent'];
-            $storesArray['v' . $viewRaw['id']]['weight'] = $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['type']   = 'view';
-
-            print_r($shop->company->name);
-        }
-
-        $storesArray = Array();
-        $storesRaw   = App::getModel('stores')->getStoresAll();
-
-        foreach ($storesRaw as $storeRaw) {
-            $storesArray['s' . $storeRaw['id']]['id']     = $storeRaw['id'];
-            $storesArray['s' . $storeRaw['id']]['name']   = $storeRaw['name'];
-            $storesArray['s' . $storeRaw['id']]['label']  = 's' . $storeRaw['id'];
-            $storesArray['s' . $storeRaw['id']]['parent'] = null;
-            $storesArray['s' . $storeRaw['id']]['weight'] = $storeRaw['id'];
-            $storesArray['s' . $storeRaw['id']]['type']   = 'store';
-        }
-
-        $viewsRaw = App::getModel('stores')->getViewsAll();
-
-        foreach ($viewsRaw as $viewRaw) {
-            $storesArray['v' . $viewRaw['id']]['id']     = $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['name']   = $viewRaw['name'];
-            $storesArray['v' . $viewRaw['id']]['label']  = 'v' . $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['parent'] = 's' . $viewRaw['parent'];
-            $storesArray['v' . $viewRaw['id']]['weight'] = $viewRaw['id'];
-            $storesArray['v' . $viewRaw['id']]['type']   = 'view';
-        }
-        $this->_attributes['stores'] = $storesArray;
     }
 
     public function prepareAttributesJs()
@@ -90,6 +44,40 @@ class ShopSelector extends Field implements ElementInterface
         );
 
         return $attributes;
+    }
+
+    /**
+     * Prepares stores attribute for JS
+     *
+     * @param $tree
+     *
+     * @return array
+     */
+    protected function prepareShopsTree($tree)
+    {
+        $stores = [];
+
+        foreach ($tree as $companyId => $companyData) {
+            $stores['s' . $companyId] = [
+                'name'   => $companyData['name'],
+                'label'  => 's' . $companyId,
+                'parent' => null,
+                'weight' => $companyId,
+                'type'   => 'store',
+            ];
+
+            foreach ($companyData['children'] as $shopId => $shopData) {
+                $stores['v' . $shopId] = [
+                    'name'   => $shopData['name'],
+                    'label'  => 'v' . $shopId,
+                    'parent' => 's' . $companyId,
+                    'weight' => $shopId,
+                    'type'   => 'view',
+                ];
+            }
+        }
+
+        return $stores;
     }
 
 }

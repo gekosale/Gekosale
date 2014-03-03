@@ -1,0 +1,51 @@
+{
+    "name": "Gekosale\\Plugin\\Company\\Event\\CompanyFormEvent",
+    "line": 22,
+    "short_desc": "Class CompanyFormEvent",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Company\\Event"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Company\\Event",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Company\\Event\\CompanyFormEvent.php",
+    "hash": "3df9d1b2510541cccc2af9b91ab8396755735079",
+    "parent": "Gekosale\\Core\\Event\\FormEvent",
+    "modifiers": 32,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "FormEvent": "Gekosale\\Core\\Event\\FormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": {
+        "FORM_INIT_EVENT": {
+            "name": "FORM_INIT_EVENT",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

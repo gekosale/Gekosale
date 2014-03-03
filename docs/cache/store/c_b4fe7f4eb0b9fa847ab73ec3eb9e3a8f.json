@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Core\\Form\\Elements\\OptionedField",
+    "line": 21,
+    "short_desc": "Class OptionedField",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Form\\Elements"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Form\\Elements",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Form\\Elements\\OptionedField.php",
+    "hash": "ec437672439a44d6788367dcb655316d0344f35f",
+    "parent": "Gekosale\\Core\\Form\\Elements\\Field",
+    "modifiers": 16,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [
+
+    ],
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

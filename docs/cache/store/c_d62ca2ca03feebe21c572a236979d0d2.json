@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Core\\DependencyInjection\\Compiler\\RegisterTwigExtensionsPass",
+    "line": 24,
+    "short_desc": "Class RegisterTwigExtensionsPass",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\DependencyInjection\\Compiler"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\DependencyInjection\\Compiler",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\DependencyInjection\\Compiler\\RegisterTwigExtensionsPass.php",
+    "hash": "9859824e04c6741bd713e3dace4dffc878fca2f6",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "ContainerBuilder": "Symfony\\Component\\DependencyInjection\\ContainerBuilder",
+        "CompilerPassInterface": "Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface",
+        "Reference": "Symfony\\Component\\DependencyInjection\\Reference"
+    },
+    "errors": [
+
+    ],
+    "interfaces": {
+        "Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface": "Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface"
+    },
+    "properties": [
+
+    ],
+    "methods": {
+        "process": {
+            "name": "process",
+            "line": 32,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": {
+                "see": [
+                    [
+                        "\\Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface::process()"
+                    ]
+                ]
+            },
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "container": {
+                    "name": "container",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Symfony\\Component\\DependencyInjection\\ContainerBuilder",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "ContainerBuilder",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

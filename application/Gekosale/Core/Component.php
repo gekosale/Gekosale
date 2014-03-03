@@ -158,9 +158,19 @@ abstract class Component extends ContainerAware
     }
 
     /**
+     * Shortcut to get Helper service
+     *
+     * @return object Helper
+     */
+    final protected function getHelper()
+    {
+        return $this->container->get('helper');
+    }
+
+    /**
      * Shortcut to get PDO instance
      *
-     * @return object \PDO
+     * @return object PDO
      */
     final protected function getPdo()
     {
@@ -209,5 +219,15 @@ abstract class Component extends ContainerAware
         }
 
         return $this->container->get('shop.repository')->all();
+    }
+
+    /**
+     * Returns current language id
+     *
+     * @return int
+     */
+    final protected function getCurrentLanguage()
+    {
+        return 2;
     }
 }

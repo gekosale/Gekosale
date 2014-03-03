@@ -1,0 +1,51 @@
+{
+    "name": "Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuInitEvent",
+    "line": 22,
+    "short_desc": "Class AdminMenuInitEvent",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Currency\\Event"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\AdminMenu\\Event",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\AdminMenu\\Event\\AdminMenuInitEvent.php",
+    "hash": "42c2a91c8d2455f68acad542b2b9ea790427ee4b",
+    "parent": "Gekosale\\Core\\Event\\AdminMenuEvent",
+    "modifiers": 32,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminMenuEvent": "Gekosale\\Core\\Event\\AdminMenuEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": {
+        "ADMIN_MENU_INIT_EVENT": {
+            "name": "ADMIN_MENU_INIT_EVENT",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

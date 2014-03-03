@@ -1,0 +1,63 @@
+{
+    "name": "Gekosale\\Core\\Model\\Translation",
+    "line": 22,
+    "short_desc": "Class Translation",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Model"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Model",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Model\\Translation.php",
+    "hash": "fb0adb6d75beb1820f0276500d1f43d77743f9fb",
+    "parent": "Illuminate\\Database\\Eloquent\\Model",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Model": "Illuminate\\Database\\Eloquent\\Model"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": {
+        "timestamps": {
+            "name": "timestamps",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": 1,
+            "default": {
+
+            },
+            "errors": [
+
+            ]
+        }
+    },
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

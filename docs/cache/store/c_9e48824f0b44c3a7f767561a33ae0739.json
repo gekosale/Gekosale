@@ -1,0 +1,67 @@
+{
+    "name": "Gekosale\\Plugin\\Contact\\Controller\\Frontend\\ContactController",
+    "line": 22,
+    "short_desc": "Class ContactController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Contact\\Controller\\Frontend"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Contact\\Controller\\Frontend",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Contact\\Controller\\Frontend\\ContactController.php",
+    "hash": "5a348c529db84e7824a67a2245cf8269e1d480e9",
+    "parent": "Gekosale\\Core\\Controller\\FrontendController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "FrontendController": "Gekosale\\Core\\Controller\\FrontendController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "indexAction": {
+            "name": "indexAction",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

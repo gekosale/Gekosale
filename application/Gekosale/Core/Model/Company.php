@@ -29,4 +29,13 @@ class Company extends Model
     protected $softDelete = false;
 
     protected $fillable = ['id'];
+
+    /**
+     * Relation with
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function shop()
+    {
+        return $this->hasMany('Gekosale\Core\Model\Shop');
+    }
 }

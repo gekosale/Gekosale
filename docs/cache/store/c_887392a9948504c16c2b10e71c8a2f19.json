@@ -1,0 +1,51 @@
+{
+    "name": "Gekosale\\Plugin\\Language\\Event\\LanguageFormEvent",
+    "line": 22,
+    "short_desc": "Class LanguageFormEvent",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Language\\Event"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Language\\Event",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Language\\Event\\LanguageFormEvent.php",
+    "hash": "227a02c6126ec0bb48535ff56cc08e304c6520ce",
+    "parent": "Gekosale\\Core\\Event\\FormEvent",
+    "modifiers": 32,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "FormEvent": "Gekosale\\Core\\Event\\FormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": {
+        "FORM_INIT_EVENT": {
+            "name": "FORM_INIT_EVENT",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": ""
+        }
+    }
+}

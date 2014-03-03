@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class ShopTranslation extends Model
+class ShopTranslation extends Model implements TranslationModelInterface
 {
 
     protected $table = 'shop_translation';
@@ -38,5 +38,10 @@ class ShopTranslation extends Model
     public function language()
     {
         return $this->belongsTo('Gekosale\Core\Model\Language');
+    }
+
+    public function scopeHasLanguageId($query, $language)
+    {
+        return $query->whereLanguageId($language)->first();
     }
 }

@@ -1,0 +1,52 @@
+{
+    "name": "Gekosale\\Core\\Console\\Command\\Routes\\Dump",
+    "line": 19,
+    "short_desc": "Class Dump",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Console\\Command\\Routes"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Console\\Command\\Routes",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Console\\Command\\Routes\\Dump.php",
+    "hash": "4c4b3b54595cf189e06cca7636bffef9e5909663",
+    "parent": "Gekosale\\Core\\Console\\Command\\AbstractCommand",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AbstractCommand": "Gekosale\\Core\\Console\\Command\\AbstractCommand",
+        "Console": "Symfony\\Component\\Console",
+        "InputInterface": "Symfony\\Component\\Console\\Input\\InputInterface",
+        "OutputInterface": "Symfony\\Component\\Console\\Output\\OutputInterface",
+        "PhpMatcherDumper": "Symfony\\Component\\Routing\\Matcher\\Dumper\\PhpMatcherDumper",
+        "PhpGeneratorDumper": "Symfony\\Component\\Routing\\Generator\\Dumper\\PhpGeneratorDumper",
+        "RouteCollection": "Symfony\\Component\\Routing\\RouteCollection"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

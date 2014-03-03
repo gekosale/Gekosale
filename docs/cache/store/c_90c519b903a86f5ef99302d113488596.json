@@ -1,0 +1,94 @@
+{
+    "name": "Gekosale\\Core\\Console",
+    "line": 22,
+    "short_desc": "Class Console",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Console.php",
+    "hash": "0d30d00234fad55f3f0ae39ba85e95e66396f047",
+    "parent": "Symfony\\Component\\Console\\Application",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Application": "Symfony\\Component\\Console\\Application"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "__construct": {
+            "name": "__construct",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "getContainer": {
+            "name": "getContainer",
+            "line": 44,
+            "short_desc": "Creates ServiceContainer for using in Console applications",
+            "long_desc": "",
+            "hint": [
+                [
+                    "Gekosale\\Core\\ServiceContainer",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

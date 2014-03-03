@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Plugin\\Unit\\Controller\\Admin\\UnitController",
+    "line": 22,
+    "short_desc": "Class UnitController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Unit\\Controller\\Admin"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Unit\\Controller\\Admin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Unit\\Controller\\Admin\\UnitController.php",
+    "hash": "ad49a50705ce29e504b3650aeb49ed081a20136f",
+    "parent": "Gekosale\\Core\\Controller\\AdminController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminController": "Gekosale\\Core\\Controller\\AdminController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

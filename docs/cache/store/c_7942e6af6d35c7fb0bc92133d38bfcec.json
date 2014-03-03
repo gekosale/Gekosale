@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Plugin\\Language\\Controller\\Admin\\LanguageController",
+    "line": 22,
+    "short_desc": "Class LanguageController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Language\\Controller\\Admin"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Language\\Controller\\Admin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Language\\Controller\\Admin\\LanguageController.php",
+    "hash": "d70e0ae1a148d5138ab3ecfc649dd6bb4aba6d4b",
+    "parent": "Gekosale\\Core\\Controller\\AdminController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminController": "Gekosale\\Core\\Controller\\AdminController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

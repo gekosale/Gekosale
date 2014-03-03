@@ -1,0 +1,80 @@
+{
+    "name": "Gekosale\\Plugin\\Deliverer\\Form\\DelivererForm",
+    "line": 23,
+    "short_desc": "Class DelivererForm",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Deliverer\\Form"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Deliverer\\Form",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Deliverer\\Form\\DelivererForm.php",
+    "hash": "214efdfcfe305ee45e01459cdc2b4c7f82766ddb",
+    "parent": "Gekosale\\Core\\Form",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Form": "Gekosale\\Core\\Form",
+        "DelivererFormEvent": "Gekosale\\Plugin\\Deliverer\\Event\\DelivererFormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "init": {
+            "name": "init",
+            "line": 26,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "delivererData": {
+                    "name": "delivererData",
+                    "line": 26,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": null,
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": "array()",
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

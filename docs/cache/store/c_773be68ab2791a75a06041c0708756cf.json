@@ -1,0 +1,71 @@
+{
+    "name": "Gekosale\\Core\\Console\\Command\\Plugin\\Add",
+    "line": 27,
+    "short_desc": "Class Add",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core\\Console\\Command\\Migration"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core\\Console\\Command\\Plugin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Console\\Command\\Plugin\\Add.php",
+    "hash": "aedc0547870678a78941d8fde435d9cc3201ccfd",
+    "parent": "Gekosale\\Core\\Console\\Command\\AbstractCommand",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AbstractCommand": "Gekosale\\Core\\Console\\Command\\AbstractCommand",
+        "Console": "Symfony\\Component\\Console",
+        "InputInterface": "Symfony\\Component\\Console\\Input\\InputInterface",
+        "InputArgument": "Symfony\\Component\\Console\\Input\\InputArgument",
+        "OutputInterface": "Symfony\\Component\\Console\\Output\\OutputInterface"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "addClassMethods": {
+            "name": "addClassMethods",
+            "line": 269,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

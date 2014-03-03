@@ -1,0 +1,149 @@
+{
+    "name": "Gekosale\\Plugin\\AdminMenu\\Extension\\AdminMenuExtension",
+    "line": 25,
+    "short_desc": "Class AdminMenuExtension",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\AdminMenu\\Extension"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\AdminMenu\\Extension",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\AdminMenu\\Extension\\AdminMenuExtension.php",
+    "hash": "7519370d3055425723162cd1662ec7abe64cf2d7",
+    "parent": "Symfony\\Component\\HttpKernel\\DependencyInjection\\Extension",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Extension": "Symfony\\Component\\HttpKernel\\DependencyInjection\\Extension",
+        "XmlFileLoader": "Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader",
+        "FileLocator": "Symfony\\Component\\Config\\FileLocator",
+        "ContainerBuilder": "Symfony\\Component\\DependencyInjection\\ContainerBuilder"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "load": {
+            "name": "load",
+            "line": 28,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "config": {
+                    "name": "config",
+                    "line": 28,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "array",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "container": {
+                    "name": "container",
+                    "line": 28,
+                    "short_desc": null,
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Symfony\\Component\\DependencyInjection\\ContainerBuilder",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "ContainerBuilder",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getNamespace": {
+            "name": "getNamespace",
+            "line": 34,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        },
+        "getAlias": {
+            "name": "getAlias",
+            "line": 39,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": [
+
+            ]
+        }
+    },
+    "constants": [
+
+    ]
+}

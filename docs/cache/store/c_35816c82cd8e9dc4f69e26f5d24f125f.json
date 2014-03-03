@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Plugin\\PluginManager\\Controller\\Admin\\PluginManagerController",
+    "line": 22,
+    "short_desc": "Class PluginManagerController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\PluginManager\\Controller\\Admin"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\PluginManager\\Controller\\Admin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\PluginManager\\Controller\\Admin\\PluginManagerController.php",
+    "hash": "1d559f526373ce45787cc392a438966f64b00b4e",
+    "parent": "Gekosale\\Core\\Controller\\AdminController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminController": "Gekosale\\Core\\Controller\\AdminController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

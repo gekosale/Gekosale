@@ -4044,7 +4044,7 @@ var oDefaults = {
 	sActive: ''
 };
 
-var GFormLayerSelector = GCore.ExtendClass(GFormField, function() {
+var GFormShopSelector = GCore.ExtendClass(GFormField, function() {
 	
 	var gThis = this;
 	

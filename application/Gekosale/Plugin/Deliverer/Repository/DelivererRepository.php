@@ -14,6 +14,7 @@ namespace Gekosale\Plugin\Deliverer\Repository;
 use Gekosale\Core\Repository;
 use Gekosale\Core\Model\Deliverer;
 use Gekosale\Core\Model\DelivererTranslation;
+use Gekosale\Core\Helper;
 
 /**
  * Class DelivererRepository
@@ -31,7 +32,7 @@ class DelivererRepository extends Repository
      */
     public function all()
     {
-        return Deliverer::all();
+        return Deliverer::with('translation')->get();
     }
 
     /**
@@ -53,8 +54,7 @@ class DelivererRepository extends Repository
      */
     public function delete($id)
     {
-        $this->transaction(function () use ($id)
-        {
+        $this->transaction(function () use ($id) {
             return Deliverer::destroy($id);
         });
     }
@@ -67,16 +67,14 @@ class DelivererRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $this->transaction(function () use ($Data, $id)
-        {
+        $this->transaction(function () use ($Data, $id) {
             $deliverer = Deliverer::firstOrNew([
                 'id' => $id
             ]);
 
             $deliverer->save();
 
-            foreach ($Data['name'] as $languageId => $name)
-            {
+            foreach ($Data['name'] as $languageId => $name) {
 
                 $translation = DelivererTranslation::firstOrCreate([
                     'deliverer_id' => $deliverer->id,
@@ -106,5 +104,15 @@ class DelivererRepository extends Repository
                 'language_data' => $delivererData->getLanguageData()
             ]
         ];
+    }
+
+    /**
+     * Returns Collection as ke-value pairs ready to use in selects
+     *
+     * @return mixed
+     */
+    public function getAllDelivererToSelect()
+    {
+        return $this->getHelper()->flattenCollection($this->all(), 'id', 'translation.name');
     }
 }

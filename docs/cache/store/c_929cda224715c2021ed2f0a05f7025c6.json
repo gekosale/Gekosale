@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Plugin\\PluginManager\\Form\\PluginManagerForm",
+    "line": 23,
+    "short_desc": "Class PluginManagerForm",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\PluginManager\\Form"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\PluginManager\\Form",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\PluginManager\\Form\\PluginManagerForm.php",
+    "hash": "7bc4d6c64759f1ab87613534ade1735b1cf0bd0b",
+    "parent": "Gekosale\\Core\\Form",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Form": "Gekosale\\Core\\Form",
+        "PluginManagerFormEvent": "Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerFormEvent"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "init": {
+            "name": "init",
+            "line": 32,
+            "short_desc": "Initializes PluginManagerForm",
+            "long_desc": "",
+            "hint": [
+                [
+                    "Gekosale\\Plugin\\PluginManager\\Form\\Form\\Elements\\Form",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "plugin_managerData": {
+                    "name": "plugin_managerData",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": "array()",
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

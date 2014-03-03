@@ -78,6 +78,10 @@ class ServiceContainer extends Container
             'plugin_manager.form' => 'getPluginManager_FormService',
             'plugin_manager.repository' => 'getPluginManager_RepositoryService',
             'plugin_manager.subscriber' => 'getPluginManager_SubscriberService',
+            'producer.datagrid' => 'getProducer_DatagridService',
+            'producer.form' => 'getProducer_FormService',
+            'producer.repository' => 'getProducer_RepositoryService',
+            'producer.subscriber' => 'getProducer_SubscriberService',
             'request' => 'getRequestService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
@@ -609,6 +613,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
         $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
+        $instance->addSubscriberService('producer.subscriber', 'Gekosale\\Plugin\\Producer\\Event\\ProducerEventSubscriber');
         $instance->addSubscriberService('shop.subscriber', 'Gekosale\\Plugin\\Shop\\Event\\ShopEventSubscriber');
         $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
         $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
@@ -686,7 +691,11 @@ class ServiceContainer extends Container
      */
     protected function getHelperService()
     {
-        return $this->services['helper'] = new \Gekosale\Core\Helper($this);
+        $this->services['helper'] = $instance = new \Gekosale\Core\Helper();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -843,6 +852,71 @@ class ServiceContainer extends Container
     protected function getPluginManager_SubscriberService()
     {
         return $this->services['plugin_manager.subscriber'] = new \Gekosale\Plugin\PluginManager\Event\PluginManagerEventSubscriber();
+    }
+
+    /**
+     * Gets the 'producer.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Producer\DataGrid\ProducerDataGrid A Gekosale\Plugin\Producer\DataGrid\ProducerDataGrid instance.
+     */
+    protected function getProducer_DatagridService()
+    {
+        $this->services['producer.datagrid'] = $instance = new \Gekosale\Plugin\Producer\DataGrid\ProducerDataGrid();
+
+        $instance->setRepository($this->get('producer.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'producer.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Producer\Form\ProducerForm A Gekosale\Plugin\Producer\Form\ProducerForm instance.
+     */
+    protected function getProducer_FormService()
+    {
+        $this->services['producer.form'] = $instance = new \Gekosale\Plugin\Producer\Form\ProducerForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'producer.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Producer\Repository\ProducerRepository A Gekosale\Plugin\Producer\Repository\ProducerRepository instance.
+     */
+    protected function getProducer_RepositoryService()
+    {
+        $this->services['producer.repository'] = $instance = new \Gekosale\Plugin\Producer\Repository\ProducerRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'producer.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Producer\Event\ProducerEventSubscriber A Gekosale\Plugin\Producer\Event\ProducerEventSubscriber instance.
+     */
+    protected function getProducer_SubscriberService()
+    {
+        return $this->services['producer.subscriber'] = new \Gekosale\Plugin\Producer\Event\ProducerEventSubscriber();
     }
 
     /**

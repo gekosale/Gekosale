@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Plugin\\Currency\\Controller\\Admin\\CurrencyController",
+    "line": 22,
+    "short_desc": "Class CurrencyController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Currency\\Controller\\Admin"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Currency\\Controller\\Admin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Currency\\Controller\\Admin\\CurrencyController.php",
+    "hash": "3656edcc55ba3c6765319fee188d499c6fab5051",
+    "parent": "Gekosale\\Core\\Controller\\AdminController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminController": "Gekosale\\Core\\Controller\\AdminController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

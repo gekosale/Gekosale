@@ -74,7 +74,9 @@
         "swiftmailer/swiftmailer": "5.1.x-dev",
         "illuminate/database": "4.1",
         "xajax/xajax": "1.0.0",
-        "symfony/property-access": "2.4.x-dev"
+        "symfony/property-access": "2.4.x-dev",
+        "sami/sami": "v1.3",
+        "rhumsaa/array_column": "~1.1"
     },
     "autoload": {
         "psr-0": {

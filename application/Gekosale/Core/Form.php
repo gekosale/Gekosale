@@ -82,6 +82,18 @@ class Form extends Component
     }
 
     /**
+     * Shortcut for adding RichTextEditor element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\RichTextEditor
+     */
+    public function addRichTextEditor(array $options)
+    {
+        return new Form\Elements\RichTextEditor($options);
+    }
+
+    /**
      * Shortcut for adding ShopSelector element
      *
      * @param array $options
@@ -90,7 +102,7 @@ class Form extends Component
      */
     public function addShopSelector(array $options)
     {
-        return new Form\Elements\ShopSelector($options, $this->getShops());
+        return new Form\Elements\ShopSelector($options);
     }
 
     /**
@@ -103,6 +115,18 @@ class Form extends Component
     public function addSelect(array $options)
     {
         return new Form\Elements\Select($options);
+    }
+
+    /**
+     * Shortcut for adding MultiSelect element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\MultiSelect
+     */
+    public function addMultiSelect(array $options)
+    {
+        return new Form\Elements\MultiSelect($options);
     }
 
     /**

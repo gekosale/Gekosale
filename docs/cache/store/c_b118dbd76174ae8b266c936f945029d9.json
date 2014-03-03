@@ -1,0 +1,90 @@
+{
+    "name": "Gekosale\\Plugin\\Country\\Repository\\CountryRepository",
+    "line": 23,
+    "short_desc": "Class CountryRepository",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Country\\Repository"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Country\\Repository",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Country\\Repository\\CountryRepository.php",
+    "hash": "06a8b01c02299a69777f7ea948577a2fe0324736",
+    "parent": "Gekosale\\Core\\Repository",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Repository": "Gekosale\\Core\\Repository",
+        "Intl": "Symfony\\Component\\Intl\\Intl"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": {
+        "all": {
+            "name": "all",
+            "line": 33,
+            "short_desc": "Returns all country names for given locale",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\string",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [
+
+            ],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [
+
+            ],
+            "errors": [
+
+            ],
+            "parameters": {
+                "locale": {
+                    "name": "locale",
+                    "line": 33,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [
+
+                    ],
+                    "modifiers": "",
+                    "default": "'en'",
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": [
+
+    ]
+}

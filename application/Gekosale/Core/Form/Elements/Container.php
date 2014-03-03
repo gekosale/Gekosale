@@ -83,6 +83,13 @@ abstract class Container extends Node
         }
     }
 
+    public function addFilters(array $filters)
+    {
+        foreach ($filters as $filer) {
+            $this->addFilter($filer);
+        }
+    }
+
     public function clearFilters()
     {
         foreach ($this->_children as $child) {

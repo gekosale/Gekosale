@@ -1,0 +1,46 @@
+{
+    "name": "Gekosale\\Plugin\\Company\\Controller\\Admin\\CompanyController",
+    "line": 22,
+    "short_desc": "Class CompanyController",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Plugin\\Company\\Controller\\Admin"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Plugin\\Company\\Controller\\Admin",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Plugin\\Company\\Controller\\Admin\\CompanyController.php",
+    "hash": "b84f9004898092d9f9d3d3254198b2f5aa4f4d96",
+    "parent": "Gekosale\\Core\\Controller\\AdminController",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "AdminController": "Gekosale\\Core\\Controller\\AdminController"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

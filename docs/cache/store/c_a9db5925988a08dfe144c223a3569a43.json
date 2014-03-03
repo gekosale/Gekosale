@@ -1,0 +1,47 @@
+{
+    "name": "Gekosale\\Core\\Component",
+    "line": 25,
+    "short_desc": "Class Component",
+    "long_desc": "Provides common methods needed in controllers, models and repositories",
+    "hint": null,
+    "tags": {
+        "package": [
+            [
+                "Gekosale\\Core"
+            ]
+        ],
+        "author": [
+            [
+                "Adam",
+                "Piotrowski",
+                "<adam@gekosale.com>"
+            ]
+        ]
+    },
+    "namespace": "Gekosale\\Core",
+    "file": "D:\\Git\\Gekosale3\\application\\Gekosale\\Core\\Component.php",
+    "hash": "f2908d688f5a2454472d1f78c94279da8ffa73d7",
+    "parent": "Symfony\\Component\\DependencyInjection\\ContainerAware",
+    "modifiers": 16,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "ContainerAware": "Symfony\\Component\\DependencyInjection\\ContainerAware",
+        "PropertyAccess": "Symfony\\Component\\PropertyAccess\\PropertyAccess"
+    },
+    "errors": [
+
+    ],
+    "interfaces": [
+
+    ],
+    "properties": [
+
+    ],
+    "methods": [
+
+    ],
+    "constants": [
+
+    ]
+}

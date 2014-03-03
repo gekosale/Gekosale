@@ -13,6 +13,7 @@ namespace Gekosale\Plugin\Company\Repository;
 
 use Gekosale\Core\Repository;
 use Gekosale\Core\Model\Company;
+use Gekosale\Core\Model\Shop;
 
 /**
  * Class CompanyRepository
@@ -30,7 +31,7 @@ class CompanyRepository extends Repository
      */
     public function all()
     {
-        return Company::all();
+        return Company::with('shop', 'shop.translation')->get();
     }
 
     /**
@@ -66,7 +67,6 @@ class CompanyRepository extends Repository
     public function save($Data, $id = null)
     {
         $this->transaction(function () use ($Data, $id) {
-
             $company = Company::firstOrNew([
                 'id' => $id
             ]);
@@ -80,9 +80,7 @@ class CompanyRepository extends Repository
             $company->postcode   = $Data['postcode'];
             $company->city       = $Data['city'];
             $company->country    = $Data['country'];
-
             $company->save();
-
         });
     }
 
@@ -95,23 +93,26 @@ class CompanyRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $companyData = $this->find($id);
+        $companyData  = $this->find($id);
+        $populateData = [];
+        $accessor     = $this->getPropertyAccessor();
 
-        return [
-            'required_data' => [
-                'name'       => $companyData->name,
-                'short_name' => $companyData->short_name,
-            ],
-            'address_data'  => [
-                'street'   => $companyData->street,
-                'streetno' => $companyData->streetno,
-                'flatno'   => $companyData->flatno,
-                'province' => $companyData->province,
-                'postcode' => $companyData->postcode,
-                'city'     => $companyData->city,
-                'country'  => $companyData->country
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'name'       => $companyData->name,
+            'short_name' => $companyData->short_name
+        ]);
+
+        $accessor->setValue($populateData, '[address_data]', [
+            'street'   => $companyData->street,
+            'streetno' => $companyData->streetno,
+            'flatno'   => $companyData->flatno,
+            'province' => $companyData->province,
+            'postcode' => $companyData->postcode,
+            'city'     => $companyData->city,
+            'country'  => $companyData->country
+        ]);
+
+        return $populateData;
     }
 
     /**
@@ -128,5 +129,37 @@ class CompanyRepository extends Repository
         }
 
         return $Data;
+    }
+
+    /**
+     * Returns a tree containing all companies and related shops
+     *
+     * @return array
+     */
+    public function getShopsTree()
+    {
+        $tree      = [];
+        $companies = $this->all();
+
+        foreach ($companies as $company) {
+            $tree[$company->id] = [
+                'id'       => $company->id,
+                'name'     => $company->name,
+                'parent'   => null,
+                'children' => []
+            ];
+
+            foreach ($company->shop as $shop) {
+
+                $translation = $shop->translation()->hasLanguageId($this->getCurrentLanguage());
+
+                $tree[$company->id]['children'][$shop->id] = [
+                    'id'   => $shop->id,
+                    'name' => $translation->name,
+                ];
+            }
+        }
+
+        return $tree;
     }
 }
