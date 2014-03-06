@@ -16,10 +16,12 @@ use xajax;
 use xajaxResponse;
 
 /**
- * XajaxManager provides interface for managing xajax requests, responses
- * and function registration
+ * Class XajaxManager
  *
- * @author Adam Piotrowski <adam@gekosale.com>
+ * Provides interface for managing xajax requests, responses and function registration
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
  */
 class XajaxManager
 {
@@ -60,7 +62,12 @@ class XajaxManager
         $this->callbacks[$name] = $callback;
     }
 
-    public function registerFunctions($functions)
+    /**
+     * Register multiple Xajax functions
+     *
+     * @param array $functions
+     */
+    public function registerFunctions(array $functions)
     {
         foreach ($functions as $name => $callback) {
             $this->container->get('xajax')->registerFunction([
@@ -71,7 +78,14 @@ class XajaxManager
         }
     }
 
-    public function registerFunction($registrationArray)
+    /**
+     * Register Xajax function
+     *
+     * @param array $registrationArray
+     *
+     * @return string
+     */
+    public function registerFunction(array $registrationArray)
     {
         $name         = array_shift($registrationArray);
         $callback     = $registrationArray;
@@ -85,6 +99,14 @@ class XajaxManager
         return 'xajax_' . $name;
     }
 
+    /**
+     * Call dynamically registered Xajax function
+     *
+     * @param $name
+     * @param $arguments
+     *
+     * @return xajaxResponse
+     */
     public function __call($name, $arguments)
     {
         $request         = $arguments[0];

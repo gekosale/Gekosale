@@ -13,31 +13,53 @@
  */
 namespace Gekosale\Core;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-
+/**
+ * Class Migration
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 abstract class Migration
 {
 
+    /**
+     * @var ServiceContainer
+     */
     protected $container;
 
+    /**
+     * @var string
+     */
     protected $migrationClass;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->container = new ServiceContainer();
     }
 
+    /**
+     * Shortcut to get Filesystem service
+     *
+     * @return object
+     */
     protected function getFilesystem()
     {
         return $this->container->get('filesystem');
     }
 
-    protected function get($service)
+    /**
+     * Gets a service by id.
+     *
+     * @param string $id The service id
+     *
+     * @return object Service
+     */
+    protected function get($id)
     {
-        return $this->container->get($service);
+        return $this->container->get($id);
     }
 
     protected function getDb()
@@ -71,7 +93,17 @@ abstract class Migration
         $stmt->execute();
     }
 
+    /**
+     * Action needed to update application
+     *
+     * @return mixed
+     */
     abstract function up();
 
+    /**
+     * Action needed to downgrade application
+     *
+     * @return mixed
+     */
     abstract function down();
 }

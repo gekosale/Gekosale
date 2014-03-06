@@ -13,27 +13,18 @@
 namespace Gekosale\Core\Model;
 
 /**
- * Interface TranslationModelInterface
+ * Interface TranslatableModelInterface
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-interface TranslationModelInterface
+interface TranslatableModelInterface
 {
 
     /**
-     * Relation with language table
+     * Relation with translation table
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-    public function language();
-
-    /**
-     * Returns translations for current language
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeHasLanguageId($query, $language);
+    public function translation();
 }

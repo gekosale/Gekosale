@@ -11,6 +11,12 @@
  */
 namespace Gekosale\Core\Template\Guesser;
 
+/**
+ * Class AdminTemplateGuesser
+ *
+ * @package Gekosale\Core\Template\Guesser
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class AdminTemplateGuesser implements TemplateGuesserInterface
 {
 

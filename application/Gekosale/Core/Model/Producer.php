@@ -11,7 +11,7 @@
  */
 namespace Gekosale\Core\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Gekosale\Core\Model;
 
 /**
  * Class Producer
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Producer extends Model
+class Producer extends Model implements TranslatableModelInterface
 {
 
     protected $table = 'producer';
@@ -48,27 +48,5 @@ class Producer extends Model
     public function shop()
     {
         return $this->hasMany('Gekosale\Core\Model\ProducerShop');
-    }
-
-    /**
-     * Get translations for producer
-     *
-     * @return array
-     */
-    public function getLanguageData()
-    {
-        $languageData = [];
-        foreach ($this->translation as $translation) {
-            $languageData[$translation->language_id] = [
-                'name'              => $translation->name,
-                'short_description' => $translation->short_description,
-                'description'       => $translation->description,
-                'meta_title'        => $translation->meta_title,
-                'meta_keywords'     => $translation->meta_keywords,
-                'meta_description'  => $translation->meta_description
-            ];
-        }
-
-        return $languageData;
     }
 }

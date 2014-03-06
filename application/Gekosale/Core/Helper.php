@@ -13,6 +13,12 @@ namespace Gekosale\Core;
 
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class Helper
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Helper extends Component
 {
     /**

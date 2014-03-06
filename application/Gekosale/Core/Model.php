@@ -11,6 +11,9 @@
  */
 namespace Gekosale\Core;
 
+use Gekosale\Core\Model\TranslatableModelInterface;
+use Illuminate\Database\Eloquent\Model as BaseModel;
+
 /**
  * Class Model
  *
@@ -19,6 +22,98 @@ namespace Gekosale\Core;
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-abstract class Model extends Component
+abstract class Model extends BaseModel
 {
+    /**
+     * Model translatable attributes
+     *
+     * @var array
+     */
+    protected $translatable = [];
+
+    /**
+     * Boots Illuminate\Database\Eloquent\Model
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+    }
+
+    /**
+     * Returns all model translatable attributes
+     *
+     * @return array
+     */
+    protected function getTranslatableAttributes()
+    {
+        return $this->translatable;
+    }
+
+    /**
+     * Adds new translatable attribute
+     *
+     * @param $attribute
+     */
+    public function addTranslatableAttribute($attribute)
+    {
+        $this->translatable[] = $attribute;
+    }
+
+    /**
+     * Checks if attribute is translatable
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    protected function isTranslatableAttribute($key)
+    {
+        return array_key_exists($key, array_flip($this->translatable));
+    }
+
+    /**
+     * Sets translatable attributes
+     *
+     * @param array $Data
+     * @param       $language
+     */
+    public function setTranslationData(array $Data, $language)
+    {
+        foreach ($this->getTranslatableAttributes() as $attribute) {
+            if ($this->isTranslatableAttribute($attribute)
+                && isset($Data[$attribute])
+                && is_array($Data[$attribute])
+                && isset($Data[$attribute][$language])
+            ) {
+                $this->$attribute = $Data[$attribute][$language];
+            }
+        }
+    }
+
+    /**
+     * Returns translation data
+     *
+     * @return array
+     * @throws \LogicException
+     */
+    public function getTranslationData()
+    {
+        if (!$this instanceof TranslatableModelInterface) {
+            throw new \LogicException('Model must implement TranslatableModelInterface to get language data from it.');
+        }
+
+        $collection = $this->translation;
+
+        $languageData = [];
+        foreach ($collection as $item) {
+            foreach ($item->translatable as $attribute) {
+                $languageData[$item->language_id][$attribute] = $item->$attribute;
+            }
+        }
+
+        return $languageData;
+    }
+
 }

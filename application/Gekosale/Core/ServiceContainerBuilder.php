@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 /**
  * Class ServiceContainerBuilder
  *
- * Manages cached Container
+ * Manages cached Dependency Injection Container
  *
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>

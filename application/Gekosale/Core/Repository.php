@@ -18,6 +18,8 @@ use Closure;
 /**
  * Class Repository
  *
+ * Provides methods needed in all repository classes
+ *
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>
  */

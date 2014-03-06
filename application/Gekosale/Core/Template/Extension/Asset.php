@@ -1,50 +1,69 @@
 <?php
-
-/**
- * Gekosale, Open Source E-Commerce Solution
+/*
+ * Gekosale Open-Source E-Commerce Platform
+ *
+ * This file is part of the Gekosale package.
+ *
+ * (c) Adam Piotrowski <adam@gekosale.com>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- *
- * @package     Gekosale\Core\Template
- * @subpackage  Gekosale\Core\Template\Extension
- * @author      Adam Piotrowski <adam@gekosale.com>
- * @copyright   Copyright (c) 2008-2014 Gekosale sp. z o.o. (http://www.gekosale.com)
  */
 namespace Gekosale\Core\Template\Extension;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class Asset
+ *
+ * @package Gekosale\Core\Template\Extension
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 class Asset extends \Twig_Extension
 {
 
     protected $container;
 
-    public function __construct (ContainerInterface $container)
+    /**
+     * Constructor
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    public function getFunctions ()
+    /**
+     * Returns array containing all functions used by this extension
+     *
+     * @return array
+     */
+    public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('asset', array(
-                $this,
-                'getAsset'
-            ), array(
-                'is_safe' => Array(
-                    'html'
-                )
-            ))
-        );
+        return [
+            new \Twig_SimpleFunction('asset', [$this, 'getAsset'], ['is_safe' => ['html']])
+        ];
     }
 
-    public function getAsset ($path)
+    /**
+     * Gets assets path
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    public function getAsset($path)
     {
         return sprintf('%s/%s', $this->container->get('request')->getSchemeAndHttpHost(), $path);
     }
 
-    public function getName ()
+    /**
+     * Returns unique extensions name
+     *
+     * @return string
+     */
+    public function getName()
     {
         return 'asset';
     }

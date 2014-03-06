@@ -77,12 +77,9 @@ class Template implements EventSubscriberInterface
         /*
          * Guess template name
          */
-        $guesser = $this->getGuesser($mode);
-
+        $guesser  = $this->getGuesser($mode);
         $template = $guesser->guess($controller, $action);
-
         $container->get($this->engine)->setLoader($container->get($this->getTemplateLoaderServiceName($mode)));
-
         $response = $container->get($this->engine)->render($template, $parameters);
 
         $event->setResponse(new Response($response));

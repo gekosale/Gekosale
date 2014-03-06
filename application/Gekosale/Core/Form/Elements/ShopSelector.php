@@ -59,6 +59,7 @@ class ShopSelector extends Field implements ElementInterface
 
         foreach ($tree as $companyId => $companyData) {
             $stores['s' . $companyId] = [
+                'id'     => $companyId,
                 'name'   => $companyData['name'],
                 'label'  => 's' . $companyId,
                 'parent' => null,
@@ -68,6 +69,7 @@ class ShopSelector extends Field implements ElementInterface
 
             foreach ($companyData['children'] as $shopId => $shopData) {
                 $stores['v' . $shopId] = [
+                    'id'     => $shopId,
                     'name'   => $shopData['name'],
                     'label'  => 'v' . $shopId,
                     'parent' => 's' . $companyId,

@@ -10,6 +10,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 namespace Gekosale\Core;
+
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -28,26 +29,27 @@ class Controller extends Component
 
     /**
      * Generates relative or absolute url based on given route and parameters
-     * 
+     *
      * @param string $route
      * @param array  $parameters
      * @param string $referenceType
-     * 
+     *
      * @return string Generated url
      */
-    public function generateUrl ($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    public function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         return $this->container->get('router')->generate($route, $parameters, $referenceType);
     }
 
     /**
      * Redirects user to a given url
-     * 
+     *
      * @param string $url
      * @param number $status
+     *
      * @return RedirectResponse
      */
-    public function redirect ($url, $status = 302)
+    public function redirect($url, $status = 302)
     {
         return new RedirectResponse($url, $status);
     }

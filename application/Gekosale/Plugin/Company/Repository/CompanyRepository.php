@@ -13,7 +13,6 @@ namespace Gekosale\Plugin\Company\Repository;
 
 use Gekosale\Core\Repository;
 use Gekosale\Core\Model\Company;
-use Gekosale\Core\Model\Shop;
 
 /**
  * Class CompanyRepository

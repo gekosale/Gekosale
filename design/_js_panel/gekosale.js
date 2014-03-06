@@ -4076,7 +4076,6 @@ var GFormShopSelector = GCore.ExtendClass(GFormField, function() {
 
 	gThis.OnRetractAll = function(eEvent) {
 		gThis.m_jTree.find('li:has(li)').removeClass(gThis._GetClass('Expanded'));
-//		gThis.m_jTree.checkCheckboxes();
 		return false;
 	};
 	
@@ -4173,10 +4172,7 @@ var GFormShopSelector = GCore.ExtendClass(GFormField, function() {
 
 		var jUl = $('<ul/>');
 		gThis._WriteSubtree(jUl, sId);
-		var jExpander = $('<span class="' + gThis._GetClass('Expander') + '"/>');
-		jLi.prepend(jExpander);
 		jLi.append(jUl);
-		jExpander.css('display', 'none');
 		return jLi;
 	};
 	

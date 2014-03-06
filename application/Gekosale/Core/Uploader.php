@@ -11,6 +11,12 @@
  */
 namespace Gekosale\Core;
 
+/**
+ * Class Uploader
+ *
+ * @package Gekosale\Core
+ * @author  Adam Piotrowski <adam@gekosale.com>
+ */
 abstract class Uploader extends Component
 {
 }

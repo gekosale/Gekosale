@@ -36,7 +36,7 @@ class ProducerRepository extends Repository
     /**
      * Returns single producer model
      *
-     * @param $id
+     * @param int $id
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|static
      */
@@ -48,7 +48,7 @@ class ProducerRepository extends Repository
     /**
      * Deletes producer
      *
-     * @param $id
+     * @param array|int $id
      */
     public function delete($id)
     {
@@ -58,12 +58,12 @@ class ProducerRepository extends Repository
     }
 
     /**
-     * Saves producer
+     * Saves producer model
      *
-     * @param      $Data
-     * @param null $id
+     * @param array    $Data Submitted form data
+     * @param int|null $id   Producer ID or null if new producer
      */
-    public function save($Data, $id = null)
+    public function save(array $Data, $id = null)
     {
         $this->transaction(function () use ($Data, $id) {
             $producer = Producer::firstOrNew([
@@ -72,15 +72,14 @@ class ProducerRepository extends Repository
 
             $producer->save();
 
-            foreach ($Data['name'] as $languageId => $name) {
+            foreach ($this->getLanguageIds() as $language) {
 
                 $translation = ProducerTranslation::firstOrCreate([
                     'producer_id' => $producer->id,
-                    'language_id' => $languageId
+                    'language_id' => $language
                 ]);
 
-                $translation->name = $name;
-
+                $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
         });
@@ -96,11 +95,22 @@ class ProducerRepository extends Repository
     public function getPopulateData($id)
     {
         $producerData = $this->find($id);
+        $populateData = [];
+        $accessor     = $this->getPropertyAccessor();
+        $languageData = $producerData->getTranslationData();
 
-        return [
-            'required_data' => [
-                'language_data' => $producerData->getLanguageData()
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'language_data' => $languageData
+        ]);
+
+        $accessor->setValue($populateData, '[description_data]', [
+            'language_data' => $languageData
+        ]);
+
+        $accessor->setValue($populateData, '[meta_data]', [
+            'language_data' => $languageData
+        ]);
+
+        return $populateData;
     }
 }

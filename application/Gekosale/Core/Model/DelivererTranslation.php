@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class DelivererTranslation extends Model implements TranslationModelInterface
+class DelivererTranslation extends Model
 {
 
     protected $table = 'deliverer_translation';

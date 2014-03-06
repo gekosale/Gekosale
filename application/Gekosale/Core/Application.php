@@ -117,9 +117,9 @@ class Application
      */
     protected function getKernelParameters()
     {
-        return array(
+        return [
             'application.root_path'  => ROOTPATH,
             'application.debug_mode' => $this->isDebug
-        );
+        ];
     }
 }

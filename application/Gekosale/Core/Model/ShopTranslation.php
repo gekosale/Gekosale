@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class ShopTranslation extends Model implements TranslationModelInterface
+class ShopTranslation extends Model
 {
 
     protected $table = 'shop_translation';

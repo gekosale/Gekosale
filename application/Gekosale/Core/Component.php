@@ -207,6 +207,24 @@ abstract class Component extends ContainerAware
     }
 
     /**
+     * Shortcut to get all available language ids
+     *
+     * @return mixed
+     * @throws \LogicException
+     */
+    final protected function getLanguageIds()
+    {
+        $collection = $this->getLanguages();
+        $data       = [];
+
+        foreach ($collection as $item) {
+            $data[] = $item['id'];
+        }
+
+        return $data;
+    }
+
+    /**
      * Shortcut to get all available shops
      *
      * @return mixed

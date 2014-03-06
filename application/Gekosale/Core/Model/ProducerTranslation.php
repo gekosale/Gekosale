@@ -11,7 +11,7 @@
  */
 namespace Gekosale\Core\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Gekosale\Core\Model;
 
 /**
  * Class ProducerTranslation
@@ -28,7 +28,22 @@ class ProducerTranslation extends Model
 
     protected $softDelete = false;
 
-    protected $fillable = ['producer_id', 'language_id', 'name'];
+    protected $fillable
+        = [
+            'producer_id',
+            'language_id'
+        ];
+
+    protected $translatable
+        = [
+            'name',
+            'slug',
+            'short_description',
+            'description',
+            'meta_title',
+            'meta_keywords',
+            'meta_description'
+        ];
 
     /**
      * Relation with producer table
