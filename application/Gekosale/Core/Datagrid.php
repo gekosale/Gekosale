@@ -11,7 +11,6 @@
  */
 namespace Gekosale\Core;
 
-use Gekosale\Core\Repository;
 use xajaxResponse;
 use Exception;
 

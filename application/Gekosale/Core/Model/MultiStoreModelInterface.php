@@ -13,18 +13,18 @@
 namespace Gekosale\Core\Model;
 
 /**
- * Interface TranslatableModelInterface
+ * Interface MultiStoreModelInterface
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-interface TranslatableModelInterface
+interface MultiStoreModelInterface
 {
-
     /**
-     * Relation with _translation table
+     * Relation with _shop table
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function translation();
+    public function shop();
+
 }

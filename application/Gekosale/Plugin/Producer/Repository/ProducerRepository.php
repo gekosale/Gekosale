@@ -26,7 +26,7 @@ class ProducerRepository extends Repository
     /**
      * Returns producer collection
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function all()
     {
@@ -38,11 +38,11 @@ class ProducerRepository extends Repository
      *
      * @param int $id
      *
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|static
+     * @return \Illuminate\Database\Eloquent\Model|static
      */
     public function find($id)
     {
-        return Producer::with('translation')->findOrFail($id);
+        return Producer::with('translation', 'shop', 'deliverer')->findOrFail($id);
     }
 
     /**
@@ -74,7 +74,7 @@ class ProducerRepository extends Repository
 
             foreach ($this->getLanguageIds() as $language) {
 
-                $translation = ProducerTranslation::firstOrCreate([
+                $translation = ProducerTranslation::firstOrNew([
                     'producer_id' => $producer->id,
                     'language_id' => $language
                 ]);
@@ -82,6 +82,19 @@ class ProducerRepository extends Repository
                 $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
+
+            if (!empty($Data['deliverers'])) {
+                $producer->deliverer()->sync($Data['deliverers']);
+            } else {
+                $producer->deliverer()->detach();
+            }
+
+            if (!empty($Data['shops'])) {
+                $producer->shop()->sync($Data['shops']);
+            } else {
+                $producer->deliverer()->detach();
+            }
+
         });
     }
 
@@ -98,18 +111,27 @@ class ProducerRepository extends Repository
         $populateData = [];
         $accessor     = $this->getPropertyAccessor();
         $languageData = $producerData->getTranslationData();
+        $shops        = [];
+        $deliverers   = [];
+
+        foreach ($producerData->shop as $shop) {
+            $shops[] = $shop->id;
+        }
+
+        foreach ($producerData->deliverer as $deliverer) {
+            $deliverers[] = $deliverer->id;
+        }
 
         $accessor->setValue($populateData, '[required_data]', [
-            'language_data' => $languageData
+            'language_data' => $languageData,
+            'deliverers'    => $deliverers,
         ]);
 
-        $accessor->setValue($populateData, '[description_data]', [
-            'language_data' => $languageData
-        ]);
+        $accessor->setValue($populateData, '[description_data][language_data]', $languageData);
 
-        $accessor->setValue($populateData, '[meta_data]', [
-            'language_data' => $languageData
-        ]);
+        $accessor->setValue($populateData, '[meta_data][language_data]', $languageData);
+
+        $accessor->setValue($populateData, '[shop_data][shops]', $shops);
 
         return $populateData;
     }

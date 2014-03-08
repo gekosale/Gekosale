@@ -21,19 +21,28 @@ use Gekosale\Core\Model;
  */
 class Producer extends Model implements TranslatableModelInterface
 {
-
+    /**
+     * @var string
+     */
     protected $table = 'producer';
 
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var bool
+     */
     protected $softDelete = false;
 
+    /**
+     * @var array
+     */
     protected $fillable = ['id'];
 
     /**
-     * Relation with producer_translation table
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * {@inheritdoc}
      */
     public function translation()
     {
@@ -41,12 +50,22 @@ class Producer extends Model implements TranslatableModelInterface
     }
 
     /**
-     * Relation with producer_shop table
+     * Relation with Shop model through pivot table producer_shop
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function shop()
     {
-        return $this->hasMany('Gekosale\Core\Model\ProducerShop');
+        return $this->belongsToMany('Gekosale\Core\Model\Shop', 'producer_shop', 'producer_id', 'shop_id');
+    }
+
+    /**
+     * Relation with Deliverer model through pivot table producer_deliverer
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function deliverer()
+    {
+        return $this->belongsToMany('Gekosale\Core\Model\Deliverer', 'producer_deliverer', 'producer_id', 'deliverer_id');
     }
 }

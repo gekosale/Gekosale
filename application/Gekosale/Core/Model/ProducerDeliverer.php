@@ -9,22 +9,24 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-
 namespace Gekosale\Core\Model;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
- * Interface TranslatableModelInterface
+ * Class ProducerDeliverer
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-interface TranslatableModelInterface
+class ProducerDeliverer extends Model
 {
 
-    /**
-     * Relation with _translation table
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
-     */
-    public function translation();
+    protected $table = 'producer_deliverer';
+
+    public $timestamps = true;
+
+    protected $softDelete = false;
+
+    protected $fillable = ['producer_id', 'deliverer_id'];
 }
