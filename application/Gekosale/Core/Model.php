@@ -128,5 +128,4 @@ abstract class Model extends BaseModel
 
         return $languageData;
     }
-
 }

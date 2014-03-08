@@ -34,7 +34,7 @@ class ProducerRepository extends Repository
     }
 
     /**
-     * Returns single producer model
+     * Returns single producer model with all shop and deliverer data
      *
      * @param int $id
      *
@@ -46,7 +46,7 @@ class ProducerRepository extends Repository
     }
 
     /**
-     * Deletes producer
+     * Deletes producer by key or multiple producers if array of ids is passed
      *
      * @param array|int $id
      */
@@ -92,7 +92,7 @@ class ProducerRepository extends Repository
             if (!empty($Data['shops'])) {
                 $producer->shop()->sync($Data['shops']);
             } else {
-                $producer->deliverer()->detach();
+                $producer->shop()->detach();
             }
 
         });
@@ -111,27 +111,17 @@ class ProducerRepository extends Repository
         $populateData = [];
         $accessor     = $this->getPropertyAccessor();
         $languageData = $producerData->getTranslationData();
-        $shops        = [];
-        $deliverers   = [];
-
-        foreach ($producerData->shop as $shop) {
-            $shops[] = $shop->id;
-        }
-
-        foreach ($producerData->deliverer as $deliverer) {
-            $deliverers[] = $deliverer->id;
-        }
 
         $accessor->setValue($populateData, '[required_data]', [
             'language_data' => $languageData,
-            'deliverers'    => $deliverers,
+            'deliverers'    => $producerData->getDeliverers(),
         ]);
 
         $accessor->setValue($populateData, '[description_data][language_data]', $languageData);
 
         $accessor->setValue($populateData, '[meta_data][language_data]', $languageData);
 
-        $accessor->setValue($populateData, '[shop_data][shops]', $shops);
+        $accessor->setValue($populateData, '[shop_data][shops]', $producerData->getShops());
 
         return $populateData;
     }

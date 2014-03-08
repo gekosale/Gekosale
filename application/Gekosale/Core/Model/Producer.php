@@ -68,4 +68,34 @@ class Producer extends Model implements TranslatableModelInterface
     {
         return $this->belongsToMany('Gekosale\Core\Model\Deliverer', 'producer_deliverer', 'producer_id', 'deliverer_id');
     }
+
+    /**
+     * Fetch shop ids from model
+     *
+     * @return array
+     */
+    public function getShops()
+    {
+        $shops = [];
+        foreach ($this->shop as $shop) {
+            $shops[] = $shop->id;
+        }
+
+        return $shops;
+    }
+
+    /**
+     * Fetch deliverer ids from model
+     *
+     * @return array
+     */
+    public function getDeliverers()
+    {
+        $deliverers = [];
+        foreach ($this->deliverer as $deliverer) {
+            $deliverers[] = $deliverer->id;
+        }
+
+        return $deliverers;
+    }
 }

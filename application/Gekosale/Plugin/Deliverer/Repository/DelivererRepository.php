@@ -14,7 +14,6 @@ namespace Gekosale\Plugin\Deliverer\Repository;
 use Gekosale\Core\Repository;
 use Gekosale\Core\Model\Deliverer;
 use Gekosale\Core\Model\DelivererTranslation;
-use Gekosale\Core\Helper;
 
 /**
  * Class DelivererRepository
@@ -76,7 +75,7 @@ class DelivererRepository extends Repository
 
             foreach ($Data['name'] as $languageId => $name) {
 
-                $translation = DelivererTranslation::firstOrCreate([
+                $translation = DelivererTranslation::firstOrNew([
                     'deliverer_id' => $deliverer->id,
                     'language_id'  => $languageId
                 ]);
