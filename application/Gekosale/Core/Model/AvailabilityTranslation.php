@@ -11,7 +11,7 @@
  */
 namespace Gekosale\Core\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Gekosale\Core\Model;
 
 /**
  * Class AvailabilityTranslation
@@ -22,19 +22,50 @@ use Illuminate\Database\Eloquent\Model;
 class AvailabilityTranslation extends Model
 {
 
+    /**
+     * @var string
+     */
     protected $table = 'availability_translation';
 
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var bool
+     */
     protected $softDelete = false;
 
+    /**
+     * @var array
+     */
     protected $fillable = ['availability_id', 'language_id'];
 
+    /**
+     * @var array
+     */
+    protected $translatable
+        = [
+            'name',
+            'description'
+        ];
+
+    /**
+     * Relation with availability table
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function availability()
     {
         return $this->belongsTo('Gekosale\Core\Model\Availability');
     }
 
+    /**
+     * Relation with language table
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function language()
     {
         return $this->belongsTo('Gekosale\Core\Model\Language');

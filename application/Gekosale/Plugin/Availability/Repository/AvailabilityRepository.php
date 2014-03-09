@@ -74,16 +74,14 @@ class AvailabilityRepository extends Repository
 
             $availability->save();
 
-            foreach ($Data['name'] as $languageId => $name) {
+            foreach ($this->getLanguageIds() as $language) {
 
                 $translation = AvailabilityTranslation::firstOrNew([
                     'availability_id' => $availability->id,
-                    'language_id'     => $languageId
+                    'language_id'     => $language
                 ]);
 
-                $translation->name        = $name;
-                $translation->description = $Data['description'][$languageId];
-
+                $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
 
@@ -100,11 +98,14 @@ class AvailabilityRepository extends Repository
     public function getPopulateData($id)
     {
         $availabilityData = $this->find($id);
+        $populateData     = [];
+        $accessor         = $this->getPropertyAccessor();
+        $languageData     = $availabilityData->getTranslationData();
 
-        return [
-            'required_data' => [
-                'language_data' => $availabilityData->getLanguageData()
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'language_data' => $languageData,
+        ]);
+
+        return $populateData;
     }
 }

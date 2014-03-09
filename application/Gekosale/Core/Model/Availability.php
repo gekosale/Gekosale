@@ -11,7 +11,7 @@
  */
 namespace Gekosale\Core\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Gekosale\Core\Model;
 
 /**
  * Class Availability
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Availability extends Model
+class Availability extends Model implements TranslatableModelInterface
 {
 
     protected $table = 'availability';
@@ -33,23 +33,5 @@ class Availability extends Model
     public function translation()
     {
         return $this->hasMany('Gekosale\Core\Model\AvailabilityTranslation');
-    }
-
-    /**
-     * Get translations for availability
-     *
-     * @return array
-     */
-    public function getLanguageData()
-    {
-        $languageData = [];
-        foreach ($this->translation as $translation) {
-            $languageData[$translation->language_id] = [
-                'name'        => $translation->name,
-                'description' => $translation->description
-            ];
-        }
-
-        return $languageData;
     }
 }
