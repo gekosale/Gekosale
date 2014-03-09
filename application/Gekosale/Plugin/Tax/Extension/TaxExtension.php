@@ -9,7 +9,7 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Extension;
+namespace Gekosale\Plugin\Tax\Extension;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -17,12 +17,12 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class VatExtension
+ * Class TaxExtension
  *
- * @package Gekosale\Plugin\Vat\Extension
+ * @package Gekosale\Plugin\Tax\Extension
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatExtension extends Extension
+class TaxExtension extends Extension
 {
 
     public function load(array $config, ContainerBuilder $container)
@@ -38,6 +38,6 @@ class VatExtension extends Extension
 
     public function getAlias()
     {
-        return 'gekosale.plugin.vat';
+        return 'gekosale.plugin.tax';
     }
 }

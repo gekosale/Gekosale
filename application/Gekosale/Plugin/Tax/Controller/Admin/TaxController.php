@@ -9,24 +9,24 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Controller\Admin;
+namespace Gekosale\Plugin\Tax\Controller\Admin;
 
 use Gekosale\Core\Controller\AdminController;
 
 /**
- * Class VatController
+ * Class TaxController
  *
- * @package Gekosale\Plugin\Vat\Controller\Admin
+ * @package Gekosale\Plugin\Tax\Controller\Admin
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatController extends AdminController
+class TaxController extends AdminController
 {
     /**
      * {@inheritdoc}
      */
     protected function getDataGrid()
     {
-        return $this->get('vat.datagrid');
+        return $this->get('tax.datagrid');
     }
 
     /**
@@ -34,7 +34,7 @@ class VatController extends AdminController
      */
     protected function getRepository()
     {
-        return $this->get('vat.repository');
+        return $this->get('tax.repository');
     }
 
     /**
@@ -42,7 +42,7 @@ class VatController extends AdminController
      */
     protected function getForm()
     {
-        return $this->get('vat.form');
+        return $this->get('tax.form');
     }
 
     /**
@@ -50,6 +50,6 @@ class VatController extends AdminController
      */
     protected function getDefaultRoute()
     {
-        return 'admin.vat.index';
+        return 'admin.tax.index';
     }
 }

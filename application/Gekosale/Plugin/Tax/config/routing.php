@@ -14,27 +14,27 @@ use Symfony\Component\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$controller = 'Gekosale\Plugin\Vat\Controller\Admin\VatController';
+$controller = 'Gekosale\Plugin\Tax\Controller\Admin\TaxController';
 
-$collection->add('admin.vat.index', new Route('/index', array(
+$collection->add('admin.tax.index', new Route('/index', array(
     'controller' => $controller,
     'mode'       => 'admin',
     'action'     => 'indexAction'
 )));
 
-$collection->add('admin.vat.add', new Route('/add', array(
+$collection->add('admin.tax.add', new Route('/add', array(
     'controller' => $controller,
     'mode'       => 'admin',
     'action'     => 'addAction'
 )));
 
-$collection->add('admin.vat.edit', new Route('/edit/{id}', array(
+$collection->add('admin.tax.edit', new Route('/edit/{id}', array(
     'controller' => $controller,
     'mode'       => 'admin',
     'action'     => 'editAction',
     'id'         => null
 )));
 
-$collection->addPrefix('/admin/vat');
+$collection->addPrefix('/admin/tax');
 
 return $collection;

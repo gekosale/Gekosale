@@ -33,6 +33,7 @@ class ServiceContainer extends Container
         $this->scopes = array();
         $this->scopeChildren = array();
         $this->methodMap = array(
+            'admin_menu.repository' => 'getAdminMenu_RepositoryService',
             'admin_menu.subscriber' => 'getAdminMenu_SubscriberService',
             'availability.datagrid' => 'getAvailability_DatagridService',
             'availability.form' => 'getAvailability_FormService',
@@ -93,6 +94,10 @@ class ServiceContainer extends Container
             'shop.form' => 'getShop_FormService',
             'shop.repository' => 'getShop_RepositoryService',
             'shop.subscriber' => 'getShop_SubscriberService',
+            'tax.datagrid' => 'getTax_DatagridService',
+            'tax.form' => 'getTax_FormService',
+            'tax.repository' => 'getTax_RepositoryService',
+            'tax.subscriber' => 'getTax_SubscriberService',
             'template.subscriber' => 'getTemplate_SubscriberService',
             'translation' => 'getTranslationService',
             'twig' => 'getTwigService',
@@ -111,15 +116,28 @@ class ServiceContainer extends Container
             'unit.form' => 'getUnit_FormService',
             'unit.repository' => 'getUnit_RepositoryService',
             'unit.subscriber' => 'getUnit_SubscriberService',
-            'vat.datagrid' => 'getVat_DatagridService',
-            'vat.form' => 'getVat_FormService',
-            'vat.repository' => 'getVat_RepositoryService',
-            'vat.subscriber' => 'getVat_SubscriberService',
             'xajax' => 'getXajaxService',
             'xajax_manager' => 'getXajaxManagerService',
         );
 
         $this->aliases = array();
+    }
+
+    /**
+     * Gets the 'admin_menu.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\AdminMenu\Repository\AdminMenuRepository A Gekosale\Plugin\AdminMenu\Repository\AdminMenuRepository instance.
+     */
+    protected function getAdminMenu_RepositoryService()
+    {
+        $this->services['admin_menu.repository'] = $instance = new \Gekosale\Plugin\AdminMenu\Repository\AdminMenuRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -615,8 +633,8 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
         $instance->addSubscriberService('producer.subscriber', 'Gekosale\\Plugin\\Producer\\Event\\ProducerEventSubscriber');
         $instance->addSubscriberService('shop.subscriber', 'Gekosale\\Plugin\\Shop\\Event\\ShopEventSubscriber');
+        $instance->addSubscriberService('tax.subscriber', 'Gekosale\\Plugin\\Tax\\Event\\TaxEventSubscriber');
         $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
-        $instance->addSubscriberService('vat.subscriber', 'Gekosale\\Plugin\\Vat\\Event\\VatEventSubscriber');
 
         return $instance;
     }
@@ -1080,6 +1098,71 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'tax.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Tax\DataGrid\TaxDataGrid A Gekosale\Plugin\Tax\DataGrid\TaxDataGrid instance.
+     */
+    protected function getTax_DatagridService()
+    {
+        $this->services['tax.datagrid'] = $instance = new \Gekosale\Plugin\Tax\DataGrid\TaxDataGrid();
+
+        $instance->setRepository($this->get('tax.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'tax.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Tax\Form\TaxForm A Gekosale\Plugin\Tax\Form\TaxForm instance.
+     */
+    protected function getTax_FormService()
+    {
+        $this->services['tax.form'] = $instance = new \Gekosale\Plugin\Tax\Form\TaxForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'tax.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Tax\Repository\TaxRepository A Gekosale\Plugin\Tax\Repository\TaxRepository instance.
+     */
+    protected function getTax_RepositoryService()
+    {
+        $this->services['tax.repository'] = $instance = new \Gekosale\Plugin\Tax\Repository\TaxRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'tax.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Tax\Event\TaxEventSubscriber A Gekosale\Plugin\Tax\Event\TaxEventSubscriber instance.
+     */
+    protected function getTax_SubscriberService()
+    {
+        return $this->services['tax.subscriber'] = new \Gekosale\Plugin\Tax\Event\TaxEventSubscriber();
+    }
+
+    /**
      * Gets the 'template.subscriber' service.
      *
      * This service is shared.
@@ -1353,71 +1436,6 @@ class ServiceContainer extends Container
     protected function getUnit_SubscriberService()
     {
         return $this->services['unit.subscriber'] = new \Gekosale\Plugin\Unit\Event\UnitEventSubscriber();
-    }
-
-    /**
-     * Gets the 'vat.datagrid' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Plugin\Vat\DataGrid\VatDataGrid A Gekosale\Plugin\Vat\DataGrid\VatDataGrid instance.
-     */
-    protected function getVat_DatagridService()
-    {
-        $this->services['vat.datagrid'] = $instance = new \Gekosale\Plugin\Vat\DataGrid\VatDataGrid();
-
-        $instance->setRepository($this->get('vat.repository'));
-        $instance->setContainer($this);
-
-        return $instance;
-    }
-
-    /**
-     * Gets the 'vat.form' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Plugin\Vat\Form\VatForm A Gekosale\Plugin\Vat\Form\VatForm instance.
-     */
-    protected function getVat_FormService()
-    {
-        $this->services['vat.form'] = $instance = new \Gekosale\Plugin\Vat\Form\VatForm();
-
-        $instance->setContainer($this);
-
-        return $instance;
-    }
-
-    /**
-     * Gets the 'vat.repository' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Plugin\Vat\Repository\VatRepository A Gekosale\Plugin\Vat\Repository\VatRepository instance.
-     */
-    protected function getVat_RepositoryService()
-    {
-        $this->services['vat.repository'] = $instance = new \Gekosale\Plugin\Vat\Repository\VatRepository();
-
-        $instance->setContainer($this);
-
-        return $instance;
-    }
-
-    /**
-     * Gets the 'vat.subscriber' service.
-     *
-     * This service is shared.
-     * This method always returns the same instance of the service.
-     *
-     * @return Gekosale\Plugin\Vat\Event\VatEventSubscriber A Gekosale\Plugin\Vat\Event\VatEventSubscriber instance.
-     */
-    protected function getVat_SubscriberService()
-    {
-        return $this->services['vat.subscriber'] = new \Gekosale\Plugin\Vat\Event\VatEventSubscriber();
     }
 
     /**

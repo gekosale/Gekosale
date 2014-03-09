@@ -21,41 +21,43 @@ use Gekosale\Core\Model\AdminMenu;
 class AdminMenuEventSubscriber implements EventSubscriberInterface
 {
 
-    public function onKernelController (FilterControllerEvent $event)
+    public function onKernelController(FilterControllerEvent $event)
     {
         $container = $event->getDispatcher()->getContainer();
-        
-        if (! $container->get('session')->has('admin.menu')){
-            
+
+        if (!$container->get('session')->has('admin.menu')) {
+
             $menuData = Array(
                 'menu' => Array(
                     'sales',
                     'crm'
                 )
             );
-            
+
             $eventData = new AdminMenuInitEvent($menuData);
-            
+
             $event->getDispatcher()->dispatch(AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT, $eventData);
-            
+
             $adminMenuData = $eventData->getMenuData();
-            
+
             $container->get('session')->set('admin.menu', $eventData->getMenuData());
         }
-        
-        $adminMenuData = $container->get('session')->get('admin.menu');
-        
+
+        $adminMenuData = [
+            'admin_menu' => $container->get('admin_menu.repository')->getMenuData()
+        ];
+
         $templateVars = $event->getRequest()->attributes->get('_template_vars');
 
         $event->getRequest()->attributes->set('_template_vars', array_merge($templateVars, $adminMenuData));
     }
 
-    public static function getSubscribedEvents ()
+    public static function getSubscribedEvents()
     {
         return array(
             KernelEvents::CONTROLLER => array(
                 'onKernelController',
-                - 256
+                -256
             )
         );
     }

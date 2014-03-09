@@ -11,18 +11,18 @@
  */
 namespace Gekosale\Core\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Gekosale\Core\Model;
 
 /**
- * Class Vat
+ * Class Tax
  *
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Vat extends Model
+class Tax extends Model
 {
 
-    protected $table = 'vat';
+    protected $table = 'tax';
 
     public $timestamps = true;
 
@@ -32,7 +32,7 @@ class Vat extends Model
 
     public function translation()
     {
-        return $this->hasMany('Gekosale\Core\Model\VatTranslation');
+        return $this->hasMany('Gekosale\Core\Model\TaxTranslation');
     }
 
     /**

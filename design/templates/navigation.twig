@@ -1,0 +1,20 @@
+<ul id="navigation">
+    {% for firstLevel in admin_menu %}
+        {% if firstLevel.children is empty %}
+            <li {% if firstLevel.active %}class="active"{% endif %}>
+                <a href="{{ firstLevel.link }}" id="menu-{{ firstLevel.icon }}"><span class="icon {{ firstLevel.icon }}"></span>{{ firstLevel.name }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ firstLevel.link }}" id="menu-{{ firstLevel.icon }}"><span class="icon {{ firstLevel.icon }}"></span>{{ firstLevel.name }}</a>
+                <ul>
+                    {% for secondLevel in firstLevel.children %}
+                        <li {% if secondLevel.active %}class="active"{% endif %}>
+                            <a href="{{ secondLevel.link }}">{{ secondLevel.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

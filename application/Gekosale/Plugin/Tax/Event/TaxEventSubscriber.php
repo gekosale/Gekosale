@@ -9,19 +9,19 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Event;
+namespace Gekosale\Plugin\Tax\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**
- * Class VatEventSubscriber
+ * Class TaxEventSubscriber
  *
- * @package Gekosale\Plugin\Vat\Event
+ * @package Gekosale\Plugin\Tax\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatEventSubscriber implements EventSubscriberInterface
+class TaxEventSubscriber implements EventSubscriberInterface
 {
 
     public function onAdminMenuInitAction(Event $event)

@@ -4,6 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="admin_menu.repository" class="Gekosale\Plugin\AdminMenu\Repository\AdminMenuRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
         <service id="admin_menu.subscriber" class="Gekosale\Plugin\AdminMenu\Event\AdminMenuEventSubscriber">
         	<tag name="kernel.event_subscriber" /> 
         </service>

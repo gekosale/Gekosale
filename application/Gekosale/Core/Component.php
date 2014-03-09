@@ -13,6 +13,7 @@ namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class Component
@@ -24,6 +25,20 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
  */
 abstract class Component extends ContainerAware
 {
+
+    /**
+     * Generates relative or absolute url based on given route and parameters
+     *
+     * @param string $route
+     * @param array  $parameters
+     * @param string $referenceType
+     *
+     * @return string Generated url
+     */
+    public function generateUrl($route, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        return $this->container->get('router')->generate($route, $parameters, $referenceType);
+    }
 
     /**
      * Returns true if the service id is defined.

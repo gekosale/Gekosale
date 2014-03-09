@@ -16,4 +16,15 @@ $(document).ready(function() {
 	$('#navigation > li > ul > li > ul > li.active').parent().parent().parent().parent().addClass('active');
 	$('#navigation > li > ul > li.active').parent().parent().addClass('active');
 	$('#navigation > li > ul > li.active').parent().addClass('active');
+
+    $('#navigation li').hoverIntent({
+        interval: 100,
+        over: function() {
+            $('> ul', this).addClass('down').slideDown();
+        },
+        timeout: 300,
+        out: function() {
+            $('> ul', this).removeClass('down').slideUp();
+        }
+    });
 });

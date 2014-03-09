@@ -3,7 +3,7 @@
     <h2>{% trans %}VAT{% endtrans %}</h2>
 
     <ul class="possibilities">
-        <li><a href="{{ path('admin.vat.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+        <li><a href="{{ path('admin.tax.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
     </ul>
 
     <div class="block">
@@ -12,11 +12,11 @@
 
     <script type="text/javascript">
 
-        function editVat(dg, id) {
-            location.href = "{{ path('admin.vat.edit') }}/" + id;
+        function editTax(dg, id) {
+            location.href = "{{ path('admin.tax.edit') }}/" + id;
         }
 
-        function deleteVat(dg, id) {
+        function deleteTax(dg, id) {
             var oRow = theDatagrid.GetRow(id);
             var topic = '{% trans %}Delete{% endtrans %}';
             var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.symbol + '</strong> ?';
@@ -25,7 +25,7 @@
                 id: id
             };
             var func = function (p) {
-                return xajax_doDeleteVat(p.dg, p.id);
+                return xajax_doDeleteTax(p.dg, p.id);
             };
             new GF_Alert(topic, msg, func, true, params);
         }
@@ -69,7 +69,7 @@
             });
 
             var options = {
-                id: 'vat',
+                id: 'tax',
                 appearance: {
                     column_select: false
                 },
@@ -78,10 +78,10 @@
                     rows_per_page: 25
                 },
                 event_handlers: {
-                    load: xajax_getVatForAjax,
-                    edit_row: editVat,
-                    delete_row: deleteVat,
-                    click_row: editVat
+                    load: xajax_getTaxForAjax,
+                    edit_row: editTax,
+                    delete_row: deleteTax,
+                    click_row: editTax
                 },
                 columns: [
                     column_id,

@@ -9,19 +9,19 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Repository;
+namespace Gekosale\Plugin\Tax\Repository;
 
 use Gekosale\Core\Repository,
-    Gekosale\Core\Model\Vat,
-    Gekosale\Core\Model\VatTranslation;
+    Gekosale\Core\Model\Tax,
+    Gekosale\Core\Model\TaxTranslation;
 
 /**
- * Class VatRepository
+ * Class TaxRepository
  *
- * @package Gekosale\Plugin\Vat\Repository
+ * @package Gekosale\Plugin\Tax\Repository
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatRepository extends Repository
+class TaxRepository extends Repository
 {
     /**
      * Returns all tax rates
@@ -30,7 +30,7 @@ class VatRepository extends Repository
      */
     public function all()
     {
-        return Vat::all();
+        return Tax::all();
     }
 
     /**
@@ -42,7 +42,7 @@ class VatRepository extends Repository
      */
     public function find($id)
     {
-        return Vat::with('translation')->findOrFail($id);
+        return Tax::with('translation')->findOrFail($id);
     }
 
     /**
@@ -53,7 +53,7 @@ class VatRepository extends Repository
     public function delete($id)
     {
         $this->transaction(function () use ($id) {
-            return Vat::destroy($id);
+            return Tax::destroy($id);
         });
     }
 
@@ -67,17 +67,17 @@ class VatRepository extends Repository
     {
         $this->transaction(function () use ($Data, $id) {
 
-            $vat = Vat::firstOrNew([
+            $tax = Tax::firstOrNew([
                 'id' => $id
             ]);
 
-            $vat->value = $Data['value'];
-            $vat->save();
+            $tax->value = $Data['value'];
+            $tax->save();
 
             foreach ($Data['name'] as $languageId => $name) {
 
-                $translation = VatTranslation::firstOrNew([
-                    'vat_id'      => $vat->id,
+                $translation = TaxTranslation::firstOrNew([
+                    'tax_id'      => $tax->id,
                     'language_id' => $languageId
                 ]);
 
@@ -98,12 +98,12 @@ class VatRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $vatData = $this->find($id);
+        $taxData = $this->find($id);
 
         return [
             'required_data' => [
-                'value'         => $vatData->value,
-                'language_data' => $vatData->getLanguageData()
+                'value'         => $taxData->value,
+                'language_data' => $taxData->getLanguageData()
             ]
         ];
     }

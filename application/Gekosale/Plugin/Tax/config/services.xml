@@ -4,28 +4,28 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="vat.repository" class="Gekosale\Plugin\Vat\Repository\VatRepository">
+        <service id="tax.repository" class="Gekosale\Plugin\Tax\Repository\TaxRepository">
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
         
-        <service id="vat.datagrid" class="Gekosale\Plugin\Vat\DataGrid\VatDataGrid">
+        <service id="tax.datagrid" class="Gekosale\Plugin\Tax\DataGrid\TaxDataGrid">
             <call method="setRepository">
-                <argument type="service" id="vat.repository" />
+                <argument type="service" id="tax.repository" />
             </call>
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
         
-        <service id="vat.form" class="Gekosale\Plugin\Vat\Form\VatForm">
+        <service id="tax.form" class="Gekosale\Plugin\Tax\Form\TaxForm">
         	<call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
         
-        <service id="vat.subscriber" class="Gekosale\Plugin\Vat\Event\VatEventSubscriber">
+        <service id="tax.subscriber" class="Gekosale\Plugin\Tax\Event\TaxEventSubscriber">
         	<tag name="kernel.event_subscriber" />
         </service>
     </services>

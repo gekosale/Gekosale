@@ -53,6 +53,7 @@ class XajaxManager
     }
 
     /**
+     * Registers new callback function
      *
      * @param string  $name
      * @param unknown $callback
@@ -63,7 +64,7 @@ class XajaxManager
     }
 
     /**
-     * Register multiple Xajax functions
+     * Register multiple callback functions
      *
      * @param array $functions
      */
@@ -96,11 +97,12 @@ class XajaxManager
             $this,
             $callbackName
         ));
+
         return 'xajax_' . $name;
     }
 
     /**
-     * Call dynamically registered Xajax function
+     * Calls dynamically registered Xajax function
      *
      * @param $name
      * @param $arguments
@@ -109,10 +111,9 @@ class XajaxManager
      */
     public function __call($name, $arguments)
     {
-        $request         = $arguments[0];
-        $responseHandler = $arguments[1];
-        $objResponse     = new xajaxResponse();
-        $response        = call_user_func($this->callbacks[$name], $request);
+        list($request, $responseHandler) = $arguments;
+        $objResponse = new xajaxResponse();
+        $response    = call_user_func($this->callbacks[$name], $request);
         if (!is_array($response)) {
             $response = Array();
         }

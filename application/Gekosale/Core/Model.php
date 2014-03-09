@@ -18,7 +18,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * Class Model
  *
- * Provides additional logic needed in all models
+ * Extends base Eloquent model and provides additional methods
  *
  * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>
@@ -26,7 +26,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 abstract class Model extends BaseModel
 {
     /**
-     * Model translatable attributes
+     * Translatable attributes in model
      *
      * @var array
      */

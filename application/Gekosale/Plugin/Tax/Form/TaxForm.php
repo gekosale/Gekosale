@@ -9,31 +9,31 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\Form;
+namespace Gekosale\Plugin\Tax\Form;
 
 use Gekosale\Core\Form,
-    Gekosale\Plugin\Vat\Event\VatFormEvent;
+    Gekosale\Plugin\Tax\Event\TaxFormEvent;
 
 /**
- * Class VatForm
+ * Class TaxForm
  *
- * @package Gekosale\Plugin\Vat\Form
+ * @package Gekosale\Plugin\Tax\Form
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatForm extends Form
+class TaxForm extends Form
 {
 
     /**
-     * Initializes VatForm
+     * Initializes TaxForm
      *
-     * @param array $vatData
+     * @param array $taxData
      *
      * @return Form\Elements\Form
      */
-    public function init($vatData = [])
+    public function init($taxData = [])
     {
         $form = $this->addForm([
-            'name' => 'vat'
+            'name' => 'tax'
         ]);
 
         $requiredData = $form->addChild($this->addFieldset([
@@ -54,10 +54,10 @@ class VatForm extends Form
                 $this->addRuleRequired($this->trans('Name is required')),
                 $this->addRuleUnique($this->trans('Tax rate already exists'),
                     [
-                        'table'   => 'vat_translation',
+                        'table'   => 'tax_translation',
                         'column'  => 'name',
                         'exclude' => [
-                            'column' => 'vat_id',
+                            'column' => 'tax_id',
                             'values' => $this->getParam('id')
                         ]
                     ]
@@ -73,7 +73,7 @@ class VatForm extends Form
                 $this->addRuleRequired($this->trans('Tax value is required')),
                 $this->addRuleUnique($this->trans('Tax value already exists'),
                     [
-                        'table'   => 'vat',
+                        'table'   => 'tax',
                         'column'  => 'value',
                         'exclude' => [
                             'column' => 'id',
@@ -92,9 +92,9 @@ class VatForm extends Form
         $form->addFilter($this->addFilterTrim());
         $form->addFilter($this->addFilterSecure());
 
-        $event = new VatFormEvent($form, $vatData);
+        $event = new TaxFormEvent($form, $taxData);
 
-        $this->getDispatcher()->dispatch(VatFormEvent::FORM_INIT_EVENT, $event);
+        $this->getDispatcher()->dispatch(TaxFormEvent::FORM_INIT_EVENT, $event);
 
         $form->Populate($event->getPopulateData());
 

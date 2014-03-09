@@ -4977,14 +4977,14 @@ form {
     border-left: 1px solid #4a4a4a;
 }
 
-#menu-dashboard { width: 43px; }
+#menu-dashboard { width: 70px; }
 #menu-catalog { width: 56px; }
-#menu-promotion { width: 68px; }
-#menu-sales { width: 66px; }
+#menu-promotion { width: 80px; }
+#menu-sales { width: 37px; }
 #menu-reports { width: 58px; }
 #menu-crm { width: 35px; }
 #menu-cms { width: 32px; }
-#menu-layout { width: 116px; }
+#menu-layout { width: 103px; }
 #menu-external { width: 72px; }
 #menu-configuration { width: 91px; }
 

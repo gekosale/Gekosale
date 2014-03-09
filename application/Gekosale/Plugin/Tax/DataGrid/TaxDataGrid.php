@@ -9,18 +9,18 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Vat\DataGrid;
+namespace Gekosale\Plugin\Tax\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
 
 /**
- * Class VatDataGrid
+ * Class TaxDataGrid
  *
- * @package Gekosale\Plugin\Vat\DataGrid
+ * @package Gekosale\Plugin\Tax\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class VatDataGrid extends DataGrid implements DataGridInterface
+class TaxDataGrid extends DataGrid implements DataGridInterface
 {
     /**
      * {@inheritdoc}
@@ -40,8 +40,8 @@ class VatDataGrid extends DataGrid implements DataGridInterface
         ]);
 
         $this->setFrom('
-            vat V
-            LEFT JOIN vat_translation VT ON VT.vat_id = V.id
+            tax V
+            LEFT JOIN tax_translation VT ON VT.tax_id = V.id
         ');
 
         $this->setGroupBy('
@@ -55,8 +55,8 @@ class VatDataGrid extends DataGrid implements DataGridInterface
     public function registerEventHandlers()
     {
         $this->getXajaxManager()->registerFunctions([
-            'getVatForAjax' => [$this, 'getData'],
-            'doDeleteVat'   => [$this, 'delete']
+            'getTaxForAjax' => [$this, 'getData'],
+            'doDeleteTax'   => [$this, 'delete']
         ]);
     }
 }

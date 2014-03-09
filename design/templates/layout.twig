@@ -24,6 +24,7 @@
         <script type="text/javascript" src="{{ asset('design/_js_libs/base64.js') }}"></script>
         <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.hotkeys.js') }}"></script>
         <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.onkeyup.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.hoverIntent.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('design/_js_panel/gekosale.js') }}"></script>
     {% endblock %}
     <script type="text/javascript">
@@ -66,19 +67,19 @@
         <h1><a href="{{ path('admin.dashboard') }}"><img src="{{ asset('design/_images_panel/logos/logo.png') }}" alt=""/></a></h1>
 
         <div id="livesearch">
-            <input type="text" name="search" id="search" placeholder="{% trans %}TXT_SEARCH{% endtrans %}"/>
+            <input type="text" name="search" id="search" placeholder="{% trans %}Search{% endtrans %}"/>
         </div>
         <div id="top-menu">
             <ul>
                 <li>
                     <a href="{{ URL }}users/edit/{{ user_id }}">{% if user_name == ' ' %}{% trans %}TXT_ADMIN_ACCOUNT{% endtrans %}{% else %}{{ user_name }}{% endif %}</a>
-                    (<a href="{{ URL }}logout">{% trans %}TXT_LOGOUT{% endtrans %}</a>)
+                    (<a href="{{ URL }}logout">{% trans %}Logout{% endtrans %}</a>)
                 </li>
                 <li>
-                    <a target="_blank" href="http://wellcommerce.pl/zasoby/">{% trans %}TXT_HELP{% endtrans %}</a>
+                    <a target="_blank" href="http://wellcommerce.pl/zasoby/">{% trans %}Help{% endtrans %}</a>
                 </li>
                 <li>
-                    <a href="{{ FRONTEND_URL }}" target="_blank">{% trans %}TXT_HOME_PAGE{% endtrans %}</a>
+                    <a href="{{ FRONTEND_URL }}" target="_blank">{% trans %}Your shop{% endtrans %}</a>
                 </li>
             </ul>
         </div>
