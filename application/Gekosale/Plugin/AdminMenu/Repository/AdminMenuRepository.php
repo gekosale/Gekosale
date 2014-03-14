@@ -66,12 +66,13 @@ class AdminMenuRepository extends Repository
             }
 
             $menuItems[] = Array(
-                'id'       => $menu['id'],
-                'icon'     => $menu['icon'],
-                'name'     => $this->trans($menu['name']),
-                'link'     => (null !== $menu['route']) ? $this->generateUrl($menu['route']) : '',
-                'active'   => (bool)($this->currentRoute == $menu['route']),
-                'children' => $this->parseMenuTree($menu['id']),
+                'id'         => $menu['id'],
+                'icon'       => $menu['icon'],
+                'name'       => $this->trans($menu['name']),
+                'sort_order' => $this->trans($menu['sort_order']),
+                'link'       => (null !== $menu['route']) ? $this->generateUrl($menu['route']) : '',
+                'active'     => (bool)($this->currentRoute == $menu['route']),
+                'children'   => $this->parseMenuTree($menu['id']),
             );
         }
 

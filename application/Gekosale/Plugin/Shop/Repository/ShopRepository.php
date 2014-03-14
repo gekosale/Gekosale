@@ -77,17 +77,14 @@ class ShopRepository extends Repository
             $shop->company_id = $Data['company_id'];
             $shop->save();
 
-            foreach ($Data['name'] as $languageId => $name) {
+            foreach ($this->getLanguageIds() as $language) {
 
                 $translation = ShopTranslation::firstOrNew([
                     'shop_id'     => $shop->id,
-                    'language_id' => $languageId
+                    'language_id' => $language
                 ]);
 
-                $translation->name             = $name;
-                $translation->meta_title       = $Data['meta_title'][$languageId];
-                $translation->meta_keywords    = $Data['meta_keywords'][$languageId];
-                $translation->meta_description = $Data['meta_description'][$languageId];
+                $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
         });
@@ -103,18 +100,21 @@ class ShopRepository extends Repository
     public function getPopulateData($id)
     {
         $shopData     = $this->find($id);
-        $languageData = $shopData->getLanguageData();
+        $populateData = [];
+        $accessor     = $this->getPropertyAccessor();
+        $languageData = $shopData->getTranslationData();
 
-        return [
-            'required_data' => [
-                'url'           => $shopData->url,
-                'is_offline'    => $shopData->is_offline,
-                'company_id'    => $shopData->company_id,
-                'language_data' => $languageData
-            ],
-            'meta_data'     => [
-                'language_data' => $languageData
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'url'           => $shopData->url,
+            'is_offline'    => $shopData->is_offline,
+            'company_id'    => $shopData->company_id,
+            'language_data' => $languageData
+        ]);
+
+        $accessor->setValue($populateData, '[meta_data]', [
+            'language_data' => $languageData
+        ]);
+
+        return $populateData;
     }
 }

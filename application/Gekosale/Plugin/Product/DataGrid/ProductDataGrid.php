@@ -9,27 +9,25 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Availability\DataGrid;
+namespace Gekosale\Plugin\Product\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
-use Gekosale\Core\Model\Availability;
-use Gekosale\Core\Model\AvailabilityTranslation;
 
 /**
- * Class AvailabilityDataGrid
+ * Class ProductDataGrid
  *
- * @package Gekosale\Plugin\Availability\DataGrid
+ * @package Gekosale\Plugin\Product\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class AvailabilityDataGrid extends DataGrid implements DataGridInterface
+class ProductDataGrid extends DataGrid implements DataGridInterface
 {
     /**
      * {@inheritdoc}
      */
     public function init()
     {
-        $this->setModel(Availability::with('translation'));
+
     }
 
     /**
@@ -38,8 +36,8 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
     public function registerEventHandlers()
     {
         $this->getXajaxManager()->registerFunctions([
-            'getAvailabilityForAjax' => [$this, 'getData'],
-            'doDeleteAvailability'   => [$this, 'delete']
+            'getProductForAjax' => [$this, 'getData'],
+            'doDeleteProduct'   => [$this, 'delete']
         ]);
     }
 }

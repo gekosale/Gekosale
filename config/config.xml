@@ -8,6 +8,7 @@
         <import resource="parameters.xml" />
         <import resource="services/core.xml" />
         <import resource="services/database.xml" />
+        <import resource="services/datagrid.xml" />
         <import resource="services/routing.xml" />
         <import resource="services/session.xml" />
         <import resource="services/template.xml" />

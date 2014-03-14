@@ -19,7 +19,7 @@ use Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Contact extends Model
+class Contact extends Model implements TranslatableModelInterface
 {
 
     protected $table = 'contact';
@@ -60,31 +60,5 @@ class Contact extends Model
     public function getIsEnabledAttribute($value)
     {
         return (int)$value;
-    }
-
-    /**
-     * Get translations for deliverer
-     *
-     * @return array
-     */
-    public function getLanguageData()
-    {
-        $languageData = [];
-        foreach ($this->translation as $translation) {
-            $languageData[$translation->language_id] = [
-                'name'     => $translation->name,
-                'email'    => $translation->email,
-                'phone'    => $translation->phone,
-                'street'   => $translation->street,
-                'streetno' => $translation->streetno,
-                'flatno'   => $translation->flatno,
-                'postcode' => $translation->postcode,
-                'province' => $translation->province,
-                'city'     => $translation->city,
-                'country'  => $translation->country,
-            ];
-        }
-
-        return $languageData;
     }
 }

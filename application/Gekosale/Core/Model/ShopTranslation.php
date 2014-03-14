@@ -30,15 +30,13 @@ class ShopTranslation extends Model
 
     protected $fillable = ['shop_id', 'language_id'];
 
-    public function availability()
-    {
-        return $this->belongsTo('Gekosale\Core\Model\Shop');
-    }
-
-    public function language()
-    {
-        return $this->belongsTo('Gekosale\Core\Model\Language');
-    }
+    protected $translatable
+        = [
+            'name',
+            'meta_title',
+            'meta_keywords',
+            'meta_description',
+        ];
 
     public function scopeHasLanguageId($query, $language)
     {

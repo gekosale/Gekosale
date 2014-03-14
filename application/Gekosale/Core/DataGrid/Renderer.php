@@ -11,7 +11,7 @@
  */
 namespace Gekosale\Core\DataGrid;
 
-use Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Core\Component;
 
 /**
  * Class Renderer
@@ -19,23 +19,34 @@ use Gekosale\Core\DataGrid\DataGridInterface;
  * @package Gekosale\Core\DataGrid
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Renderer
+class Renderer extends Component
 {
-
     protected $datagrid;
 
-    protected $container;
+    protected $html;
 
-    public function __construct (DataGridInterface $datagrid)
+    public function render(DataGridInterface $datagrid)
     {
         $this->datagrid = $datagrid;
-        $this->template = $this->datagrid->getContainer()->get('twig');
+        $this->options  = $this->datagrid->getOptions();
+
+        print_r($this->options);
+
+        return $this->container->get('twig')->render('datagrid.twig', [
+            'datagrid_options' => $this->options,
+            'datagrid_html'    => $this->writeOptions(),
+            'datagrid'         => $this->datagrid
+        ]);
+
     }
 
-    public function toHtml ()
+    private function writeOptions()
     {
-        return $this->template->render('datagrid.twig', [
-            'datagrid' => $this->datagrid
-        ]);
+        $options['appearance'] = json_encode($this->options['appearance']);
+        $options['mechanics'] = json_encode($this->options['mechanics']);
+        $options['event_handlers'] = json_encode($this->options['event_handlers'],JSON_PRETTY_PRINT);
+
+
+        return $options;
     }
-} 
+}

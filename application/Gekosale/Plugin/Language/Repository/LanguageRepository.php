@@ -54,8 +54,7 @@ class LanguageRepository extends Repository
      */
     public function delete($id)
     {
-        $this->transaction(function () use ($id)
-        {
+        $this->transaction(function () use ($id) {
             return Language::destroy($id);
         });
     }
@@ -68,8 +67,7 @@ class LanguageRepository extends Repository
      */
     public function save($Data, $id = null)
     {
-        $this->transaction(function () use ($Data, $id)
-        {
+        $this->transaction(function () use ($Data, $id) {
             $language = Language::firstOrCreate([
                 'id' => $id
             ]);
@@ -92,17 +90,18 @@ class LanguageRepository extends Repository
     public function getPopulateData($id)
     {
         $languageData = $this->find($id);
+        $populateData = [];
+        $accessor     = $this->getPropertyAccessor();
 
-        $populateData = [
-            'required_data' => [
-                'name'        => $languageData->name,
-                'translation' => $languageData->translation,
-                'locale'      => $languageData->locale,
-            ],
-            'currency_data' => [
-                'currency_id' => $languageData->currency_id
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'name'        => $languageData->name,
+            'translation' => $languageData->translation,
+            'locale'      => $languageData->locale,
+        ]);
+
+        $accessor->setValue($populateData, '[currency_data]', [
+            'currency_id' => $languageData->currency_id
+        ]);
 
         return $populateData;
     }
@@ -118,8 +117,7 @@ class LanguageRepository extends Repository
 
         $Data = [];
 
-        foreach ($locales as $locale => $name)
-        {
+        foreach ($locales as $locale => $name) {
             $Data[$locale] = sprintf('%s (%s)', $name, $locale);
         }
 

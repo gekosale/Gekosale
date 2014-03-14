@@ -30,6 +30,11 @@ class UnitTranslation extends Model
 
     protected $fillable = ['unit_id', 'language_id'];
 
+    protected $translatable
+        = [
+            'name',
+        ];
+
     public function unit()
     {
         return $this->belongsTo('Gekosale\Core\Model\Unit');

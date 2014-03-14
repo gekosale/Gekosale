@@ -107,4 +107,14 @@ class TaxRepository extends Repository
             ]
         ];
     }
+
+    /**
+     * Returns Collection as ke-value pairs ready to use in selects
+     *
+     * @return mixed
+     */
+    public function getAllTaxToSelect()
+    {
+        return $this->getHelper()->flattenCollection($this->all(), 'id', 'translation.name');
+    }
 }

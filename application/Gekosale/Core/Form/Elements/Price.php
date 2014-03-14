@@ -18,13 +18,9 @@ class Price extends TextField implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (isset($this->_attributes['vat_field']) && is_subclass_of($this->_attributes['vat_field'], 'FormEngine\Elements\Field')) {
+        if (isset($this->_attributes['vat_field']) && $this->_attributes['vat_field'] instanceof Field) {
             $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->getName();
         }
-        $this->_attributes['prefixes'] = Array(
-            Translation::get('TXT_PRICE_NET'),
-            Translation::get('TXT_PRICE_GROSS')
-        );
     }
 
     public function prepareAttributesJs()

@@ -1,11 +1,52 @@
-{% macro placeholder(datagrid) %}
-{{ datagrid.name }}
-{% endmacro %}
+<div class="block">
+    <div id="datagrid-{{ datagrid_options.id }}"></div>
+</div>
 
-{% macro columns(datagrid) %}
-a
-{% endmacro %}
+<script type="text/javascript">
 
-{% macro options(datagrid) %}
-b
-{% endmacro %}
+    {% if datagrid_options.event_handlers.edit_row %}
+    function edit{{ datagrid_options.id|capitalize }}(dg, id) {
+        return {{ datagrid_options.event_handlers.edit_row }}(id);
+    }
+    {%  endif %}
+
+    {% if datagrid_options.event_handlers.delete_row %}
+    function delete{{ datagrid_options.id|capitalize }}(dg, id) {
+        var oRow = datagrid.GetRow(id);
+        var topic = '{% trans %}Delete{% endtrans %}';
+        var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.name + '</strong> ?';
+        var params = {
+            dg: dg,
+            id: id
+        };
+        var func = function (p) {
+            return {{ datagrid_options.event_handlers.delete_row }}(p.dg, p.id);
+        };
+        new GF_Alert(topic, msg, func, true, params);
+    }
+    {%  endif %}
+
+    var datagrid;
+
+    $(document).ready(function () {
+
+        var options = {
+            id: '{{ datagrid_options.id }}',
+            appearance: {{ datagrid_html.appearance|raw }},
+            mechanics: {{ datagrid_html.mechanics|raw }},
+            event_handlers: {{ datagrid_html.event_handlers|raw }},
+            columns: [
+                {{ datagrid_html.columns }}
+            ],
+            row_actions: [
+                {{ datagrid_html.row_actions }}
+            ],
+            context_actions: [
+                {{ datagrid_html.context_actions }}
+            ]
+        };
+
+        datagrid = new GF_Datagrid($('#datagrid-{{ datagrid_options.id }}'), options);
+
+    });
+</script>

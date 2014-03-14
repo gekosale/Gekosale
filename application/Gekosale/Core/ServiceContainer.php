@@ -59,6 +59,7 @@ class ServiceContainer extends Container
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
             'database_manager' => 'getDatabaseManagerService',
+            'datagrid_renderer' => 'getDatagridRendererService',
             'deliverer.datagrid' => 'getDeliverer_DatagridService',
             'deliverer.form' => 'getDeliverer_FormService',
             'deliverer.repository' => 'getDeliverer_RepositoryService',
@@ -83,6 +84,10 @@ class ServiceContainer extends Container
             'producer.form' => 'getProducer_FormService',
             'producer.repository' => 'getProducer_RepositoryService',
             'producer.subscriber' => 'getProducer_SubscriberService',
+            'product.datagrid' => 'getProduct_DatagridService',
+            'product.form' => 'getProduct_FormService',
+            'product.repository' => 'getProduct_RepositoryService',
+            'product.subscriber' => 'getProduct_SubscriberService',
             'request' => 'getRequestService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
@@ -540,6 +545,23 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'datagrid_renderer' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\DataGrid\Renderer A Gekosale\Core\DataGrid\Renderer instance.
+     */
+    protected function getDatagridRendererService()
+    {
+        $this->services['datagrid_renderer'] = $instance = new \Gekosale\Core\DataGrid\Renderer();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
      * Gets the 'deliverer.datagrid' service.
      *
      * This service is shared.
@@ -632,6 +654,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
         $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
         $instance->addSubscriberService('producer.subscriber', 'Gekosale\\Plugin\\Producer\\Event\\ProducerEventSubscriber');
+        $instance->addSubscriberService('product.subscriber', 'Gekosale\\Plugin\\Product\\Event\\ProductEventSubscriber');
         $instance->addSubscriberService('shop.subscriber', 'Gekosale\\Plugin\\Shop\\Event\\ShopEventSubscriber');
         $instance->addSubscriberService('tax.subscriber', 'Gekosale\\Plugin\\Tax\\Event\\TaxEventSubscriber');
         $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
@@ -935,6 +958,71 @@ class ServiceContainer extends Container
     protected function getProducer_SubscriberService()
     {
         return $this->services['producer.subscriber'] = new \Gekosale\Plugin\Producer\Event\ProducerEventSubscriber();
+    }
+
+    /**
+     * Gets the 'product.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Product\DataGrid\ProductDataGrid A Gekosale\Plugin\Product\DataGrid\ProductDataGrid instance.
+     */
+    protected function getProduct_DatagridService()
+    {
+        $this->services['product.datagrid'] = $instance = new \Gekosale\Plugin\Product\DataGrid\ProductDataGrid();
+
+        $instance->setRepository($this->get('product.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'product.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Product\Form\ProductForm A Gekosale\Plugin\Product\Form\ProductForm instance.
+     */
+    protected function getProduct_FormService()
+    {
+        $this->services['product.form'] = $instance = new \Gekosale\Plugin\Product\Form\ProductForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'product.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Product\Repository\ProductRepository A Gekosale\Plugin\Product\Repository\ProductRepository instance.
+     */
+    protected function getProduct_RepositoryService()
+    {
+        $this->services['product.repository'] = $instance = new \Gekosale\Plugin\Product\Repository\ProductRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'product.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Product\Event\ProductEventSubscriber A Gekosale\Plugin\Product\Event\ProductEventSubscriber instance.
+     */
+    protected function getProduct_SubscriberService()
+    {
+        return $this->services['product.subscriber'] = new \Gekosale\Plugin\Product\Event\ProductEventSubscriber();
     }
 
     /**
@@ -1568,6 +1656,7 @@ class ServiceContainer extends Container
             'xajax_manager.class' => 'Gekosale\\Core\\XajaxManager',
             'xajax.class' => 'xajax',
             'database_manager.class' => 'Illuminate\\Database\\Capsule\\Manager',
+            'datagrid_renderer.class' => 'Gekosale\\Core\\DataGrid\\Renderer',
             'router.class' => 'Symfony\\Component\\Routing\\Router',
             'router.loader.class' => 'Symfony\\Component\\Routing\\Loader\\PhpFileLoader',
             'router.subscriber.class' => 'Symfony\\Component\\HttpKernel\\EventListener\\RouterListener',

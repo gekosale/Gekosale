@@ -75,22 +75,14 @@ class ContactRepository extends Repository
             $contact->is_enabled = $Data['is_enabled'];
             $contact->save();
 
-            foreach ($Data['name'] as $languageId => $name) {
+            foreach ($this->getLanguageIds() as $language) {
 
                 $translation = ContactTranslation::firstOrNew([
                     'contact_id'  => $contact->id,
-                    'language_id' => $languageId
+                    'language_id' => $language
                 ]);
 
-                $translation->name     = $name;
-                $translation->email    = $Data['email'][$languageId];
-                $translation->phone    = $Data['phone'][$languageId];
-                $translation->street   = $Data['street'][$languageId];
-                $translation->streetno = $Data['streetno'][$languageId];
-                $translation->flatno   = $Data['flatno'][$languageId];
-                $translation->province = $Data['province'][$languageId];
-                $translation->city     = $Data['city'][$languageId];
-                $translation->country  = $Data['country'][$languageId];
+                $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
 
@@ -106,15 +98,19 @@ class ContactRepository extends Repository
      */
     public function getPopulateData($id)
     {
-        $contactData = $this->find($id);
+        $contactData  = $this->find($id);
+        $populateData = [];
+        $accessor     = $this->getPropertyAccessor();
+        $languageData = $contactData->getTranslationData();
 
-        return [
-            'required_data'    => [
-                'is_enabled' => $contactData->is_enabled
-            ],
-            'translation_data' => [
-                'language_data' => $contactData->getLanguageData()
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'is_enabled' => $contactData->is_enabled
+        ]);
+
+        $accessor->setValue($populateData, '[translation_data]', [
+            'language_data' => $languageData
+        ]);
+
+        return $populateData;
     }
 }

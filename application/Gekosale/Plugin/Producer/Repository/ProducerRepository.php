@@ -125,4 +125,14 @@ class ProducerRepository extends Repository
 
         return $populateData;
     }
+
+    /**
+     * Returns Collection as ke-value pairs ready to use in selects
+     *
+     * @return mixed
+     */
+    public function getAllProducerToSelect()
+    {
+        return $this->getHelper()->flattenCollection($this->all(), 'id', 'translation.name');
+    }
 }

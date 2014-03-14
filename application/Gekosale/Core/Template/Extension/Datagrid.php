@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Gekosale, Open Source E-Commerce Solution 
- * 
- * For the full copyright and license information, 
- * please view the LICENSE file that was distributed with this source code. 
- * 
+ * Gekosale, Open Source E-Commerce Solution
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ *
  * @package     Gekosale\Core\Template
  * @subpackage  Gekosale\Core\Template\Extension
  * @author      Adam Piotrowski <adam@gekosale.com>
@@ -21,12 +21,12 @@ class DataGrid extends \Twig_Extension
 
     protected $container;
 
-    public function __construct (ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    public function getFunctions ()
+    public function getFunctions()
     {
         return array(
             new \Twig_SimpleFunction('datagrid_renderer', array(
@@ -40,12 +40,12 @@ class DataGrid extends \Twig_Extension
         );
     }
 
-    public function render (DataGridInterface $datagrid)
+    public function render(DataGridInterface $datagrid)
     {
-        return $datagrid->render();
+        return $this->container->get('datagrid_renderer')->render($datagrid);
     }
 
-    public function getName ()
+    public function getName()
     {
         return 'datagrid_renderer';
     }

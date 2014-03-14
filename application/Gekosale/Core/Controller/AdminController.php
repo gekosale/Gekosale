@@ -36,6 +36,7 @@ abstract class AdminController extends Controller
         $datagrid->registerEventHandlers();
 
         return [
+            'datagrid'        => $datagrid,
             'datagrid_filter' => $datagrid->getFilterData()
         ];
     }

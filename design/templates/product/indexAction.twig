@@ -1,23 +1,22 @@
 {% extends "layout.twig" %}
 {% block content %}
-    <h2>{% trans %}Contacts{% endtrans %}</h2>
+    <h2>{% trans %}Products{% endtrans %}</h2>
 
     <ul class="possibilities">
-        <li><a href="{{ path('admin.contact.add') }}" class="button"
-               title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+        <li><a href="{{ path('admin.product.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
     </ul>
 
     <div class="block">
-        <div id="datagrid-contact"></div>
+        <div id="datagrid-product"></div>
     </div>
 
     <script type="text/javascript">
 
-        function editContact(dg, id) {
-            location.href = "{{ path('admin.contact.edit') }}/" + id;
+        function editProduct(dg, id) {
+            location.href = "{{ path('admin.product.edit') }}/" + id;
         }
 
-        function deleteContact(dg, id) {
+        function deleteProduct(dg, id) {
             var oRow = theDatagrid.GetRow(id);
             var topic = '{% trans %}Delete{% endtrans %}';
             var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.name + '</strong> ?';
@@ -26,7 +25,7 @@
                 id: id
             };
             var func = function (p) {
-                return xajax_doDeleteContact(p.dg, p.id);
+                return xajax_doDeleteProduct(p.dg, p.id);
             };
             new GF_Alert(topic, msg, func, true, params);
         }
@@ -59,7 +58,7 @@
             });
 
             var options = {
-                id: 'contact',
+                id: 'product',
                 appearance: {
                     column_select: false
                 },
@@ -68,10 +67,10 @@
                     rows_per_page: 25
                 },
                 event_handlers: {
-                    load: xajax_getContactForAjax,
-                    edit_row: editContact,
-                    delete_row: deleteContact,
-                    click_row: editContact
+                    load: xajax_getProductForAjax,
+                    edit_row: editProduct,
+                    delete_row: deleteProduct,
+                    click_row: editProduct
                 },
                 columns: [
                     column_id,
@@ -87,7 +86,7 @@
                 ]
             };
 
-            theDatagrid = new GF_Datagrid($('#datagrid-contact'), options);
+            theDatagrid = new GF_Datagrid($('#datagrid-product'), options);
 
         });
     </script>

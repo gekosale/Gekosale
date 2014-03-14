@@ -53,51 +53,25 @@ class Column
     /**
      * @param $options
      */
-    public function __construct (array $options)
+    public function __construct(array $options)
     {
-        $options = array_merge([
-            'caption' => null,
-            'processFunction' => null,
-            'processLanguage' => false,
-            'editable' => false,
-            'selectable' => false,
-            'filter' => NULL,
-            'appearance' => [
-                'width' => DataGridInterface::WIDTH_AUTO,
-                'visible' => true,
-                'align' => DataGridInterface::ALIGN_LEFT
-            ]
-        ], $options);
-        
-        $this->name = $options['name'];
-        $this->source = $options['source'];
-        $this->editable = $options['editable'];
-        $this->selectable = $options['editable'];
-        $this->filter = $options['filter'];
-        $this->caption = $options['caption'];
-        $this->appearance = $options['appearance'];
-        $this->processFunction = $options['processFunction'];
-        $this->processLanguage = (bool) $options['processLanguage'];
-        
-        if ($this->processFunction != NULL && ! $this->processFunction instanceof Closure) {
-            throw new \InvalidArgumentException('DataGrid process function should be Closure');
-        }
+        $this->options = $options;
     }
 
-    public function render ()
+    public function render()
     {
         $options = json_encode([
-            'id' => $this->name,
-            'caption' => $this->caption,
+            'id'         => $this->name,
+            'caption'    => $this->caption,
             'appearance' => $this->appearance
         ]);
-        
+
         $script = "
             var column_{$this->name} = new GF_Datagrid_Column({
                {$options}
             });
         ";
-        
+
         return $script;
     }
 } 

@@ -19,7 +19,7 @@ use Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Unit extends Model
+class Unit extends Model implements TranslatableModelInterface
 {
 
     protected $table = 'unit';
@@ -33,22 +33,5 @@ class Unit extends Model
     public function translation()
     {
         return $this->hasMany('Gekosale\Core\Model\UnitTranslation');
-    }
-
-    /**
-     * Get translations
-     *
-     * @return array
-     */
-    public function getLanguageData()
-    {
-        $languageData = [];
-        foreach ($this->translation as $translation) {
-            $languageData[$translation->language_id] = [
-                'name' => $translation->name,
-            ];
-        }
-
-        return $languageData;
     }
 }

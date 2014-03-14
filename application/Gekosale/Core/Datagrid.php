@@ -55,8 +55,12 @@ class DataGrid extends Component
 
     protected $repository;
 
+    public function setModel($model){
+        print_r($model);
+    }
     public function getFilterData()
     {
+        return;
         $filters = Array();
         foreach ($this->queryColumnsOptions as $name => $options) {
             if (isset($options['prepareForSelect']) && $options['prepareForSelect']) {
@@ -178,6 +182,32 @@ class DataGrid extends Component
         $objResponse->script("try { GF_Datagrid.ReturnInstance({$datagridId}).LoadData(); GF_Datagrid.ReturnInstance({$datagridId}).ClearSelection(); GF_ConflictResolver.GetMain().Update(); } catch (x) { GF_Debug.HandleException(x); }");
 
         return $objResponse;
+    }
+
+    /**
+     * Add DataGrid column
+     *
+     * @param       $key
+     * @param array $options
+     */
+    protected function addColumn(array $options)
+    {
+        $this->columns[] = new DataGrid\Column($options);
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    protected function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     protected function getSelectedRows($request)

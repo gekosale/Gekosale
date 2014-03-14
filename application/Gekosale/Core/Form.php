@@ -154,6 +154,23 @@ class Form extends Component
     }
 
     /**
+     * Shortcut for adding Price element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\Price
+     */
+    public function addPrice(array $options)
+    {
+        $options['prefixes'] = [
+            $this->trans('net'),
+            $this->trans('gross'),
+        ];
+
+        return new Form\Elements\Price($options);
+    }
+
+    /**
      * Shortcut for adding filter CommaToDotChanger
      *
      * @return Form\Filters\CommaToDotChanger
@@ -273,12 +290,17 @@ class Form extends Component
     /**
      * Processes options for using them in Select
      *
-     * @param $options
+     * @param      $options
+     * @param bool $appendDefaultValue
      *
      * @return array
      */
-    public function makeOptions($options)
+    public function makeOptions($options, $appendDefaultValue = false)
     {
+        if (true === $appendDefaultValue) {
+            $options['0'] = $this->trans('Choose option');
+        }
+
         return Form\Option::Make($options);
     }
 
@@ -293,4 +315,5 @@ class Form extends Component
     {
         return new Form\Elements\Tree($options, $this->container);
     }
+
 }

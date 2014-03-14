@@ -75,15 +75,14 @@ class UnitRepository extends Repository
 
             $unit->save();
 
-            foreach ($Data['name'] as $languageId => $name) {
+            foreach ($this->getLanguageIds() as $language) {
 
-                $translation = UnitTranslation::firstOrCreate([
+                $translation = UnitTranslation::firstOrNew([
                     'unit_id'     => $unit->id,
-                    'language_id' => $languageId
+                    'language_id' => $language
                 ]);
 
-                $translation->name = $name;
-
+                $translation->setTranslationData($Data, $language);
                 $translation->save();
             }
         });
@@ -99,11 +98,14 @@ class UnitRepository extends Repository
     public function getPopulateData($id)
     {
         $unitData = $this->find($id);
+        $populateData     = [];
+        $accessor         = $this->getPropertyAccessor();
+        $languageData     = $unitData->getTranslationData();
 
-        return [
-            'required_data' => [
-                'language_data' => $unitData->getLanguageData()
-            ]
-        ];
+        $accessor->setValue($populateData, '[required_data]', [
+            'language_data' => $languageData,
+        ]);
+
+        return $populateData;
     }
 }

@@ -19,7 +19,7 @@ use Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Shop extends Model
+class Shop extends Model implements TranslatableModelInterface
 {
 
     protected $table = 'shop';
@@ -38,26 +38,6 @@ class Shop extends Model
     public function company()
     {
         return $this->belongsTo('Gekosale\Core\Model\Company');
-    }
-
-    /**
-     * Get translations
-     *
-     * @return array
-     */
-    public function getLanguageData()
-    {
-        $languageData = [];
-        foreach ($this->translation as $translation) {
-            $languageData[$translation->language_id] = [
-                'name'             => $translation->name,
-                'meta_title'       => $translation->meta_title,
-                'meta_keywords'    => $translation->meta_keywords,
-                'meta_description' => $translation->meta_description
-            ];
-        }
-
-        return $languageData;
     }
 
     /**
