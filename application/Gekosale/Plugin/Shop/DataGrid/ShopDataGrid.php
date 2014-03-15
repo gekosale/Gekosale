@@ -12,7 +12,8 @@
 namespace Gekosale\Plugin\Shop\DataGrid;
 
 use Gekosale\Core\DataGrid,
-    Gekosale\Core\DataGrid\DataGridInterface;
+    Gekosale\Core\DataGrid\DataGridInterface,
+    Gekosale\Core\Model\Shop;
 
 /**
  * Class ShopDataGrid
@@ -27,23 +28,20 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'S.id'
-            ],
-            'name' => [
-                'source' => 'ST.name'
-            ],
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'shop.id'
         ]);
 
-        $this->setFrom('
-            shop S
-            LEFT JOIN shop_translation ST ON ST.shop_id = S.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'shop_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            S.id
-        ');
+        $this->query = $this->getDb()
+            ->table('shop')
+            ->join('shop_translation', 'shop_translation.shop_id', '=', 'shop.id')
+            ->groupBy('shop.id');
     }
 
     /**

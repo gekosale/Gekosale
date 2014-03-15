@@ -13,8 +13,6 @@ namespace Gekosale\Plugin\Availability\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
-use Gekosale\Core\Model\Availability;
-use Gekosale\Core\Model\AvailabilityTranslation;
 
 /**
  * Class AvailabilityDataGrid
@@ -29,7 +27,11 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setModel(Availability::with('translation'));
+        $this->query = $this->getDb()
+            ->table('availability')
+            ->select('availability.id','availability_translation.name')
+            ->join('availability_translation', 'availability_translation.availability_id', '=', 'availability.id')
+            ->groupBy('availability.id');
     }
 
     /**

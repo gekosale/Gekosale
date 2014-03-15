@@ -12,6 +12,7 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Gekosale\Core\Form\Filters\FilterInterface;
 use Gekosale\Core\Form\Node;
 
 /**
@@ -85,8 +86,11 @@ abstract class Container extends Node
 
     public function addFilters(array $filters)
     {
-        foreach ($filters as $filer) {
-            $this->addFilter($filer);
+        foreach ($filters as $filter) {
+            if (!$filter instanceof FilterInterface) {
+                throw new \LogicException('Filter must implement FilterInterface');
+            }
+            $this->addFilter($filter);
         }
     }
 

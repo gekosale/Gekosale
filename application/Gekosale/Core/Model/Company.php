@@ -32,6 +32,7 @@ class Company extends Model
 
     /**
      * Relation with
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function shop()

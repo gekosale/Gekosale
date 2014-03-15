@@ -23,55 +23,42 @@ class Column
 {
 
     /**
-     * Column name
+     * Column options
      *
-     * @var string
+     * @var array
      */
-    protected $name;
-
-    /**
-     * Column source
-     *
-     * @var string
-     */
-    protected $source;
-
-    /**
-     * Function to post-process column value after datagrid initialization
-     *
-     * @var null
-     */
-    protected $processFunction = null;
-
-    /**
-     * True if column source is translateable false otherwise
-     *
-     * @var bool
-     */
-    protected $processLanguage = false;
+    protected $options;
 
     /**
      * @param $options
      */
-    public function __construct(array $options)
+    public function __construct($id, array $options = [])
     {
-        $this->options = $options;
+
+        $this->options = array_merge([
+            'id'         => $id,
+            'caption'    => '',
+            'sorting'    => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'editable'   => false,
+            'selectable' => false,
+            'appearance' => [
+                'width'   => DataGridInterface::WIDTH_AUTO,
+                'align'   => DataGridInterface::ALIGN_LEFT,
+                'visible' => true
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_NONE
+            ]
+        ], $options);
     }
 
-    public function render()
+    /**
+     * @return array
+     */
+    public function getOptions()
     {
-        $options = json_encode([
-            'id'         => $this->name,
-            'caption'    => $this->caption,
-            'appearance' => $this->appearance
-        ]);
-
-        $script = "
-            var column_{$this->name} = new GF_Datagrid_Column({
-               {$options}
-            });
-        ";
-
-        return $script;
+        return $this->options;
     }
 } 

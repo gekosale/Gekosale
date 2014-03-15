@@ -31,11 +31,11 @@ class AvailabilityForm extends Form
      */
     public function init($availabilityData = [])
     {
-        $form = $this->addForm(Array(
+        $form = $this->addForm([
             'name'   => 'availability',
             'action' => '',
             'method' => 'post'
-        ));
+        ]);
 
         $requiredData = $form->addChild($this->addFieldset([
             'name'  => 'required_data',
@@ -71,11 +71,11 @@ class AvailabilityForm extends Form
             'label' => $this->trans('Description')
         ]));
 
-        $form->addFilter($this->addFilterNoCode());
-
-        $form->addFilter($this->addFilterTrim());
-
-        $form->addFilter($this->addFilterSecure());
+        $form->addFilters([
+            $this->addFilterNoCode(),
+            $this->addFilterTrim(),
+            $this->addFilterSecure()
+        ]);
 
         $event = new AvailabilityFormEvent($form, $availabilityData);
 

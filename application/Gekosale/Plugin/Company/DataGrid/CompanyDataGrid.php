@@ -11,8 +11,8 @@
  */
 namespace Gekosale\Plugin\Company\DataGrid;
 
-use Gekosale\Core\DataGrid,
-    Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Core\DataGrid;
+use Gekosale\Core\DataGrid\DataGridInterface;
 
 /**
  * Class CompanyDataGrid
@@ -27,22 +27,9 @@ class CompanyDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'C.id'
-            ],
-            'name' => [
-                'source' => 'C.name'
-            ],
-        ]);
-
-        $this->setFrom('
-            company C
-        ');
-
-        $this->setGroupBy('
-            C.id
-        ');
+        $this->query = $this->getDb()
+            ->table('company')
+            ->groupBy('company.id');
     }
 
     /**
