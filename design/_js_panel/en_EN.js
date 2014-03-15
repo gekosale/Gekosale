@@ -323,7 +323,7 @@ GF_Datagrid.Language = {
 	modify_columns: 'Zmień ustawienia kolumn',
 	retract_filters: 'Zwiń filtry',
 	expand_filters: 'Rozwiń filtry',
-	from: 'From:',
+	from: 'From',
 	to: 'To',
 	delete_group: 'Usuń wybrane rekordy',
 	delete_row: 'Delete',

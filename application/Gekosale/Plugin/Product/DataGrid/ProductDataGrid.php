@@ -34,6 +34,34 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             'source' => 'product.id'
         ]);
 
+        $this->addColumn('sku', [
+            'source' => 'product.sku'
+        ]);
+
+        $this->addColumn('ean', [
+            'source' => 'product.ean'
+        ]);
+
+        $this->addColumn('sell_price', [
+            'source' => 'product.sell_price'
+        ]);
+
+        $this->addColumn('sell_price_gross', [
+            'source' => 'product.sell_price'
+        ]);
+
+        $this->addColumn('stock', [
+            'source' => 'product.stock'
+        ]);
+
+        $this->addColumn('hierarchy', [
+            'source' => 'product.hierarchy'
+        ]);
+
+        $this->addColumn('weight', [
+            'source' => 'product.weight'
+        ]);
+
         $this->addColumn('name', [
             'source' => 'product_translation.name'
         ]);
@@ -51,7 +79,25 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
     {
         $this->getXajaxManager()->registerFunctions([
             'getProductForAjax' => [$this, 'getData'],
-            'doDeleteProduct'   => [$this, 'delete']
+            'doDeleteProduct'   => [$this, 'delete'],
         ]);
+
+        $this->getXajaxManager()->registerFunction([
+            'doUpdateProduct',
+            $this,
+            'updateProduct'
+        ]);
+    }
+
+    /**
+     * Updates product
+     *
+     * @param $request
+     *
+     * @return mixed
+     */
+    public function updateProduct($request)
+    {
+        return $this->repository->updateProduct($request);
     }
 }

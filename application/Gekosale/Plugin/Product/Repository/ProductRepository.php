@@ -120,6 +120,31 @@ class ProductRepository extends Repository
     }
 
     /**
+     * Saves product model
+     *
+     * @param array    $Data Submitted form data
+     * @param int|null $id   Product ID or null if new product
+     */
+    public function updateProduct(array $request)
+    {
+        $id   = $request['id'];
+        $data = $request['product'];
+
+        $this->transaction(function () use ($id, $data) {
+            $product             = $this->find($id);
+            $product->ean        = $data['ean'];
+            $product->stock      = $data['stock'];
+            $product->sell_price = $data['sell_price'];
+            $product->hierarchy  = $data['hierarchy'];
+            $product->save();
+        });
+
+        return [
+            'updated' => true
+        ];
+    }
+
+    /**
      * Returns array containing values needed to populate the form
      *
      * @param int $id Product ID
