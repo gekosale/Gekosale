@@ -120,12 +120,13 @@ class ProductRepository extends Repository
     }
 
     /**
-     * Saves product model
+     * Saves basic product values directly from DataGrid
      *
-     * @param array    $Data Submitted form data
-     * @param int|null $id   Product ID or null if new product
+     * @param array $request
+     *
+     * @return array
      */
-    public function updateProduct(array $request)
+    public function updateProductDataGrid(array $request)
     {
         $id   = $request['id'];
         $data = $request['product'];

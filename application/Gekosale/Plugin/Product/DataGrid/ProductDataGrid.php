@@ -98,6 +98,6 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
      */
     public function updateProduct($request)
     {
-        return $this->repository->updateProduct($request);
+        return $this->repository->updateProductDataGrid($request);
     }
 }
