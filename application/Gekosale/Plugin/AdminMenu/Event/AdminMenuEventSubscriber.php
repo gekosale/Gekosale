@@ -13,6 +13,7 @@ namespace Gekosale\Plugin\AdminMenu\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
@@ -23,6 +24,10 @@ class AdminMenuEventSubscriber implements EventSubscriberInterface
 
     public function onKernelController(FilterControllerEvent $event)
     {
+        if($event->getRequestType() == HttpKernelInterface::SUB_REQUEST){
+            return;
+        }
+
         $container = $event->getDispatcher()->getContainer();
 
         if (!$container->get('session')->has('admin.menu')) {

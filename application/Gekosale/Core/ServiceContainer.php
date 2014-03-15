@@ -75,6 +75,7 @@ class ServiceContainer extends Container
             'language.form' => 'getLanguage_FormService',
             'language.repository' => 'getLanguage_RepositoryService',
             'language.subscriber' => 'getLanguage_SubscriberService',
+            'layout_manager' => 'getLayoutManagerService',
             'locale.listener' => 'getLocale_ListenerService',
             'plugin_manager.datagrid' => 'getPluginManager_DatagridService',
             'plugin_manager.form' => 'getPluginManager_FormService',
@@ -89,6 +90,7 @@ class ServiceContainer extends Container
             'product.repository' => 'getProduct_RepositoryService',
             'product.subscriber' => 'getProduct_SubscriberService',
             'request' => 'getRequestService',
+            'request_stack' => 'getRequestStackService',
             'router' => 'getRouterService',
             'router.loader' => 'getRouter_LoaderService',
             'router.subscriber' => 'getRouter_SubscriberService',
@@ -749,7 +751,7 @@ class ServiceContainer extends Container
      */
     protected function getKernelService()
     {
-        return $this->services['kernel'] = new \Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel($this->get('event_dispatcher'), $this, $this->get('controller_resolver'));
+        return $this->services['kernel'] = new \Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel($this->get('event_dispatcher'), $this, $this->get('controller_resolver'), $this->get('request_stack'));
     }
 
     /**
@@ -815,6 +817,23 @@ class ServiceContainer extends Container
     protected function getLanguage_SubscriberService()
     {
         return $this->services['language.subscriber'] = new \Gekosale\Plugin\Language\Event\LanguageEventSubscriber();
+    }
+
+    /**
+     * Gets the 'layout_manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\LayoutManager A Gekosale\Core\LayoutManager instance.
+     */
+    protected function getLayoutManagerService()
+    {
+        $this->services['layout_manager'] = $instance = new \Gekosale\Core\LayoutManager();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -1039,6 +1058,19 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'request_stack' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Symfony\Component\HttpFoundation\RequestStack A Symfony\Component\HttpFoundation\RequestStack instance.
+     */
+    protected function getRequestStackService()
+    {
+        return $this->services['request_stack'] = new \Symfony\Component\HttpFoundation\RequestStack();
+    }
+
+    /**
      * Gets the 'router' service.
      *
      * This service is shared.
@@ -1074,7 +1106,7 @@ class ServiceContainer extends Container
      */
     protected function getRouter_SubscriberService()
     {
-        return $this->services['router.subscriber'] = new \Symfony\Component\HttpKernel\EventListener\RouterListener($this->get("router")->getMatcher());
+        return $this->services['router.subscriber'] = new \Symfony\Component\HttpKernel\EventListener\RouterListener($this->get("router")->getMatcher(), NULL, NULL, $this->get('request_stack'));
     }
 
     /**
@@ -1652,9 +1684,11 @@ class ServiceContainer extends Container
             'form_helper.class' => 'Gekosale\\Core\\Form',
             'helper.class' => 'Gekosale\\Core\\Helper',
             'kernel.class' => 'Symfony\\Component\\HttpKernel\\DependencyInjection\\ContainerAwareHttpKernel',
+            'layout_manager.class' => 'Gekosale\\Core\\LayoutManager',
             'translation.class' => 'Gekosale\\Core\\Translation',
             'xajax_manager.class' => 'Gekosale\\Core\\XajaxManager',
             'xajax.class' => 'xajax',
+            'request_stack.class' => 'Symfony\\Component\\HttpFoundation\\RequestStack',
             'database_manager.class' => 'Illuminate\\Database\\Capsule\\Manager',
             'datagrid_renderer.class' => 'Gekosale\\Core\\DataGrid\\Renderer',
             'router.class' => 'Symfony\\Component\\Routing\\Router',

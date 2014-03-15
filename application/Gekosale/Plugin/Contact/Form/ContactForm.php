@@ -33,7 +33,7 @@ class ContactForm extends Form
     {
         $form = $this->addForm(Array(
             'name'   => 'contact',
-            'action' => '',
+            '_action' => '',
             'method' => 'post'
         ));
 

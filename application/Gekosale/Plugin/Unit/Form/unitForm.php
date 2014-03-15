@@ -33,7 +33,7 @@ class UnitForm extends Form
     {
         $form = $this->addForm(Array(
             'name'   => 'unit',
-            'action' => '',
+            '_action' => '',
             'method' => 'post'
         ));
 

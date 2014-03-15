@@ -14,9 +14,9 @@ use Symfony\Component\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$controller = 'Gekosale\Plugin\Contact\Controller\Frontend\ContactController';
+$controller = 'Gekosale\Plugin\HomePage\Controller\Frontend\HomePageController';
 
-$collection->add('frontend.contact.index', new Route('/{_locale}/contact', [
+$collection->add('frontend.home.index', new Route('/', [
     '_controller' => $controller,
     '_mode'       => 'frontend',
     '_action'     => 'indexAction',

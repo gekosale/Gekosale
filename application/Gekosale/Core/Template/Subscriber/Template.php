@@ -60,11 +60,11 @@ class Template implements EventSubscriberInterface
          */
         $request = $event->getRequest();
 
-        $controller       = $request->attributes->get('controller');
-        $action           = $request->attributes->get('action');
+        $controller       = $request->attributes->get('_controller');
+        $action           = $request->attributes->get('_action');
         $controllerResult = $event->getControllerResult();
         $templateVars     = $request->attributes->get('_template_vars');
-        $mode             = $request->attributes->get('mode');
+        $mode             = $request->attributes->get('_mode');
         $parameters       = array_merge($templateVars, $controllerResult);
 
         /*

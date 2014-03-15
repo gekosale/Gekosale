@@ -17,9 +17,9 @@ $collection = new RouteCollection();
 $controller = 'Gekosale\Plugin\Product\Controller\Frontend\ProductController';
 
 $collection->add('frontend.contact.index', new Route('/product/contact', [
-    'controller' => $controller,
-    'mode'       => 'frontend',
-    'action'     => 'indexAction',
+    '_controller' => $controller,
+    '_mode'       => 'frontend',
+    '_action'     => 'indexAction',
     '_locale'     => 'pl',
 ], [
     '_locale' => 'en|fr|de|pl',

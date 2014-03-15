@@ -95,6 +95,21 @@ class Product extends Model implements TranslatableModelInterface
     }
 
     /**
+     * Fetch category ids from model
+     *
+     * @return array
+     */
+    public function getCategories()
+    {
+        $categories = [];
+        foreach ($this->category as $category) {
+            $categories[] = $category->id;
+        }
+
+        return $categories;
+    }
+
+    /**
      * Fetch deliverer ids from model
      *
      * @return array

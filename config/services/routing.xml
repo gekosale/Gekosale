@@ -23,6 +23,9 @@
         
         <service id="router.subscriber" class="Symfony\Component\HttpKernel\EventListener\RouterListener">
     		<argument type="expression">service('router').getMatcher()</argument>
+    		<argument>null</argument>
+    		<argument>null</argument>
+            <argument type="service" id="request_stack" />
 			<tag name="kernel.event_subscriber" />
 		</service>
 

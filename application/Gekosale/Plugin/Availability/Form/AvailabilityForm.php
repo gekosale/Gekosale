@@ -33,8 +33,6 @@ class AvailabilityForm extends Form
     {
         $form = $this->addForm([
             'name'   => 'availability',
-            'action' => '',
-            'method' => 'post'
         ]);
 
         $requiredData = $form->addChild($this->addFieldset([

@@ -159,16 +159,54 @@ class ProductRepository extends Repository
         $accessor     = $this->getPropertyAccessor();
         $languageData = $productData->getTranslationData();
 
-        $accessor->setValue($populateData, '[required_data]', [
+        $accessor->setValue($populateData, '[basic_pane]', [
             'language_data' => $languageData,
+            'enabled'       => $productData->enabled,
+            'ean'           => $productData->ean,
+            'sku'           => $productData->sku,
+            'producer_id'   => $productData->producer_id,
             'deliverers'    => $productData->getDeliverers(),
         ]);
 
-        $accessor->setValue($populateData, '[description_data][language_data]', $languageData);
+        $accessor->setValue($populateData, '[stock_pane]', [
+            'stock'       => $productData->stock,
+            'track_stock' => $productData->track_stock,
+        ]);
 
-        $accessor->setValue($populateData, '[meta_data][language_data]', $languageData);
+        $accessor->setValue($populateData, '[category_pane]', [
+            'category' => $productData->getCategories()
+        ]);
 
-        $accessor->setValue($populateData, '[shop_data][shops]', $productData->getShops());
+        $accessor->setValue($populateData, '[description_data]', [
+            'language_data' => $languageData
+        ]);
+
+        $accessor->setValue($populateData, '[meta_data]', [
+            'language_data' => $languageData
+        ]);
+
+        $accessor->setValue($populateData, '[price_pane]', [
+            'tax_id'           => $productData->tax_id,
+            'sell_currency_id' => $productData->sell_currency_id,
+            'buy_currency_id'  => $productData->buy_currency_id,
+            'buy_price'        => $productData->buy_price,
+            'standard_price'   => [
+                'sell_price' => $productData->sell_price,
+            ]
+        ]);
+
+        $accessor->setValue($populateData, '[measurements_pane]', [
+            'weight'       => $productData->weight,
+            'width'        => $productData->width,
+            'height'       => $productData->height,
+            'depth'        => $productData->depth,
+            'package_size' => $productData->package_size,
+
+        ]);
+
+        $accessor->setValue($populateData, '[shop_data]', [
+            'shops' => $productData->getShops()
+        ]);
 
         return $populateData;
     }

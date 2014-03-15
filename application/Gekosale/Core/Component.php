@@ -12,6 +12,7 @@
 namespace Gekosale\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,6 +26,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 abstract class Component extends ContainerAware
 {
+
+    public function forward($controller, array $path = array(), array $query = array())
+    {
+        $path['_controller'] = $controller;
+        $path['_action']     = 'indexAction';
+        $request             = $this->container->get('request_stack')->getCurrentRequest();
+        $subRequest          = $request->duplicate($query, null, $path);
+
+        return $this->container->get('kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+    }
 
     /**
      * Generates relative or absolute url based on given route and parameters
@@ -204,6 +215,16 @@ abstract class Component extends ContainerAware
     final protected function getPropertyAccessor()
     {
         return PropertyAccess::createPropertyAccessor();
+    }
+
+    /**
+     * Shortcut to get LayoutManager service
+     *
+     * @return object LayoutManager
+     */
+    final public function getLayoutManager()
+    {
+        return $this->container->get('layout_manager');
     }
 
     /**

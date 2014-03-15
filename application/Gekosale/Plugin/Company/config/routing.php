@@ -17,21 +17,21 @@ $collection = new RouteCollection();
 $controller = 'Gekosale\Plugin\Company\Controller\Admin\CompanyController';
 
 $collection->add('admin.company.index', new Route('/index', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'indexAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'indexAction'
 )));
 
 $collection->add('admin.company.add', new Route('/add', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'addAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'addAction'
 )));
 
 $collection->add('admin.company.edit', new Route('/edit/{id}', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'editAction',
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'editAction',
     'id'         => null
 )));
 

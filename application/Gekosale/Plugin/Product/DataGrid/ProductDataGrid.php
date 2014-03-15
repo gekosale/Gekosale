@@ -82,11 +82,7 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             'doDeleteProduct'   => [$this, 'delete'],
         ]);
 
-        $this->getXajaxManager()->registerFunction([
-            'doUpdateProduct',
-            $this,
-            'updateProduct'
-        ]);
+        $this->getXajaxManager()->registerFunction(['doUpdateProduct', $this, 'updateProduct']);
     }
 
     /**

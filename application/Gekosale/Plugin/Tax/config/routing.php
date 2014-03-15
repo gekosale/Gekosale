@@ -17,21 +17,21 @@ $collection = new RouteCollection();
 $controller = 'Gekosale\Plugin\Tax\Controller\Admin\TaxController';
 
 $collection->add('admin.tax.index', new Route('/index', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'indexAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'indexAction'
 )));
 
 $collection->add('admin.tax.add', new Route('/add', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'addAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'addAction'
 )));
 
 $collection->add('admin.tax.edit', new Route('/edit/{id}', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'editAction',
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'editAction',
     'id'         => null
 )));
 

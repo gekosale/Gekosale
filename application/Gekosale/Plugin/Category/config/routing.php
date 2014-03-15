@@ -17,28 +17,28 @@ $collection = new RouteCollection();
 $controller = 'Gekosale\Plugin\Category\Controller\Admin\CategoryController';
 
 $collection->add('admin.category.index', new Route('/index', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'indexAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'indexAction'
 )));
 
 $collection->add('admin.category.add', new Route('/add', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'addAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'addAction'
 )));
 
 $collection->add('admin.category.duplicate', new Route('/duplicate/{id}', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'duplicateAction',
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'duplicateAction',
     'id'         => null
 )));
 
 $collection->add('admin.category.edit', new Route('/edit/{id}', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'editAction',
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'editAction',
     'id'         => null
 )));
 

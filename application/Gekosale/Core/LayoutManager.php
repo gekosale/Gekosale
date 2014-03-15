@@ -9,17 +9,20 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Core\Controller;
-
-use Gekosale\Core\Controller;
+namespace Gekosale\Core;
 
 /**
- * Class FrontendController
+ * Class LayoutManager
  *
- * @package Gekosale\Core\Controller
+ * @package Gekosale\Core
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class FrontendController extends Controller
+class LayoutManager extends Component
 {
+    public function renderLayout($layout)
+    {
+        $content = $this->forward('Gekosale\Plugin\HomePage\Controller\Frontend\FooterController')->getContent();
+        return $content;
+    }
 
 }

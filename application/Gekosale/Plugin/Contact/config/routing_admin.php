@@ -17,21 +17,21 @@ $collection = new RouteCollection();
 $controller = 'Gekosale\Plugin\Contact\Controller\Admin\ContactController';
 
 $collection->add('admin.contact.index', new Route('/index', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'indexAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'indexAction'
 )));
 
 $collection->add('admin.contact.add', new Route('/add', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'addAction'
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'addAction'
 )));
 
 $collection->add('admin.contact.edit', new Route('/edit/{id}', array(
-    'controller' => $controller,
-    'mode'       => 'admin',
-    'action'     => 'editAction',
+    '_controller' => $controller,
+    '_mode'       => 'admin',
+    '_action'     => 'editAction',
     'id'         => null
 )));
 
