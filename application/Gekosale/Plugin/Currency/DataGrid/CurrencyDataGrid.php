@@ -27,25 +27,23 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'     => [
-                'source' => 'C.id'
-            ],
-            'name'   => [
-                'source' => 'C.name'
-            ],
-            'symbol' => [
-                'source' => 'C.symbol'
-            ]
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'currency.id'
         ]);
 
-        $this->setFrom('
-            currency C
-        ');
+        $this->addColumn('name', [
+            'source' => 'currency.name'
+        ]);
 
-        $this->setGroupBy('
-            C.id
-        ');
+        $this->addColumn('symbol', [
+            'source' => 'currency.symbol'
+        ]);
+
+        $this->query = $this->getDb()
+            ->table('currency')
+            ->groupBy('currency.id');
     }
 
     /**

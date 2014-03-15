@@ -27,25 +27,23 @@ class LanguageDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'     => [
-                'source' => 'L.id'
-            ],
-            'name'   => [
-                'source' => 'L.name'
-            ],
-            'locale' => [
-                'source' => 'L.locale'
-            ]
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'language.id'
         ]);
 
-        $this->setFrom('
-            language L
-        ');
+        $this->addColumn('name', [
+            'source' => 'language.name'
+        ]);
 
-        $this->setGroupBy('
-            L.id
-        ');
+        $this->addColumn('locale', [
+            'source' => 'language.locale'
+        ]);
+
+        $this->query = $this->getDb()
+            ->table('language')
+            ->groupBy('language.id');
     }
 
     /**

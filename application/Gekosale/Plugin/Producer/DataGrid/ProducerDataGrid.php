@@ -27,23 +27,20 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'D.id'
-            ],
-            'name' => [
-                'source' => 'DT.name'
-            ],
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'producer.id'
         ]);
 
-        $this->setFrom('
-            producer D
-            LEFT JOIN producer_translation DT ON DT.producer_id = D.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'producer_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            D.id
-        ');
+        $this->query = $this->getDb()
+            ->table('producer')
+            ->join('producer_translation', 'producer_translation.producer_id', '=', 'producer.id')
+            ->groupBy('producer.id');
     }
 
     /**

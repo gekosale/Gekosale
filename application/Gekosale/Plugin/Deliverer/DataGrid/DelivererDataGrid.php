@@ -27,23 +27,20 @@ class DelivererDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'D.id'
-            ],
-            'name' => [
-                'source' => 'DT.name'
-            ],
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'deliverer.id'
         ]);
 
-        $this->setFrom('
-            deliverer D
-            LEFT JOIN deliverer_translation DT ON DT.deliverer_id = D.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'deliverer_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            D.id
-        ');
+        $this->query = $this->getDb()
+            ->table('deliverer')
+            ->join('deliverer_translation', 'deliverer_translation.deliverer_id', '=', 'deliverer.id')
+            ->groupBy('deliverer.id');
     }
 
     /**

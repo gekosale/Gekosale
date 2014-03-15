@@ -27,9 +27,18 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'availability.id'
+        ]);
+
+        $this->addColumn('name', [
+            'source' => 'availability_translation.name'
+        ]);
+
         $this->query = $this->getDb()
             ->table('availability')
-            ->select('availability.id','availability_translation.name')
             ->join('availability_translation', 'availability_translation.availability_id', '=', 'availability.id')
             ->groupBy('availability.id');
     }

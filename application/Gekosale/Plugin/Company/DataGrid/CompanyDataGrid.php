@@ -27,6 +27,16 @@ class CompanyDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'company.id'
+        ]);
+
+        $this->addColumn('name', [
+            'source' => 'company.name'
+        ]);
+
         $this->query = $this->getDb()
             ->table('company')
             ->groupBy('company.id');

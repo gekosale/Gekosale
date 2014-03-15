@@ -27,26 +27,20 @@ class TaxDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'    => [
-                'source' => 'V.id'
-            ],
-            'name'  => [
-                'source' => 'VT.name'
-            ],
-            'value' => [
-                'source' => 'V.value'
-            ]
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'tax.id'
         ]);
 
-        $this->setFrom('
-            tax V
-            LEFT JOIN tax_translation VT ON VT.tax_id = V.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'tax_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            V.id
-        ');
+        $this->query = $this->getDb()
+            ->table('tax')
+            ->join('tax_translation', 'tax_translation.tax_id', '=', 'tax.id')
+            ->groupBy('tax.id');
     }
 
     /**

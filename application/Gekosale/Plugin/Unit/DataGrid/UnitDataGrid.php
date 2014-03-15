@@ -27,23 +27,20 @@ class UnitDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'U.id'
-            ],
-            'name' => [
-                'source' => 'UT.name'
-            ],
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'unit.id'
         ]);
 
-        $this->setFrom('
-            unit U
-            LEFT JOIN unit_translation UT ON UT.unit_id = U.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'unit_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            U.id
-        ');
+        $this->query = $this->getDb()
+            ->table('unit')
+            ->join('unit_translation', 'unit_translation.unit_id', '=', 'unit.id')
+            ->groupBy('unit.id');
     }
 
     /**

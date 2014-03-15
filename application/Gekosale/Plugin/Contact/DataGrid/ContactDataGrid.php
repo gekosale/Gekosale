@@ -27,23 +27,20 @@ class ContactDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->setTableData([
-            'id'   => [
-                'source' => 'C.id'
-            ],
-            'name' => [
-                'source' => 'CT.name'
-            ],
+        $this->registerEventHandlers();
+
+        $this->addColumn('id', [
+            'source' => 'contact.id'
         ]);
 
-        $this->setFrom('
-            contact C
-            LEFT JOIN contact_translation CT ON CT.contact_id = C.id
-        ');
+        $this->addColumn('name', [
+            'source' => 'contact_translation.name'
+        ]);
 
-        $this->setGroupBy('
-            C.id
-        ');
+        $this->query = $this->getDb()
+            ->table('contact')
+            ->join('contact_translation', 'contact_translation.contact_id', '=', 'contact.id')
+            ->groupBy('contact.id');
     }
 
     /**
