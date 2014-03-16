@@ -1,1 +1,0 @@
-<p>Aby ustalić nowe hasło, wejdź na stronę <a href="{{ link }}">{{ link }}</a></p>

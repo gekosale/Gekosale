@@ -177,7 +177,7 @@ class DataGrid extends Component
      * @param       $id
      * @param array $options
      */
-    protected function addColumn($id, array $options)
+    public function addColumn($id, array $options)
     {
         $this->columns[$id] = $options;
     }
@@ -197,7 +197,7 @@ class DataGrid extends Component
                 if (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processLanguage']) && $this->queryColumnsOptions[$param]['processLanguage']) {
                     $value = _($value);
                 } elseif (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processFunction']) && $this->queryColumnsOptions[$param]['processFunction']) {
-                        $value = call_user_func($this->queryColumnsOptions[$param]['processFunction'], $value);
+                    $value = call_user_func($this->queryColumnsOptions[$param]['processFunction'], $value);
                 }
 
                 $columns[] = $param . ': "' . strtr(addslashes($value), $transform) . '"';
@@ -206,5 +206,26 @@ class DataGrid extends Component
         }
 
         return $rowData;
+    }
+
+    /**
+     * Sets new query
+     *
+     * @param $query
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+    }
+
+    /**
+     * Returns query
+     *
+     * @return mixed
+     */
+    public function getQuery()
+    {
+        return $this->query;
+
     }
 }

@@ -69,6 +69,17 @@
                 }
             });
 
+            var column_slug = new GF_Datagrid_Column({
+                id: 'slug',
+                caption: '{% trans %}Slug{% endtrans %}',
+                appearance: {
+                    width: 70
+                },
+                filter: {
+                    type: GF_Datagrid.FILTER_INPUT
+                }
+            });
+
             var column_ean = new GF_Datagrid_Column({
                 id: 'ean',
                 caption: '{% trans %}EAN{% endtrans %}',
@@ -173,6 +184,7 @@
                     column_id,
                     column_sku,
                     column_name,
+                    column_slug,
                     column_sell_price,
                     column_sell_price_gross,
                     column_stock,

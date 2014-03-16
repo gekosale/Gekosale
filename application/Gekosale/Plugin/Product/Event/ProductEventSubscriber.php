@@ -29,10 +29,22 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
     }
 
+    public function onProductDataGridInitAction(Event $event)
+    {
+//        $datagrid = $event->getDataGrid();
+//
+//        $datagrid->addColumn('slug', [
+//            'source' => 'product_translation.slug'
+//        ]);
+//
+//        $datagrid->getQuery()->where('slug', 'LIKE', 'product%');
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
-            AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction'
+            AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction',
+            ProductDataGridEvent::DATAGRID_INIT_EVENT => 'onProductDataGridInitAction'
         );
     }
 }

@@ -13,6 +13,7 @@ namespace Gekosale\Plugin\Product\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Plugin\Product\Event\ProductDataGridEvent;
 
 /**
  * Class ProductDataGrid
@@ -27,7 +28,6 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-
         $this->registerEventHandlers();
 
         $this->addColumn('id', [
@@ -70,6 +70,10 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             ->table('product')
             ->join('product_translation', 'product_translation.product_id', '=', 'product.id')
             ->groupBy('product.id');
+
+        $event = new ProductDataGridEvent($this);
+
+        $this->getDispatcher()->dispatch(ProductDataGridEvent::DATAGRID_INIT_EVENT, $event);
     }
 
     /**

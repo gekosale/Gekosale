@@ -1490,7 +1490,7 @@ class ServiceContainer extends Container
      */
     protected function getTwig_Loader_FrontService()
     {
-        return $this->services['twig.loader.front'] = new \Twig_Loader_Filesystem(array(0 => 'D:\\Git\\Gekosale3\\design/frontend/Gekosale/templates'));
+        return $this->services['twig.loader.front'] = new \Twig_Loader_Filesystem(array(0 => 'D:\\Git\\Gekosale3\\themes/Gekosale/templates'));
     }
 
     /**
@@ -1643,11 +1643,12 @@ class ServiceContainer extends Container
                 0 => 'Gekosale',
             ),
             'application.design_path' => 'D:\\Git\\Gekosale3\\design',
+            'application.themes_path' => 'D:\\Git\\Gekosale3\\themes',
             'admin.themes' => array(
                 0 => 'D:\\Git\\Gekosale3\\design/templates',
             ),
             'front.themes' => array(
-                0 => 'D:\\Git\\Gekosale3\\design/frontend/Gekosale/templates',
+                0 => 'D:\\Git\\Gekosale3\\themes/Gekosale/templates',
             ),
             'propel.config' => array(
                 'dsn' => 'mysql:host=localhost;dbname=gekosale3',

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Home | Shopla Theme</title>
+    <link href="{{ asset('themes/Gekosale/assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/Gekosale/assets/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/Gekosale/assets/css/prettyPhoto.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/Gekosale/assets/fonts/stylesheet.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/Gekosale/assets/css/main.css') }}" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="{{ asset('themes/Gekosale/assets/js/html5shiv.js') }}"></script>
+    <script src="{{ asset('themes/Gekosale/assets/js/respond.min.js') }}"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('themes/Gekosale/assets/images/ico/apple-touch-icon-144-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('themes/Gekosale/assets/images/ico/apple-touch-icon-114-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('themes/Gekosale/assets/images/ico/apple-touch-icon-72-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ asset('themes/Gekosale/assets/images/ico/apple-touch-icon-57-precomposed.png') }}">
+</head><!--/head-->
+
+<body>
+
+<header id="header" class="header_top">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 col-xs-12">
+                <div class="top_left">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li><i class="fa fa-user"></i>Joman</li>
+                        <li><i class="fa fa-clock-o"></i>5:05 pm</li>
+                        <li><i class="fa fa-calendar"></i>Dec 10, 2014</li>
+                        <li class="hidden-xs">Your Language:
+	                                <span>
+	                                    <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/flag1.png') }}" alt=""></a>
+	                                    <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/flag2.png') }}" alt=""></a>
+	                                    <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/flag3.png') }}" alt=""></a>
+	                                </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-sm-5 col-xs-6">
+                <div class="top_right">
+                    <form class="pull-left hidden-md hidden-sm hidden-xs" role="form">
+                        <input type="text" class="search-form" autocomplete="off" placeholder="Search">
+                        <i class="fa fa-search"></i>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right hidden-xs">
+                        <li><a href="#"><i class="fa fa-home"></i></a></li>
+                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                        <li><a href="#"><i class="fa fa-crosshairs"></i></a></li>
+                        <li><a class="active" href="#"><i class="fa fa-shopping-cart"></i><span class="badge">3</span></a></li>
+                        <li><a href="#"><i class="fa fa-user"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar navbar-inverse menu_area" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html"><img src="{{ asset('themes/Gekosale/assets/images/home/logo.png') }}" alt="logo"></a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <nav class="mainmenu">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="active" href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="shop_details.html">Shop Details</a></li>
+                        <li><a href="">Kids</a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Pages<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="">Man</a></li>
+                                <li><a href="">Kids</a></li>
+                                <li><a href="contact.html">Contact</a>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header><!--/header-->
+
+<div class="social_icons hidden-md hidden-sm hidden-xs">
+    <ul>
+        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+        <li><a href="#"><i class="fa  fa-dribbble"></i></a></li>
+        <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+        <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+    </ul>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+            <div id="home_slider" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators hidden-sm hidden-xs">
+                    <img data-target="#home_slider" data-slide-to="0" class="active" {{ asset('themes/Gekosale/assets/images/home/thumb2.png') }}" alt="" />
+                    <img data-target="#home_slider" data-slide-to="1" {{ asset('themes/Gekosale/assets/images/home/thumb1.png') }}" alt="" />
+                    <img data-target="#home_slider" data-slide-to="2" {{ asset('themes/Gekosale/assets/images/home/thumb3.png') }}" alt="" />
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/slider1.jpg') }}" alt="...">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/slider2.jpg') }}" alt="...">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/slider3.jpg') }}" alt="...">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Controls -->
+                <a class="carousel_control_left" href="#home_slider" data-slide="prev">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                <a class="carousel_control_right" href="#home_slider" data-slide="next">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="womens">
+                <a href=""><img src="{{ asset('themes/Gekosale/assets/images/home/womens.jpg') }}" alt="" /></a>
+                <h3>Womens</h3>
+            </div>
+            <div class="womens">
+                <a href=""><img src="{{ asset('themes/Gekosale/assets/images/home/menscollection.jpg') }}" alt="" /></a>
+                <h3>Mens Collection</h3>
+            </div>
+            <div class="womens">
+                <img src="{{ asset('themes/Gekosale/assets/images/home/mendress.jpg') }}" alt="" />
+                <div class="woments_content">
+                    <h1>59</h1>
+                    <h2>Man Dress</h2>
+                    <h4>Sweter+More</h4>
+                    <a href="">Shop Now</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="shiping">
+                <img src="{{ asset('themes/Gekosale/assets/images/home/carbg.jpg') }}" alt="" />
+                <div class="shiping_content">
+                    <h2>Free Shiping</h2>
+                    <h3>On all sates over $450</h3>
+                    <p>*Free shiping limited to 48 contiguous United States.</p>
+                </div>
+                <a href="">Order Now</a>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="christmas_offer">
+                <img src="{{ asset('themes/Gekosale/assets/images/home/fashiongirl.jpg') }}" alt="" />
+                <div class="christmas_offer_content text-center">
+                    <h1>15% OFF</h1>
+                    <h2>For Christmas</h2>
+                    <h3>all styles <br />dress</h3>
+                </div>
+                <a href="" class="pull-right">Start Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="shop_produts">
+            <div class="col-sm-3 col-xs-6">
+                <div class="single_product">
+
+                    <div class="latest_products">
+                        <p>Latest</p>
+                    </div>
+
+
+                    <img src="{{ asset('themes/Gekosale/assets/images/home/product1.jpg') }}" alt="">
+
+                    <div class="overlay">
+                        <div class="add_to_cart bounce">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="#"><i class="fa fa-info-circle"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="product_meta">
+                        <div class="product_info">
+                            <div class="price">
+                                <p>$14</p>
+                            </div>
+                            <div class="product_category">
+                                <a href="">Cetagory</a>
+                                <p>Men/Winter</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product_description latest_product">
+                        <p>Mens Winter Collection</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="single_product">
+
+                    <img src="{{ asset('themes/Gekosale/assets/images/home/product2.jpg') }}" alt="">
+                    <div class="overlay">
+                        <div class="add_to_cart bounce">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="#"><i class="fa fa-info-circle"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="product_meta">
+                        <div class="product_info">
+                            <div class="price">
+                                <p>$14</p>
+                            </div>
+                            <div class="product_category">
+                                <a href="">Cetagory</a>
+                                <p>Men/Winter</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product_description latest_product">
+                        <p>Mens Winter Collection</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="single_product">
+                    <img src="{{ asset('themes/Gekosale/assets/images/home/product3.jpg') }}" alt="">
+                    <div class="overlay">
+                        <div class="add_to_cart bounce">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="#"><i class="fa fa-info-circle"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="product_meta">
+                        <div class="product_info">
+                            <div class="price">
+                                <p>$14</p>
+                            </div>
+                            <div class="product_category">
+                                <a href="">Cetagory</a>
+                                <p>Men/Winter</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product_description latest_product">
+                        <p>Mens Winter Collection</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="single_product">
+                    <img src="{{ asset('themes/Gekosale/assets/images/home/product4.jpg') }}" alt="">
+                    <div class="overlay">
+                        <div class="add_to_cart bounce">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                <li><a href="#"><i class="fa fa-info-circle"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="product_meta">
+                        <div class="product_info">
+                            <div class="price">
+                                <p>$14</p>
+                            </div>
+                            <div class="product_category">
+                                <a href="">Cetagory</a>
+                                <p>Men/Winter</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product_description latest_product">
+                        <p>Mens Winter Collection</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+<div class="row">
+<div class="col-sm-8">
+<div class="products_tab">
+    <div class="tab_menu">
+        <ul id="myTab" class="nav nav-tabs nav-justified products_tab">
+            <li class="active"><a href="#popular" data-toggle="tab">Popular</a></li>
+            <li><a href="#toprated" data-toggle="tab">Top Rated</a></li>
+            <li><a href="#mostviewed" data-toggle="tab">Most Viewed</a></li>
+            <li><a href="#weeklytop" data-toggle="tab">Weekly Top</a></li>
+            <li><a href="#monthlytop" data-toggle="tab">Monthly Top</a></li>
+        </ul>
+    </div>
+</div>
+<div class="tab-content" id="myTabcontent">
+<div id="popular" class="tab-pane fade active in">
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Military Pilot Watch</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular2.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Sports Shoes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular3.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Eva Tote Braided</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular4.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Mans T Shirt</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toprated" class="tab-pane fade">
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular4.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Military Pilot Watch</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular3.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Sports Shoes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Eva Tote Braided</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Mans T Shirt</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mostviewed" class="tab-pane fade">
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular2.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Military Pilot Watch</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3  col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Sports Shoes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular4.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Eva Tote Braided</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-6">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular3.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Mans T Shirt</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="weeklytop" class="tab-pane fade">
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular4.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Military Pilot Watch</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Sports Shoes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular3.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Eva Tote Braided</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular2.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Mans T Shirt</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="monthlytop" class="tab-pane fade">
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular4.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Military Pilot Watch</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular3.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Sports Shoes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular2.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Eva Tote Braided</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="single_product">
+            <img src="{{ asset('themes/Gekosale/assets/images/home/popular1.jpg') }}" alt="">
+            <div class="product_meta">
+                <div class="product_info">
+                    <div class="price">
+                        <p>$30</p>
+                    </div>
+                    <div class="product_category">
+                        <img src="{{ asset('themes/Gekosale/assets/images/home/rating.png') }}" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="product_description">
+                <p>Mans T Shirt</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+    <div class="blogcomments">
+        <div class="blogcomments-tab-menu">
+            <ul class="nav nav-tabs nav-justified">
+                <li id="blogs">From Blog</li>
+                <li id="comments">Latest Comments</li>
+            </ul>
+        </div>
+        <div class="blogcomments-content">
+            <div id="fromblog">
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog1.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog2.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog3.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="latestcomments">
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog3.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p> consectetuer adipiscing elit. Lorem ipsum dolor sit amet,</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog1.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p> consectetuer adipiscing elit. Lorem ipsum dolor sit amet,</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="media blog-content-single">
+                    <a href="" class="pull-left"><img src="{{ asset('themes/Gekosale/assets/images/home/blog2.png') }}" alt="" /></a>
+                    <div class="media-body blog-content-title">
+                        <p> consectetuer adipiscing elit. Lorem ipsum dolor sit amet,</p>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-user"></i>Shopla</a></li>
+                            <li><a href="#"><i class="fa fa-clock-o"></i>3:45pm</a></li>
+                            <li><a href="#"><i class="fa fa-calendar"></i>Dec 10, 2014</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div>
+                <div class="brands">
+                    <ul>
+                        <li><a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/brand1.png') }}" alt="" /></a></li>
+                        <li><a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/brand2.png') }}" alt="" /></a></li>
+                        <li><a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/brand3.png') }}" alt="" /></a></li>
+                        <li><a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/brand4.png') }}" alt="" /></a></li>
+                        <li><a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/brand5.png') }}" alt="" /></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer id="footer"><!--footer-->
+    <div class="footer_top">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2 col-xs-12">
+                    <h2>Shopping</h2>
+                    <ul>
+                        <li><a href="#">View Cart</a></li>
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">Brands</a></li>
+                        <li><a href="#">Order Status</a></li>
+                        <li><a href="#">Trade in Program</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2 col-xs-12">
+                    <h2>Shoplastore</h2>
+                    <ul>
+                        <li><a href="#">T-Shirt</a></li>
+                        <li><a href="#">Mens </a></li>
+                        <li><a href="#">Womens</a></li>
+                        <li><a href="#">Gift Cards</a></li>
+                        <li><a href="#">Shoes</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2 col-xs-12">
+                    <h2>Policies</h2>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Customer Services</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Feedback</a></li>
+                        <li><a href="#">Billing System</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2 col-xs-12">
+                    <h2>About Shopla</h2>
+                    <ul>
+                        <li><a href="#">Company Information</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Store Location</a></li>
+                        <li><a href="#">Affillate Program</a></li>
+                        <li><a href="#">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3 col-xs-12 col-lg-offset-1">
+                    <h2>Email Subscription</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed doh euismod</p>
+                    <div class="subscribe">
+                        <input type="text" class="search-form" autocomplete="off" placeholder="your email address">
+                        <a class="btn btn-primary subscribe_button" href="">Subscribe</a>
+                    </div>
+                    <p>We Will not spam</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer_bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <p> © 2014 <a target="_blank" href="http://shapebootstrap.net/" title="Free Twitter Bootstrap WordPress Themes and HTML templates">ShapeBootstrap</a>. All Rights Reserved.</p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                        <ul>
+                            <li>We Support
+                                 <span>
+                                  <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/visacard.png') }}" alt="" /></a>
+                                  <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/mastercard.png') }}" alt="" /></a>
+                                  <a href="#"><img src="{{ asset('themes/Gekosale/assets/images/home/creditcard.png') }}" alt="" /></a>
+                                 </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="scroll_up">
+            <a href="#scroll_top"><i class="fa fa-angle-up"></i></a>
+        </div>
+    </div>
+</footer><!--/footer-->
+
+<script src="{{ asset('themes/Gekosale/assets/js/jquery.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/assets/js/jquery.prettyPhoto.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/assets/js/main.js') }}"></script>
+{{ layout }}
+</body>
+</html>
