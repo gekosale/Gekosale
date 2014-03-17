@@ -12,6 +12,7 @@
 namespace Gekosale\Core\Model;
 
 use Gekosale\Core\Model;
+use Gekosale\Core\Helper;
 
 /**
  * Class Product
@@ -197,16 +198,16 @@ class Product extends Model implements TranslatableModelInterface
      */
     public function setWeightAttribute($value)
     {
-        $this->attributes['weight'] = str_replace(',', '.', $value);
+        $this->attributes['weight'] = Helper::changeCommaToDot($value);
     }
 
-    /**
+    /**s
      * Mutator for sell_price attribute
      *
      * @param $value
      */
     public function setSellPriceAttribute($value)
     {
-        $this->attributes['sell_price'] = str_replace(',', '.', $value);
+        $this->attributes['sell_price'] = Helper::changeCommaToDot($value);
     }
 }

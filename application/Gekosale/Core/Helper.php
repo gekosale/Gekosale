@@ -77,4 +77,16 @@ class Helper extends Component
 
         return $data;
     }
+
+    /**
+     * Replaces commas with dots
+     *
+     * @param $value
+     *
+     * @return string
+     */
+    public static function changeCommaToDot($value)
+    {
+        return str_replace(',', '.', $value);
+    }
 }
