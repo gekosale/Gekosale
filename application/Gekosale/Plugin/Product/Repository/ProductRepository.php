@@ -99,9 +99,9 @@ class ProductRepository extends Repository
                 $translation->save();
             }
 
-            $product->synchronize($product->deliverer(), $Data['deliverers']);
-            $product->synchronize($product->category(), $Data['category']);
-            $product->synchronize($product->shop(), $Data['shops']);
+            $product->sync($product->deliverer(), $Data['deliverers']);
+            $product->sync($product->category(), $Data['category']);
+            $product->sync($product->shop(), $Data['shops']);
         });
     }
 

@@ -83,18 +83,8 @@ class ProducerRepository extends Repository
                 $translation->save();
             }
 
-            if (!empty($Data['deliverers'])) {
-                $producer->deliverer()->sync($Data['deliverers']);
-            } else {
-                $producer->deliverer()->detach();
-            }
-
-            if (!empty($Data['shops'])) {
-                $producer->shop()->sync($Data['shops']);
-            } else {
-                $producer->shop()->detach();
-            }
-
+            $producer->sync($producer->deliverer(), $Data['deliverers']);
+            $producer->sync($producer->shop(), $Data['shops']);
         });
     }
 

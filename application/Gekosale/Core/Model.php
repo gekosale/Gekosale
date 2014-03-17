@@ -134,9 +134,9 @@ abstract class Model extends BaseModel
      * Synchronizes data in BelongsToMany relation
      *
      * @param BelongsToMany $relation
-     * @param array         $values
+     * @param array|string  $values
      */
-    public function synchronize(BelongsToMany $relation, $values)
+    public function sync(BelongsToMany $relation, $values)
     {
         if (!empty($values)) {
             $relation->sync($values);

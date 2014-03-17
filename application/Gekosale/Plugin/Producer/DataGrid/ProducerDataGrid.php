@@ -31,7 +31,7 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
         $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
 
         $this->setOptions([
-            'id'             => 'shop',
+            'id'             => 'producer',
             'appearance'     => [
                 'column_select' => false
             ],
@@ -48,7 +48,7 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
         ]);
 
         $this->addColumn('id', [
-            'source'     => 'shop.id',
+            'source'     => 'producer.id',
             'caption'    => $this->trans('Id'),
             'sorting'    => [
                 'default_order' => DataGridInterface::SORT_DIR_DESC
@@ -63,7 +63,7 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
         ]);
 
         $this->addColumn('name', [
-            'source'     => 'shop_translation.name',
+            'source'     => 'producer_translation.name',
             'caption'    => $this->trans('Name'),
             'appearance' => [
                 'width' => 570,
