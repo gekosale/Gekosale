@@ -14,6 +14,7 @@ namespace Gekosale\Core;
 use Gekosale\Core\Model\TranslatableModelInterface;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Model
@@ -127,5 +128,20 @@ abstract class Model extends BaseModel
         }
 
         return $languageData;
+    }
+
+    /**
+     * Synchronizes data in BelongsToMany relation
+     *
+     * @param BelongsToMany $relation
+     * @param array         $values
+     */
+    public function synchronize(BelongsToMany $relation, $values)
+    {
+        if (!empty($values)) {
+            $relation->sync($values);
+        } else {
+            $relation->detach();
+        }
     }
 }

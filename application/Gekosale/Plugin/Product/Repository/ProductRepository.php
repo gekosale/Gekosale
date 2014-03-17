@@ -99,23 +99,9 @@ class ProductRepository extends Repository
                 $translation->save();
             }
 
-            if (!empty($Data['deliverers'])) {
-                $product->deliverer()->sync($Data['deliverers']);
-            } else {
-                $product->deliverer()->detach();
-            }
-
-            if (!empty($Data['category'])) {
-                $product->category()->sync($Data['category']);
-            } else {
-                $product->category()->detach();
-            }
-
-            if (!empty($Data['shops'])) {
-                $product->shop()->sync($Data['shops']);
-            } else {
-                $product->shop()->detach();
-            }
+            $product->synchronize($product->deliverer(), $Data['deliverers']);
+            $product->synchronize($product->category(), $Data['category']);
+            $product->synchronize($product->shop(), $Data['shops']);
         });
     }
 
