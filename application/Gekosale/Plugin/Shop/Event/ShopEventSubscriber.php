@@ -11,11 +11,11 @@
  */
 namespace Gekosale\Plugin\Shop\Event;
 
-use Symfony\Component\EventDispatcher\Event,
-    Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
-use Gekosale\Plugin\Language\Event\LanguageFormEvent;
 
 /**
  * Class ShopEventSubscriber
@@ -30,28 +30,37 @@ class ShopEventSubscriber implements EventSubscriberInterface
 
     }
 
-    public function onFormInitAction(Event $event)
+    public function onKernelController(Event $event)
     {
-//        $form               = $event->getForm();
-//        $formHelper         = $event->getDispatcher()->getContainer()->get('form_helper');
-//        $translationService = $event->getDispatcher()->getContainer()->get('translation');
-//
-//        $layerData = $form->addChild($formHelper->addFieldset([
-//            'name'  => 'shop_data',
-//            'label' => 'Shop settings'
-//        ]));
-//
-//        $layerData->addChild($formHelper->addShopSelector([
-//            'name'  => 'shops',
-//            'label' => $translationService->trans('Shops')
-//        ]));
+        if ($event->getRequestType() == HttpKernelInterface::SUB_REQUEST) {
+            return;
+        }
+
+        $container = $event->getDispatcher()->getContainer();
+        $request   = $event->getRequest();
+        $session   = $container->get('session');
+
+        if (!$session->has('shop.settings')) {
+            $shop = $container->get('shop.repository')->getShopByHost();
+            $container->get('session')->set('shop.settings', $shop);
+        }
+
+        $templateVars                  = $request->attributes->get('_template_vars');
+        $templateVars['shop_settings'] = $container->get('session')->get('shop.settings');
+        $templateVars['shops']         = $container->get('shop.repository')->getAllShopToSelect();
+
+        $request->attributes->set('_template_vars', $templateVars);
+
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
+            KernelEvents::CONTROLLER                  => [
+                'onKernelController',
+                -256
+            ],
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction',
-            LanguageFormEvent::FORM_INIT_EVENT        => 'onFormInitAction',
-        );
+        ];
     }
 }

@@ -126,10 +126,10 @@ class ProductRepository extends Repository
      *
      * @return array
      */
-    public function updateProductDataGrid(array $request)
+    public function updateProductDataGrid($request)
     {
         $id   = $request['id'];
-        $data = $request['product'];
+        $data = $request['data'];
 
         $this->transaction(function () use ($id, $data) {
             $product             = $this->find($id);

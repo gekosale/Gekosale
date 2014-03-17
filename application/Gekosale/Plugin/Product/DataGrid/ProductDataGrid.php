@@ -28,42 +28,133 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->registerEventHandlers();
+        $editEvent = $this->getXajaxManager()->registerFunction(['editProduct', $this, 'editProduct']);
+
+        $this->setOptions([
+            'id'             => 'product',
+            'appearance'     => [
+                'column_select' => false
+            ],
+            'mechanics'      => [
+                'key' => 'id',
+            ],
+            'event_handlers' => [
+                'load'       => $this->getXajaxManager()->registerFunction(['loadProduct', $this, 'getData']),
+                'edit_row'   => $editEvent,
+                'click_row'  => $editEvent,
+                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteProduct', $this, 'delete']),
+                'update_row' => $this->getXajaxManager()->registerFunction(['updateProduct', $this, 'updateProduct']),
+            ],
+        ]);
 
         $this->addColumn('id', [
-            'source' => 'product.id'
-        ]);
-
-        $this->addColumn('sku', [
-            'source' => 'product.sku'
-        ]);
-
-        $this->addColumn('ean', [
-            'source' => 'product.ean'
-        ]);
-
-        $this->addColumn('sell_price', [
-            'source' => 'product.sell_price'
-        ]);
-
-        $this->addColumn('sell_price_gross', [
-            'source' => 'product.sell_price'
-        ]);
-
-        $this->addColumn('stock', [
-            'source' => 'product.stock'
-        ]);
-
-        $this->addColumn('hierarchy', [
-            'source' => 'product.hierarchy'
-        ]);
-
-        $this->addColumn('weight', [
-            'source' => 'product.weight'
+            'source'     => 'product.id',
+            'caption'    => $this->trans('Id'),
+            'sorting'    => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance' => [
+                'width'   => 90,
+                'visible' => false
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
         ]);
 
         $this->addColumn('name', [
-            'source' => 'product_translation.name'
+            'source'     => 'product_translation.name',
+            'caption'    => $this->trans('Name'),
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+
+        $this->addColumn('sku', [
+            'source'     => 'product.sku',
+            'caption'    => $this->trans('SKU'),
+            'appearance' => [
+                'width' => 20,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+
+        $this->addColumn('ean', [
+            'source'     => 'product.ean',
+            'caption'    => $this->trans('EAN'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 60,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+
+        $this->addColumn('sell_price', [
+            'source'     => 'product.sell_price',
+            'caption'    => $this->trans('Price net'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 40,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
+        ]);
+
+        $this->addColumn('sell_price_gross', [
+            'source'     => 'product.sell_price',
+            'caption'    => $this->trans('Price gross'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 40,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
+        ]);
+
+        $this->addColumn('stock', [
+            'source'     => 'product.stock',
+            'caption'    => $this->trans('Stock'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 40,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
+        ]);
+
+        $this->addColumn('hierarchy', [
+            'source'     => 'product.hierarchy',
+            'caption'    => $this->trans('Hierarchy'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 40,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
+        ]);
+
+        $this->addColumn('weight', [
+            'source'     => 'product.weight',
+            'caption'    => $this->trans('Weight'),
+            'editable'   => true,
+            'appearance' => [
+                'width' => 40,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
         ]);
 
         $this->query = $this->getDb()
@@ -77,19 +168,6 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function registerEventHandlers()
-    {
-        $this->getXajaxManager()->registerFunctions([
-            'getProductForAjax' => [$this, 'getData'],
-            'doDeleteProduct'   => [$this, 'delete'],
-        ]);
-
-        $this->getXajaxManager()->registerFunction(['doUpdateProduct', $this, 'updateProduct']);
-    }
-
-    /**
      * Updates product
      *
      * @param $request
@@ -99,5 +177,20 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
     public function updateProduct($request)
     {
         return $this->repository->updateProductDataGrid($request);
+    }
+
+    /**
+     * Redirects user from list to product edit form
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function editProduct($request)
+    {
+        return [
+            'processFunction' => DataGridInterface::REDIRECT,
+            'data'            => $this->generateUrl('admin.product.edit', ['id' => $request['id']], true)
+        ];
     }
 }

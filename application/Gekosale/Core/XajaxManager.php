@@ -63,6 +63,13 @@ class XajaxManager
         $this->callbacks[$name] = $callback;
     }
 
+    public function redirect($path)
+    {
+        $objResponse = new xajaxResponse();
+
+        return $objResponse->script('window.location.href = \'' . $path . ';');
+    }
+
     /**
      * Register multiple callback functions
      *

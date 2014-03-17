@@ -3,91 +3,10 @@
     <h2>{% trans %}Deliverers{% endtrans %}</h2>
 
     <ul class="possibilities">
-        <li><a href="{{ path('admin.deliverer.add') }}" class="button" title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+        <li><a href="{{ path('admin.deliverer.add') }}" class="button"
+               title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
     </ul>
 
-    <div class="block">
-        <div id="datagrid-deliverer"></div>
-    </div>
+    {{ datagrid_renderer(datagrid) }}
 
-    <script type="text/javascript">
-
-        function editDeliverer(dg, id) {
-            location.href = "{{ path('admin.deliverer.edit') }}/" + id;
-        }
-
-        function deleteDeliverer(dg, id) {
-            var oRow = theDatagrid.GetRow(id);
-            var topic = '{% trans %}Delete{% endtrans %}';
-            var msg = '{% trans %}Do you confirm deleting {% endtrans %} <strong>' + oRow.name + '</strong> ?';
-            var params = {
-                dg: dg,
-                id: id
-            };
-            var func = function (p) {
-                return xajax_doDeleteDeliverer(p.dg, p.id);
-            };
-            new GF_Alert(topic, msg, func, true, params);
-        }
-
-        var theDatagrid;
-
-        $(document).ready(function () {
-
-            var column_id = new GF_Datagrid_Column({
-                id: 'id',
-                caption: '{% trans %}Id{% endtrans %}',
-                appearance: {
-                    width: 90,
-                    visible: false
-                },
-                filter: {
-                    type: GF_Datagrid.FILTER_BETWEEN
-                }
-            });
-
-            var column_name = new GF_Datagrid_Column({
-                id: 'name',
-                caption: '{% trans %}Name{% endtrans %}',
-                appearance: {
-                    width: 70
-                },
-                filter: {
-                    type: GF_Datagrid.FILTER_INPUT
-                }
-            });
-
-            var options = {
-                id: 'deliverer',
-                appearance: {
-                    column_select: false
-                },
-                mechanics: {
-                    key: 'id',
-                    rows_per_page: 25
-                },
-                event_handlers: {
-                    load: xajax_getDelivererForAjax,
-                    edit_row: editDeliverer,
-                    delete_row: deleteDeliverer,
-                    click_row: editDeliverer
-                },
-                columns: [
-                    column_id,
-                    column_name
-                ],
-                row_actions: [
-                    GF_Datagrid.ACTION_EDIT,
-                    GF_Datagrid.ACTION_DELETE
-                ],
-                context_actions: [
-                    GF_Datagrid.ACTION_EDIT,
-                    GF_Datagrid.ACTION_DELETE
-                ]
-            };
-
-            theDatagrid = new GF_Datagrid($('#datagrid-deliverer'), options);
-
-        });
-    </script>
 {% endblock %}

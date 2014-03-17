@@ -2559,7 +2559,9 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 				
 				this._ChangeOrderIndicator(oRequest.order_by,  oRequest.order_dir);
 			}
-			dDg.m_oOptions.event_handlers.load(oRequest, 'GF_Datagrid.ProcessIncomingData');
+            dDg.m_oOptions.event_handlers.load(oRequest, GCallback(function(eEvent){
+                GF_Datagrid.ProcessIncomingData(eEvent);
+            }));
 			this.m_bFirstLoad = false;
 		});
 		
@@ -2609,9 +2611,13 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		}
 		var sId = dDg._GetIdFromTr(jTr);
 		if (dDg.m_oOptions.event_handlers.click_row instanceof Function) {
-			if (!dDg.m_oOptions.event_handlers.click_row(dDg.m_iId, sId)) {
-				return false;
-			}
+            var oRequest = {
+                dg: dDg.m_iId,
+                id: sId
+            }
+            dDg.m_oOptions.event_handlers.click_row(oRequest, GCallback(function(eEvent){
+                eval(eEvent.processFunction)(eEvent.data);
+            }));
 		}
 		if (dDg.IsSelected(sId)) {
 			dDg.DeselectRow(sId);
@@ -3795,13 +3801,9 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 			case GF_Datagrid.FILTER_SELECT:
 				jFilter.addClass('GF_Datagrid_filter_select');
 				var jSelect = $('<select></select>');
+                jSelect.append('<option value="" selected></option>');
 				for (var i in oF.options) {
-					if(default_value.replace(/%/g,"") == oF.options[i].id){
-						jSelect.append('<option value="' + oF.options[i].id + '" selected>' + oF.options[i].caption + '</option>');
-					}else{
-						jSelect.append('<option value="' + oF.options[i].id + '">' + oF.options[i].caption + '</option>');
-					}
-					
+				    jSelect.append('<option value="' + oF.options[i].id + '">' + oF.options[i].caption + '</option>');
 				}
 				jSelect.change(this.LoadData);
 				jSelect.change(this._HandleGoToFirst);
@@ -4375,7 +4377,16 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 			var sColumn = $(this).attr('name').substring($(this).attr('name').lastIndexOf('[') + 1, $(this).attr('name').length - 1);
 			var sPreviousValue = oRow[sColumn];
 			oRow[sColumn] = $(this).val();
-			dDg.m_oOptions.event_handlers.update_row(sId, oRow, sColumn, sPreviousValue);
+            var oRequest = {
+                id: sId,
+                data: oRow,
+                column: sColumn,
+                previous_value: sPreviousValue
+            };
+
+            dDg.m_oOptions.event_handlers.update_row(oRequest, GCallback(function(eEvent){
+                dDg.LoadData();
+            }));
 			return true;
 		}
 	});
@@ -4386,8 +4397,18 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		if (dDg.m_oOptions.event_handlers.update_row instanceof Function) {
 			var oRow = $.extend(true, {}, dDg.GetRow(sId));
 			var sColumn = $(this).attr('name').substring($(this).attr('name').lastIndexOf('[') + 1, $(this).attr('name').length - 1);
+            var sPreviousValue = oRow[sColumn];
 			oRow[sColumn] = $(this).find('option:selected').attr('value');
-			dDg.m_oOptions.event_handlers.update_row(sId, oRow, sColumn);
+            var oRequest = {
+                id: sId,
+                data: oRow,
+                column: sColumn,
+                previous_value: sPreviousValue
+            };
+
+            dDg.m_oOptions.event_handlers.update_row(oRequest, GCallback(function(eEvent){
+                dDg.LoadData();
+            }));
 			return true;
 		}
 	});
@@ -4452,8 +4473,11 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		}
 		var dDg = GF_Instance.ReturnInstance(oData.data_id);
 		dDg._ProcessData(oData);
-	})
-	
+	}),
+
+    Redirect: GF.NewEventHandler(function(oData) {
+        window.location.href = oData;
+    })
 });
 
 /**

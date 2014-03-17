@@ -11,9 +11,9 @@
  */
 namespace Gekosale\Plugin\Shop\Repository;
 
-use Gekosale\Core\Repository,
-    Gekosale\Core\Model\Shop,
-    Gekosale\Core\Model\ShopTranslation;
+use Gekosale\Core\Repository;
+use Gekosale\Core\Model\Shop;
+use Gekosale\Core\Model\ShopTranslation;
 
 /**
  * Class ShopRepository
@@ -91,6 +91,29 @@ class ShopRepository extends Repository
     }
 
     /**
+     * Saves basic shop values directly from DataGrid
+     *
+     * @param array $request
+     *
+     * @return array
+     */
+    public function updateShopDataGrid($request)
+    {
+        $id   = $request['id'];
+        $data = $request['data'];
+
+        $this->transaction(function () use ($id, $data) {
+            $shop             = $this->find($id);
+            $shop->is_offline = $data['is_offline'];
+            $shop->save();
+        });
+
+        return [
+            'updated' => true
+        ];
+    }
+
+    /**
      * Returns array containing values needed to populate the form
      *
      * @param $id
@@ -116,5 +139,33 @@ class ShopRepository extends Repository
         ]);
 
         return $populateData;
+    }
+
+    /**
+     * Returns Collection as key-value pairs ready to use in selects
+     *
+     * @return mixed
+     */
+    public function getAllShopToSelect()
+    {
+        return $this->getHelper()->flattenCollection($this->all(), 'id', 'translation.name');
+    }
+
+    /**
+     * Returns current shop by host name
+     *
+     * @return mixed
+     */
+    public function getShopByHost()
+    {
+        $request = $this->getRequest();
+        $host    = $request->getHttpHost();
+        $shop    = $this->getDb()
+            ->table('shop')
+            ->join('shop_translation', 'shop_translation.shop_id', '=', 'shop.id')
+            ->where('shop.url', '=', $host)
+            ->groupBy('shop.id')->first();
+
+        return $shop;
     }
 }

@@ -1,0 +1,59 @@
+{% macro datagrid_header(id) %}
+    {% autoescape true %}
+    <div class="block">
+        <div id="datagrid-{{ id }}"></div>
+    </div>
+    {% endautoescape %}
+{% endmacro %}
+
+{% macro datagrid_column(id,options) %}
+
+    var column_{{ id }} = new GF_Datagrid_Column({
+        id: '{{ id }}',
+        caption: '{{ options.caption }}',
+        editable: {{ options.editable ? 'true' : 'false' }},
+        selectable: {{ options.selectable ? 'true' : 'false' }},
+        sorting: {
+            default_order: {{ options.sorting.default_order }}
+        },
+        appearance: {
+            width: {{ options.appearance.width }},
+            visible: {{ options.appearance.visible ? 'true' : 'false' }}
+        },
+        filter: {
+            type: {{ options.filter.type }},
+            {% if options.filter.type == 'GF_Datagrid.FILTER_SELECT' %}
+            options: {{ options.filter.options|json_encode|raw }}
+            {% endif %}
+        }
+    });
+{% endmacro %}
+
+{% macro datagrid_options(columns, options) %}
+
+        id: '{{ options.id }}',
+        mechanics: {
+            key: '{{ options.mechanics.key }}',
+            rows_per_page: {{ options.mechanics.rows_per_page }}
+        },
+        event_handlers: {
+            load: {{ options.event_handlers.load ? options.event_handlers.load : 'false' }},
+            process: {{ options.event_handlers.process ? options.event_handlers.process : 'false' }},
+            delete_row: {{ options.event_handlers.delete_row ? 'deleteRow' : 'false' }},
+            loaded: {{ options.event_handlers.loaded ? options.event_handlers.loaded : 'false' }},
+            edit_row: {{ options.event_handlers.edit_row ? options.event_handlers.edit_row : 'false' }},
+            delete_group: {{ options.event_handlers.delete_group ? options.event_handlers.delete_group : 'false' }},
+            update_row: {{ options.event_handlers.update_row ? options.event_handlers.update_row : 'false' }},
+            click_row: {{ options.event_handlers.edit_row ? options.event_handlers.edit_row : 'false' }},
+        },
+        columns: [
+        {% for key, column in columns %}
+        column_{{ key }},
+        {%  endfor %}
+        ],
+        row_actions: [
+        {% for action in options.row_actions %}
+            {{ action }},
+        {%  endfor %}
+        ],
+{% endmacro %}

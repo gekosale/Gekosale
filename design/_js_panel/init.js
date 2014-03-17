@@ -1,11 +1,7 @@
 $(document).ready(function() {
-
-	$.datepicker.regional['pl'] = GFormDate.Language;
-	$.datepicker.setDefaults($.datepicker.regional['pl']);
 	$('.block').GBlock();
 	$('.box').GBox();
 	$('select').GSelect();
-//	$('#search').GSearch(); 
 	$('#message-bar').GMessageBar();
 	$('.simple-stats .tabs').tabs({fx: {opacity: 'toggle',duration: 75}});
 

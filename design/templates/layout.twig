@@ -1,32 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl">
 <head>
-    <title>{{ SHOP_NAME }} - Panel administracyjny</title>
+    <title>{{ shop_settings.name }} - Administration</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Author" content="Verison; http://verison.pl"/>
-    <meta http-equiv="Description" content="Panel administracyjny systemu sklepowego Gekosale."/>
+    <meta http-equiv="Author" content="WellCommerce sp. z o.o."/>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="shortcut icon" href="favicon.ico"/>
     {% block stylesheet %}
         <link rel="stylesheet" href="{{ asset('design/_css_panel/core/style.css') }}" type="text/css"/>
     {% endblock %}
-    {% block javascript %}
-
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery-1.4.2.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/xajax/xajax_core.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.jqplugin.1.0.2.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/swf.packed.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.scrollTo.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.cookie.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery-ui-1.7.2.custom.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.checkboxes.pack.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/json2.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/base64.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.hotkeys.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.onkeyup.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_libs/jquery.hoverIntent.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('design/_js_panel/gekosale.js') }}"></script>
-    {% endblock %}
+    {% javascripts 'js/library/*.js' output='js/all.js' %}
+    <script type="text/javascript" src="{{ asset('design/js/all.js') }}"></script>
+    {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('design/_js_panel/gekosale.js') }}"></script>
     <script type="text/javascript">
         new GCore({
             iCookieLifetime: 30,
@@ -43,7 +29,6 @@
     <script type="text/javascript" src="{{ asset('design/_js_panel/init.js') }}"></script>
     <script type="text/javascript" src="{{ asset('design/_js_panel/gf.js') }}"></script>
     <script type="text/javascript" src="{{ asset('design/_js_panel/en_EN.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('design/_js_panel/hotkeys.js') }}"></script>
     <script type="text/javascript">
         GF_Debug.s_iLevel = GF_Debug.LEVEL_ALL;
     </script>
@@ -95,8 +80,8 @@
 
             <div class="field-select">
                 <select name="view-switcher" onchange="xajax_ChangeActiveView(this.value);">
-                    {% for view in views %}
-                        <option value="{{ view.id }}" {% if view.active %}selected="selected"{% endif %}>{{ view.name }}</option>
+                    {% for id,name in shops %}
+                        <option value="{{ id }}" {% if view.active %}selected="selected"{% endif %}>{{ name }}</option>
                     {% endfor %}
                 </select>
             </div>

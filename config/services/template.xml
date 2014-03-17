@@ -65,5 +65,30 @@
 			<tag name="twig.extension" />
 		</service>
 
+        <service id="assetic_factory" class="Assetic\Factory\AssetFactory">
+            <argument>%application.root_path%design</argument>
+        </service>
+
+        <service id="assetic_twig_loader" class="Assetic\Extension\Twig\TwigFormulaLoader">
+            <argument type="service" id="twig" />
+        </service>
+
+        <service id="assetic_manager" class="Assetic\Factory\LazyAssetManager">
+            <argument type="service" id="assetic_factory" />
+            <call method="setLoader">
+                <argument>twig</argument>
+                <argument type="service" id="assetic_twig_loader"/>
+            </call>
+        </service>
+
+        <service id="assetic_writer" class="Assetic\AssetWriter">
+            <argument>%application.root_path%design</argument>
+        </service>
+
+        <service id="twig.extension.assetic" class="Assetic\Extension\Twig\AsseticExtension">
+            <argument type="service" id="assetic_factory"/>
+			<tag name="twig.extension" />
+		</service>
+
 	</services>
 </container>

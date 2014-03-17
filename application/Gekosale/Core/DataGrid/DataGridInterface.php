@@ -11,39 +11,25 @@ namespace Gekosale\Core\DataGrid;
 interface DataGridInterface
 {
 
-    const SORT_DIR_ASC = 1;
-
-    const SORT_DIR_DESC = 2;
-
-    const ALIGN_LEFT = 1;
-
-    const ALIGN_CENTER = 2;
-
-    const ALIGN_RIGHT = 3;
-
-    const FILTER_NONE = 0;
-
-    const FILTER_INPUT = 1;
-
-    const FILTER_BETWEEN = 2;
-
-    const FILTER_SELECT = 3;
-
-    const FILTER_AUTOSUGGEST = 4;
-
-    const WIDTH_AUTO = 0;
+    const SORT_DIR_ASC   = 'GF_Datagrid.SORT_DIR_ASC';
+    const SORT_DIR_DESC  = 'GF_Datagrid.SORT_DIR_DESC';
+    const ALIGN_LEFT     = 'GF_Datagrid.ALIGN_RIGHT';
+    const ALIGN_CENTER   = 'GF_Datagrid.ALIGN_CENTER';
+    const ALIGN_RIGHT    = 'GF_Datagrid.ALIGN_RIGHT';
+    const FILTER_NONE    = 'GF_Datagrid.FILTER_NONE';
+    const FILTER_INPUT   = 'GF_Datagrid.FILTER_INPUT';
+    const FILTER_BETWEEN = 'GF_Datagrid.FILTER_BETWEEN';
+    const FILTER_TREE    = 'GF_Datagrid.FILTER_TREE';
+    const FILTER_SELECT  = 'GF_Datagrid.FILTER_SELECT';
+    const WIDTH_AUTO     = 'GF_Datagrid.WIDTH_AUTO';
+    const ACTION_EDIT    = 'GF_Datagrid.ACTION_EDIT';
+    const ACTION_DELETE  = 'GF_Datagrid.ACTION_DELETE';
+    const REDIRECT       = 'GF_Datagrid.Redirect';
 
     /**
      * DataGrid initialization
      */
     public function init();
-
-    /**
-     * Registers event handlers needed for DataGrid
-     *
-     * @return mixed
-     */
-    public function registerEventHandlers();
 
     /**
      * Load handler for DataGrid
@@ -53,7 +39,7 @@ interface DataGridInterface
      *
      * @return mixed
      */
-    public function getData($request, $processFunction);
+    public function getData($request);
 
     /**
      * Delete handler for DataGrid
@@ -63,5 +49,5 @@ interface DataGridInterface
      *
      * @return mixed
      */
-    public function delete($datagrid, $id);
+    public function delete($id);
 }

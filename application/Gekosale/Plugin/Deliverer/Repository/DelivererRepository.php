@@ -106,7 +106,7 @@ class DelivererRepository extends Repository
     }
 
     /**
-     * Returns Collection as ke-value pairs ready to use in selects
+     * Returns Collection as key-value pairs ready to use in selects
      *
      * @return mixed
      */

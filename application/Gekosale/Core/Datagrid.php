@@ -54,9 +54,9 @@ class DataGrid extends Component
      *
      * @return xajaxResponse
      */
-    public function delete($datagrid, $id)
+    public function delete($request)
     {
-        return $this->deleteRow($datagrid, $id, [$this->repository, 'delete']);
+        return $this->repository->delete($request['id']);
     }
 
     /**
@@ -92,17 +92,8 @@ class DataGrid extends Component
      *
      * @return xajaxResponse
      */
-    public function getData($request, $processFunction)
+    public function getData($request)
     {
-        $request = array_merge([
-            'starting_from' => 0,
-            'limit'         => 25,
-            'order_by'      => current(array_keys($this->columns)),
-            'order_dir'     => 'asc',
-        ], $request);
-
-        $objResponse = new xajaxResponse();
-
         $this->query->skip($request['starting_from']);
         $this->query->take($request['limit']);
         $this->query->orderBy($request['order_by'], $request['order_dir']);
@@ -120,7 +111,14 @@ class DataGrid extends Component
         $result = $this->query->get();
         $total  = count($result);
 
-        return $objResponse->script($processFunction . '({' . 'data_id: "' . $request['id'] . '",' . 'rows_num: ' . $total . ',' . 'starting_from: ' . $request['starting_from'] . ',' . 'total: ' . $total . ',' . 'filtered: ' . $total . ',' . 'rows: ' . json_encode($result) . '' . '});' . '');
+        return [
+            'data_id'       => $request['id'],
+            'rows_num'      => $total,
+            'starting_from' => $request['starting_from'],
+            'total'         => $total,
+            'filtered'      => $total,
+            'rows'          => $result
+        ];
     }
 
     /**
@@ -154,24 +152,6 @@ class DataGrid extends Component
     }
 
     /**
-     * Deletes row using callback function
-     *
-     * @param $datagridId
-     * @param $rowId
-     * @param $deleteFunction
-     *
-     * @return xajaxResponse
-     */
-    public function deleteRow($datagridId, $rowId, $deleteFunction)
-    {
-        $objResponse = new xajaxResponse();
-        $deleteFunction[0]->$deleteFunction[1]($rowId);
-        $objResponse->script("try { GF_Datagrid.ReturnInstance({$datagridId}).LoadData(); GF_Datagrid.ReturnInstance({$datagridId}).ClearSelection(); GF_ConflictResolver.GetMain().Update(); } catch (x) { GF_Debug.HandleException(x); }");
-
-        return $objResponse;
-    }
-
-    /**
      * Adds datagrid column
      *
      * @param       $id
@@ -179,7 +159,33 @@ class DataGrid extends Component
      */
     public function addColumn($id, array $options)
     {
+        $options = array_replace_recursive([
+            'editable'   => false,
+            'selectable' => false,
+            'sorting'    => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance' => [
+                'visible' => true,
+                'width'   => DataGridInterface::WIDTH_AUTO,
+                'align'   => DataGridInterface::ALIGN_RIGHT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_NONE
+            ]
+        ], $options);
+
         $this->columns[$id] = $options;
+    }
+
+    /**
+     * Returns DataGrid columns
+     *
+     * @return mixed
+     */
+    public function getColumns()
+    {
+        return $this->columns;
     }
 
     protected function processRows($rows)
@@ -209,6 +215,48 @@ class DataGrid extends Component
     }
 
     /**
+     * Sets DataGrid options
+     *
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $options = array_replace_recursive([
+            'appearance'     => [
+                'column_select' => false
+            ],
+            'mechanics'      => [
+                'rows_per_page' => 25
+            ],
+            'event_handlers' => [
+                'load'         => false,
+                'process'      => false,
+                'delete_row'   => false,
+                'loaded'       => false,
+                'edit_row'     => false,
+                'delete_group' => false,
+                'update_row'   => false,
+            ],
+            'row_actions'    => [
+                DataGridInterface::ACTION_EDIT,
+                DataGridInterface::ACTION_DELETE
+            ]
+        ], $options);
+
+        $this->options = $options;
+    }
+
+    /**
+     * Returns DataGrid options
+     *
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
      * Sets new query
      *
      * @param $query
@@ -226,6 +274,5 @@ class DataGrid extends Component
     public function getQuery()
     {
         return $this->query;
-
     }
 }

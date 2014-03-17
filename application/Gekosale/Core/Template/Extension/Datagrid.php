@@ -40,9 +40,14 @@ class DataGrid extends \Twig_Extension
         );
     }
 
-    public function render(DataGridInterface $datagrid)
+    public function render(DataGridInterface $dataGrid)
     {
-        return $this->container->get('datagrid_renderer')->render($datagrid);
+        $columns = $dataGrid->getColumns();
+
+        return $this->container->get('twig')->render('datagrid.twig', [
+            'datagrid_options'      => $dataGrid->getOptions(),
+            'datagrid_columns'      => $columns
+        ]);
     }
 
     public function getName()
