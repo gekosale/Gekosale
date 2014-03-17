@@ -28,7 +28,7 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $editEvent = $this->getXajaxManager()->registerFunction(['editProduct', $this, 'editProduct']);
+        $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
 
         $this->setOptions([
             'id'             => 'product',
@@ -39,11 +39,11 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
                 'key' => 'id',
             ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadProduct', $this, 'getData']),
+                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
                 'edit_row'   => $editEvent,
                 'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteProduct', $this, 'delete']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateProduct', $this, 'updateProduct']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
+                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
             ],
         ]);
 
@@ -168,29 +168,12 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
     }
 
     /**
-     * Updates product
+     * Returns route for editAction
      *
-     * @param $request
-     *
-     * @return mixed
+     * @return string
      */
-    public function updateProduct($request)
+    protected function getEditActionRoute()
     {
-        return $this->repository->updateProductDataGrid($request);
-    }
-
-    /**
-     * Redirects user from list to product edit form
-     *
-     * @param $id
-     *
-     * @return mixed
-     */
-    public function editProduct($request)
-    {
-        return [
-            'processFunction' => DataGridInterface::REDIRECT,
-            'data'            => $this->generateUrl('admin.product.edit', ['id' => $request['id']], true)
-        ];
+        return 'admin.product.edit';
     }
 }

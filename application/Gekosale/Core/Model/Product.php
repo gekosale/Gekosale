@@ -189,4 +189,24 @@ class Product extends Model implements TranslatableModelInterface
     {
         return (int)$value;
     }
+
+    /**
+     * Mutator for weight attribute
+     *
+     * @param $value
+     */
+    public function setWeightAttribute($value)
+    {
+        $this->attributes['weight'] = str_replace(',', '.', $value);
+    }
+
+    /**
+     * Mutator for sell_price attribute
+     *
+     * @param $value
+     */
+    public function setSellPriceAttribute($value)
+    {
+        $this->attributes['sell_price'] = str_replace(',', '.', $value);
+    }
 }

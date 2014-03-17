@@ -13,6 +13,7 @@ namespace Gekosale\Plugin\Availability\DataGrid;
 
 use Gekosale\Core\DataGrid,
     Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Plugin\Availability\Event\AvailabilityDataGridEvent;
 
 /**
  * Class AvailabilityDataGrid
@@ -28,7 +29,7 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
     public function init()
     {
         $this->setOptions([
-            'id'             => 'product',
+            'id'             => 'availability',
             'appearance'     => [
                 'column_select' => false
             ],
@@ -36,15 +37,14 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
                 'key' => 'id',
             ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadProduct', $this, 'getData']),
-                'edit_row'   => $this->getXajaxManager()->registerFunction(['editProduct', $this, 'editProduct']),
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteProduct', $this, 'delete']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateProduct', $this, 'updateProduct']),
+                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
+                'edit_row'   => $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
             ],
         ]);
 
         $this->addColumn('id', [
-            'source'     => 'product.id',
+            'source'     => 'availability.id',
             'caption'    => $this->trans('Id'),
             'sorting'    => [
                 'default_order' => DataGridInterface::SORT_DIR_DESC
@@ -59,7 +59,7 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
         ]);
 
         $this->addColumn('name', [
-            'source'     => 'product_translation.name',
+            'source'     => 'availability_translation.name',
             'caption'    => $this->trans('Name'),
             'appearance' => [
                 'width' => 70,
@@ -70,128 +70,23 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
             ]
         ]);
 
-        $this->addColumn('sku', [
-            'source'     => 'product.sku',
-            'caption'    => $this->trans('SKU'),
-            'appearance' => [
-                'width' => 20,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_INPUT
-            ]
-        ]);
-
-        $this->addColumn('ean', [
-            'source'     => 'product.ean',
-            'caption'    => $this->trans('EAN'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 60,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_INPUT
-            ]
-        ]);
-
-        $this->addColumn('sell_price', [
-            'source'     => 'product.sell_price',
-            'caption'    => $this->trans('Price net'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('sell_price_gross', [
-            'source'     => 'product.sell_price',
-            'caption'    => $this->trans('Price gross'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('stock', [
-            'source'     => 'product.stock',
-            'caption'    => $this->trans('Stock'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('hierarchy', [
-            'source'     => 'product.hierarchy',
-            'caption'    => $this->trans('Hierarchy'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('weight', [
-            'source'     => 'product.weight',
-            'caption'    => $this->trans('Weight'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-                'align' => DataGridInterface::ALIGN_RIGHT
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->query = $this->getDb()
-            ->table('product')
-            ->join('product_translation', 'product_translation.product_id', '=', 'product.id')
-            ->groupBy('product.id');
-
-        $event = new ProductDataGridEvent($this);
-
-        $this->getDispatcher()->dispatch(ProductDataGridEvent::DATAGRID_INIT_EVENT, $event);
-
-        $this->registerEventHandlers();
-
-        $this->addColumn('id', [
-            'source' => 'availability.id'
-        ]);
-
-        $this->addColumn('name', [
-            'source' => 'availability_translation.name'
-        ]);
-
         $this->query = $this->getDb()
             ->table('availability')
             ->join('availability_translation', 'availability_translation.availability_id', '=', 'availability.id')
             ->groupBy('availability.id');
+
+        $event = new AvailabilityDataGridEvent($this);
+
+        $this->getDispatcher()->dispatch(AvailabilityDataGridEvent::DATAGRID_INIT_EVENT, $event);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns route for editAction
+     *
+     * @return string
      */
-    public function registerEventHandlers()
+    protected function getEditActionRoute()
     {
-        $this->getXajaxManager()->registerFunctions([
-            'getAvailabilityForAjax' => [$this, 'getData'],
-            'doDeleteAvailability'   => [$this, 'delete']
-        ]);
+        return 'admin.availability.edit';
     }
 }

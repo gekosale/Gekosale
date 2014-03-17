@@ -97,7 +97,7 @@ class ShopRepository extends Repository
      *
      * @return array
      */
-    public function updateShopDataGrid($request)
+    public function updateDataGridRow($request)
     {
         $id   = $request['id'];
         $data = $request['data'];

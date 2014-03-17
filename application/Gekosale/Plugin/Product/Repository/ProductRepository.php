@@ -126,7 +126,7 @@ class ProductRepository extends Repository
      *
      * @return array
      */
-    public function updateProductDataGrid($request)
+    public function updateDataGridRow($request)
     {
         $id   = $request['id'];
         $data = $request['data'];
@@ -137,6 +137,7 @@ class ProductRepository extends Repository
             $product->stock      = $data['stock'];
             $product->sell_price = $data['sell_price'];
             $product->hierarchy  = $data['hierarchy'];
+            $product->weight     = $data['weight'];
             $product->save();
         });
 

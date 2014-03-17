@@ -49,12 +49,14 @@ class DataGrid extends Component
     protected $repository;
 
     /**
+     * Deletes DataGrid row
+     *
      * @param $datagrid
      * @param $id
      *
      * @return xajaxResponse
      */
-    public function delete($request)
+    public function deleteRow($request)
     {
         return $this->repository->delete($request['id']);
     }
@@ -85,6 +87,33 @@ class DataGrid extends Component
     }
 
     /**
+     * Redirects user from list to edit form
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function editRow($request)
+    {
+        return [
+            'processFunction' => DataGridInterface::REDIRECT,
+            'data'            => $this->generateUrl($this->getEditActionRoute(), ['id' => $request['id']], true)
+        ];
+    }
+
+    /**
+     * Updates DataGrid row
+     *
+     * @param $request
+     *
+     * @return mixed
+     */
+    public function updateRow($request)
+    {
+        return $this->repository->updateDataGridRow($request);
+    }
+
+    /**
      * Returns datagrid data
      *
      * @param $request
@@ -92,7 +121,7 @@ class DataGrid extends Component
      *
      * @return xajaxResponse
      */
-    public function getData($request)
+    public function loadData($request)
     {
         $this->query->skip($request['starting_from']);
         $this->query->take($request['limit']);

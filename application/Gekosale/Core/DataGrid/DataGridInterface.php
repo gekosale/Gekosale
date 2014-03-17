@@ -39,7 +39,7 @@ interface DataGridInterface
      *
      * @return mixed
      */
-    public function getData($request);
+    public function loadData($request);
 
     /**
      * Delete handler for DataGrid
@@ -49,5 +49,5 @@ interface DataGridInterface
      *
      * @return mixed
      */
-    public function delete($id);
+    public function deleteRow($id);
 }

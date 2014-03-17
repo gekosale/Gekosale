@@ -28,7 +28,7 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $editEvent = $this->getXajaxManager()->registerFunction(['editShop', $this, 'editShop']);
+        $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
 
         $this->setOptions([
             'id'             => 'shop',
@@ -39,11 +39,11 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
                 'key' => 'id',
             ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadShop', $this, 'getData']),
+                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
                 'edit_row'   => $editEvent,
                 'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteShop', $this, 'delete']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateShop', $this, 'updateShop']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
+                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
             ],
         ]);
 
@@ -114,29 +114,12 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
     }
 
     /**
-     * Updates shop
+     * Returns route for editAction
      *
-     * @param $request
-     *
-     * @return mixed
+     * @return string
      */
-    public function updateShop($request)
+    protected function getEditActionRoute()
     {
-        return $this->repository->updateShopDataGrid($request);
-    }
-
-    /**
-     * Redirects user from list to shop edit form
-     *
-     * @param $id
-     *
-     * @return mixed
-     */
-    public function editShop($request)
-    {
-        return [
-            'processFunction' => DataGridInterface::REDIRECT,
-            'data'            => $this->generateUrl('admin.shop.edit', ['id' => $request['id']], true)
-        ];
+        return 'admin.shop.edit';
     }
 }
