@@ -138,7 +138,7 @@ class DataGrid extends Component
         }
 
         $result = $this->query->get();
-        $total  = count($result);
+        $total = count($result);
 
         return [
             'data_id'       => $request['id'],

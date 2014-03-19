@@ -2517,7 +2517,7 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		var aConditions = [];
 		
 		dDg.WaitingScreenShow(function() {
-			
+
 			var dDg = GF_Datagrid.GetCurrentInstance(this);
 			
 			for (var i in dDg.m_aiColumnsOrder) {
@@ -2564,7 +2564,7 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
             }));
 			this.m_bFirstLoad = false;
 		});
-		
+
 	};
 	
 	this.Reset = function() {
@@ -2803,13 +2803,13 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		jProgressBar.css('display', 'none').css('top', this.m_jTarget.find('.header').height() - 1).css('bottom', (this.m_jFooter && this.m_jFooter.length) ? this.m_jFooter.get(0).clientHeight : 0 + 2);
 		this.m_jTarget.append(jProgressBar);
 		var dDg = this;
-		jProgressBar.fadeIn(150, function() {
+		jProgressBar.fadeIn(50, function() {
 			fCompletionHandler.apply(dDg);
 		});
 	};
 	
 	this.WaitingScreenHide = function() {
-		this.m_jTarget.children('.progress').fadeOut(300, GF.NewEventHandler(function(eEvent) {
+		this.m_jTarget.children('.progress').fadeOut(100, GF.NewEventHandler(function(eEvent) {
 			$(this).remove();
 		}));
 	};

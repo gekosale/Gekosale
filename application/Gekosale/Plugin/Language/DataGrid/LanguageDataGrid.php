@@ -11,8 +11,9 @@
  */
 namespace Gekosale\Plugin\Language\DataGrid;
 
-use Gekosale\Core\DataGrid,
-    Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Core\DataGrid;
+use Gekosale\Core\DataGrid\DataGridInterface;
+use Gekosale\Plugin\Language\Event\LanguageDataGridEvent;
 
 /**
  * Class LanguageDataGrid
@@ -27,33 +28,76 @@ class LanguageDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $this->registerEventHandlers();
+        $this->setOptions([
+            'id'             => 'language',
+            'appearance'     => [
+                'column_select' => false
+            ],
+            'mechanics'      => [
+                'key' => 'id',
+            ],
+            'event_handlers' => [
+                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
+                'edit_row'   => $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
+            ],
+        ]);
 
         $this->addColumn('id', [
-            'source' => 'language.id'
+            'source'     => 'language.id',
+            'caption'    => $this->trans('Id'),
+            'sorting'    => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance' => [
+                'width'   => 90,
+                'visible' => false
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
         ]);
 
         $this->addColumn('name', [
-            'source' => 'language.name'
+            'source'     => 'language.name',
+            'caption'    => $this->trans('Name'),
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
         ]);
 
         $this->addColumn('locale', [
-            'source' => 'language.locale'
+            'source'     => 'language.locale',
+            'caption'    => $this->trans('Locale'),
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
         ]);
 
         $this->query = $this->getDb()
             ->table('language')
             ->groupBy('language.id');
+
+        $event = new LanguageDataGridEvent($this);
+
+        $this->getDispatcher()->dispatch(LanguageDataGridEvent::DATAGRID_INIT_EVENT, $event);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns route for editAction
+     *
+     * @return string
      */
-    public function registerEventHandlers()
+    protected function getEditActionRoute()
     {
-        $this->getXajaxManager()->registerFunctions([
-            'getLanguageForAjax' => [$this, 'getData'],
-            'doDeleteLanguage'   => [$this, 'delete']
-        ]);
+        return 'admin.language.edit';
     }
 }
