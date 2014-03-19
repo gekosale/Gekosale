@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="cache_manager.class">Doctrine\Common\Cache\FilesystemCache</parameter>
         <parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
         <parameter key="controller_resolver.class">Gekosale\Core\ControllerResolver</parameter>
         <parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
@@ -29,6 +30,10 @@
 
         <service id="config_locator" class="%config_locator.class%">
             <argument>%application.root_path%config</argument>
+        </service>
+
+        <service id="cache_manager" class="%cache_manager.class%">
+            <argument>%application.root_path%var/serialization</argument>
         </service>
 
         <service id="helper" class="%helper.class%">

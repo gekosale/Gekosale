@@ -294,4 +294,14 @@ abstract class Component extends ContainerAware
     {
         return 2;
     }
+
+    /**
+     * Shortcut to get Cache Manager service
+     *
+     * @return object
+     */
+    final protected function getCache()
+    {
+        return $this->container->get('cache_manager');
+    }
 }
