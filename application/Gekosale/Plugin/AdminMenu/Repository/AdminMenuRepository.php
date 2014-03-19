@@ -34,16 +34,40 @@ class AdminMenuRepository extends Repository
     }
 
     /**
+     * Admin menu sorting function
+     *
+     * @param $a
+     * @param $b
+     *
+     * @return int
+     */
+    private function sortMenu(&$a, &$b)
+    {
+        if (!empty($a['children'])) {
+            usort($a['children'], [$this, 'sortMenu']);
+        }
+        if ($a['sort_order'] == $b['sort_order']) {
+            return 0;
+        }
+
+        return $a['sort_order'] > $b['sort_order'] ? 1 : -1;
+    }
+
+    /**
      * Returns menu
      *
      * @return array
      */
+
     public function getMenuData()
     {
         $this->menuData     = $this->all();
         $this->currentRoute = $this->getRequest()->attributes->get('_route');
+        $tree               = $this->parseMenuTree();
 
-        return $this->parseMenuTree();
+        usort($tree, [$this, 'sortMenu']);
+
+        return $tree;
     }
 
     /**
@@ -65,15 +89,15 @@ class AdminMenuRepository extends Repository
                 continue;
             }
 
-            $menuItems[] = Array(
+            $menuItems[] = [
                 'id'         => $menu['id'],
                 'icon'       => $menu['icon'],
                 'name'       => $this->trans($menu['name']),
-                'sort_order' => $this->trans($menu['sort_order']),
+                'sort_order' => $menu['sort_order'],
                 'link'       => (null !== $menu['route']) ? $this->generateUrl($menu['route']) : '',
                 'active'     => (bool)($this->currentRoute == $menu['route']),
                 'children'   => $this->parseMenuTree($menu['id']),
-            );
+            ];
         }
 
         return $menuItems;

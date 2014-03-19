@@ -1,0 +1,82 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+<script src="{{ asset('themes/Gekosale/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/js/holder.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/js/jquery.checkboxes.pack.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/js/gekosale.js') }}"></script>
+<script src="{{ asset('themes/Gekosale/js/init.js') }}"></script>
+<script type="text/javascript">
+    GCore.OnLoad(function() {
+        $('#content').GLayoutBoxes({
+            aoColumns: [
+                new GLayoutColumn({
+                    sClass: 'col-md-2',
+                    asBoxes: [
+                        {
+                            sName: '11',
+                            bCollapsed: false,
+                            iSpan: 3
+                        },
+                        {
+                            sName: '1',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '4',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '8',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '2',
+                            bCollapsed: false,
+                            iSpan: 1
+                        }
+                    ]
+                }),
+                new GLayoutColumn({
+                    sClass: 'col-md-8',
+                    asBoxes: [
+                        {
+                            sName: '9',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '3',
+                            bCollapsed: false,
+                            iSpan: 1
+                        }
+                    ]
+                }),
+                new GLayoutColumn({
+                    sClass: 'col-md-2',
+                    asBoxes: [
+                        {
+                            sName: '6',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '7',
+                            bCollapsed: false,
+                            iSpan: 1
+                        },
+                        {
+                            sName: '5',
+                            bCollapsed: false,
+                            iSpan: 1
+                        }
+                    ]
+                })
+            ],
+            sLayoutHash: 'c2a0d1f38b1700a03c0536310807ade5'
+        });
+    });
+</script>

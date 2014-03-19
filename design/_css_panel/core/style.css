@@ -7171,6 +7171,11 @@ form {
     border-bottom: 1px solid #e4e4e4;
 }
 
+.GF_Datagrid .body tr:last-child td,
+.GF_Datagrid .body tr:last-child th {
+    border-bottom: 0px solid #e4e4e4;
+}
+
 .GF_Datagrid .body .GF_Datagrid_Col__select input {
     cursor: default;
 }

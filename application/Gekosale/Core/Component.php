@@ -27,10 +27,20 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class Component extends ContainerAware
 {
 
-    public function forward($controller, array $path = array(), array $query = array())
+    /**
+     * Forwards request to another controller
+     *
+     * @param        $controller
+     * @param string $action
+     * @param array  $path
+     * @param array  $query
+     *
+     * @return mixed
+     */
+    public function forward($controller, $action = 'indexAction', array $path = array(), array $query = array())
     {
         $path['_controller'] = $controller;
-        $path['_action']     = 'indexAction';
+        $path['_action']     = $action;
         $request             = $this->container->get('request_stack')->getCurrentRequest();
         $subRequest          = $request->duplicate($query, null, $path);
 
