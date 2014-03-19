@@ -144,4 +144,17 @@ abstract class Model extends BaseModel
             $relation->detach();
         }
     }
+
+    /**
+     * Gekosale custom Eloquent Collection
+     *
+     * @param array $models
+     *
+     * @return Model\CustomCollection|Collection
+     */
+    public function newCollection(array $models = Array())
+    {
+        return new Model\CustomCollection($models);
+    }
+
 }

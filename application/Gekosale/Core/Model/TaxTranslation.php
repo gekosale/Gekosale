@@ -27,13 +27,8 @@ class TaxTranslation extends Model
     public $timestamps = true;
 
     protected $softDelete = false;
-
-    protected $fillable
-        = array(
-            'tax_id',
-            'language_id',
-            'name'
-        );
+    
+    protected $fillable = ['tax_id', 'language_id', 'name'];
 
     public function tax()
     {

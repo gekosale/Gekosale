@@ -123,6 +123,6 @@ class ProducerRepository extends Repository
      */
     public function getAllProducerToSelect()
     {
-        return $this->getHelper()->flattenCollection($this->all(), 'id', 'translation.name');
+        return $this->all()->toSelect('id', 'translation.name', $this->getCurrentLanguage());
     }
 }
