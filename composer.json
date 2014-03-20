@@ -76,7 +76,8 @@
         "symfony/property-access": "2.4.x-dev",
         "sami/sami": "v1.3",
         "doctrine/cache": "1.4.x-dev",
-        "illuminate/encryption": "4.1.x-dev"
+        "illuminate/encryption": "4.1.x-dev",
+        "twitter/bootstrap": "v3.1.1"
     },
     "autoload": {
         "psr-0": {

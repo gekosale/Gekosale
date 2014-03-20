@@ -12,8 +12,6 @@
 
 namespace Gekosale\Core\Form\Elements;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
  * Class ShopSelector
  *

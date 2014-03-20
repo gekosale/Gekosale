@@ -13,14 +13,6 @@ namespace Gekosale\Plugin\Product\Controller\Admin;
 
 use Gekosale\Core\Controller\AdminController;
 
-use Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager;
-use Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider;
-use Symfony\Component\Security\Core\User\UserChecker;
-use Symfony\Component\Security\Core\User\InMemoryUserProvider;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-
 /**
  * Class ProductController
  *

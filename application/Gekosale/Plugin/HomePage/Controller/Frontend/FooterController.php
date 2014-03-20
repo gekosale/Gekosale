@@ -13,7 +13,6 @@ namespace Gekosale\Plugin\HomePage\Controller\Frontend;
 
 use Gekosale\Core\Controller\FrontendController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class HomePageController
@@ -27,7 +26,7 @@ class FooterController extends FrontendController
     public function indexAction(Request $request)
     {
         return [
-            'content' => 'Stopka'
+            'content' => $request->getContent()
         ];
     }
 
