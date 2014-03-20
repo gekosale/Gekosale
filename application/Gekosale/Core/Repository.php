@@ -11,8 +11,6 @@
  */
 namespace Gekosale\Core;
 
-use Illuminate\Database\Eloquent\Collection;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Closure;
 
 /**
