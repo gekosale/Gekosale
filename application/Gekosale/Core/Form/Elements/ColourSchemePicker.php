@@ -68,7 +68,7 @@ class ColourSchemePicker extends TextField implements ElementInterface
         );
     }
 
-    protected function prepareAttributesJs()
+    public function prepareAttributesJs()
     {
         $attributes = Array(
             $this->formatAttributeJs('name', 'sName'),

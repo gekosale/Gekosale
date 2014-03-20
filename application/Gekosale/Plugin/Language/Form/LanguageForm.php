@@ -74,8 +74,11 @@ class LanguageForm extends Form
             'options' => $this->makeOptions($this->get('currency.repository')->getAllCurrencyToSelect())
         ]));
 
-        $form->AddFilter($this->addFilterNoCode());
-        $form->AddFilter($this->addFilterSecure());
+        $form->addFilters([
+            $this->addFilterNoCode(),
+            $this->addFilterTrim(),
+            $this->addFilterSecure()
+        ]);
 
         $event = new LanguageFormEvent($form, $languageData);
 

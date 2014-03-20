@@ -6930,6 +6930,7 @@ form {
     color: #949494;
     padding: 2px 2px 3px;
     vertical-align: middle;
+    font-size: 11px;
 }
 
 .GF_Datagrid .header table td select {

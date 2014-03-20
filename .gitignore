@@ -229,4 +229,3 @@ pip-log.txt
 
 /vendor
 doc
-*ServiceContainer.php

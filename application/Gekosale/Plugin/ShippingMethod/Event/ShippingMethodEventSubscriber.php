@@ -9,7 +9,7 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Plugin\Product\Event;
+namespace Gekosale\Plugin\ShippingMethod\Event;
 
 use Symfony\Component\EventDispatcher\Event,
     Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,19 +17,19 @@ use Symfony\Component\EventDispatcher\Event,
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
 
 /**
- * Class ProductEventSubscriber
+ * Class ShippingMethodEventSubscriber
  *
- * @package Gekosale\Plugin\Product\Event
+ * @package Gekosale\Plugin\ShippingMethod\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class ProductEventSubscriber implements EventSubscriberInterface
+class ShippingMethodEventSubscriber implements EventSubscriberInterface
 {
 
     public function onAdminMenuInitAction(Event $event)
     {
     }
 
-    public function onProductDataGridInitAction(Event $event)
+    public function onShippingMethodDataGridInitAction(Event $event)
     {
     }
 
@@ -37,7 +37,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         return array(
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction',
-            ProductDataGridEvent::DATAGRID_INIT_EVENT => 'onProductDataGridInitAction'
+            ShippingMethodDataGridEvent::DATAGRID_INIT_EVENT => 'onShippingMethodDataGridInitAction'
         );
     }
 }

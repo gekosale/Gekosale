@@ -52,11 +52,9 @@ abstract class Condition
     /**
      * Evaluates condition value
      *
-     * @param $value
-     *
      * @return bool
      */
-    public function evaluate($value)
+    public function evaluate()
     {
         return true;
     }

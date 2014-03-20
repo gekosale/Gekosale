@@ -27,7 +27,6 @@ class Console extends Application
         parent::__construct('Welcome to Gekosale CLI Tool', '1.0');
 
         $this->addCommands([
-            new Console\Command\Assets\Combine(),
             new Console\Command\Documentation\Generate(),
             new Console\Command\Routes\Dump(),
             new Console\Command\Migration\Add(),
@@ -44,8 +43,6 @@ class Console extends Application
      */
     public function getContainer()
     {
-        $request = Request::createFromGlobals();
-
         return new ServiceContainer();
     }
 }

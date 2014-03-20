@@ -73,7 +73,7 @@ class Dependency
 
     public function evaluate($value = '', $i = null)
     {
-        if (!is_subclass_of($this->_condition, 'FormEngine\Condition')) {
+        if (!$this->_condition instanceof Condition) {
             return false;
         }
 
