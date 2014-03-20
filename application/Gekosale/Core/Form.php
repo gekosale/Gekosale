@@ -12,6 +12,9 @@
 namespace Gekosale\Core;
 
 use Closure;
+use Gekosale\Core\Form\Conditions\ConditionInterface;
+use Gekosale\Core\Form\Dependency;
+use Gekosale\Core\Form\Elements\ElementInterface;
 
 /**
  * Class Form
@@ -54,6 +57,8 @@ class Form extends Component
      */
     public function addFieldsetLanguage(array $options)
     {
+        $options['languages'] = $this->getLanguages();
+
         return new Form\Elements\FieldsetLanguage($options);
     }
 
@@ -102,6 +107,8 @@ class Form extends Component
      */
     public function addShopSelector(array $options)
     {
+        $options['stores'] = $this->get('company.repository')->getShopsTree();
+
         return new Form\Elements\ShopSelector($options);
     }
 
@@ -314,6 +321,40 @@ class Form extends Component
     public function addTree(array $options)
     {
         return new Form\Elements\Tree($options, $this->container);
+    }
+
+    /**
+     * Shortcut for adding RangeEditor element
+     *
+     * @param array $options
+     *
+     * @return Form\Elements\RangeEditor
+     */
+    public function addRangeEditor(array $options)
+    {
+        $options['prefixes'] = [
+            $this->trans('net'),
+            $this->trans('gross')
+        ];
+
+        $options['vat_values'] = $this->get('tax.repository')->getAllTaxToSelect();
+
+        return new Form\Elements\RangeEditor($options);
+    }
+
+    /**
+     * Shortcut for adding RangeEditor element
+     *
+     * @param                    $type
+     * @param ElementInterface   $element
+     * @param ConditionInterface $condition
+     * @param                    $argument
+     *
+     * @return Dependency
+     */
+    public function addDependency($type, ElementInterface $element, ConditionInterface $condition, $argument)
+    {
+        return new Dependency($type, $element, $condition, $argument, $this->container);
     }
 
 }

@@ -12,7 +12,6 @@
 
 namespace Gekosale\Core\Form\Conditions;
 
-use Gekosale\Core\ConditionInterface;
 use Gekosale\Core\Form\Condition;
 
 /**

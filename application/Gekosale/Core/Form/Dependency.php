@@ -11,6 +11,10 @@
  */
 namespace Gekosale\Core\Form;
 
+use Gekosale\Core\Form\Conditions\ConditionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use xajaxResponse;
+
 /**
  * Class Dependency
  *
@@ -29,43 +33,43 @@ class Dependency
 
     public $type;
     public $registry;
-    protected $_id;
-    protected $_condition;
-    protected $_srcFunction;
+    protected $id;
+    protected $condition;
+    protected $srcFunction;
     protected $_field;
     protected $_argument;
 
     protected static $_nextId = 0;
 
-    public function __construct($type, $field, $condition, $argument = null)
+    public function __construct($type, $field, $condition, $argument = null, ContainerInterface $container)
     {
-        $this->_argument = $argument;
+        $this->container = $container;
+        $this->argument  = $argument;
         $this->type      = $type;
-        $this->registry  = App::getRegistry();
         if (is_object($condition) && $condition instanceof Condition) {
-            $this->_condition = $condition;
+            $this->condition = $condition;
         } else {
-            $this->_srcFunction = $condition;
-            $this->_id          = self::$_nextId++;
+            $this->srcFunction = $condition;
+            $this->id          = self::$_nextId++;
             switch ($this->type) {
                 case self::EXCHANGE_OPTIONS:
-                    $this->_jsFunction = 'GetOptions_' . $this->_id;
-                    $this->registry->xajax->registerFunction(array(
-                        $this->_jsFunction,
+                    $this->jsFunction = 'GetOptions_' . $this->id;
+                    $this->container->get('xajax_manager')->registerFunction([
+                        $this->jsFunction,
                         $this,
-                        'doAjaxOptionsRequest_' . $this->_id
-                    ));
+                        'doAjaxOptionsRequest_' . $this->id
+                    ]);
                     break;
                 case self::INVOKE_CUSTOM_FUNCTION:
-                    $this->_jsFunction = $condition;
+                    $this->jsFunction = $condition;
                     break;
                 case self::SUGGEST:
-                    $this->_jsFunction = 'GetSuggestions_' . $this->_id;
-                    $this->registry->xajax->registerFunction(array(
-                        $this->_jsFunction,
+                    $this->jsFunction = 'GetSuggestions_' . $this->id;
+                    $this->container->get('xajax_manager')->registerFunction([
+                        $this->jsFunction,
                         $this,
-                        'doAjaxSuggestionRequest_' . $this->_id
-                    ));
+                        'doAjaxSuggestionRequest_' . $this->id
+                    ]);
             }
         }
         $this->_field = $field;
@@ -73,23 +77,23 @@ class Dependency
 
     public function evaluate($value = '', $i = null)
     {
-        if (!$this->_condition instanceof Condition) {
+        if (!$this->condition instanceof Condition) {
             return false;
         }
 
         if ($i === null) {
-            return $this->_condition->evaluate($this->_field->getValue());
+            return $this->condition->evaluate($this->_field->getValue());
         }
         $matchingValues = $this->_field->getValue();
         if (is_array($matchingValues)) {
             if (isset($matchingValues[$i])) {
-                return $this->_condition->evaluate($matchingValues[$i]);
+                return $this->condition->evaluate($matchingValues[$i]);
             } else {
-                return $this->_condition->evaluate('');
+                return $this->condition->evaluate('');
             }
         }
 
-        return $this->_condition->evaluate($matchingValues);
+        return $this->condition->evaluate($matchingValues);
     }
 
     public function doAjaxSuggestionRequest($request, $responseHandler)
@@ -97,7 +101,7 @@ class Dependency
         try {
             $objResponse = new xajaxResponse();
             $response    = Array(
-                'suggestion' => call_user_func($this->_srcFunction, $request['value'])
+                'suggestion' => call_user_func($this->srcFunction, $request['value'])
             );
             $objResponse->script("{$responseHandler}(" . json_encode($response) . ")");
 
@@ -114,10 +118,10 @@ class Dependency
     {
         try {
             $objResponse = new xajaxResponse();
-            if ($this->_argument !== null) {
-                $rawOptions = call_user_func($this->_srcFunction, $request['value'], $this->_argument);
+            if ($this->argument !== null) {
+                $rawOptions = call_user_func($this->srcFunction, $request['value'], $this->argument);
             } else {
-                $rawOptions = call_user_func($this->_srcFunction, $request['value']);
+                $rawOptions = call_user_func($this->srcFunction, $request['value']);
             }
             $options = Array();
             foreach ($rawOptions as $option) {
@@ -144,23 +148,22 @@ class Dependency
 
     public function renderJs()
     {
-
-        if (is_subclass_of($this->_condition, 'FormEngine\Condition')) {
-            return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_condition->renderJs()})";
+        if ($this->condition instanceof Condition) {
+            return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->condition->renderJs()})";
         } else {
             switch ($this->type) {
                 case self::INVOKE_CUSTOM_FUNCTION:
-                    if ($this->_argument !== null) {
-                        $argument = json_encode($this->_argument);
+                    if ($this->argument !== null) {
+                        $argument = json_encode($this->argument);
 
-                        return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_jsFunction}, {$argument})";
+                        return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->jsFunction}, {$argument})";
                     }
 
-                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->_jsFunction})";
+                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', {$this->jsFunction})";
                     break;
                 case self::EXCHANGE_OPTIONS:
                 case self::SUGGEST:
-                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', xajax_{$this->_jsFunction})";
+                    return "new GFormDependency(GFormDependency.{$this->type}, '{$this->_field->form->getName()}.{$this->_field->getName()}', xajax_{$this->jsFunction})";
             }
         }
     }
@@ -180,5 +183,4 @@ class Dependency
             ), $args[0], $args[1]);
         }
     }
-
 }

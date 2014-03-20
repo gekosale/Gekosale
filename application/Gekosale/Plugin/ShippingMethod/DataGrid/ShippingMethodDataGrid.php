@@ -74,80 +74,22 @@ class ShippingMethodDataGrid extends DataGrid implements DataGridInterface
             ]
         ]);
 
-        $this->addColumn('sku', [
-            'source'     => 'shipping_method.sku',
-            'caption'    => $this->trans('SKU'),
+        $this->addColumn('enabled', [
+            'source'     => 'shipping_method.enabled',
+            'caption'    => $this->trans('Enabled'),
+            'selectable' => true,
             'appearance' => [
                 'width' => 20,
             ],
             'filter'     => [
-                'type' => DataGridInterface::FILTER_INPUT
-            ]
-        ]);
-
-        $this->addColumn('ean', [
-            'source'     => 'shipping_method.ean',
-            'caption'    => $this->trans('EAN'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 60,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_INPUT
-            ]
-        ]);
-
-        $this->addColumn('sell_price', [
-            'source'     => 'shipping_method.sell_price',
-            'caption'    => $this->trans('Price net'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('sell_price_gross', [
-            'source'     => 'shipping_method.sell_price',
-            'caption'    => $this->trans('Price gross'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('stock', [
-            'source'     => 'shipping_method.stock',
-            'caption'    => $this->trans('Stock'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
+                'type'    => DataGridInterface::FILTER_SELECT,
+                'options' => $this->getEnabledFilterOptions()
             ]
         ]);
 
         $this->addColumn('hierarchy', [
             'source'     => 'shipping_method.hierarchy',
             'caption'    => $this->trans('Hierarchy'),
-            'editable'   => true,
-            'appearance' => [
-                'width' => 40,
-            ],
-            'filter'     => [
-                'type' => DataGridInterface::FILTER_BETWEEN
-            ]
-        ]);
-
-        $this->addColumn('weight', [
-            'source'     => 'shipping_method.weight',
-            'caption'    => $this->trans('Weight'),
             'editable'   => true,
             'appearance' => [
                 'width' => 40,
@@ -165,6 +107,21 @@ class ShippingMethodDataGrid extends DataGrid implements DataGridInterface
         $event = new ShippingMethodDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(ShippingMethodDataGridEvent::DATAGRID_INIT_EVENT, $event);
+    }
+
+    protected function getEnabledFilterOptions()
+    {
+        $options   = [];
+        $options[] = [
+            'id'      => 0,
+            'caption' => $this->trans('Yes'),
+        ];
+        $options[] = [
+            'id'      => 1,
+            'caption' => $this->trans('No'),
+        ];
+
+        return $options;
     }
 
     /**
