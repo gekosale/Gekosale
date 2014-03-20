@@ -43,7 +43,7 @@ class Email extends Format implements RuleInterface
     {
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}'}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}'}";
     }
 
 }

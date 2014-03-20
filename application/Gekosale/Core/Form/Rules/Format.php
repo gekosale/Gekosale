@@ -45,7 +45,7 @@ class Format extends Rule
         $format   = addslashes($this->_format);
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFormat: '{$format}'}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}', sFormat: '{$format}'}";
     }
 
 }

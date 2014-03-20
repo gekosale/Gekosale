@@ -27,38 +27,38 @@ class TechnicalAttributeEditor extends Field implements ElementInterface
         parent::__construct($attributes);
 
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'DeleteAttribute',
+            'deleteAttribute',
             $this,
             'deleteAttribute'
         ));
 
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'RenameAttribute',
+            'renameAttribute',
             $this,
             'renameAttribute'
         ));
 
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'RenameValue',
+            'renameValue',
             $this,
             'renameValue'
         ));
 
-        $this->_attributes['deleteAttributeFunction'] = 'xajax_DeleteAttribute';
-        $this->_attributes['renameAttributeFunction'] = 'xajax_RenameAttribute';
-        $this->_attributes['renameValueFunction']     = 'xajax_RenameValue';
+        $this->_attributes['deleteAttributeFunction'] = 'xajax_deleteAttribute';
+        $this->_attributes['renameAttributeFunction'] = 'xajax_renameAttribute';
+        $this->_attributes['renameValueFunction']     = 'xajax_renameValue';
     }
 
     public function renameAttribute($request)
     {
-        App::getModel('technicaldata')->RenameAttribute($request['id'], $request['name'], $request['languageid']);
+        App::getModel('technicaldata')->renameAttribute($request['id'], $request['name'], $request['languageid']);
 
         return $request;
     }
 
     public function renameValue($request)
     {
-        App::getModel('technicaldata')->RenameValue($request['id'], $request['name'], $request['languageid']);
+        App::getModel('technicaldata')->renameValue($request['id'], $request['name'], $request['languageid']);
 
         return $request;
     }

@@ -86,7 +86,7 @@ abstract class Node
         $this->_attributes['filters'][] = $filter;
     }
 
-    public function Setfilter($filter)
+    public function setFilter($filter)
     {
         if (!isset($this->_attributes['filters']) || !is_array($this->_attributes['filters'])) {
             $this->_attributes['filters'] = Array();
@@ -99,7 +99,7 @@ abstract class Node
         $this->_attributes['filters'] = Array();
     }
 
-    public function AddDependency($dependency)
+    public function addDependency($dependency)
     {
         if (!isset($this->_attributes['dependencies']) || !is_array($this->_attributes['dependencies'])) {
             $this->_attributes['dependencies'] = Array();
@@ -107,7 +107,7 @@ abstract class Node
         $this->_attributes['dependencies'][] = $dependency;
     }
 
-    protected function _filter($values)
+    protected function filter($values)
     {
         if (!isset($this->_attributes['filters']) || !is_array($this->_attributes['filters'])) {
             return $values;
@@ -227,9 +227,9 @@ abstract class Node
         return $repetitions;
     }
 
-    protected function _FormatAttributes_JS($attributes)
+    protected function formatAttributesJs($attributes)
     {
-        $attributes       = array_merge($attributes, $this->_PrepareAutoAttributes_JS());
+        $attributes       = array_merge($attributes, $this->prepareAutoAttributesJs());
         $attributesString = "\n";
         foreach ($attributes as $attribute) {
             if (!empty($attribute)) {
@@ -351,7 +351,7 @@ abstract class Node
     public function renderJs()
     {
         $render = "
-			{fType: {$this->_jsNodeName},{$this->_FormatAttributes_JS($this->prepareAttributesJs())}}
+			{fType: {$this->_jsNodeName},{$this->formatAttributesJs($this->prepareAttributesJs())}}
 		";
 
         return $render;
@@ -384,7 +384,7 @@ abstract class Node
     {
     }
 
-    protected function _PrepareAutoAttributes_JS()
+    protected function prepareAutoAttributesJs()
     {
         $attributes = Array();
         $attributes = array_merge($attributes, $this->_xajaxMethods);
@@ -392,7 +392,7 @@ abstract class Node
         return $attributes;
     }
 
-    protected function _RegisterXajaxMethod($name, $callback)
+    protected function registerXajaxMethod($name, $callback)
     {
         $jsName                   = $name . '_' . $this->_id;
         $this->_attributes[$name] = 'xajax_' . $jsName;

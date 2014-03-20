@@ -38,17 +38,17 @@ class LocalFile extends File implements ElementInterface
         $this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
         $this->_attributes['upload_url']
                                                      = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->_attributes['file_source']);
-        $this->_attributes['load_handler']           = 'xajax_LoadFiles_' . $this->_id;
+        $this->_attributes['load_handler']           = 'xajax_loadFiles_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'LoadFiles_' . $this->_id,
+            'loadFiles_' . $this->_id,
             $this,
-            'LoadFiles'
+            'loadFiles'
         ));
-        $this->_attributes['delete_handler'] = 'xajax_DeleteFile_' . $this->_id;
+        $this->_attributes['delete_handler'] = 'xajax_deleteFile_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'DeleteFile_' . $this->_id,
+            'deleteFile_' . $this->_id,
             $this,
-            'DeleteFile'
+            'deleteFile'
         ));
         $this->_attributes['type_icons'] = Array(
             'cdup'      => DESIGNPATH . '_images_panel/icons/filetypes/cdup.png',
@@ -94,7 +94,7 @@ class LocalFile extends File implements ElementInterface
         return $attributes;
     }
 
-    public function DeleteFile($request)
+    public function deleteFile($request)
     {
         if (!isset($request['file'])) {
             throw new Exception('No file specified.');
@@ -109,7 +109,7 @@ class LocalFile extends File implements ElementInterface
         return Array();
     }
 
-    public function LoadFiles($request)
+    public function loadFiles($request)
     {
         $inRoot = false;
         if (substr($request['path'], 0, strlen($this->_attributes['file_source'])) != $this->_attributes['file_source']) {

@@ -98,7 +98,7 @@ class LanguageUnique extends Rule implements RuleInterface
     {
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}}";
     }
 
 }

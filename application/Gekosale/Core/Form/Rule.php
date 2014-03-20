@@ -28,25 +28,25 @@ abstract class Rule
         $this->_errorMsg = $errorMsg;
     }
 
-    public function Check($value)
+    public function check($value)
     {
         if ($this->checkValue($value) === true) {
             return true;
         }
 
-        return $this->GetFailureMessage();
+        return $this->getFailureMessage();
     }
 
     abstract protected function checkValue($value);
 
-    public function GetType()
+    public function getType()
     {
         $class = explode('\\', get_class($this));
 
         return strtolower(end($class));
     }
 
-    public function GetFailureMessage()
+    public function getFailureMessage()
     {
         return $this->_errorMsg;
     }
@@ -55,6 +55,6 @@ abstract class Rule
     {
         $errorMsg = addslashes($this->_errorMsg);
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}'}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}'}";
     }
 }

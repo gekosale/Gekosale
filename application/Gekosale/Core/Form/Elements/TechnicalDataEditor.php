@@ -26,45 +26,45 @@ class TechnicalDataEditor extends Field implements ElementInterface
         parent::__construct($attributes);
         $this->_attributes['attribute_groups']     = $this->GetAttributeGroups();
         $this->_attributes['technical_attributes'] = $this->GetTechnicalAttributes();
-        $this->_RegisterXajaxMethod('fGetTechnicalAttributesForSet', Array(
+        $this->registerXajaxMethod('fGetTechnicalAttributesForSet', Array(
             $this,
-            'GetTechnicalAttributesForSet'
+            'getTechnicalAttributesForSet'
         ));
-        $this->_RegisterXajaxMethod('fGetSets', Array(
+        $this->registerXajaxMethod('fGetSets', Array(
             $this,
-            'GetSets'
+            'getSets'
         ));
-        $this->_RegisterXajaxMethod('fSaveSet', Array(
+        $this->registerXajaxMethod('fSaveSet', Array(
             $this,
-            'SaveSet'
+            'saveSet'
         ));
-        $this->_RegisterXajaxMethod('fDeleteSet', Array(
+        $this->registerXajaxMethod('fDeleteSet', Array(
             $this,
-            'DeleteSet'
+            'deleteSet'
         ));
-        $this->_RegisterXajaxMethod('fSaveAttributeGroup', Array(
+        $this->registerXajaxMethod('fSaveAttributeGroup', Array(
             $this,
-            'SaveAttributeGroup'
+            'saveAttributeGroup'
         ));
-        $this->_RegisterXajaxMethod('fDeleteAttributeGroup', Array(
+        $this->registerXajaxMethod('fDeleteAttributeGroup', Array(
             $this,
-            'DeleteAttributeGroup'
+            'deleteAttributeGroup'
         ));
-        $this->_RegisterXajaxMethod('fSaveAttribute', Array(
+        $this->registerXajaxMethod('fSaveAttribute', Array(
             $this,
-            'SaveAttribute'
+            'saveAttribute'
         ));
-        $this->_RegisterXajaxMethod('fDeleteAttribute', Array(
+        $this->registerXajaxMethod('fDeleteAttribute', Array(
             $this,
-            'DeleteAttribute'
+            'deleteAttribute'
         ));
-        $this->_RegisterXajaxMethod('fgetValuesForAttribute', Array(
+        $this->registerXajaxMethod('fgetValuesForAttribute', Array(
             $this,
             'getValuesForAttribute'
         ));
     }
 
-    protected function prepareAttributesJs()
+    public function prepareAttributesJs()
     {
         $attributes = Array(
             $this->formatAttributeJs('name', 'sName'),
@@ -83,18 +83,18 @@ class TechnicalDataEditor extends Field implements ElementInterface
         return $attributes;
     }
 
-    public function SaveAttributeGroup($request)
+    public function saveAttributeGroup($request)
     {
         if (substr($request['attributeGroupId'], 0, 3) == 'new') {
             $request['attributeGroupId'] = 'new';
         }
 
         return Array(
-            'attributeGroupId' => App::GetModel('TechnicalData')->SaveGroup($request['attributeGroupId'], $request['attributeGroupName'])
+            'attributeGroupId' => App::GetModel('TechnicalData')->saveGroup($request['attributeGroupId'], $request['attributeGroupName'])
         );
     }
 
-    public function DeleteAttributeGroup($request)
+    public function deleteAttributeGroup($request)
     {
         App::GetModel('TechnicalData')->DeleteGroup($request['attributeGroupId']);
 
@@ -103,79 +103,67 @@ class TechnicalDataEditor extends Field implements ElementInterface
         );
     }
 
-    public function SaveAttribute($request)
+    public function saveAttribute($request)
     {
         if (substr($request['attributeId'], 0, 3) == 'new') {
             $request['attributeId'] = 'new';
         }
 
         return Array(
-            'attributeId' => App::GetModel('TechnicalData')->SaveAttribute($request['attributeId'], $request['attributeName'], $request['attributeType'])
+            'attributeId' => App::GetModel('TechnicalData')->saveAttribute($request['attributeId'], $request['attributeName'], $request['attributeType'])
         );
     }
 
-    public function DeleteAttribute($request)
+    public function deleteAttribute($request)
     {
-        App::GetModel('TechnicalData')->DeleteAttribute($request['attributeId']);
+        App::GetModel('TechnicalData')->deleteAttribute($request['attributeId']);
 
         return Array(
             'attributeId' => $request['attributeId']
         );
     }
 
-    public function SaveSet($request)
+    public function saveSet($request)
     {
-        $setId = App::GetModel('TechnicalData')->SaveSet($request['setId'], $request['setName'], $request['setData']);
+        $setId = App::GetModel('TechnicalData')->saveSet($request['setId'], $request['setName'], $request['setData']);
 
         return Array(
             'setId' => $setId
         );
     }
 
-    public function DeleteSet($request)
+    public function deleteSet($request)
     {
-        App::GetModel('TechnicalData')->DeleteSet($request['setId']);
+        App::GetModel('TechnicalData')->deleteSet($request['setId']);
 
         return Array(
             'setId' => $request['setId']
         );
     }
 
-    public function GetSets($request)
+    public function getSets($request)
     {
         return Array(
-            'aoSets' => App::GetModel('TechnicalData')->GetSets($request['productId'], $request['categoryIds'])
+            'aoSets' => App::GetModel('TechnicalData')->getSets($request['productId'], $request['categoryIds'])
         );
     }
 
     public function GetAttributeGroups()
     {
-        return App::GetModel('TechnicalData')->GetGroups();
+        return App::getModel('TechnicalData')->GetGroups();
     }
 
     public function GetTechnicalAttributes()
     {
-        return App::GetModel('TechnicalData')->GetAttributes();
+        return App::getModel('TechnicalData')->getAttributes();
     }
 
     public function getValuesForAttribute($request)
     {
-        $request['attributeId'];
 
-        return Array(
-            Array(
-                1 => 'Różowy'
-            ),
-            Array(
-                1 => '60'
-            ),
-            Array(
-                1 => '800x600'
-            )
-        );
     }
 
-    public function GetTechnicalAttributesForSet($request)
+    public function getTechnicalAttributesForSet($request)
     {
         return Array(
             'setId'        => $request['setId'],

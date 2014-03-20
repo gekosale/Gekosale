@@ -46,9 +46,9 @@ class ColourSchemePicker extends TextField implements ElementInterface
         ));
         $this->_attributes['delete_handler'] = 'xajax_DeleteFile_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
-            'DeleteFile_' . $this->_id,
+            'deleteFile_' . $this->_id,
             $this,
-            'DeleteFile'
+            'deleteFile'
         ));
         $this->_attributes['type_icons'] = Array(
             'cdup'      => DESIGNPATH . '_images_panel/icons/filetypes/cdup.png',
@@ -97,7 +97,7 @@ class ColourSchemePicker extends TextField implements ElementInterface
         return $attributes;
     }
 
-    public function DeleteFile($request)
+    public function deleteFile($request)
     {
         if (!isset($request['file'])) {
             throw new Exception('No file specified.');

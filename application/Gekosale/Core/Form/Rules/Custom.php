@@ -87,7 +87,7 @@ class Custom extends Rule implements RuleInterface
             }
         }
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}, oParams: " . json_encode($params) . "}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}', fCheckFunction: xajax_{$this->jsFunction}, oParams: " . json_encode($params) . "}";
     }
 
 }

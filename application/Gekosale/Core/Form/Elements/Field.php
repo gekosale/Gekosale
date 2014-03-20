@@ -60,7 +60,7 @@ class Field extends Node
                         if ($rule instanceof LanguageUnique) {
                             $rule->setLanguage($i);
                         }
-                        if (($checkResult = $rule->Check($value)) !== true) {
+                        if (($checkResult = $rule->check($value)) !== true) {
                             if (!isset($this->_attributes['error']) || !is_array($this->_attributes['error'])) {
                                 $this->_attributes['error'] = ($i > 0) ? array_fill(0, $i, '') : Array();
                             } elseif ($i > 0) {
@@ -79,7 +79,7 @@ class Field extends Node
                         }
                     }
                 }
-                if (($checkResult = $rule->Check($this->_value)) !== true) {
+                if (($checkResult = $rule->check($this->_value)) !== true) {
                     $this->_attributes['error'] = $checkResult;
                     $result                     = false;
                 }
@@ -91,7 +91,7 @@ class Field extends Node
 
     public function populate($value)
     {
-        $value        = $this->_filter($value);
+        $value        = $this->filter($value);
         $this->_value = $value;
     }
 

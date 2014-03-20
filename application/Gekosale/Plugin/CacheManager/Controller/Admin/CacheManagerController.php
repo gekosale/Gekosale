@@ -35,19 +35,6 @@ class CacheManagerController extends AdminController
         }
 
         $writer->writeManagerAssets($am);
-
-//        $am        = $this->get('assetic_manager');
-//        $loader    = $this->get('twig.loader.front');
-//        $writer    = $this->get('assetic_writer');
-//        $templates = ['header.twig'];
-//
-//        foreach ($templates as $template) {
-//            $resource = new TwigResource($loader, $template);
-//            $am->addResource($resource, 'twig');
-//        }
-//
-//        $writer->writeManagerAssets($am);
-//        return $this->redirect($this->generateUrl('admin.cache_manager.index'));
     }
 
     /**

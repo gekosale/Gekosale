@@ -46,6 +46,6 @@ class DateTo extends Rule implements RuleInterface
         $errorMsg = addslashes($this->_errorMsg);
         $field    = addslashes($this->_compareWith->getName());
 
-        return "{sType: '{$this->GetType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
+        return "{sType: '{$this->getType()}', sErrorMessage: '{$errorMsg}', sFieldToCompare: '{$field}'}";
     }
 }
