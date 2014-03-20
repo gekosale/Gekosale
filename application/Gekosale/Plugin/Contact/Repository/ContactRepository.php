@@ -72,7 +72,7 @@ class ContactRepository extends Repository
                 'id' => $id
             ]);
 
-            $contact->is_enabled = $Data['is_enabled'];
+            $contact->enabled = $Data['enabled'];
             $contact->save();
 
             foreach ($this->getLanguageIds() as $language) {
@@ -104,7 +104,7 @@ class ContactRepository extends Repository
         $languageData = $contactData->getTranslationData();
 
         $accessor->setValue($populateData, '[required_data]', [
-            'is_enabled' => $contactData->is_enabled
+            'enabled' => $contactData->enabled
         ]);
 
         $accessor->setValue($populateData, '[translation_data]', [

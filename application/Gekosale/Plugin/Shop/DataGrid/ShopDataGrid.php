@@ -74,8 +74,8 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
             ]
         ]);
 
-        $this->addColumn('is_offline', [
-            'source'     => 'shop.is_offline',
+        $this->addColumn('offline', [
+            'source'     => 'shop.offline',
             'caption'    => $this->trans('Offline mode'),
             'selectable' => true,
             'appearance' => [

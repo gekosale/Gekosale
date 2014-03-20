@@ -229,4 +229,4 @@ pip-log.txt
 
 /vendor
 doc
-/application/Gekosale/Core/ServiceContainer.php
+*ServiceContainer.php

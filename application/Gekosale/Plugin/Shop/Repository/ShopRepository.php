@@ -73,7 +73,7 @@ class ShopRepository extends Repository
             ]);
 
             $shop->url        = $Data['url'];
-            $shop->is_offline = $Data['is_offline'];
+            $shop->offline    = $Data['offline'];
             $shop->company_id = $Data['company_id'];
             $shop->save();
 
@@ -103,8 +103,8 @@ class ShopRepository extends Repository
         $data = $request['data'];
 
         $this->transaction(function () use ($id, $data) {
-            $shop             = $this->find($id);
-            $shop->is_offline = $data['is_offline'];
+            $shop          = $this->find($id);
+            $shop->offline = $data['offline'];
             $shop->save();
         });
 
@@ -129,7 +129,7 @@ class ShopRepository extends Repository
 
         $accessor->setValue($populateData, '[required_data]', [
             'url'           => $shopData->url,
-            'is_offline'    => $shopData->is_offline,
+            'offline'       => $shopData->offline,
             'company_id'    => $shopData->company_id,
             'language_data' => $languageData
         ]);

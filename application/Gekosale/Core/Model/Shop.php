@@ -41,23 +41,23 @@ class Shop extends Model implements TranslatableModelInterface
     }
 
     /**
-     * Mutator for is_offline attribute
+     * Mutator for offline attribute
      *
      * @param $value
      */
-    public function setIsOfflineAttribute($value)
+    public function setOfflineAttribute($value)
     {
-        $this->attributes['is_offline'] = (int)$value;
+        $this->attributes['offline'] = (int)$value;
     }
 
     /**
-     * Accessor for is_offline attribute
+     * Accessor for offline attribute
      *
      * @param $value
      *
      * @return int
      */
-    public function getIsOfflineAttribute($value)
+    public function getOfflineAttribute($value)
     {
         return (int)$value;
     }

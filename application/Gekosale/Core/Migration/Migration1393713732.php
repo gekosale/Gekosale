@@ -29,7 +29,7 @@ class Migration1393713732 extends Migration
         if (!$this->getDb()->schema()->hasTable('contact')) {
             $this->getDb()->schema()->create('contact', function ($table) {
                 $table->increments('id');
-                $table->integer('is_enabled')->default(0);
+                $table->integer('enabled')->default(0);
                 $table->timestamps();
             });
         }

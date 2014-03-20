@@ -35,4 +35,26 @@ class Category extends Model
     {
         return $query->where('parent_id', '=', $parent);
     }
+
+    /**
+     * Mutator for enabled attribute
+     *
+     * @param $value
+     */
+    public function setEnabledAttribute($value)
+    {
+        $this->attributes['enabled'] = (int)$value;
+    }
+
+    /**
+     * Accessor for enabled attribute
+     *
+     * @param $value
+     *
+     * @return int
+     */
+    public function getEnabledAttribute($value)
+    {
+        return (int)$value;
+    }
 }

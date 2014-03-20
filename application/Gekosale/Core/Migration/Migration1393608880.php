@@ -30,7 +30,7 @@ class Migration1393608880 extends Migration
             $this->getDb()->schema()->create('category', function ($table) {
                 $table->increments('id');
                 $table->integer('hierarchy')->unsigned()->default(0);
-                $table->integer('is_enabled')->default(1);
+                $table->integer('enabled')->default(1);
                 $table->integer('parent_id')->unsigned()->nullable();
                 $table->integer('file_id')->unsigned()->nullable();
                 $table->timestamps();

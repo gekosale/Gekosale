@@ -97,20 +97,11 @@ class Add extends AbstractCommand
         $this->writeServicesFile();
 
         $this->writeRoutingFile();
-
-//        $fileContent = $this->startClass($class);
-//        $fileContent .= $this->addClassMethods();
-//        $fileContent .= $this->endClass();
-//
-//        $this->getFilesystem()->dumpFile($this->getMigrationClassesPath() . DS . $class . '.php', $fileContent);
-
     }
 
     private function writeServicesFile()
     {
         $serviceBaseName = strtolower($this->plugin);
-        $namespace       = $this->namespace;
-        $plugin          = $this->plugin;
 
         $content
             = <<<EOF
@@ -152,8 +143,6 @@ EOF;
 
     private function writeRoutingFile()
     {
-        $serviceBaseName = strtolower($this->plugin);
-        $namespace       = $this->namespace;
         $plugin          = $this->plugin;
         $controller      = 'Gekosale\\Plugin\\' . $plugin . '\\Controller\\Admin\\' . $plugin . 'Controller';
 

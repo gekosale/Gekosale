@@ -26,7 +26,11 @@ class ProductForm extends Form
     {
         $languages = $this->getLanguages();
 
-        $this->registerEventHandlers();
+        $this->getXajaxManager()->registerFunctions([
+            'AddProducer'  => [$this->get('producer.repository'), 'addSimpleProducer'],
+            'AddDeliverer' => [$this->get('deliverer.repository'), 'addSimpleDeliverer'],
+            'AddTax'       => [$this->get('tax.repository'), 'addSimpleTax']
+        ]);
 
         $form = $this->addForm([
             'name' => 'product'
@@ -214,7 +218,7 @@ class ProductForm extends Form
             'class' => 'priceGroup'
         ]));
 
-        $price = $standardPrice->addChild($this->addPrice([
+        $standardPrice->addChild($this->addPrice([
             'name'      => 'sell_price',
             'label'     => $this->trans('Sell price'),
             'rules'     => [
@@ -335,14 +339,5 @@ class ProductForm extends Form
         $form->populate($event->getPopulateData());
 
         return $form;
-    }
-
-    protected function registerEventHandlers()
-    {
-        $this->getXajaxManager()->registerFunctions([
-            'AddProducer'  => [$this->get('producer.repository'), 'addSimpleProducer'],
-            'AddDeliverer' => [$this->get('deliverer.repository'), 'addSimpleDeliverer'],
-            'AddTax'       => [$this->get('tax.repository'), 'addSimpleTax']
-        ]);
     }
 }

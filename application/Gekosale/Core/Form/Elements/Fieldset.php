@@ -21,15 +21,18 @@ namespace Gekosale\Core\Form\Elements;
 class Fieldset extends Container implements ElementInterface
 {
 
+    /**
+     * {@inheritdoc}
+     */
     public function prepareAttributesJs()
     {
-        $attributes = Array(
+        $attributes = [
             $this->formatAttributeJs('name', 'sName'),
             $this->formatAttributeJs('label', 'sLabel'),
             $this->formatAttributeJs('class', 'sClass'),
             $this->formatDependencyJs(),
             'aoFields: [' . $this->renderChildren() . ']'
-        );
+        ];
 
         return $attributes;
     }

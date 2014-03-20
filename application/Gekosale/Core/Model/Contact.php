@@ -41,23 +41,23 @@ class Contact extends Model implements TranslatableModelInterface
     }
 
     /**
-     * Mutator for is_enabled attribute
+     * Mutator for enabled attribute
      *
      * @param $value
      */
-    public function setIsEnabledAttribute($value)
+    public function setEnabledAttribute($value)
     {
-        $this->attributes['is_enabled'] = (int)$value;
+        $this->attributes['enabled'] = (int)$value;
     }
 
     /**
-     * Accessor for is_enabled attribute
+     * Accessor for enabled attribute
      *
      * @param $value
      *
      * @return int
      */
-    public function getIsEnabledAttribute($value)
+    public function getEnabledAttribute($value)
     {
         return (int)$value;
     }

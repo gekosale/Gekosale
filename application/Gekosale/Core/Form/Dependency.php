@@ -71,7 +71,7 @@ class Dependency
         $this->_field = $field;
     }
 
-    public function evaluate($value, $i = null)
+    public function evaluate($value = '', $i = null)
     {
         if (!is_subclass_of($this->_condition, 'FormEngine\Condition')) {
             return false;

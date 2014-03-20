@@ -30,7 +30,7 @@ class Migration1393684174 extends Migration
             $this->getDb()->schema()->create('shop', function ($table) {
                 $table->increments('id');
                 $table->string('url', 255);
-                $table->integer('is_offline')->default(0);
+                $table->integer('offline')->default(0);
                 $table->integer('company_id')->unsigned();
                 $table->timestamps();
                 $table->foreign('company_id')->references('id')->on('company')->onDelete('cascade')->onUpdate('no action');

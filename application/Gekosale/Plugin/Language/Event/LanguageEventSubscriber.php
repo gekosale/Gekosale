@@ -33,9 +33,7 @@ class LanguageEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
-//        echo $request->getHttpHost();
-//        echo $request->getLocale();
+
     }
 
     /**

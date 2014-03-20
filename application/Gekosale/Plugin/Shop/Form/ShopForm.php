@@ -66,7 +66,7 @@ class ShopForm extends Form
         ]));
 
         $requiredData->addChild($this->addCheckBox([
-            'name'    => 'is_offline',
+            'name'    => 'offline',
             'label'   => $this->trans('Offline mode'),
             'comment' => $this->trans('Turn shop into offline mode.')
         ]));

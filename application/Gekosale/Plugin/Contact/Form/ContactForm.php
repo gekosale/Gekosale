@@ -43,7 +43,7 @@ class ContactForm extends Form
         ]));
 
         $requiredData->addChild($this->addCheckBox([
-            'name'  => 'is_enabled',
+            'name'  => 'enabled',
             'label' => $this->trans('Enabled'),
         ]));
 
