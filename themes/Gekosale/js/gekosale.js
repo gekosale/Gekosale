@@ -809,7 +809,6 @@ var GLayoutBox = function(oOptions) {
             position: 'absolute',
             left: jBox.offset().left - jBox.parent().offset().left,
             top: jBox.offset().top - jBox.parent().offset().top,
-            width: jBox.width(),
             height: jBox.height(),
             zIndex: 1000
         });

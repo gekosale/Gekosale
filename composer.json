@@ -75,7 +75,8 @@
         "xajax/xajax": "1.0.0",
         "symfony/property-access": "2.4.x-dev",
         "sami/sami": "v1.3",
-        "doctrine/cache": "1.4.x-dev"
+        "doctrine/cache": "1.4.x-dev",
+        "illuminate/encryption": "4.1.x-dev"
     },
     "autoload": {
         "psr-0": {

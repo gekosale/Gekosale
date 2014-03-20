@@ -29,6 +29,15 @@ function deleteRow(dg, id) {
 }
 {% endif %}
 
+{% if datagrid_options.event_handlers.edit_row %}
+function editRow(dg, id) {
+    oRequest = {
+        id: id
+    }
+    {{ datagrid_options.event_handlers.edit_row }}(oRequest, {});
+}
+{% endif %}
+
 $(document).ready(function() {
     {% for key,column in datagrid_columns %}
     {{ macros.datagrid_column(key,column) }}

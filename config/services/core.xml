@@ -8,6 +8,7 @@
         <parameter key="config_locator.class">Symfony\Component\Config\FileLocator</parameter>
         <parameter key="controller_resolver.class">Gekosale\Core\ControllerResolver</parameter>
         <parameter key="event_dispatcher.class">Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher</parameter>
+        <parameter key="encryption.class">Illuminate\Encryption\Encrypter</parameter>
         <parameter key="finder.class">Symfony\Component\Finder\Finder</parameter>
         <parameter key="filesystem.class">Symfony\Component\Filesystem\Filesystem</parameter>
         <parameter key="form_helper.class">Gekosale\Core\Form</parameter>
@@ -34,6 +35,10 @@
 
         <service id="cache_manager" class="%cache_manager.class%">
             <argument>%application.root_path%var/serialization</argument>
+        </service>
+
+        <service id="encryption" class="%encryption.class%">
+            <argument>%security.encryption_key%</argument>
         </service>
 
         <service id="helper" class="%helper.class%">

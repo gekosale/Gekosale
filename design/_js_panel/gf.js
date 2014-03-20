@@ -2807,7 +2807,7 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 			fCompletionHandler.apply(dDg);
 		});
 	};
-	
+
 	this.WaitingScreenHide = function() {
 		this.m_jTarget.children('.progress').fadeOut(100, GF.NewEventHandler(function(eEvent) {
 			$(this).remove();
@@ -2818,7 +2818,7 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 //		var dDg = this;
 //		fCompletionHandler.apply(dDg);
 //	};
-//	
+//
 //	this.WaitingScreenHide = function() {
 //		$(this).remove();
 //	};
@@ -4645,20 +4645,7 @@ GF_Action = GF_Config.GF_Extend('GF_Action', function(options) {
 	
 });
 
-
-/**
- * Gekosale, Open Source E-Commerce Solution
- * http://www.gekosale.com
- *
- * Copyright (c) 2009 Gekosale
- *
- * This library is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version. 
- * 
- */
- GF_Datagrid.Files = {
+GF_Datagrid.Files = {
 	modify_columns_icon: GCore.DESIGN_PATH + '_images_panel/datagrid/modify-columns.png',
 	retract_filters_icon: GCore.DESIGN_PATH + '_images_panel/datagrid/filter-retract.png',
 	expand_filters_icon: GCore.DESIGN_PATH + '_images_panel/datagrid/filter-expand.png',

@@ -41,10 +41,10 @@
             process: {{ options.event_handlers.process ? options.event_handlers.process : 'false' }},
             delete_row: {{ options.event_handlers.delete_row ? 'deleteRow' : 'false' }},
             loaded: {{ options.event_handlers.loaded ? options.event_handlers.loaded : 'false' }},
-            edit_row: {{ options.event_handlers.edit_row ? options.event_handlers.edit_row : 'false' }},
+            edit_row: {{ options.event_handlers.edit_row ? 'editRow' : 'false' }},
             delete_group: {{ options.event_handlers.delete_group ? options.event_handlers.delete_group : 'false' }},
             update_row: {{ options.event_handlers.update_row ? options.event_handlers.update_row : 'false' }},
-            click_row: {{ options.event_handlers.edit_row ? options.event_handlers.edit_row : 'false' }},
+            click_row: {{ options.event_handlers.edit_row ? 'editRow' : 'false' }},
         },
         columns: [
         {% for key, column in columns %}

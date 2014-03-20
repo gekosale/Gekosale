@@ -15,6 +15,8 @@
 
         <parameter key="application.design_path">%application.root_path%design</parameter>
 
+        <parameter key="security.encryption_key">abcdefghijklmnoprstuwxyz12345678</parameter>
+
         <parameter key="application.themes_path">%application.root_path%themes</parameter>
 
         <parameter key="admin.themes" type="collection">

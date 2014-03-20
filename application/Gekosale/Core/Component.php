@@ -304,4 +304,28 @@ abstract class Component extends ContainerAware
     {
         return $this->container->get('cache_manager');
     }
+
+    /**
+     * Shortcut to encrypt value using encryption service
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    final protected function encrypt($value)
+    {
+        return $this->get('encryption')->encrypt($value);
+    }
+
+    /**
+     * Shortcut to decrypt value using encryption service
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    final protected function decrypt($value)
+    {
+        return $this->get('encryption')->decrypt($value);
+    }
 }
