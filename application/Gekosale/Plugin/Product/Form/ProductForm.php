@@ -24,14 +24,6 @@ class ProductForm extends Form
 {
     public function init($productData = [])
     {
-        $val = $this->encrypt('Adam Piotrowski');
-        echo $val;
-
-        echo PHP_EOL;
-
-        echo $this->decrypt($val);
-        die();
-
         $languages = $this->getLanguages();
 
         $this->registerEventHandlers();
