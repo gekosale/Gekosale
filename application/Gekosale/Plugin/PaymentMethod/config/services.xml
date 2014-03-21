@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="payment_method.repository" class="Gekosale\Plugin\PaymentMethod\Repository\PaymentMethodRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="payment_method.datagrid" class="Gekosale\Plugin\PaymentMethod\DataGrid\PaymentMethodDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="payment_method.repository" />
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="payment_method.form" class="Gekosale\Plugin\PaymentMethod\Form\PaymentMethodForm">
+        	<call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="payment_method.subscriber" class="Gekosale\Plugin\PaymentMethod\Event\PaymentMethodEventSubscriber">
+        	<tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="payment_method.processor.paypal" class="Gekosale\Plugin\PaymentMethod\Processor\PayPalProcessor">
+        	<tag name="payment_method.processor" />
+        </service>
+    </services>
+</container>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="paypal.repository" class="Gekosale\Plugin\PayPal\Repository\PayPalRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="paypal.datagrid" class="Gekosale\Plugin\PayPal\DataGrid\PayPalDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="paypal.repository" />
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="paypal.form" class="Gekosale\Plugin\PayPal\Form\PayPalForm">
+        	<call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        
+        <service id="paypal.subscriber" class="Gekosale\Plugin\PayPal\Event\PayPalEventSubscriber">
+        	<tag name="kernel.event_subscriber" />
+        </service>
+    </services>
+</container>

@@ -87,21 +87,6 @@ class DataGrid extends Component
     }
 
     /**
-     * Redirects user from list to edit form
-     *
-     * @param $id
-     *
-     * @return mixed
-     */
-    public function editRow($request)
-    {
-        return [
-            'processFunction' => DataGridInterface::REDIRECT,
-            'data'            => $this->generateUrl($this->getEditActionRoute(), ['id' => $request['id']], true)
-        ];
-    }
-
-    /**
      * Updates DataGrid row
      *
      * @param $request
@@ -134,11 +119,16 @@ class DataGrid extends Component
             $column   = $this->columns[$where['column']]['source'];
             $operator = $this->getOperator($where['operator']);
             $value    = $where['value'];
-            $this->query->where($column, $operator, $value);
+            if (is_array($value)) {
+                $this->query->whereIn($column, $value);
+            } else {
+                $this->query->where($column, $operator, $value);
+            }
+
         }
 
         $result = $this->query->get();
-        $total = count($result);
+        $total  = count($result);
 
         return [
             'data_id'       => $request['id'],
@@ -258,13 +248,14 @@ class DataGrid extends Component
                 'rows_per_page' => 25
             ],
             'event_handlers' => [
-                'load'         => false,
+                'load'         => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
                 'process'      => false,
-                'delete_row'   => false,
+                'delete_row'   => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
                 'loaded'       => false,
-                'edit_row'     => false,
+                'edit_row'     => 'editRow',
                 'delete_group' => false,
-                'update_row'   => false,
+                'click_row'    => 'editRow',
+                'update_row'   => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
             ],
             'row_actions'    => [
                 DataGridInterface::ACTION_EDIT,

@@ -28,5 +28,9 @@
         <service id="shipping_method.subscriber" class="Gekosale\Plugin\ShippingMethod\Event\ShippingMethodEventSubscriber">
         	<tag name="kernel.event_subscriber" />
         </service>
+
+        <service id="shipping_method.calculator.cart_total" class="Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator">
+        	<tag name="shipping_method.calculator" />
+        </service>
     </services>
 </container>

@@ -6,12 +6,9 @@
 
     <parameters>
 
-        <parameter key="locale">pl_PL</parameter>
-        <parameter key="timezone">Europe/Warsaw</parameter>
+        <parameter key="locale">en_EN</parameter>
 
-        <parameter key="application.namespaces" type="collection">
-            <parameter>Gekosale</parameter>
-        </parameter>
+        <parameter key="timezone">Europe/London</parameter>
 
         <parameter key="application.design_path">%application.root_path%design</parameter>
 
@@ -25,12 +22,6 @@
 
         <parameter key="front.themes" type="collection">
             <parameter>%application.themes_path%/Gekosale/templates</parameter>
-        </parameter>
-
-        <parameter key="propel.config" type="collection">
-            <parameter key="dsn">mysql:host=localhost;dbname=gekosale3</parameter>
-            <parameter key="user">root</parameter>
-            <parameter key="password"></parameter>
         </parameter>
 
         <parameter key="router.options" type="collection">

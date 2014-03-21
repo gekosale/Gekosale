@@ -8,6 +8,12 @@
 
 <script type="text/javascript">
 var DataGrid;
+{% if datagrid_options.event_handlers.edit_row %}
+function {{ datagrid_options.event_handlers.edit_row }}(dg, id) {
+    location.href = '{{ datagrid_options.routes.edit }}/' + id;
+}
+{% endif %}
+
 {% if datagrid_options.event_handlers.delete_row %}
 function deleteRow(dg, id) {
     var oRow = DataGrid.GetRow(id);
@@ -26,15 +32,6 @@ function deleteRow(dg, id) {
         }));
     };
     new GF_Alert(title, msg, func, true, params);
-}
-{% endif %}
-
-{% if datagrid_options.event_handlers.edit_row %}
-function editRow(dg, id) {
-    oRequest = {
-        id: id
-    }
-    {{ datagrid_options.event_handlers.edit_row }}(oRequest, {});
 }
 {% endif %}
 

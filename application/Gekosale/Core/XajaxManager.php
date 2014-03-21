@@ -93,10 +93,10 @@ class XajaxManager
      *
      * @return string
      */
-    public function registerFunction(array $registrationArray)
+    public function registerFunction(array $function)
     {
-        $name         = array_shift($registrationArray);
-        $callback     = $registrationArray;
+        $name         = array_shift($function);
+        $callback     = $function;
         $callbackName = '_auto_callback_' . $this->autoId++;
         $this->registerCallback($callbackName, $callback);
         $this->container->get('xajax')->registerFunction(Array(

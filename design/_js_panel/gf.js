@@ -2611,13 +2611,9 @@ GF_Datagrid = GF_Instance.GF_Extend('GF_Datagrid', function(jTarget, oOptions) {
 		}
 		var sId = dDg._GetIdFromTr(jTr);
 		if (dDg.m_oOptions.event_handlers.click_row instanceof Function) {
-            var oRequest = {
-                dg: dDg.m_iId,
-                id: sId
+            if (!dDg.m_oOptions.event_handlers.click_row(dDg.m_iId, sId)) {
+                return false;
             }
-            dDg.m_oOptions.event_handlers.click_row(oRequest, GCallback(function(eEvent){
-                eval(eEvent.processFunction)(eEvent.data);
-            }));
 		}
 		if (dDg.IsSelected(sId)) {
 			dDg.DeselectRow(sId);

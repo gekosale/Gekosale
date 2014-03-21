@@ -9,5 +9,11 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
+
+        <service id="file.datagrid" class="Gekosale\Plugin\File\DataGrid\FileDataGrid">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
     </services>
 </container>

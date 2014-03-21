@@ -12,6 +12,8 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class Image
  *
@@ -21,22 +23,15 @@ namespace Gekosale\Core\Form\Elements;
 class Image extends File implements ElementInterface
 {
 
-    public function __construct($attributes)
+    public function __construct($attributes, ContainerInterface $container)
     {
-        parent::__construct($attributes);
-        $this->_attributes['file_types']             = Array(
+        parent::__construct($attributes, $container);
+
+        $this->_attributes['file_types'] = [
             'jpg',
             'jpeg',
             'png',
-            'gif',
-            'swf'
-        );
-        $this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
+            'gif'
+        ];
     }
-
-    protected function prepareAttributesJs()
-    {
-        parent::prepareAttributesJs();
-    }
-
 }

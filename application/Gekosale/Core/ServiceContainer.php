@@ -66,6 +66,8 @@ class ServiceContainer extends Container
             'currency.form' => 'getCurrency_FormService',
             'currency.repository' => 'getCurrency_RepositoryService',
             'currency.subscriber' => 'getCurrency_SubscriberService',
+            'dashboard.repository' => 'getDashboard_RepositoryService',
+            'dashboard.subscriber' => 'getDashboard_SubscriberService',
             'database_manager' => 'getDatabaseManagerService',
             'datagrid_renderer' => 'getDatagridRendererService',
             'deliverer.datagrid' => 'getDeliverer_DatagridService',
@@ -74,6 +76,7 @@ class ServiceContainer extends Container
             'deliverer.subscriber' => 'getDeliverer_SubscriberService',
             'encryption' => 'getEncryptionService',
             'event_dispatcher' => 'getEventDispatcherService',
+            'file.datagrid' => 'getFile_DatagridService',
             'file.repository' => 'getFile_RepositoryService',
             'filesystem' => 'getFilesystemService',
             'finder' => 'getFinderService',
@@ -86,6 +89,15 @@ class ServiceContainer extends Container
             'language.subscriber' => 'getLanguage_SubscriberService',
             'layout_manager' => 'getLayoutManagerService',
             'locale.listener' => 'getLocale_ListenerService',
+            'payment_method.datagrid' => 'getPaymentMethod_DatagridService',
+            'payment_method.form' => 'getPaymentMethod_FormService',
+            'payment_method.processor.paypal' => 'getPaymentMethod_Processor_PaypalService',
+            'payment_method.repository' => 'getPaymentMethod_RepositoryService',
+            'payment_method.subscriber' => 'getPaymentMethod_SubscriberService',
+            'paypal.datagrid' => 'getPaypal_DatagridService',
+            'paypal.form' => 'getPaypal_FormService',
+            'paypal.repository' => 'getPaypal_RepositoryService',
+            'paypal.subscriber' => 'getPaypal_SubscriberService',
             'plugin_manager.datagrid' => 'getPluginManager_DatagridService',
             'plugin_manager.form' => 'getPluginManager_FormService',
             'plugin_manager.repository' => 'getPluginManager_RepositoryService',
@@ -106,6 +118,7 @@ class ServiceContainer extends Container
             'session' => 'getSessionService',
             'session.handler' => 'getSession_HandlerService',
             'session.storage' => 'getSession_StorageService',
+            'shipping_method.calculator.cart_total' => 'getShippingMethod_Calculator_CartTotalService',
             'shipping_method.datagrid' => 'getShippingMethod_DatagridService',
             'shipping_method.form' => 'getShippingMethod_FormService',
             'shipping_method.repository' => 'getShippingMethod_RepositoryService',
@@ -659,6 +672,36 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'dashboard.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Dashboard\Repository\DashboardRepository A Gekosale\Plugin\Dashboard\Repository\DashboardRepository instance.
+     */
+    protected function getDashboard_RepositoryService()
+    {
+        $this->services['dashboard.repository'] = $instance = new \Gekosale\Plugin\Dashboard\Repository\DashboardRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'dashboard.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Dashboard\Event\DashboardEventSubscriber A Gekosale\Plugin\Dashboard\Event\DashboardEventSubscriber instance.
+     */
+    protected function getDashboard_SubscriberService()
+    {
+        return $this->services['dashboard.subscriber'] = new \Gekosale\Plugin\Dashboard\Event\DashboardEventSubscriber();
+    }
+
+    /**
      * Gets the 'database_manager' service.
      *
      * This service is shared.
@@ -797,8 +840,11 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('company.subscriber', 'Gekosale\\Plugin\\Company\\Event\\CompanyEventSubscriber');
         $instance->addSubscriberService('contact.subscriber', 'Gekosale\\Plugin\\Contact\\Event\\ContactEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');
+        $instance->addSubscriberService('dashboard.subscriber', 'Gekosale\\Plugin\\Dashboard\\Event\\DashboardEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
+        $instance->addSubscriberService('payment_method.subscriber', 'Gekosale\\Plugin\\PaymentMethod\\Event\\PaymentMethodEventSubscriber');
+        $instance->addSubscriberService('paypal.subscriber', 'Gekosale\\Plugin\\PayPal\\Event\\PayPalEventSubscriber');
         $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
         $instance->addSubscriberService('producer.subscriber', 'Gekosale\\Plugin\\Producer\\Event\\ProducerEventSubscriber');
         $instance->addSubscriberService('product.subscriber', 'Gekosale\\Plugin\\Product\\Event\\ProductEventSubscriber');
@@ -806,6 +852,23 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('shop.subscriber', 'Gekosale\\Plugin\\Shop\\Event\\ShopEventSubscriber');
         $instance->addSubscriberService('tax.subscriber', 'Gekosale\\Plugin\\Tax\\Event\\TaxEventSubscriber');
         $instance->addSubscriberService('unit.subscriber', 'Gekosale\\Plugin\\Unit\\Event\\UnitEventSubscriber');
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'file.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\File\DataGrid\FileDataGrid A Gekosale\Plugin\File\DataGrid\FileDataGrid instance.
+     */
+    protected function getFile_DatagridService()
+    {
+        $this->services['file.datagrid'] = $instance = new \Gekosale\Plugin\File\DataGrid\FileDataGrid();
+
+        $instance->setContainer($this);
 
         return $instance;
     }
@@ -993,6 +1056,149 @@ class ServiceContainer extends Container
     protected function getLocale_ListenerService()
     {
         return $this->services['locale.listener'] = new \Symfony\Component\HttpKernel\EventListener\LocaleListener();
+    }
+
+    /**
+     * Gets the 'payment_method.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PaymentMethod\DataGrid\PaymentMethodDataGrid A Gekosale\Plugin\PaymentMethod\DataGrid\PaymentMethodDataGrid instance.
+     */
+    protected function getPaymentMethod_DatagridService()
+    {
+        $this->services['payment_method.datagrid'] = $instance = new \Gekosale\Plugin\PaymentMethod\DataGrid\PaymentMethodDataGrid();
+
+        $instance->setRepository($this->get('payment_method.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'payment_method.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PaymentMethod\Form\PaymentMethodForm A Gekosale\Plugin\PaymentMethod\Form\PaymentMethodForm instance.
+     */
+    protected function getPaymentMethod_FormService()
+    {
+        $this->services['payment_method.form'] = $instance = new \Gekosale\Plugin\PaymentMethod\Form\PaymentMethodForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'payment_method.processor.paypal' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PaymentMethod\Processor\PayPalProcessor A Gekosale\Plugin\PaymentMethod\Processor\PayPalProcessor instance.
+     */
+    protected function getPaymentMethod_Processor_PaypalService()
+    {
+        return $this->services['payment_method.processor.paypal'] = new \Gekosale\Plugin\PaymentMethod\Processor\PayPalProcessor();
+    }
+
+    /**
+     * Gets the 'payment_method.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PaymentMethod\Repository\PaymentMethodRepository A Gekosale\Plugin\PaymentMethod\Repository\PaymentMethodRepository instance.
+     */
+    protected function getPaymentMethod_RepositoryService()
+    {
+        $this->services['payment_method.repository'] = $instance = new \Gekosale\Plugin\PaymentMethod\Repository\PaymentMethodRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'payment_method.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PaymentMethod\Event\PaymentMethodEventSubscriber A Gekosale\Plugin\PaymentMethod\Event\PaymentMethodEventSubscriber instance.
+     */
+    protected function getPaymentMethod_SubscriberService()
+    {
+        return $this->services['payment_method.subscriber'] = new \Gekosale\Plugin\PaymentMethod\Event\PaymentMethodEventSubscriber();
+    }
+
+    /**
+     * Gets the 'paypal.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PayPal\DataGrid\PayPalDataGrid A Gekosale\Plugin\PayPal\DataGrid\PayPalDataGrid instance.
+     */
+    protected function getPaypal_DatagridService()
+    {
+        $this->services['paypal.datagrid'] = $instance = new \Gekosale\Plugin\PayPal\DataGrid\PayPalDataGrid();
+
+        $instance->setRepository($this->get('paypal.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'paypal.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PayPal\Form\PayPalForm A Gekosale\Plugin\PayPal\Form\PayPalForm instance.
+     */
+    protected function getPaypal_FormService()
+    {
+        $this->services['paypal.form'] = $instance = new \Gekosale\Plugin\PayPal\Form\PayPalForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'paypal.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PayPal\Repository\PayPalRepository A Gekosale\Plugin\PayPal\Repository\PayPalRepository instance.
+     */
+    protected function getPaypal_RepositoryService()
+    {
+        $this->services['paypal.repository'] = $instance = new \Gekosale\Plugin\PayPal\Repository\PayPalRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'paypal.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\PayPal\Event\PayPalEventSubscriber A Gekosale\Plugin\PayPal\Event\PayPalEventSubscriber instance.
+     */
+    protected function getPaypal_SubscriberService()
+    {
+        return $this->services['paypal.subscriber'] = new \Gekosale\Plugin\PayPal\Event\PayPalEventSubscriber();
     }
 
     /**
@@ -1299,6 +1505,19 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'shipping_method.calculator.cart_total' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator A Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator instance.
+     */
+    protected function getShippingMethod_Calculator_CartTotalService()
+    {
+        return $this->services['shipping_method.calculator.cart_total'] = new \Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator();
+    }
+
+    /**
      * Gets the 'shipping_method.datagrid' service.
      *
      * This service is shared.
@@ -1516,7 +1735,7 @@ class ServiceContainer extends Container
      */
     protected function getTranslationService()
     {
-        return $this->services['translation'] = new \Gekosale\Core\Translation($this, 'pl_PL');
+        return $this->services['translation'] = new \Gekosale\Core\Translation($this, 'en_EN');
     }
 
     /**
@@ -1864,11 +2083,8 @@ class ServiceContainer extends Container
         return array(
             'application.root_path' => 'D:\\Git\\Gekosale3\\',
             'application.debug_mode' => true,
-            'locale' => 'pl_PL',
-            'timezone' => 'Europe/Warsaw',
-            'application.namespaces' => array(
-                0 => 'Gekosale',
-            ),
+            'locale' => 'en_EN',
+            'timezone' => 'Europe/London',
             'application.design_path' => 'D:\\Git\\Gekosale3\\design',
             'security.encryption_key' => 'abcdefghijklmnoprstuwxyz12345678',
             'application.themes_path' => 'D:\\Git\\Gekosale3\\themes',
@@ -1877,11 +2093,6 @@ class ServiceContainer extends Container
             ),
             'front.themes' => array(
                 0 => 'D:\\Git\\Gekosale3\\themes/Gekosale/templates',
-            ),
-            'propel.config' => array(
-                'dsn' => 'mysql:host=localhost;dbname=gekosale3',
-                'user' => 'root',
-                'password' => '',
             ),
             'router.options' => array(
                 'cache_dir' => 'D:\\Git\\Gekosale3\\var',

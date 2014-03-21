@@ -63,6 +63,32 @@ class Form extends Component
     }
 
     /**
+     * Shortcut for adding Image element
+     *
+     * @param $options
+     *
+     * @return Form\Elements\Image
+     */
+    public function addImage($options)
+    {
+        $options['file_types_description'] = $this->trans('Files description');
+
+        return new Form\Elements\Image($options, $this->container);
+    }
+
+    /**
+     * Shortcut for adding Tip element
+     *
+     * @param $options
+     *
+     * @return Form\Elements\Tip
+     */
+    public function addTip($options)
+    {
+        return new Form\Elements\Tip($options);
+    }
+
+    /**
      * Shortcut for adding TextField element
      *
      * @param array $options

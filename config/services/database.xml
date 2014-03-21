@@ -8,7 +8,7 @@
     </parameters>
     
     <services>
-        <service id="database_manager" class="%database_manager.class%">
+        <service id="database_manager" class="%database_manager.class%" >
             <call method="addConnection">
 	            <argument>%db.config%</argument>
             </call>

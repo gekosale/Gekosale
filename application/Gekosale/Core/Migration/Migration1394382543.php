@@ -64,13 +64,61 @@ class Migration1394382543 extends Migration
             $this->getDb()->schema()->create('shipping_method_cost', function ($table) {
                 $table->increments('id');
                 $table->integer('shipping_method_id')->unsigned();
-                $table->decimal('from',15,4)->default(0);
-                $table->decimal('to', 15,4)->default(0);
-                $table->decimal('cost', 15,4)->default(0);
+                $table->decimal('from', 15, 4)->default(0);
+                $table->decimal('to', 15, 4)->default(0);
+                $table->decimal('cost', 15, 4)->default(0);
                 $table->integer('tax_id')->unsigned()->default(null)->nullable();
                 $table->timestamps();
                 $table->foreign('shipping_method_id')->references('id')->on('shipping_method')->onDelete('CASCADE')->onUpdate('NO ACTION');
                 $table->foreign('tax_id')->references('id')->on('tax')->onDelete('CASCADE')->onUpdate('NO ACTION');
+            });
+        }
+
+        if (!$this->getDb()->schema()->hasTable('payment_method')) {
+            $this->getDb()->schema()->create('payment_method', function ($table) {
+                $table->increments('id');
+                $table->integer('hierarchy')->unsigned()->default(0);
+                $table->integer('enabled')->default(1);
+                $table->string('service', 255);
+                $table->integer('file_id')->unsigned()->nullable();
+                $table->timestamps();
+                $table->foreign('file_id')->references('id')->on('file')->onDelete('SET NULL')->onUpdate('NO ACTION');
+            });
+        }
+
+        if (!$this->getDb()->schema()->hasTable('payment_method_translation')) {
+            $this->getDb()->schema()->create('payment_method_translation', function ($table) {
+                $table->increments('id');
+                $table->string('name', 255);
+                $table->integer('payment_method_id')->unsigned();
+                $table->integer('language_id')->unsigned();
+                $table->timestamps();
+                $table->foreign('payment_method_id')->references('id')->on('payment_method')->onDelete('cascade')->onUpdate('NO ACTION');
+                $table->foreign('language_id')->references('id')->on('language')->onDelete('CASCADE')->onUpdate('NO ACTION');
+                $table->unique(Array('name', 'language_id'));
+            });
+        }
+
+        if (!$this->getDb()->schema()->hasTable('payment_method_shop')) {
+            $this->getDb()->schema()->create('payment_method_shop', function ($table) {
+                $table->increments('id');
+                $table->integer('payment_method_id')->unsigned();
+                $table->integer('shop_id')->unsigned();
+                $table->timestamps();
+                $table->foreign('payment_method_id')->references('id')->on('payment_method')->onDelete('cascade')->onUpdate('NO ACTION');
+                $table->foreign('shop_id')->references('id')->on('shop')->onDelete('CASCADE')->onUpdate('NO ACTION');
+                $table->unique(Array('payment_method_id', 'shop_id'));
+            });
+        }
+
+        if (!$this->getDb()->schema()->hasTable('shipping_method_payment_method')) {
+            $this->getDb()->schema()->create('shipping_method_payment_method', function ($table) {
+                $table->increments('id');
+                $table->integer('payment_method_id')->unsigned();
+                $table->integer('shipping_method_id')->unsigned();
+                $table->timestamps();
+                $table->foreign('payment_method_id')->references('id')->on('payment_method')->onDelete('cascade')->onUpdate('no action');
+                $table->foreign('shipping_method_id')->references('id')->on('shipping_method')->onDelete('cascade')->onUpdate('no action');
             });
         }
     }

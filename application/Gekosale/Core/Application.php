@@ -70,20 +70,14 @@ class Application
 
         $this->stopwatch->start('application');
 
-        /*
-		 * Create request instance
-		 */
+        // Create request instance
         $this->request = Request::createFromGlobals();
 
-        /*
-		 * Check if service container exists and/or needs to be regenerated
-		 */
+        // Check if service container exists and/or needs to be regenerated
         $serviceContainerBuilder = new ServiceContainerBuilder($this->getKernelParameters(), $this->isDebug);
         $serviceContainerBuilder->check();
 
-        /*
-		 * Init Service Container
-		*/
+        // Init Service Container
         $this->container = new ServiceContainer();
     }
 

@@ -13468,7 +13468,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	gThis._AddImage = function(sId, oFile) {
 		if (gThis.m_bRepeatable) {
 			var jFileTr = $('<tr class="file__' + sId + '"/>');
-			jFileTr.append('<th scope="row"><span class="' + gThis._GetClass('Thumb') + '"><img src="' + oFile.thumb + '" alt=""/></span><span class="' + gThis._GetClass('Name') + '">' + oFile.filename + '</span></th>');
+			jFileTr.append('<th scope="row"><span class="' + gThis._GetClass('Thumb') + '"><img src="' + oFile.thumb + '" alt=""/></span><span class="' + gThis._GetClass('Name') + '">' + oFile.name + '</span></th>');
 			var jRadio = $('<input type="radio" name="' + gThis.GetName() + '[main]" value="' + sId + '"/>');
 			if (gThis.m_oOptions.sMainId) {
 				
@@ -13653,10 +13653,10 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		gThis._OnChange(0, gThis.m_gFilesDatagrid.m_asSelected);
 		gThis._AddImage(oResponse.sId, {
 			idfile: oResponse.sId,
-			filename: oResponse.sFilename,
+			name: oResponse.sFilename,
 			thumb: oResponse.sThumb,
 			filetype: oResponse.sFileType,
-			fileextension: oResponse.sExtension
+			extension: oResponse.sExtension
 		});
 		gThis.m_gFilesDatagrid.LoadData();
 		jLi.delay(2000).fadeOut(250, function() {
@@ -13674,7 +13674,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	gThis._InitColumns = function() {
 
 	  var column_id = new GF_Datagrid_Column({
-			id: 'idfile',
+			id: 'id',
 			caption: GForm.Language.file_selector_id,
 			sorting: {
 				default_order: GF_Datagrid.SORT_DIR_DESC
@@ -13688,8 +13688,8 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 			}
 		});
 
-		var column_filename = new GF_Datagrid_Column({
-			id: 'filename',
+		var column_name = new GF_Datagrid_Column({
+			id: 'name',
 			caption: GForm.Language.file_selector_filename,
 			filter: {
 				type: GF_Datagrid.FILTER_INPUT
@@ -13697,8 +13697,8 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 
 		});
 
-		var column_fileextension = new GF_Datagrid_Column({
-			id: 'fileextension',
+		var column_extension = new GF_Datagrid_Column({
+			id: 'extension',
 			caption: GForm.Language.file_selector_extension
 		});
 		
@@ -13714,8 +13714,8 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		return [
 			column_id,
 			column_thumb,
-			column_filename,
-			column_fileextension,
+			column_name,
+			column_extension,
 		];
 
 	};
@@ -13724,19 +13724,21 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		gThis.m_jSelectedFiles.empty();
 		if (gThis.m_bRepeatable) {
 			oRequest.where = [{
-				column: 'idfile',
+				column: 'id',
 				value: gThis.m_oOptions.asDefaults,
 				operator: 'IN'
 			}];
 		}
 		else {
 			oRequest.where = [{
-				column: 'idfile',
+				column: 'id',
 				value: gThis.m_oOptions.sDefault,
 				operator: 'IN'
 			}];
 		}
 		oRequest.starting_from = 0;
+		oRequest.order_by = 'id';
+		oRequest.order_dir = 'desc';
 		gThis.m_oOptions.fLoadFiles(oRequest, GCallback(gThis._DefaultsLoaded));
 	};
 	
@@ -13759,7 +13761,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 			id: gThis.GetId(),
 			mechanics: {
 				rows_per_page: 15,
-				key: 'idfile',
+				key: 'id',
 				only_one_selected: !gThis.m_bRepeatable,
 				no_column_modification: true,
 				persistent: false
@@ -16087,38 +16089,18 @@ var GFormRichTextEditor = GCore.ExtendClass(GFormTextarea, function() {
 		if (gThis.m_bShown) {
 			return;
 		}
-		var iDelay = 500;
-		gThis.m_bShown = true;
-		window.setTimeout(function() {
-			CKEDITOR.replace(gThis.GetId(),{
-				customConfig : 'config.js'
-			});
-		}, iDelay);
 		
+		if(!gThis.m_bShown){
+			$('#' + gThis.GetId()).redactor({ 
+				lang: 'en',
+				imageUpload: GCore.sAdminUrl + 'redactor/add',
+				imageGetJson: GCore.sAdminUrl + 'redactor/view/',
+			});
+			gThis.m_bShown = true;
+		}
 	};
 	
 }, oDefaults);
-
-//var GFormRichTextEditor = GCore.ExtendClass(GFormTextarea, function() {
-//	
-//	var gThis = this;
-//	
-//	gThis.OnShow = function() {
-//		if (gThis.m_bShown) {
-//			return;
-//		}
-//		
-//		if(!gThis.m_bShown){
-//			$('#' + gThis.GetId()).redactor({ 
-//				lang: 'pl',
-//				imageUpload: GCore.sAdminUrl + 'redactor/add',
-//				imageGetJson: GCore.sAdminUrl + 'redactor/view/',
-//			});
-//			gThis.m_bShown = true;
-//		}
-//	};
-//	
-//}, oDefaults);
 
 /*
 * HELP

@@ -16,10 +16,10 @@ use Symfony\Component\Routing\RouteCollection;
 
 $this->collection = new RouteCollection();
 
-$this->collection->add('admin.dashboard', new Route('/admin/dashboard', array(
-    'controller' => 'Gekosale\Plugin\Dashboard\Controller\Admin\Dashboard',
-    'mode' => 'admin',
-    'action' => 'index',
+$this->collection->add('installer', new Route('/installer', array(
+    '_controller' => 'Gekosale\Plugin\Installer\Controller\Frontend\InstallerController',
+    '_mode' => 'frontend',
+    '_action' => 'indexAction',
     'param' => NULL
 )));
 

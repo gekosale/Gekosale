@@ -230,7 +230,7 @@ abstract class Node
     protected function formatAttributesJs($attributes)
     {
         $attributes       = array_merge($attributes, $this->prepareAutoAttributesJs());
-        $attributesString = "\n";
+        $attributesString = PHP_EOL;
         foreach ($attributes as $attribute) {
             if (!empty($attribute)) {
                 $attributesString .= $this->_tabs . $attribute . ",\n";

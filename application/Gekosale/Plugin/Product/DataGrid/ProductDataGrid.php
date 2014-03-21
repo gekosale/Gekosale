@@ -28,23 +28,18 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
      */
     public function init()
     {
-        $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
-
         $this->setOptions([
-            'id'             => 'product',
-            'appearance'     => [
+            'id'         => 'product',
+            'appearance' => [
                 'column_select' => false
             ],
-            'mechanics'      => [
+            'mechanics'  => [
                 'key' => 'id',
             ],
-            'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'edit_row'   => $editEvent,
-                'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
-            ],
+            'routes'     => [
+                'index' => $this->generateUrl('admin.product.index'),
+                'edit'  => $this->generateUrl('admin.product.edit')
+            ]
         ]);
 
         $this->addColumn('id', [
@@ -165,15 +160,5 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
         $event = new ProductDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(ProductDataGridEvent::DATAGRID_INIT_EVENT, $event);
-    }
-
-    /**
-     * Returns route for editAction
-     *
-     * @return string
-     */
-    protected function getEditActionRoute()
-    {
-        return 'admin.product.edit';
     }
 }

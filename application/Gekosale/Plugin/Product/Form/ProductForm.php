@@ -139,7 +139,6 @@ class ProductForm extends Form
             'label' => $this->trans('Stock settings')
         ]));
 
-
         $stockPane->addChild($this->addTextField([
             'name'    => 'stock',
             'label'   => $this->trans('Stock'),
@@ -314,6 +313,26 @@ class ProductForm extends Form
             'name'  => 'long_description',
             'label' => $this->trans('Long description'),
             'rows'  => 30
+        ]));
+
+        $photosPane = $form->addChild($this->addFieldset([
+            'name'  => 'photos_pane',
+            'label' => $this->trans('Photos')
+        ]));
+
+//        $photosPane->addChild($this->addTip([
+//            'tip'       => '<p align="center">' . $this->trans('Please choose files from library or upload them from disk') . '</p>',
+//            'direction' => Form\Elements\Tip::DOWN
+//        ]));
+
+        $photosPane->addChild($this->addImage([
+            'name'       => 'photo',
+            'label'      => $this->trans('Photos'),
+            'repeat_min' => 0,
+            'repeat_max' => Form\Elements\ElementInterface::INFINITE,
+            'limit'      => 1000,
+            'upload_url' => $this->generateUrl('admin.file.add')
+            //            'main_id' => isset($this->populateData['photos_pane']['mainphotoid']) ? $this->populateData['photos_pane']['mainphotoid'] : ''
         ]));
 
         $shopData = $form->addChild($this->addFieldset([

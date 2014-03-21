@@ -36,6 +36,7 @@ class CustomCollection extends Collection
         $select          = [];
         $translationPath = explode('.', $translationPath);
 
+        // check if we need to use relation
         if (count($translationPath) == 2) {
             $translationNode = $translationPath[0];
             $translationKey  = $translationPath[1];

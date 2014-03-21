@@ -59,6 +59,8 @@ class ControllerResolver extends BaseControllerResolver
      */
     public function getController(Request $request)
     {
+
+
         $this->action         = $request->attributes->get('_action');
         $this->baseController = $request->attributes->get('_controller');
         $controllerObject     = $this->createController($this->baseController);
@@ -81,9 +83,9 @@ class ControllerResolver extends BaseControllerResolver
             $controller->setContainer($this->container);
         }
 
-        return array(
+        return [
             $controller,
             $this->action
-        );
+        ];
     }
 }

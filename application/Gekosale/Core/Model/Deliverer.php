@@ -22,6 +22,9 @@ use Gekosale\Core\Model;
 class Deliverer extends Model
 {
 
+    /**
+     * @var string
+     */
     protected $table = 'deliverer';
 
     public $timestamps = true;
