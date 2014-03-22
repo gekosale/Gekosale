@@ -26,8 +26,8 @@ class RelatedCategories extends FavouriteCategories implements ElementInterface
     {
         parent::__construct($attributes);
         $this->_jsGetSelectedInfo = 'GetSelectedInfo_' . $this->_id;
-        if (isset($this->_attributes['load_selected_info']) && is_callable($this->_attributes['load_selected_info'])) {
-            $this->_attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
+        if (isset($this->attributes['load_selected_info']) && is_callable($this->attributes['load_selected_info'])) {
+            $this->attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
             App::getRegistry()->xajaxInterface->registerFunction(array(
                 $this->_jsGetSelectedInfo,
                 $this,
@@ -50,7 +50,7 @@ class RelatedCategories extends FavouriteCategories implements ElementInterface
             );
         }
         foreach ($request['id'] as $i => $rowId) {
-            $paths                             = call_user_func($this->_attributes['load_selected_info'], $rowId, $request['shop_id'][$i]);
+            $paths                             = call_user_func($this->attributes['load_selected_info'], $rowId, $request['shop_id'][$i]);
             $allegroPath                       = $paths['allegro'];
             $shopPath                          = (array)$paths['shop'];
             $allegroPathSize                   = count($allegroPath);

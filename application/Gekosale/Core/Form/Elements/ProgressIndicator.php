@@ -29,23 +29,23 @@ class ProgressIndicator extends Field implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['load']
+        $this->attributes['load']
             = App::getRegistry()->xajaxInterface->registerFunction(array(
             'ProgressIndicator_OnLoad_' . $this->_id,
-            $this->_attributes['load'][0],
-            $this->_attributes['load'][1]
+            $this->attributes['load'][0],
+            $this->attributes['load'][1]
         ));
-        $this->_attributes['process']
+        $this->attributes['process']
             = App::getRegistry()->xajaxInterface->registerFunction(array(
             'ProgressIndicator_OnProcess_' . $this->_id,
-            $this->_attributes['process'][0],
-            $this->_attributes['process'][1]
+            $this->attributes['process'][0],
+            $this->attributes['process'][1]
         ));
-        $this->_attributes['success']
+        $this->attributes['success']
             = App::getRegistry()->xajaxInterface->registerFunction(array(
             'ProgressIndicator_OnSuccess_' . $this->_id,
-            $this->_attributes['success'][0],
-            $this->_attributes['success'][1]
+            $this->attributes['success'][0],
+            $this->attributes['success'][1]
         ));
     }
 

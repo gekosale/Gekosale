@@ -8,12 +8,10 @@
     <link rel="shortcut icon" href="favicon.ico"/>
     {% block stylesheet %}
         <link rel="stylesheet" href="{{ asset('design/_css_panel/core/style.css') }}" type="text/css"/>
-        <link rel="stylesheet" href="{{ asset('design/_js_libs/redactor/redactor.css') }}" type="text/css"/>
     {% endblock %}
     {% javascripts 'js/library/*.js' output='js/all.js' %}
     <script type="text/javascript" src="{{ asset('design/js/all.js') }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ asset('design/_js_libs/redactor/redactor.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('design/_js_panel/gekosale.js') }}"></script>
     <script type="text/javascript">
         new GCore({
@@ -30,7 +28,6 @@
     </script>
     <script type="text/javascript" src="{{ asset('design/_js_panel/init.js') }}"></script>
     <script type="text/javascript" src="{{ asset('design/_js_panel/gf.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('design/_js_panel/en_EN.js') }}"></script>
     <script type="text/javascript">
         GF_Debug.s_iLevel = GF_Debug.LEVEL_ALL;
     </script>

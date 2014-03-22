@@ -24,18 +24,18 @@ class RangeEditor extends OptionedField implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (isset($this->_attributes['allow_vat']) && !$this->_attributes['allow_vat']) {
-            $this->_attributes['vat_values'] = [];
+        if (isset($this->attributes['allow_vat']) && !$this->attributes['allow_vat']) {
+            $this->attributes['vat_values'] = [];
         } else {
-            $this->_attributes['vat_values'] = $attributes['vat_values'];
+            $this->attributes['vat_values'] = $attributes['vat_values'];
         }
 
-        if (!isset($this->_attributes['range_precision'])) {
-            $this->_attributes['range_precision'] = 2;
+        if (!isset($this->attributes['range_precision'])) {
+            $this->attributes['range_precision'] = 2;
         }
 
-        if (!isset($this->_attributes['price_precision'])) {
-            $this->_attributes['price_precision'] = 2;
+        if (!isset($this->attributes['price_precision'])) {
+            $this->attributes['price_precision'] = 2;
         }
     }
 

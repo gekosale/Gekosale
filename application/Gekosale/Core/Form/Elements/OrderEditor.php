@@ -27,18 +27,18 @@ class OrderEditor extends Select implements ElementInterface
     {
         parent::__construct($attributes);
         $this->_jsFunction               = 'LoadProducts_' . $this->_id;
-        $this->_attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
+        $this->attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
         App::getRegistry()->xajax->registerFunction(array(
             $this->_jsFunction,
             $this,
             'loadProducts'
         ));
-        $this->_attributes['load_category_children'] = App::getRegistry()->xajaxInterface->registerFunction(array(
+        $this->attributes['load_category_children'] = App::getRegistry()->xajaxInterface->registerFunction(array(
             'LoadCategoryChildren_' . $this->_id,
             $this,
             'loadCategoryChildren'
         ));
-        $this->_attributes['datagrid_filter']        = $this->getDatagridfilterData();
+        $this->attributes['datagrid_filter']        = $this->getDatagridfilterData();
     }
 
     protected function prepareAttributesJs()
@@ -107,14 +107,14 @@ class OrderEditor extends Select implements ElementInterface
 
     public function processVariants($productId)
     {
-        if (!isset($this->_attributes['clientgroupid'])) {
-            $this->_attributes['clientgroupid'] = 0;
+        if (!isset($this->attributes['clientgroupid'])) {
+            $this->attributes['clientgroupid'] = 0;
         }
-        if (!isset($this->_attributes['currencyid'])) {
-            $this->_attributes['currencyid'] = 0;
+        if (!isset($this->attributes['currencyid'])) {
+            $this->attributes['currencyid'] = 0;
         }
         $rawVariants
-                  = (App::getModel('product/product')->getAttributeCombinationsForProduct($productId, $this->_attributes['clientgroupid'], $this->_attributes['currencyid']));
+                  = (App::getModel('product/product')->getAttributeCombinationsForProduct($productId, $this->attributes['clientgroupid'], $this->attributes['currencyid']));
         $variants = Array();
 
         $variants[] = Array(
@@ -236,13 +236,13 @@ class OrderEditor extends Select implements ElementInterface
 			P.idproduct
 		');
 
-        if (isset($this->_attributes['viewid'])) {
+        if (isset($this->attributes['viewid'])) {
             $datagrid->setAdditionalWhere("
 				IF(PC.categoryid IS NOT NULL, VC.viewid = :view, 1)
 			");
 
             $datagrid->setSQLParams(Array(
-                'view' => $this->_attributes['viewid']
+                'view' => $this->attributes['viewid']
             ));
         }
     }

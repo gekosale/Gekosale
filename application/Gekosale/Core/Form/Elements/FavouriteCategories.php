@@ -26,8 +26,8 @@ class FavouriteCategories extends Tree implements ElementInterface
     {
         parent::__construct($attributes);
         $this->_jsGetSelectedInfo = 'GetSelectedInfo_' . $this->_id;
-        if (isset($this->_attributes['load_selected_info']) && is_callable($this->_attributes['load_selected_info'])) {
-            $this->_attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
+        if (isset($this->attributes['load_selected_info']) && is_callable($this->attributes['load_selected_info'])) {
+            $this->attributes['get_selected_info'] = 'xajax_' . $this->_jsGetSelectedInfo;
             App::getRegistry()->xajaxInterface->registerFunction(array(
                 $this->_jsGetSelectedInfo,
                 $this,
@@ -45,7 +45,7 @@ class FavouriteCategories extends Tree implements ElementInterface
             );
         }
         foreach ($request['id'] as $rowId) {
-            $path     = call_user_func($this->_attributes['load_selected_info'], $rowId);
+            $path     = call_user_func($this->attributes['load_selected_info'], $rowId);
             $pathSize = count($path);
             if ($pathSize === 0) {
                 $path = array();

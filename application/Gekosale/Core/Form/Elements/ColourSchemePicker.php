@@ -24,33 +24,33 @@ class ColourSchemePicker extends TextField implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['session_name'] = session_name();
-        $this->_attributes['session_id']   = session_id();
-        $this->_attributes['file_types']   = Array(
+        $this->attributes['session_name'] = session_name();
+        $this->attributes['session_id']   = session_id();
+        $this->attributes['file_types']   = Array(
             'jpg',
             'png',
             'gif',
             'swf'
         );
-        if (!isset($this->_attributes['file_source'])) {
-            $this->_attributes['file_source'] = 'upload/';
+        if (!isset($this->attributes['file_source'])) {
+            $this->attributes['file_source'] = 'upload/';
         }
-        $this->_attributes['file_types_description'] = \Gekosale\Translation::get('TXT_FILE_TYPES_IMAGE');
-        $this->_attributes['upload_url']
-                                                     = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->_attributes['file_source']);
-        $this->_attributes['load_handler']           = 'xajax_LoadFiles_' . $this->_id;
+        $this->attributes['file_types_description'] = \Gekosale\Translation::get('TXT_FILE_TYPES_IMAGE');
+        $this->attributes['upload_url']
+                                                     = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->attributes['file_source']);
+        $this->attributes['load_handler']           = 'xajax_LoadFiles_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             'LoadFiles_' . $this->_id,
             $this,
             'LoadFiles'
         ));
-        $this->_attributes['delete_handler'] = 'xajax_DeleteFile_' . $this->_id;
+        $this->attributes['delete_handler'] = 'xajax_DeleteFile_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             'deleteFile_' . $this->_id,
             $this,
             'deleteFile'
         ));
-        $this->_attributes['type_icons'] = Array(
+        $this->attributes['type_icons'] = Array(
             'cdup'      => DESIGNPATH . '_images_panel/icons/filetypes/cdup.png',
             'unknown'   => DESIGNPATH . '_images_panel/icons/filetypes/unknown.png',
             'directory' => DESIGNPATH . '_images_panel/icons/filetypes/directory.png',
@@ -102,7 +102,7 @@ class ColourSchemePicker extends TextField implements ElementInterface
         if (!isset($request['file'])) {
             throw new Exception('No file specified.');
         }
-        if (substr($request['file'], 0, strlen($this->_attributes['file_source'])) != $this->_attributes['file_source']) {
+        if (substr($request['file'], 0, strlen($this->attributes['file_source'])) != $this->attributes['file_source']) {
             throw new Exception('The requested path "' . $request['file'] . '" is outside of permitted sandbox.');
         }
         if (!unlink($request['file'])) {
@@ -115,10 +115,10 @@ class ColourSchemePicker extends TextField implements ElementInterface
     public function LoadFiles($request)
     {
         $inRoot = false;
-        if (substr($request['path'], 0, strlen($this->_attributes['file_source'])) != $this->_attributes['file_source']) {
-            $request['path'] = $this->_attributes['file_source'];
+        if (substr($request['path'], 0, strlen($this->attributes['file_source'])) != $this->attributes['file_source']) {
+            $request['path'] = $this->attributes['file_source'];
         }
-        if ($request['path'] == $this->_attributes['file_source']) {
+        if ($request['path'] == $this->attributes['file_source']) {
             $inRoot = true;
         }
         $path  = ROOTPATH . $request['path'];

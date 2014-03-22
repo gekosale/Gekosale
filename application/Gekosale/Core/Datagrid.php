@@ -108,8 +108,8 @@ class DataGrid extends Component
      */
     public function loadData($request)
     {
-        $this->query->skip($request['starting_from']);
-        $this->query->take($request['limit']);
+        $this->query->skip((int)$request['starting_from']);
+        $this->query->take((int)$request['limit']);
         $this->query->orderBy($request['order_by'], $request['order_dir']);
 
         foreach ($this->columns as $key => $column) {
@@ -119,8 +119,13 @@ class DataGrid extends Component
             $column   = $this->columns[$where['column']]['source'];
             $operator = $this->getOperator($where['operator']);
             $value    = $where['value'];
+
             if (is_array($value)) {
-                $this->query->whereIn($column, $value);
+                if (!empty($value)) {
+                    $this->query->whereIn($column, $value);
+                } else {
+                    $this->query->where($column, '=', 0);
+                }
             } else {
                 $this->query->where($column, $operator, $value);
             }
@@ -131,7 +136,7 @@ class DataGrid extends Component
         $total  = count($result);
 
         return [
-            'data_id'       => $request['id'],
+            'data_id'       => isset($request['id']) ? $request['id'] : '',
             'rows_num'      => $total,
             'starting_from' => $request['starting_from'],
             'total'         => $total,
@@ -241,23 +246,14 @@ class DataGrid extends Component
     public function setOptions(array $options)
     {
         $options = array_replace_recursive([
-            'appearance'     => [
+            'appearance'  => [
                 'column_select' => false
             ],
-            'mechanics'      => [
+            'mechanics'   => [
+                'key'           => 'id',
                 'rows_per_page' => 25
             ],
-            'event_handlers' => [
-                'load'         => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'process'      => false,
-                'delete_row'   => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-                'loaded'       => false,
-                'edit_row'     => 'editRow',
-                'delete_group' => false,
-                'click_row'    => 'editRow',
-                'update_row'   => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
-            ],
-            'row_actions'    => [
+            'row_actions' => [
                 DataGridInterface::ACTION_EDIT,
                 DataGridInterface::ACTION_DELETE
             ]

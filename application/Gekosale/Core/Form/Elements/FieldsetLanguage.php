@@ -30,8 +30,8 @@ class FieldsetLanguage extends Fieldset implements ElementInterface
         $this->languages = $attributes['languages'];
         $count           = count($this->languages);
 
-        $this->_attributes['repeat_min'] = $count;
-        $this->_attributes['repeat_max'] = $count;
+        $this->attributes['repeat_min'] = $count;
+        $this->attributes['repeat_max'] = $count;
     }
 
     protected function formatLanguagesJs()

@@ -32,11 +32,11 @@ class Tree extends Field implements ElementInterface
         $this->container      = $container;
         $this->_jsGetChildren = 'GetChildren_' . $this->_id;
 
-        if (!isset($this->_attributes['retractable'])) {
-            $this->_attributes['retractable'] = true;
+        if (!isset($this->attributes['retractable'])) {
+            $this->attributes['retractable'] = true;
         }
 
-        $this->_attributes['total'] = count($this->_attributes['items']);
+        $this->attributes['total'] = count($this->attributes['items']);
     }
 
     public function prepareAttributesJs()

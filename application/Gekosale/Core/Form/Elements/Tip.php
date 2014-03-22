@@ -32,9 +32,9 @@ class Tip extends Node implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['name'] = '';
-        if (isset($this->_attributes['short_tip']) && strlen($this->_attributes['short_tip'])) {
-            $this->_attributes['retractable'] = true;
+        $this->attributes['name'] = '';
+        if (isset($this->attributes['short_tip']) && strlen($this->attributes['short_tip'])) {
+            $this->attributes['retractable'] = true;
         }
     }
 

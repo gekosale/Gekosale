@@ -21,43 +21,43 @@ class AllegroProductSelect extends ProductSelect implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_jsFunctionLoad                = 'LoadProducts_' . $this->_id;
-        $this->_attributes['jsfunction_load'] = 'xajax_' . $this->_jsFunctionLoad;
+        $this->_jsFunctionLoad               = 'LoadProducts_' . $this->_id;
+        $this->attributes['jsfunction_load'] = 'xajax_' . $this->_jsFunctionLoad;
         App::getRegistry()->xajax->registerFunction(array(
             $this->_jsFunctionLoad,
             $this,
             'loadProducts'
         ));
-        $this->_jsFunctionProcessTitles                 = 'ProcessTitles_' . $this->_id;
-        $this->_attributes['jsfunction_process_titles'] = 'xajax_' . $this->_jsFunctionProcessTitles;
+        $this->_jsFunctionProcessTitles                = 'ProcessTitles_' . $this->_id;
+        $this->attributes['jsfunction_process_titles'] = 'xajax_' . $this->_jsFunctionProcessTitles;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             $this->_jsFunctionProcessTitles,
             $this,
             'processTitles'
         ));
-        $this->_jsFunctionPrepareRow                 = 'PrepareRow_' . $this->_id;
-        $this->_attributes['jsfunction_prepare_row'] = 'xajax_' . $this->_jsFunctionPrepareRow;
+        $this->_jsFunctionPrepareRow                = 'PrepareRow_' . $this->_id;
+        $this->attributes['jsfunction_prepare_row'] = 'xajax_' . $this->_jsFunctionPrepareRow;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             $this->_jsFunctionPrepareRow,
             $this,
             'prepareRow'
         ));
-        $this->_attributes['advanced_editor']      = true;
-        $this->_attributes['repeat_min']           = 1;
-        $this->_attributes['repeat_max']           = FE::INFINITE;
-        $this->_attributes['favourite_categories'] = Array();
+        $this->attributes['advanced_editor']      = true;
+        $this->attributes['repeat_min']           = 1;
+        $this->attributes['repeat_max']           = FE::INFINITE;
+        $this->attributes['favourite_categories'] = Array();
         $favouriteCategories
-                                                   = App::getModel('allegro/allegrocategories')->getAllegroFavouriteCategoriesALLToSelect();
+                                                  = App::getModel('allegro/allegrocategories')->getAllegroFavouriteCategoriesALLToSelect();
         foreach ($favouriteCategories as $favouriteCategoryId => $favouriteCategoryCaption) {
-            $this->_attributes['favourite_categories'][] = Array(
+            $this->attributes['favourite_categories'][] = Array(
                 'id'      => $favouriteCategoryId,
                 'caption' => $favouriteCategoryCaption,
                 'path'    => implode(' > ', App::getModel('allegro/allegrocategories')->getCategoryPath($favouriteCategoryId)) . ' > <strong>' . $favouriteCategoryCaption . '</strong>'
             );
         }
         $this->_jsGetChildren = 'GetChildren_' . $this->_id;
-        if (isset($this->_attributes['load_allegro_category_children']) && is_callable($this->_attributes['load_allegro_category_children'])) {
-            $this->_attributes['get_children'] = 'xajax_' . $this->_jsGetChildren;
+        if (isset($this->attributes['load_allegro_category_children']) && is_callable($this->attributes['load_allegro_category_children'])) {
+            $this->attributes['get_children'] = 'xajax_' . $this->_jsGetChildren;
             App::getRegistry()->xajaxInterface->registerFunction(array(
                 $this->_jsGetChildren,
                 $this,
@@ -68,7 +68,7 @@ class AllegroProductSelect extends ProductSelect implements ElementInterface
 
     public function getChildren($request)
     {
-        $children = call_user_func($this->_attributes['load_allegro_category_children'], $request['parent']);
+        $children = call_user_func($this->attributes['load_allegro_category_children'], $request['parent']);
         if (!is_array($children)) {
             $children = Array();
         }
@@ -123,7 +123,7 @@ class AllegroProductSelect extends ProductSelect implements ElementInterface
         foreach ($data as &$row) {
             $tags   = Array();
             $values = Array();
-            foreach ($this->_attributes['tags_translation_table'] as $tag => $column) {
+            foreach ($this->attributes['tags_translation_table'] as $tag => $column) {
                 $tags[] = $tag;
                 if ($column{0} == '$') {
                     $column       = substr($column, 1);

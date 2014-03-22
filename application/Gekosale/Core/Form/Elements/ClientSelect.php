@@ -23,8 +23,8 @@ class ClientSelect extends Select implements ElementInterface
         parent::__construct($attributes);
         $this->_jsFunction                      = 'LoadClients_' . $this->_id;
         $this->_jsFunctionDetails               = 'LoadClientData_' . $this->_id;
-        $this->_attributes['jsfunction']        = 'xajax_' . $this->_jsFunction;
-        $this->_attributes['jsfunctiondetails'] = 'xajax_' . $this->_jsFunctionDetails;
+        $this->attributes['jsfunction']        = 'xajax_' . $this->_jsFunction;
+        $this->attributes['jsfunctiondetails'] = 'xajax_' . $this->_jsFunctionDetails;
         App::getRegistry()->xajax->registerFunction(array(
             $this->_jsFunction,
             $this,

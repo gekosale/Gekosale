@@ -24,7 +24,7 @@ class RichTextEditor extends Textarea implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['advanced'] = true;
+        $this->attributes['advanced'] = true;
     }
 
     public function prepareAttributesJs()

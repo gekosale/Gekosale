@@ -24,33 +24,33 @@ class LocalFile extends File implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (!isset($this->_attributes['traversable'])) {
-            $this->_attributes['traversable'] = true;
+        if (!isset($this->attributes['traversable'])) {
+            $this->attributes['traversable'] = true;
         }
-        if (!isset($this->_attributes['file_types'])) {
-            $this->_attributes['file_types'] = Array(
+        if (!isset($this->attributes['file_types'])) {
+            $this->attributes['file_types'] = Array(
                 'jpg',
                 'png',
                 'gif',
                 'swf'
             );
         }
-        $this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
-        $this->_attributes['upload_url']
-                                                     = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->_attributes['file_source']);
-        $this->_attributes['load_handler']           = 'xajax_loadFiles_' . $this->_id;
+        $this->attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
+        $this->attributes['upload_url']
+                                                     = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->attributes['file_source']);
+        $this->attributes['load_handler']           = 'xajax_loadFiles_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             'loadFiles_' . $this->_id,
             $this,
             'loadFiles'
         ));
-        $this->_attributes['delete_handler'] = 'xajax_deleteFile_' . $this->_id;
+        $this->attributes['delete_handler'] = 'xajax_deleteFile_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             'deleteFile_' . $this->_id,
             $this,
             'deleteFile'
         ));
-        $this->_attributes['type_icons'] = Array(
+        $this->attributes['type_icons'] = Array(
             'cdup'      => DESIGNPATH . '_images_panel/icons/filetypes/cdup.png',
             'unknown'   => DESIGNPATH . '_images_panel/icons/filetypes/unknown.png',
             'directory' => DESIGNPATH . '_images_panel/icons/filetypes/directory.png',
@@ -99,7 +99,7 @@ class LocalFile extends File implements ElementInterface
         if (!isset($request['file'])) {
             throw new Exception('No file specified.');
         }
-        if (substr($request['file'], 0, strlen($this->_attributes['file_source'])) != $this->_attributes['file_source']) {
+        if (substr($request['file'], 0, strlen($this->attributes['file_source'])) != $this->attributes['file_source']) {
             throw new Exception('The requested path "' . $request['file'] . '" is outside of permitted sandbox.');
         }
         if (!unlink($request['file'])) {
@@ -112,10 +112,10 @@ class LocalFile extends File implements ElementInterface
     public function loadFiles($request)
     {
         $inRoot = false;
-        if (substr($request['path'], 0, strlen($this->_attributes['file_source'])) != $this->_attributes['file_source']) {
-            $request['path'] = $this->_attributes['file_source'];
+        if (substr($request['path'], 0, strlen($this->attributes['file_source'])) != $this->attributes['file_source']) {
+            $request['path'] = $this->attributes['file_source'];
         }
-        if ($request['path'] == $this->_attributes['file_source']) {
+        if ($request['path'] == $this->attributes['file_source']) {
             $inRoot = true;
         }
         $path  = ROOTPATH . $request['path'];
@@ -133,7 +133,7 @@ class LocalFile extends File implements ElementInterface
             }
             $filepath = $path . $file;
             if ($file != '.svn') {
-                if (is_dir($filepath) && $this->_attributes['traversable']) {
+                if (is_dir($filepath) && $this->attributes['traversable']) {
                     $dirs[] = Array(
                         'dir'   => true,
                         'name'  => $file,
@@ -144,7 +144,7 @@ class LocalFile extends File implements ElementInterface
                     );
                 } else {
 
-                    if (in_array(pathinfo($request['path'] . $file, PATHINFO_EXTENSION), $this->_attributes['file_types'])) {
+                    if (in_array(pathinfo($request['path'] . $file, PATHINFO_EXTENSION), $this->attributes['file_types'])) {
                         $files[] = Array(
                             'dir'   => false,
                             'name'  => $file,

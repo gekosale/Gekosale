@@ -38,11 +38,11 @@ class StaticListing extends Field implements ElementInterface
 
     protected function formatListItemsJs($attributeName, $name)
     {
-        if (!isset($this->_attributes[$attributeName]) || !is_array($this->_attributes[$attributeName])) {
+        if (!isset($this->attributes[$attributeName]) || !is_array($this->attributes[$attributeName])) {
             return '';
         }
         $options = Array();
-        foreach ($this->_attributes[$attributeName] as $option) {
+        foreach ($this->attributes[$attributeName] as $option) {
             $value     = addslashes($option->value);
             $label     = addslashes($option->label);
             $options[] = "{sValue: '{$value}', sCaption: '{$label}'}";

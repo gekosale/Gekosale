@@ -24,8 +24,8 @@ class TechnicalDataEditor extends Field implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['attribute_groups']     = $this->GetAttributeGroups();
-        $this->_attributes['technical_attributes'] = $this->GetTechnicalAttributes();
+        $this->attributes['attribute_groups']     = $this->GetAttributeGroups();
+        $this->attributes['technicalattributes'] = $this->GetTechnicalAttributes();
         $this->registerXajaxMethod('fGetTechnicalAttributesForSet', Array(
             $this,
             'getTechnicalAttributesForSet'
@@ -73,7 +73,7 @@ class TechnicalDataEditor extends Field implements ElementInterface
             $this->formatAttributeJs('set_id', 'sSetId'),
             $this->formatAttributeJs('product_id', 'sProductId'),
             $this->formatAttributeJs('attribute_groups', 'aAttributeGroups', ElementInterface::TYPE_OBJECT),
-            $this->formatAttributeJs('technical_attributes', 'aTechnicalAttributes', ElementInterface::TYPE_OBJECT),
+            $this->formatAttributeJs('technicalattributes', 'aTechnicalAttributes', ElementInterface::TYPE_OBJECT),
             $this->formatRepeatableJs(),
             $this->formatRulesJs(),
             $this->formatDependencyJs(),

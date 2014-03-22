@@ -23,11 +23,11 @@ abstract class OptionedField extends Field
 
     protected function formatOptionsJs()
     {
-        if (!isset($this->_attributes['options']) || !is_array($this->_attributes['options'])) {
+        if (!isset($this->attributes['options']) || !is_array($this->attributes['options'])) {
             return '';
         }
         $options = Array();
-        foreach ($this->_attributes['options'] as $option) {
+        foreach ($this->attributes['options'] as $option) {
             $value     = addslashes($option->value);
             $label     = addslashes($option->label);
             $options[] = "{sValue: '{$value}', sLabel: '{$label}'}";

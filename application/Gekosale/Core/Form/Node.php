@@ -27,7 +27,7 @@ abstract class Node
 
     protected $_id;
 
-    protected $_attributes;
+    protected $attributes;
 
     protected $_renderMode;
 
@@ -42,7 +42,7 @@ abstract class Node
     public function __construct($attributes)
     {
         $this->_id           = self::$_nextId++;
-        $this->_attributes   = $attributes;
+        $this->attributes   = $attributes;
         $this->_renderMode   = 'Static';
         $this->_tabs         = '';
         $class               = explode('\\', get_class($this));
@@ -67,59 +67,59 @@ abstract class Node
 
     public function addRule($rule)
     {
-        if (!isset($this->_attributes['rules']) || !is_array($this->_attributes['rules'])) {
-            $this->_attributes['rules'] = Array();
+        if (!isset($this->attributes['rules']) || !is_array($this->attributes['rules'])) {
+            $this->attributes['rules'] = Array();
         }
-        $this->_attributes['rules'][] = $rule;
+        $this->attributes['rules'][] = $rule;
     }
 
     public function clearRules()
     {
-        $this->_attributes['rules'] = Array();
+        $this->attributes['rules'] = Array();
     }
 
     public function addFilter($filter)
     {
-        if (!isset($this->_attributes['filters']) || !is_array($this->_attributes['filters'])) {
-            $this->_attributes['filters'] = Array();
+        if (!isset($this->attributes['filters']) || !is_array($this->attributes['filters'])) {
+            $this->attributes['filters'] = Array();
         }
-        $this->_attributes['filters'][] = $filter;
+        $this->attributes['filters'][] = $filter;
     }
 
     public function setFilter($filter)
     {
-        if (!isset($this->_attributes['filters']) || !is_array($this->_attributes['filters'])) {
-            $this->_attributes['filters'] = Array();
+        if (!isset($this->attributes['filters']) || !is_array($this->attributes['filters'])) {
+            $this->attributes['filters'] = Array();
         }
-        $this->_attributes['filters'][] = $filter;
+        $this->attributes['filters'][] = $filter;
     }
 
     public function clearFilters()
     {
-        $this->_attributes['filters'] = Array();
+        $this->attributes['filters'] = Array();
     }
 
     public function addDependency($dependency)
     {
-        if (!isset($this->_attributes['dependencies']) || !is_array($this->_attributes['dependencies'])) {
-            $this->_attributes['dependencies'] = Array();
+        if (!isset($this->attributes['dependencies']) || !is_array($this->attributes['dependencies'])) {
+            $this->attributes['dependencies'] = Array();
         }
-        $this->_attributes['dependencies'][] = $dependency;
+        $this->attributes['dependencies'][] = $dependency;
     }
 
     protected function filter($values)
     {
-        if (!isset($this->_attributes['filters']) || !is_array($this->_attributes['filters'])) {
+        if (!isset($this->attributes['filters']) || !is_array($this->attributes['filters'])) {
             return $values;
         }
         if (is_array($values)) {
             foreach ($values as &$value) {
-                foreach ($this->_attributes['filters'] as $filter) {
+                foreach ($this->attributes['filters'] as $filter) {
                     $value = $filter->filter($value);
                 }
             }
         } else {
-            foreach ($this->_attributes['filters'] as $filter) {
+            foreach ($this->attributes['filters'] as $filter) {
                 $values = $filter->filter($values);
             }
         }
@@ -129,7 +129,7 @@ abstract class Node
 
     public function getName()
     {
-        return $this->_attributes['name'];
+        return $this->attributes['name'];
     }
 
     protected function harvestValues($node, $levels)
@@ -148,10 +148,10 @@ abstract class Node
 
     protected function harvestErrors($node, $levels)
     {
-        if (!isset($node->_attributes['error'])) {
+        if (!isset($node->attributes['error'])) {
             return '';
         }
-        $value = $node->_attributes['error'];
+        $value = $node->attributes['error'];
         foreach ($levels as $level) {
             if (isset($value[$level])) {
                 $value = $value[$level];
@@ -243,7 +243,7 @@ abstract class Node
     protected function formatAttributeJs($attributeName, $name = null, $type = Elements\ElementInterface::TYPE_STRING)
     {
         if ($name == null) {
-            if (!isset($this->_attributes[$attributeName])) {
+            if (!isset($this->attributes[$attributeName])) {
                 if ($type == Elements\ElementInterface::TYPE_FUNCTION) {
                     return 'null';
                 } elseif ($type == Elements\ElementInterface::TYPE_NUMBER) {
@@ -259,26 +259,26 @@ abstract class Node
                 return '\'\'';
             }
             if ($type == Elements\ElementInterface::TYPE_FUNCTION) {
-                return $this->_attributes[$attributeName];
+                return $this->attributes[$attributeName];
             } elseif ($type == Elements\ElementInterface::TYPE_NUMBER) {
-                return $this->_attributes[$attributeName];
+                return $this->attributes[$attributeName];
             } elseif ($type == Elements\ElementInterface::TYPE_ARRAY) {
-                return json_encode($this->_attributes[$attributeName]);
+                return json_encode($this->attributes[$attributeName]);
             } elseif ($type == Elements\ElementInterface::TYPE_OBJECT) {
-                return json_encode($this->_attributes[$attributeName]);
+                return json_encode($this->attributes[$attributeName]);
             } elseif ($type == Elements\ElementInterface::TYPE_BOOLEAN) {
-                return $this->_attributes[$attributeName] ? 'true' : 'false';
+                return $this->attributes[$attributeName] ? 'true' : 'false';
             }
 
             return str_replace(Array(
                 "\r\n",
                 "\n"
-            ), '\n', '\'' . addslashes($this->_attributes[$attributeName]) . '\'');
+            ), '\n', '\'' . addslashes($this->attributes[$attributeName]) . '\'');
         }
-        if (!isset($this->_attributes[$attributeName])) {
+        if (!isset($this->attributes[$attributeName])) {
             return '';
         }
-        $value = $this->_attributes[$attributeName];
+        $value = $this->attributes[$attributeName];
         if ($type == Elements\ElementInterface::TYPE_ARRAY) {
             return $name . ': ' . json_encode($value);
         } elseif ($type == Elements\ElementInterface::TYPE_OBJECT) {
@@ -313,12 +313,12 @@ abstract class Node
 
     protected function formatRepeatableJs()
     {
-        if ((isset($this->_attributes['repeat_min']) && ($this->_attributes['repeat_min'] != 1)) || (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] != 1))) {
+        if ((isset($this->attributes['repeat_min']) && ($this->attributes['repeat_min'] != 1)) || (isset($this->attributes['repeat_max']) && ($this->attributes['repeat_max'] != 1))) {
             $min
-                = (isset($this->_attributes['repeat_min']) && is_numeric($this->_attributes['repeat_min'])) ? $this->_attributes['repeat_min'] : 1;
+                = (isset($this->attributes['repeat_min']) && is_numeric($this->attributes['repeat_min'])) ? $this->attributes['repeat_min'] : 1;
             $max
-                = (isset($this->_attributes['repeat_max']) && is_numeric($this->_attributes['repeat_max'])) ? $this->_attributes['repeat_max'] : 1;
-            if (isset($this->_attributes['repeat_max']) && ($this->_attributes['repeat_max'] == Elements\ElementInterface::INFINITE)) {
+                = (isset($this->attributes['repeat_max']) && is_numeric($this->attributes['repeat_max'])) ? $this->attributes['repeat_max'] : 1;
+            if (isset($this->attributes['repeat_max']) && ($this->attributes['repeat_max'] == Elements\ElementInterface::INFINITE)) {
                 $max = 'GForm.INFINITE';
             }
 
@@ -331,8 +331,8 @@ abstract class Node
     protected function formatDependencyJs()
     {
         $dependencies = Array();
-        if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
-            foreach ($this->_attributes['dependencies'] as $dependency) {
+        if (isset($this->attributes['dependencies']) && is_array($this->attributes['dependencies'])) {
+            foreach ($this->attributes['dependencies'] as $dependency) {
                 $dependencies[] = $dependency->renderJs();
             }
         }
@@ -345,7 +345,7 @@ abstract class Node
 
     protected function formatFactorJs($factor, $name)
     {
-        return "{$name}: {$this->_attributes[$factor]->render()}";
+        return "{$name}: {$this->attributes[$factor]->render()}";
     }
 
     public function renderJs()
@@ -395,7 +395,7 @@ abstract class Node
     protected function registerXajaxMethod($name, $callback)
     {
         $jsName                   = $name . '_' . $this->_id;
-        $this->_attributes[$name] = 'xajax_' . $jsName;
+        $this->attributes[$name] = 'xajax_' . $jsName;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             $jsName,
             $callback[0],
@@ -406,6 +406,6 @@ abstract class Node
 
     public function __get($attributeName)
     {
-        return isset($this->_attributes[$attributeName]) ? $this->_attributes[$attributeName] : null;
+        return isset($this->attributes[$attributeName]) ? $this->attributes[$attributeName] : null;
     }
 }

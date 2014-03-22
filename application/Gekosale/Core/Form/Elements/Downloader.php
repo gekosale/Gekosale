@@ -24,7 +24,7 @@ class Downloader extends File implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['file_types']             = Array(
+        $this->attributes['file_types']             = Array(
             'octet-stream',
             'jpg',
             'jpeg',
@@ -44,7 +44,7 @@ class Downloader extends File implements ElementInterface
             'mpg',
             'mpeg'
         );
-        $this->_attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
+        $this->attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
     }
 
     public function prepareAttributesJs()

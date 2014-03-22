@@ -27,26 +27,26 @@ class ProductSelectRelated extends Select implements ElementInterface
     {
         parent::__construct($attributes);
         $this->_jsFunction               = 'LoadProducts_' . $this->_id;
-        $this->_attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
+        $this->attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
         App::getRegistry()->xajax->registerFunction(array(
             $this->_jsFunction,
             $this,
             'loadProducts_' . $this->_id
         ));
-        $this->_attributes['load_category_children'] = App::getRegistry()->xajaxInterface->registerFunction(array(
+        $this->attributes['load_category_children'] = App::getRegistry()->xajaxInterface->registerFunction(array(
             'LoadCategoryChildren_' . $this->_id,
             $this,
             'loadCategoryChildren'
         ));
-        if (isset($this->_attributes['exclude_from'])) {
-            $this->_attributes['exclude_from_field'] = $this->_attributes['exclude_from']->getName();
+        if (isset($this->attributes['exclude_from'])) {
+            $this->attributes['exclude_from_field'] = $this->attributes['exclude_from']->getName();
         }
-        if (!isset($this->_attributes['exclude'])) {
-            $this->_attributes['exclude'] = Array(
+        if (!isset($this->attributes['exclude'])) {
+            $this->attributes['exclude'] = Array(
                 0
             );
         }
-        $this->_attributes['datagrid_filter'] = $this->getDatagridfilterData();
+        $this->attributes['datagrid_filter'] = $this->getDatagridfilterData();
     }
 
     public function __call($function, $arguments)
@@ -105,14 +105,14 @@ class ProductSelectRelated extends Select implements ElementInterface
     public function loadProducts($request, $processFunction)
     {
         if (isset($request['dynamic_exclude']) && is_array($request['dynamic_exclude'])) {
-            $this->_attributes['exclude'] = array_merge($this->_attributes['exclude'], $request['dynamic_exclude']);
+            $this->attributes['exclude'] = array_merge($this->attributes['exclude'], $request['dynamic_exclude']);
         } else {
-            $this->_attributes['exclude'] = Array(
+            $this->attributes['exclude'] = Array(
                 0
             );
         }
         $this->getDatagrid()->setAdditionalWhere('
-			P.idproduct NOT IN (' . implode(',', $this->_attributes['exclude']) . ')
+			P.idproduct NOT IN (' . implode(',', $this->attributes['exclude']) . ')
 		');
 
         return $this->getDatagrid()->getData($request, $processFunction);
@@ -210,8 +210,8 @@ class ProductSelectRelated extends Select implements ElementInterface
 			P.idproduct
 		');
 
-        if (isset($this->_attributes['additional_rows'])) {
-            $datagrid->setAdditionalRows($this->_attributes['additional_rows']);
+        if (isset($this->attributes['additional_rows'])) {
+            $datagrid->setAdditionalRows($this->attributes['additional_rows']);
         }
     }
 

@@ -27,6 +27,11 @@ interface DataGridInterface
     const REDIRECT       = 'GF_Datagrid.Redirect';
 
     /**
+     * Configure DataGrid options
+     */
+    public function configure();
+
+    /**
      * DataGrid initialization
      */
     public function init();

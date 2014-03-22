@@ -26,22 +26,29 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
         $this->setOptions([
-            'id'         => 'product',
-            'appearance' => [
-                'column_select' => false
+            'id'             => 'product',
+            'event_handlers' => [
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadProduct', $this, 'loadData']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteProduct', $this, 'deleteRow']),
+                'edit_row'   => 'editRow',
+                'click_row'  => 'editRow',
+                'update_row' => $this->getXajaxManager()->registerFunction(['UpdateProduct', $this, 'updateRow']),
             ],
-            'mechanics'  => [
-                'key' => 'id',
-            ],
-            'routes'     => [
+            'routes'         => [
                 'index' => $this->generateUrl('admin.product.index'),
                 'edit'  => $this->generateUrl('admin.product.edit')
             ]
         ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
         $this->addColumn('id', [
             'source'     => 'product.id',
             'caption'    => $this->trans('Id'),

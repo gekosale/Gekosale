@@ -25,7 +25,6 @@ class File extends Field implements ElementInterface
 
     public $datagrid;
 
-    protected static $_filesLoadHandlerSet = false;
     protected $jsFunction;
 
     public function __construct($attributes, ContainerInterface $container)
@@ -34,10 +33,10 @@ class File extends Field implements ElementInterface
 
         $this->container                   = $container;
         $this->datagrid                    = $container->get('file.datagrid');
-        $this->_attributes['session_name'] = session_name();
-        $this->_attributes['session_id']   = session_id();
+        $this->attributes['session_name'] = session_name();
+        $this->attributes['session_id']   = session_id();
         $this->jsFunction                  = 'LoadFiles_' . $this->_id;
-        $this->_attributes['load_handler'] = 'xajax_' . $this->jsFunction;
+        $this->attributes['load_handler'] = 'xajax_' . $this->jsFunction;
 
         $this->container->get('xajax_manager')->registerFunction([
             $this->jsFunction,
@@ -60,16 +59,16 @@ class File extends Field implements ElementInterface
 
     public function doLoadFilesForDatagrid($request)
     {
-        if (isset($this->_attributes['file_types']) && is_array($this->_attributes['file_types']) && count($this->_attributes['file_types'])) {
+        if (isset($this->attributes['file_types']) && is_array($this->attributes['file_types']) && count($this->attributes['file_types'])) {
             if (!isset($request['where']) || !is_array($request['where'])) {
                 $request['where'] = [];
             }
             $request['where'][] = Array(
                 'operator' => 'IN',
                 'column'   => 'extension',
-                'value'    => $this->_attributes['file_types']
+                'value'    => $this->attributes['file_types']
             );
-            $request['limit']   = !empty($this->_attributes['limit']) ? $this->_attributes['limit'] : 10;
+            $request['limit']   = !empty($this->attributes['limit']) ? $this->attributes['limit'] : 10;
         }
 
         return $this->datagrid->loadData($request);

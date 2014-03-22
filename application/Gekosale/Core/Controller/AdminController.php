@@ -31,6 +31,8 @@ abstract class AdminController extends Controller
     {
         $datagrid = $this->getDataGrid();
 
+        $datagrid->configure();
+
         $datagrid->init();
 
         return [

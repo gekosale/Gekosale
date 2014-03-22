@@ -27,7 +27,7 @@ class Image extends File implements ElementInterface
     {
         parent::__construct($attributes, $container);
 
-        $this->_attributes['file_types'] = [
+        $this->attributes['file_types'] = [
             'jpg',
             'jpeg',
             'png',

@@ -39,9 +39,9 @@ class AttributeEditor extends Field implements ElementInterface
             $this,
             'renameValue'
         ));
-        $this->_attributes['deleteAttributeFunction'] = 'xajax_DeleteAttribute';
-        $this->_attributes['renameAttributeFunction'] = 'xajax_RenameAttribute';
-        $this->_attributes['renameValueFunction']     = 'xajax_RenameValue';
+        $this->attributes['deleteAttributeFunction'] = 'xajax_DeleteAttribute';
+        $this->attributes['renameAttributeFunction'] = 'xajax_RenameAttribute';
+        $this->attributes['renameValueFunction']     = 'xajax_RenameValue';
     }
 
     public function renameAttribute($request)

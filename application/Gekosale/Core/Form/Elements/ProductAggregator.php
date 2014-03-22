@@ -25,17 +25,17 @@ class ProductAggregator extends Field implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (!isset($this->_attributes['products_source_field']) || !($this->_attributes['products_source_field'] instanceof ProductSelect)) {
-            throw new Exception("Source field (attribute: products_source_field) not set for field '{$this->_attributes['name']}'.");
+        if (!isset($this->attributes['products_source_field']) || !($this->attributes['products_source_field'] instanceof ProductSelect)) {
+            throw new Exception("Source field (attribute: products_source_field) not set for field '{$this->attributes['name']}'.");
         }
-        $this->_attributes['products_source_field_name'] = $this->_attributes['products_source_field']->getName();
-        $this->_attributes['vat_values']                 = App::getModel('vat/vat')->getVATAll();
-        $this->_attributes['prefixes']                   = Array(
+        $this->attributes['products_source_field_name'] = $this->attributes['products_source_field']->getName();
+        $this->attributes['vat_values']                 = App::getModel('vat/vat')->getVATAll();
+        $this->attributes['prefixes']                   = Array(
             Translation::get('TXT_PRICE_NET'),
             Translation::get('TXT_PRICE_GROSS')
         );
         $this->_jsFunction                               = 'LoadProductDataForAggregation_' . $this->_id;
-        $this->_attributes['jsfunction']                 = 'xajax_' . $this->_jsFunction;
+        $this->attributes['jsfunction']                 = 'xajax_' . $this->_jsFunction;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             $this->_jsFunction,
             $this,

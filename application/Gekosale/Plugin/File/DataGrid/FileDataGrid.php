@@ -26,27 +26,27 @@ class FileDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
         $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
 
         $this->setOptions([
             'id'             => 'file',
-            'appearance'     => [
-                'column_select' => false
-            ],
-            'mechanics'      => [
-                'key' => 'id',
-            ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadFiles', $this, 'loadData']),
                 'edit_row'   => $editEvent,
                 'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteFile', $this, 'deleteRow']),
+                'update_row' => false,
             ],
         ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
         $this->addColumn('id', [
             'source'     => 'file.id',
             'caption'    => $this->trans('Id'),
@@ -69,7 +69,7 @@ class FileDataGrid extends DataGrid implements DataGridInterface
                 'default_order' => DataGridInterface::SORT_DIR_DESC
             ],
             'appearance' => [
-                'width'   => 190,
+                'width' => 190,
             ],
             'filter'     => [
                 'type' => DataGridInterface::FILTER_BETWEEN
@@ -83,7 +83,7 @@ class FileDataGrid extends DataGrid implements DataGridInterface
                 'default_order' => DataGridInterface::SORT_DIR_DESC
             ],
             'appearance' => [
-                'width'   => 90,
+                'width' => 90,
             ],
             'filter'     => [
                 'type' => DataGridInterface::FILTER_INPUT
@@ -97,15 +97,5 @@ class FileDataGrid extends DataGrid implements DataGridInterface
         $event = new FileDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(FileDataGridEvent::DATAGRID_INIT_EVENT, $event);
-    }
-
-    /**
-     * Returns route for editAction
-     *
-     * @return string
-     */
-    protected function getEditActionRoute()
-    {
-        return 'admin.file.edit';
     }
 }

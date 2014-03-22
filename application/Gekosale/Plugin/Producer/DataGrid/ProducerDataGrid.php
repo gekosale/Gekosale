@@ -26,27 +26,28 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
-        $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
-
         $this->setOptions([
             'id'             => 'producer',
-            'appearance'     => [
-                'column_select' => false
-            ],
-            'mechanics'      => [
-                'key' => 'id',
-            ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'edit_row'   => $editEvent,
-                'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadProducer', $this, 'loadData']),
+                'edit_row'   => 'editProducer',
+                'click_row'  => 'editProducer',
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteProducer', $this, 'deleteRow']),
             ],
+            'routes'         => [
+                'edit'  => $this->generateUrl('admin.producer.edit')
+            ]
         ]);
 
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
         $this->addColumn('id', [
             'source'     => 'producer.id',
             'caption'    => $this->trans('Id'),
@@ -82,15 +83,5 @@ class ProducerDataGrid extends DataGrid implements DataGridInterface
         $event = new ProducerDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(ProducerDataGridEvent::DATAGRID_INIT_EVENT, $event);
-    }
-
-    /**
-     * Returns route for editAction
-     *
-     * @return string
-     */
-    protected function getEditActionRoute()
-    {
-        return 'admin.producer.edit';
     }
 }

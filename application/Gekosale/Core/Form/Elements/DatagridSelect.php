@@ -43,17 +43,17 @@ class DatagridSelect extends Select implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (!isset($this->_attributes['key'])) {
-            throw new Exception("Datagrid key (attribute: key) not set for field '{$this->_attributes['name']}'.");
+        if (!isset($this->attributes['key'])) {
+            throw new Exception("Datagrid key (attribute: key) not set for field '{$this->attributes['name']}'.");
         }
-        if (!isset($this->_attributes['columns'])) {
-            throw new Exception("Datagrid columns (attribute: columns) not set for field '{$this->_attributes['name']}'.");
+        if (!isset($this->attributes['columns'])) {
+            throw new Exception("Datagrid columns (attribute: columns) not set for field '{$this->attributes['name']}'.");
         }
-        if (!isset($this->_attributes['datagrid_init_function']) || !is_callable($this->_attributes['datagrid_init_function'])) {
-            throw new Exception("Datagrid initialization function not set (attribute: datagrid_init_function) for field '{$this->_attributes['name']}'. Hint: check whether the method you have specified is public.");
+        if (!isset($this->attributes['datagrid_init_function']) || !is_callable($this->attributes['datagrid_init_function'])) {
+            throw new Exception("Datagrid initialization function not set (attribute: datagrid_init_function) for field '{$this->attributes['name']}'. Hint: check whether the method you have specified is public.");
         }
         $this->_jsFunction               = 'LoadRecords_' . $this->_id;
-        $this->_attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
+        $this->attributes['jsfunction'] = 'xajax_' . $this->_jsFunction;
         App::getRegistry()->xajax->registerFunction(array(
             $this->_jsFunction,
             $this,
@@ -90,7 +90,7 @@ class DatagridSelect extends Select implements ElementInterface
     {
         if ($this->datagrid == null) {
             $this->datagrid = App::getModel('datagrid/datagrid');
-            call_user_func($this->_attributes['datagrid_init_function'], $this->datagrid);
+            call_user_func($this->attributes['datagrid_init_function'], $this->datagrid);
         }
 
         return $this->datagrid;

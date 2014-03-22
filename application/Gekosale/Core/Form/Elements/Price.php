@@ -18,8 +18,8 @@ class Price extends TextField implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        if (isset($this->_attributes['vat_field']) && $this->_attributes['vat_field'] instanceof Field) {
-            $this->_attributes['vat_field_name'] = $this->_attributes['vat_field']->getName();
+        if (isset($this->attributes['vat_field']) && $this->attributes['vat_field'] instanceof Field) {
+            $this->attributes['vat_field_name'] = $this->attributes['vat_field']->getName();
         }
     }
 

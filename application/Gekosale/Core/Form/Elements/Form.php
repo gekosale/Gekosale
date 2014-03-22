@@ -43,33 +43,33 @@ class Form extends Container
         $this->_flags               = Array();
         $this->form                 = $this;
 
-        if (!isset($this->_attributes['class'])) {
-            $this->_attributes['class'] = '';
+        if (!isset($this->attributes['class'])) {
+            $this->attributes['class'] = '';
         }
-        if (!isset($this->_attributes['action'])) {
-            $this->_attributes['action'] = '';
+        if (!isset($this->attributes['action'])) {
+            $this->attributes['action'] = '';
         }
-        if (!isset($this->_attributes['method'])) {
-            $this->_attributes['method'] = 'post';
+        if (!isset($this->attributes['method'])) {
+            $this->attributes['method'] = 'post';
         }
-        if (!isset($this->_attributes['tabs'])) {
-            $this->_attributes['tabs'] = self::TABS_VERTICAL;
+        if (!isset($this->attributes['tabs'])) {
+            $this->attributes['tabs'] = self::TABS_VERTICAL;
         }
     }
 
     public function renderJs()
     {
         return "
-			<form id=\"{$this->_attributes['name']}\" method=\"{$this->_attributes['method']}\" action=\"{$this->_attributes['action']}\">
-				<input type=\"hidden\" name=\"{$this->_attributes['name']}_submitted\" value=\"1\"/>
+			<form id=\"{$this->attributes['name']}\" method=\"{$this->attributes['method']}\" action=\"{$this->attributes['action']}\">
+				<input type=\"hidden\" name=\"{$this->attributes['name']}_submitted\" value=\"1\"/>
 			</form>
 			<script type=\"text/javascript\">
 				/*<![CDATA[*/
 					GCore.OnLoad(function() {
-						$('#{$this->_attributes['name']}').GForm({
-							sFormName: '{$this->_attributes['name']}',
-							sClass: '{$this->_attributes['class']}',
-							iTabs: " . (($this->_attributes['tabs'] == self::TABS_VERTICAL) ? 'GForm.TABS_VERTICAL' : 'GForm.TABS_HORIZONTAL') . ",
+						$('#{$this->attributes['name']}').GForm({
+							sFormName: '{$this->attributes['name']}',
+							sClass: '{$this->attributes['class']}',
+							iTabs: " . (($this->attributes['tabs'] == self::TABS_VERTICAL) ? 'GForm.TABS_VERTICAL' : 'GForm.TABS_HORIZONTAL') . ",
 							aoFields: [
 								{$this->renderChildren()}
 							],
@@ -170,7 +170,7 @@ class Form extends Container
     {
         $values = $this->getSubmittedData();
 
-        if (!isset($values[$this->_attributes['name'] . '_submitted']) || !$values[$this->_attributes['name'] . '_submitted']) {
+        if (!isset($values[$this->attributes['name'] . '_submitted']) || !$values[$this->attributes['name'] . '_submitted']) {
             return false;
         }
         $this->populate($values);

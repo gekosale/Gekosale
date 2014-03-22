@@ -26,7 +26,7 @@ class StaticText extends Node implements ElementInterface
     public function __construct($attributes)
     {
         parent::__construct($attributes);
-        $this->_attributes['name'] = '';
+        $this->attributes['name'] = '';
     }
 
     public function prepareAttributesJs()

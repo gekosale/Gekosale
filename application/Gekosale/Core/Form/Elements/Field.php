@@ -33,23 +33,23 @@ class Field extends Node
         parent::__construct($attributes);
         $this->_value       = '';
         $this->_globalvalue = '';
-        if (isset($this->_attributes['default'])) {
+        if (isset($this->attributes['default'])) {
             $this->populate($attributes['default']);
         }
     }
 
     public function isValid($values = Array())
     {
-        if (!isset($this->_attributes['rules']) || !is_array($this->_attributes['rules'])) {
+        if (!isset($this->attributes['rules']) || !is_array($this->attributes['rules'])) {
             return true;
         }
         $result = true;
-        foreach ($this->_attributes['rules'] as $rule) {
+        foreach ($this->attributes['rules'] as $rule) {
             if (isset($this->_value) && is_array($this->_value)) {
                 foreach ($this->_value as $i => $value) {
                     $skip = false;
-                    if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
-                        foreach ($this->_attributes['dependencies'] as $dependency) {
+                    if (isset($this->attributes['dependencies']) && is_array($this->attributes['dependencies'])) {
+                        foreach ($this->attributes['dependencies'] as $dependency) {
                             if ((($dependency->type == Dependency::HIDE) && $dependency->evaluate($value, $i)) || (($dependency->type == Dependency::SHOW) && !$dependency->evaluate($value, $i)) || (($dependency->type == Dependency::IGNORE) && $dependency->evaluate($value, $i))) {
                                 $skip = true;
                                 break;
@@ -61,26 +61,26 @@ class Field extends Node
                             $rule->setLanguage($i);
                         }
                         if (($checkResult = $rule->check($value)) !== true) {
-                            if (!isset($this->_attributes['error']) || !is_array($this->_attributes['error'])) {
-                                $this->_attributes['error'] = ($i > 0) ? array_fill(0, $i, '') : Array();
+                            if (!isset($this->attributes['error']) || !is_array($this->attributes['error'])) {
+                                $this->attributes['error'] = ($i > 0) ? array_fill(0, $i, '') : Array();
                             } elseif ($i > 0) {
-                                $this->_attributes['error'] = $this->_attributes['error'] + array_fill(0, $i, '');
+                                $this->attributes['error'] = $this->attributes['error'] + array_fill(0, $i, '');
                             }
-                            $this->_attributes['error'][$i] = $checkResult;
+                            $this->attributes['error'][$i] = $checkResult;
                             $result                         = false;
                         }
                     }
                 }
             } else {
-                if (isset($this->_attributes['dependencies']) && is_array($this->_attributes['dependencies'])) {
-                    foreach ($this->_attributes['dependencies'] as $dependency) {
+                if (isset($this->attributes['dependencies']) && is_array($this->attributes['dependencies'])) {
+                    foreach ($this->attributes['dependencies'] as $dependency) {
                         if ((($dependency->type == Dependency::HIDE) && $dependency->evaluate($this->_value)) || (($dependency->type == Dependency::SHOW) && !$dependency->evaluate($this->_value)) || (($dependency->type == Dependency::IGNORE) && $dependency->evaluate($this->_value))) {
                             return $result;
                         }
                     }
                 }
                 if (($checkResult = $rule->check($this->_value)) !== true) {
-                    $this->_attributes['error'] = $checkResult;
+                    $this->attributes['error'] = $checkResult;
                     $result                     = false;
                 }
             }
@@ -119,11 +119,11 @@ class Field extends Node
 
     protected function formatRulesJs()
     {
-        if (!isset($this->_attributes['rules']) || !is_array($this->_attributes['rules'])) {
+        if (!isset($this->attributes['rules']) || !is_array($this->attributes['rules'])) {
             return '';
         }
         $rules = Array();
-        foreach ($this->_attributes['rules'] as $rule) {
+        foreach ($this->attributes['rules'] as $rule) {
             $rules[] = $rule->render();
         }
 
