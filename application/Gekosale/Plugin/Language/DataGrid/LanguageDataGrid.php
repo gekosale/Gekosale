@@ -26,23 +26,27 @@ class LanguageDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
         $this->setOptions([
             'id'             => 'language',
-            'appearance'     => [
-                'column_select' => false
-            ],
-            'mechanics'      => [
-                'key' => 'id',
-            ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'edit_row'   => $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']),
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadLanguage', $this, 'loadData']),
+                'edit_row'   => 'editLanguage',
+                'click_row'  => 'editLanguage',
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteLanguage', $this, 'deleteRow']),
             ],
+            'routes'         => [
+                'edit' => $this->generateUrl('admin.language.edit')
+            ]
         ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
         $this->addColumn('id', [
             'source'     => 'language.id',
             'caption'    => $this->trans('Id'),
