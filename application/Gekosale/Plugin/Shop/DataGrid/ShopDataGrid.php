@@ -26,27 +26,28 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
-        $editEvent = $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']);
-
         $this->setOptions([
             'id'             => 'shop',
-            'appearance'     => [
-                'column_select' => false
-            ],
-            'mechanics'      => [
-                'key' => 'id',
-            ],
             'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'edit_row'   => $editEvent,
-                'click_row'  => $editEvent,
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-                'update_row' => $this->getXajaxManager()->registerFunction(['updateRow', $this, 'updateRow']),
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadShop', $this, 'loadData']),
+                'edit_row'   => 'editShop',
+                'click_row'  => 'editShop',
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteShop', $this, 'deleteRow']),
+                'update_row' => $this->getXajaxManager()->registerFunction(['UpdateShop', $this, 'updateRow'])
             ],
+            'routes'         => [
+                'edit' => $this->generateUrl('admin.shop.edit')
+            ]
         ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
         $this->addColumn('id', [
             'source'     => 'shop.id',
             'caption'    => $this->trans('Id'),
@@ -111,15 +112,5 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
         ];
 
         return $options;
-    }
-
-    /**
-     * Returns route for editAction
-     *
-     * @return string
-     */
-    protected function getEditActionRoute()
-    {
-        return 'admin.shop.edit';
     }
 }
