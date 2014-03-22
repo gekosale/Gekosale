@@ -23,26 +23,27 @@ use Gekosale\Plugin\Availability\Event\AvailabilityDataGridEvent;
  */
 class AvailabilityDataGrid extends DataGrid implements DataGridInterface
 {
+    public function configure()
+    {
+        $this->setOptions([
+            'id'             => 'availability',
+            'event_handlers' => [
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadAvailability', $this, 'loadData']),
+                'edit_row'   => 'editAvailability',
+                'click_row'  => 'editAvailability',
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteAvailability', $this, 'deleteRow']),
+            ],
+            'routes'         => [
+                'edit' => $this->generateUrl('admin.availability.edit')
+            ]
+        ]);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function init()
     {
-        $this->setOptions([
-            'id'             => 'availability',
-            'appearance'     => [
-                'column_select' => false
-            ],
-            'mechanics'      => [
-                'key' => 'id',
-            ],
-            'event_handlers' => [
-                'load'       => $this->getXajaxManager()->registerFunction(['loadData', $this, 'loadData']),
-                'edit_row'   => $this->getXajaxManager()->registerFunction(['editRow', $this, 'editRow']),
-                'delete_row' => $this->getXajaxManager()->registerFunction(['deleteRow', $this, 'deleteRow']),
-            ],
-        ]);
-
         $this->addColumn('id', [
             'source'     => 'availability.id',
             'caption'    => $this->trans('Id'),
@@ -78,15 +79,5 @@ class AvailabilityDataGrid extends DataGrid implements DataGridInterface
         $event = new AvailabilityDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(AvailabilityDataGridEvent::DATAGRID_INIT_EVENT, $event);
-    }
-
-    /**
-     * Returns route for editAction
-     *
-     * @return string
-     */
-    protected function getEditActionRoute()
-    {
-        return 'admin.availability.edit';
     }
 }
