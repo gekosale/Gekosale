@@ -107,6 +107,7 @@ class ShippingMethodForm extends Form
             ]
         ]));
 
+        print_r($this->get('shipping_method.calculator')->getCalculatorsToSelect());
 
         $shopData = $form->addChild($this->addFieldset([
             'name'  => 'shop_data',

@@ -13,6 +13,25 @@
 namespace Gekosale\Plugin\ShippingMethod\Calculator;
 
 
-class WeightCalculator {
+class FixedPriceCalculator extends Calculator
+{
+    public function getName()
+    {
+        return $this->trans('Fixed price');
+    }
 
+    public function getRange()
+    {
+
+    }
+
+    public function calculate()
+    {
+
+    }
+
+    public function calculateProduct()
+    {
+
+    }
 } 

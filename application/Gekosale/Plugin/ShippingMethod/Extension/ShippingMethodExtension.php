@@ -11,6 +11,8 @@
  */
 namespace Gekosale\Plugin\ShippingMethod\Extension;
 
+use Gekosale\Plugin\ShippingMethod\Extension\Compiler\RegisterShippingCalculatorsPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
     Symfony\Component\Config\FileLocator,

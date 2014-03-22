@@ -118,7 +118,11 @@ class ServiceContainer extends Container
             'session' => 'getSessionService',
             'session.handler' => 'getSession_HandlerService',
             'session.storage' => 'getSession_StorageService',
-            'shipping_method.calculator.cart_total' => 'getShippingMethod_Calculator_CartTotalService',
+            'shipping_method.calculator' => 'getShippingMethod_CalculatorService',
+            'shipping_method.calculator.cart_total_table' => 'getShippingMethod_Calculator_CartTotalTableService',
+            'shipping_method.calculator.fixed_price' => 'getShippingMethod_Calculator_FixedPriceService',
+            'shipping_method.calculator.item_quantity' => 'getShippingMethod_Calculator_ItemQuantityService',
+            'shipping_method.calculator.weight_table' => 'getShippingMethod_Calculator_WeightTableService',
             'shipping_method.datagrid' => 'getShippingMethod_DatagridService',
             'shipping_method.form' => 'getShippingMethod_FormService',
             'shipping_method.repository' => 'getShippingMethod_RepositoryService',
@@ -1505,16 +1509,76 @@ class ServiceContainer extends Container
     }
 
     /**
-     * Gets the 'shipping_method.calculator.cart_total' service.
+     * Gets the 'shipping_method.calculator' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ShippingMethod\Calculator\Calculator A Gekosale\Plugin\ShippingMethod\Calculator\Calculator instance.
+     */
+    protected function getShippingMethod_CalculatorService()
+    {
+        $this->services['shipping_method.calculator'] = $instance = new \Gekosale\Plugin\ShippingMethod\Calculator\Calculator();
+
+        $instance->setContainer($this);
+        $instance->addCalculator('cart_total_table', $this->get('shipping_method.calculator.cart_total_table'));
+        $instance->addCalculator('fixed_price', $this->get('shipping_method.calculator.fixed_price'));
+        $instance->addCalculator('item_quantity', $this->get('shipping_method.calculator.item_quantity'));
+        $instance->addCalculator('weight_table', $this->get('shipping_method.calculator.weight_table'));
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'shipping_method.calculator.cart_total_table' service.
      *
      * This service is shared.
      * This method always returns the same instance of the service.
      *
      * @return Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator A Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator instance.
      */
-    protected function getShippingMethod_Calculator_CartTotalService()
+    protected function getShippingMethod_Calculator_CartTotalTableService()
     {
-        return $this->services['shipping_method.calculator.cart_total'] = new \Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator();
+        return $this->services['shipping_method.calculator.cart_total_table'] = new \Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator();
+    }
+
+    /**
+     * Gets the 'shipping_method.calculator.fixed_price' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator A Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator instance.
+     */
+    protected function getShippingMethod_Calculator_FixedPriceService()
+    {
+        return $this->services['shipping_method.calculator.fixed_price'] = new \Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator();
+    }
+
+    /**
+     * Gets the 'shipping_method.calculator.item_quantity' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator A Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator instance.
+     */
+    protected function getShippingMethod_Calculator_ItemQuantityService()
+    {
+        return $this->services['shipping_method.calculator.item_quantity'] = new \Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator();
+    }
+
+    /**
+     * Gets the 'shipping_method.calculator.weight_table' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator A Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator instance.
+     */
+    protected function getShippingMethod_Calculator_WeightTableService()
+    {
+        return $this->services['shipping_method.calculator.weight_table'] = new \Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator();
     }
 
     /**
@@ -1757,6 +1821,7 @@ class ServiceContainer extends Container
         $g = $this->get('twig.extension.asset');
         $h = $this->get('twig.extension.datagrid');
         $i = $this->get('twig.extension.assetic');
+        $j = $this->get('twig.extension.contact');
 
         $this->services['twig'] = $instance = new \Twig_Environment($this->get('twig.loader.front'), array('cache' => 'D:\\Git\\Gekosale3\\var/cache', 'auto_reload' => true, 'autoescape' => true, 'debug' => true));
 
@@ -1778,7 +1843,26 @@ class ServiceContainer extends Container
         $instance->addExtension($g);
         $instance->addExtension($h);
         $instance->addExtension($i);
-        $instance->addExtension($this->get('twig.extension.contact'));
+        $instance->addExtension($a);
+        $instance->addExtension($b);
+        $instance->addExtension($c);
+        $instance->addExtension($d);
+        $instance->addExtension($e);
+        $instance->addExtension($f);
+        $instance->addExtension($g);
+        $instance->addExtension($h);
+        $instance->addExtension($i);
+        $instance->addExtension($j);
+        $instance->addExtension($a);
+        $instance->addExtension($b);
+        $instance->addExtension($c);
+        $instance->addExtension($d);
+        $instance->addExtension($e);
+        $instance->addExtension($f);
+        $instance->addExtension($g);
+        $instance->addExtension($h);
+        $instance->addExtension($i);
+        $instance->addExtension($j);
 
         return $instance;
     }

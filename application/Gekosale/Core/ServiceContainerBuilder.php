@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\RegisterListenersPass;
 use Gekosale\Core\DependencyInjection\Compiler\RegisterTwigExtensionsPass;
 use Gekosale\Core\DependencyInjection\Extension\PluginExtensionLoader;
@@ -96,11 +97,11 @@ final class ServiceContainerBuilder
      * @param array $parameters
      * @param bool  $isDebug
      */
-    public function __construct (array $parameters, $isDebug = false)
+    public function __construct(array $parameters, $isDebug = false)
     {
-        $this->parameters = $parameters;
-        $this->isDebug = (bool) $isDebug;
-        $this->compilerClassPath = __DIR__ . DS . self::SERVICE_CONTAINER_CLASS . '.php';
+        $this->parameters           = $parameters;
+        $this->isDebug              = (bool)$isDebug;
+        $this->compilerClassPath    = __DIR__ . DS . self::SERVICE_CONTAINER_CLASS . '.php';
         $this->containerConfigCache = new ConfigCache($this->compilerClassPath, $this->isDebug);
     }
 
@@ -109,23 +110,23 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    public function check ()
+    public function check()
     {
-        if (! $this->containerConfigCache->isFresh()){
-            
+        if (!$this->containerConfigCache->isFresh()) {
+
             $this->initContainerBuilder();
-            
+
             $this->loadXmlConfiguration();
-            
+
             $this->registerExtensions();
-            
+
             $this->registerCompilerPasses();
-            
-            foreach ($this->compilerPasses as $compilerPass){
+
+            foreach ($this->compilerPasses as $compilerPass) {
                 $this->containerBuilder->addCompilerPass($compilerPass, PassConfig::TYPE_AFTER_REMOVING);
                 $compilerPass->process($this->containerBuilder);
             }
-            
+
             $this->compileAndSaveContainer();
         }
     }
@@ -135,7 +136,7 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function registerExtensions ()
+    protected function registerExtensions()
     {
         $extensionLoader = new PluginExtensionLoader($this->containerBuilder);
         $extensionLoader->registerExtensions();
@@ -146,20 +147,20 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function compileAndSaveContainer ()
+    protected function compileAndSaveContainer()
     {
         $this->containerBuilder->compile();
-        
+
         $dumper = new PhpDumper($this->containerBuilder);
-        
+
         $options = Array(
-            'class' => self::SERVICE_CONTAINER_CLASS,
+            'class'      => self::SERVICE_CONTAINER_CLASS,
             'base_class' => self::SERVICE_CONTAINER_BASE_CLASS,
-            'namespace' => __NAMESPACE__
+            'namespace'  => __NAMESPACE__
         );
-        
+
         $content = $dumper->dump($options);
-        
+
         $this->containerConfigCache->write($content, $this->containerBuilder->getResources());
     }
 
@@ -168,9 +169,9 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function initContainerBuilder ()
+    protected function initContainerBuilder()
     {
-        $parameterBag = new ParameterBag($this->parameters);
+        $parameterBag           = new ParameterBag($this->parameters);
         $this->containerBuilder = new ContainerBuilder($parameterBag);
     }
 
@@ -179,10 +180,10 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function loadXmlConfiguration ()
+    protected function loadXmlConfiguration()
     {
         $locator = new FileLocator(ROOTPATH . 'config');
-        
+
         $loader = new XmlFileLoader($this->containerBuilder, $locator);
         $loader->load('config.xml');
     }
@@ -194,7 +195,7 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function registerCompilerPass (CompilerPassInterface $compilerPass)
+    protected function registerCompilerPass(CompilerPassInterface $compilerPass)
     {
         $this->compilerPasses[] = $compilerPass;
     }
@@ -204,16 +205,28 @@ final class ServiceContainerBuilder
      *
      * @return void
      */
-    protected function registerCompilerPasses ()
+    protected function registerCompilerPasses()
     {
         /*
          * RegisterListenersPass for all event listeners
          */
         $this->registerCompilerPass(new RegisterListenersPass());
-        
+
         /*
          * RegisterTwigExtensionsPass for all services tagged with twig.extension
          */
         $this->registerCompilerPass(new RegisterTwigExtensionsPass());
+
+        $finder = new Finder();
+
+        $files = $finder->files()
+            ->in(ROOTPATH . 'application')
+            ->name('*Pass.php')
+            ->contains('CompilerPassInterface');
+        foreach ($files as $file) {
+            $namespace = $file->getRelativePath();
+            $compilerPass = $namespace . '\\' . $file->getBasename('.php');
+            $this->registerCompilerPass(new $compilerPass);
+        }
     }
 }

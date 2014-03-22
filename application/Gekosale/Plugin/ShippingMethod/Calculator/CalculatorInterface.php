@@ -16,11 +16,13 @@ namespace Gekosale\Plugin\ShippingMethod\Calculator;
 interface CalculatorInterface
 {
 
+    public function getName();
+
     public function getRange();
 
-    public function calculate(Cart $cart);
+    public function calculate();
 
-    public function calculateProduct(Product $product);
+    public function calculateProduct();
 
 
 } 

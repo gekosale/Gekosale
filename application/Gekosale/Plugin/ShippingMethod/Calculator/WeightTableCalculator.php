@@ -13,6 +13,29 @@
 namespace Gekosale\Plugin\ShippingMethod\Calculator;
 
 
-class WeightCalculator {
+class WeightTableCalculator extends Calculator
+{
+    public function getAlias(){
 
+    }
+
+    public function getName()
+    {
+        return $this->trans('Weight table');
+    }
+
+    public function getRange()
+    {
+
+    }
+
+    public function calculate()
+    {
+
+    }
+
+    public function calculateProduct()
+    {
+
+    }
 } 

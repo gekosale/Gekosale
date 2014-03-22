@@ -4,33 +4,51 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="shipping_method.repository" class="Gekosale\Plugin\ShippingMethod\Repository\ShippingMethodRepository">
+        <service id="shipping_method.calculator" class="Gekosale\Plugin\ShippingMethod\Calculator\Calculator">
             <call method="setContainer">
-                <argument type="service" id="service_container" />
+                <argument type="service" id="service_container"/>
             </call>
-        </service>
-        
-        <service id="shipping_method.datagrid" class="Gekosale\Plugin\ShippingMethod\DataGrid\ShippingMethodDataGrid">
-            <call method="setRepository">
-                <argument type="service" id="shipping_method.repository" />
-            </call>
-            <call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
-        </service>
-        
-        <service id="shipping_method.form" class="Gekosale\Plugin\ShippingMethod\Form\ShippingMethodForm">
-        	<call method="setContainer">
-                <argument type="service" id="service_container" />
-            </call>
-        </service>
-        
-        <service id="shipping_method.subscriber" class="Gekosale\Plugin\ShippingMethod\Event\ShippingMethodEventSubscriber">
-        	<tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="shipping_method.calculator.cart_total" class="Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator">
-        	<tag name="shipping_method.calculator" />
+        <service id="shipping_method.repository" class="Gekosale\Plugin\ShippingMethod\Repository\ShippingMethodRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="shipping_method.datagrid" class="Gekosale\Plugin\ShippingMethod\DataGrid\ShippingMethodDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="shipping_method.repository"/>
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="shipping_method.form" class="Gekosale\Plugin\ShippingMethod\Form\ShippingMethodForm">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="shipping_method.subscriber" class="Gekosale\Plugin\ShippingMethod\Event\ShippingMethodEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="shipping_method.calculator.cart_total_table" class="Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator">
+            <tag name="shipping.calculator" alias="cart_total_table"/>
+        </service>
+
+        <service id="shipping_method.calculator.fixed_price" class="Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator">
+            <tag name="shipping.calculator" alias="fixed_price"/>
+        </service>
+
+        <service id="shipping_method.calculator.item_quantity" class="Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator">
+            <tag name="shipping.calculator" alias="item_quantity"/>
+        </service>
+
+        <service id="shipping_method.calculator.weight_table" class="Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator">
+            <tag name="shipping.calculator" alias="weight_table"/>
         </service>
     </services>
 </container>
