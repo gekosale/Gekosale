@@ -25,35 +25,68 @@ class CurrencyDataGrid extends DataGrid implements DataGridInterface
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function configure()
     {
-        $this->registerEventHandlers();
-
-        $this->addColumn('id', [
-            'source' => 'currency.id'
+        $this->setOptions([
+            'id'             => 'currency',
+            'event_handlers' => [
+                'load'       => $this->getXajaxManager()->registerFunction(['LoadCurrency', $this, 'loadData']),
+                'edit_row'   => 'editCurrency',
+                'click_row'  => 'editCurrency',
+                'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteCurrency', $this, 'deleteRow'])
+            ],
+            'routes'         => [
+                'edit' => $this->generateUrl('admin.currency.edit')
+            ]
         ]);
-
-        $this->addColumn('name', [
-            'source' => 'currency.name'
-        ]);
-
-        $this->addColumn('symbol', [
-            'source' => 'currency.symbol'
-        ]);
-
-        $this->query = $this->getDb()
-            ->table('currency')
-            ->groupBy('currency.id');
     }
-
+    
     /**
      * {@inheritdoc}
      */
-    public function registerEventHandlers()
+    public function init()
     {
-        $this->getXajaxManager()->registerFunctions([
-            'getCurrencyForAjax' => [$this, 'getData'],
-            'doDeleteCurrency'   => [$this, 'delete']
+        $this->addColumn('id', [
+            'source'     => 'currency.id',
+            'caption'    => $this->trans('Id'),
+            'sorting'    => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance' => [
+                'width'   => 90,
+                'visible' => false
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_BETWEEN
+            ]
         ]);
+
+        $this->addColumn('name', [
+            'source'     => 'currency.name',
+            'caption'    => $this->trans('Name'),
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+
+        $this->addColumn('symbol', [
+            'source'     => 'currency.symbol',
+            'caption'    => $this->trans('Symbol'),
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+        
+        $this->query = $this->getDb()
+            ->table('currency')
+            ->groupBy('currency.id');
     }
 }
