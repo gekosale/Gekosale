@@ -13563,7 +13563,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 
 	gThis._ProcessFile = function(oRow) {
 		if (oRow.thumb != '') {
-			oRow.thumbpreview = '<a href="' + oRow.thumb + '" ><img src="' + oRow.thumb + '" style="vertical-align: middle;" alt="' + GForm.Language.file_selector_show_thumb + '"/></a>';
+			oRow.preview = '<a href="' + oRow.preview + '" ><img src="' + oRow.preview + '" style="vertical-align: middle;" alt="' + GForm.Language.file_selector_show_thumb + '"/></a>';
 		}
 		return oRow;
 	};
@@ -13703,7 +13703,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		});
 		
 		var column_thumb = new GF_Datagrid_Column({
-			id: 'thumbpreview',
+			id: 'preview',
 			caption: GForm.Language.file_selector_thumb,
 			appearance: {
 				width: 30,
@@ -13773,7 +13773,9 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 						gThis._LoadDefaults(GCore.Duplicate(true, oRequest));
 						gThis.m_bLoadedDefaults = true;
 					}
-					gThis.m_oOptions.fLoadFiles(oRequest, sResponseHandler);
+					gThis.m_oOptions.fLoadFiles(oRequest, GCallback(function(eEvent){
+		                GF_Datagrid.ProcessIncomingData(eEvent);
+		            }));
 				},
 				loaded: gThis._OnDataLoaded,
 				process: gThis._ProcessFile,

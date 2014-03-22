@@ -1539,7 +1539,11 @@ class ServiceContainer extends Container
      */
     protected function getShippingMethod_Calculator_CartTotalTableService()
     {
-        return $this->services['shipping_method.calculator.cart_total_table'] = new \Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator();
+        $this->services['shipping_method.calculator.cart_total_table'] = $instance = new \Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -1552,7 +1556,11 @@ class ServiceContainer extends Container
      */
     protected function getShippingMethod_Calculator_FixedPriceService()
     {
-        return $this->services['shipping_method.calculator.fixed_price'] = new \Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator();
+        $this->services['shipping_method.calculator.fixed_price'] = $instance = new \Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -1565,7 +1573,11 @@ class ServiceContainer extends Container
      */
     protected function getShippingMethod_Calculator_ItemQuantityService()
     {
-        return $this->services['shipping_method.calculator.item_quantity'] = new \Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator();
+        $this->services['shipping_method.calculator.item_quantity'] = $instance = new \Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**
@@ -1578,7 +1590,11 @@ class ServiceContainer extends Container
      */
     protected function getShippingMethod_Calculator_WeightTableService()
     {
-        return $this->services['shipping_method.calculator.weight_table'] = new \Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator();
+        $this->services['shipping_method.calculator.weight_table'] = $instance = new \Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator();
+
+        $instance->setContainer($this);
+
+        return $instance;
     }
 
     /**

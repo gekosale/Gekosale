@@ -90,6 +90,18 @@ class FileDataGrid extends DataGrid implements DataGridInterface
             ]
         ]);
 
+        $this->addColumn('preview', [
+            'source'           => 'file.id',
+            'caption'          => $this->trans('Thumb'),
+            'sorting'          => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance'       => [
+                'width' => 90,
+            ],
+            'process_function' => [$this, 'getPreview']
+        ]);
+
         $this->query = $this->getDb()
             ->table('file')
             ->groupBy('file.id');
@@ -97,5 +109,10 @@ class FileDataGrid extends DataGrid implements DataGridInterface
         $event = new FileDataGridEvent($this);
 
         $this->getDispatcher()->dispatch(FileDataGridEvent::DATAGRID_INIT_EVENT, $event);
+    }
+
+    protected function getPreview($id)
+    {
+        return 'http://gekosale3.tpl/design/_images_panel/datagrid/clear-selection.png';
     }
 }

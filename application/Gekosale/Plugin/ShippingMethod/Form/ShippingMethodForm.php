@@ -107,6 +107,10 @@ class ShippingMethodForm extends Form
             ]
         ]));
 
+        foreach ($this->get('shipping_method.calculator')->getCalculators() as $alias => $calculator) {
+            $costsPane->addChild($calculator->getConfigurationForm());
+        }
+
         print_r($this->get('shipping_method.calculator')->getCalculatorsToSelect());
 
         $shopData = $form->addChild($this->addFieldset([

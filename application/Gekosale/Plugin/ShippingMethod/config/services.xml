@@ -36,18 +36,30 @@
         </service>
 
         <service id="shipping_method.calculator.cart_total_table" class="Gekosale\Plugin\ShippingMethod\Calculator\CartTotalTableCalculator">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
             <tag name="shipping.calculator" alias="cart_total_table"/>
         </service>
 
         <service id="shipping_method.calculator.fixed_price" class="Gekosale\Plugin\ShippingMethod\Calculator\FixedPriceCalculator">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
             <tag name="shipping.calculator" alias="fixed_price"/>
         </service>
 
         <service id="shipping_method.calculator.item_quantity" class="Gekosale\Plugin\ShippingMethod\Calculator\ItemQuantityCalculator">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
             <tag name="shipping.calculator" alias="item_quantity"/>
         </service>
 
         <service id="shipping_method.calculator.weight_table" class="Gekosale\Plugin\ShippingMethod\Calculator\WeightTableCalculator">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
             <tag name="shipping.calculator" alias="weight_table"/>
         </service>
     </services>

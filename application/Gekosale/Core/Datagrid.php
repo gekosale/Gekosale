@@ -134,6 +134,7 @@ class DataGrid extends Component
 
         $result = $this->query->get();
         $total  = count($result);
+        $result = $this->processRows($result);
 
         return [
             'data_id'       => isset($request['id']) ? $request['id'] : '',
@@ -214,25 +215,19 @@ class DataGrid extends Component
 
     protected function processRows($rows)
     {
-        static $transform
-        = array(
-            "\r" => '\r',
-            "\n" => '\n'
-        );
+        static $transform = ["\r" => '\r', "\n" => '\n'];
 
-        $rowData = Array();
+        $rowData = [];
         foreach ($rows as $row) {
-            $columns = Array();
+            $columns = [];
             foreach ($row as $param => $value) {
-                if (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processLanguage']) && $this->queryColumnsOptions[$param]['processLanguage']) {
-                    $value = _($value);
-                } elseif (isset($this->queryColumnsOptions[$param]) && isset($this->queryColumnsOptions[$param]['processFunction']) && $this->queryColumnsOptions[$param]['processFunction']) {
-                    $value = call_user_func($this->queryColumnsOptions[$param]['processFunction'], $value);
+                if (isset($this->columns[$param]) && isset($this->columns[$param]['process_function']) && $this->columns[$param]['process_function']) {
+                    $value = call_user_func($this->columns[$param]['process_function'], $value);
                 }
 
-                $columns[] = $param . ': "' . strtr(addslashes($value), $transform) . '"';
+                $columns[$param] = strtr(addslashes($value), $transform);
             }
-            $rowData[] = '{' . implode(', ', $columns) . '}';
+            $rowData[] = $columns;
         }
 
         return $rowData;

@@ -46,10 +46,11 @@ class Calculator extends Component implements CalculatorInterface
     public function getCalculatorsToSelect()
     {
         $select = [];
-        foreach($this->calculators as $alias => $calculator){
-            $select['alias'] = $calculator->getName();
+        foreach ($this->calculators as $alias => $calculator) {
+            $select[$alias] = $calculator->getName();
         }
-        print_r($select);
+
+        return $select;
 
     }
 
