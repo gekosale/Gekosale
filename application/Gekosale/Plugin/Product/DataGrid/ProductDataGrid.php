@@ -89,6 +89,9 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
                 'visible' => false
             ],
             'process_function' => function ($id) {
+                    if((int)$id == 0){
+                        return '';
+                    }
                     return $this->getImageGallery()->getImageUrl($id, 100, 100);
                 }
         ]);

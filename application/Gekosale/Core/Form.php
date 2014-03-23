@@ -369,7 +369,7 @@ class Form extends Component
     }
 
     /**
-     * Shortcut for adding RangeEditor element
+     * Shortcut for adding Dependency
      *
      * @param                    $type
      * @param ElementInterface   $element

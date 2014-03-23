@@ -30,7 +30,7 @@ class ProductRepository extends Repository
      */
     public function all()
     {
-        return Product::all();
+        return Product::with('translation', 'shop', 'deliverer', 'photos')->get();
     }
 
     /**
@@ -87,7 +87,12 @@ class ProductRepository extends Repository
             $product->depth            = $Data['depth'];
             $product->package_size     = $Data['package_size'];
             if (0 == $Data['photo']['unmodified']) {
-                $product->photo_id = $Data['photo']['main'];
+                if (isset($Data['photo']['main'])) {
+                    $product->photo_id = $Data['photo']['main'];
+                } else {
+                    $product->photo_id = null;
+                }
+
             }
             $product->save();
 

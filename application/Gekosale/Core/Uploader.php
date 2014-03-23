@@ -24,9 +24,9 @@ use RecursiveIteratorIterator;
  */
 class Uploader extends Component
 {
-    protected $name;
+    protected $originalPath;
 
-    protected $path;
+    protected $rootpath;
 
     /**
      * Returns files as array from FileBag

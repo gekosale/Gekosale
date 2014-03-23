@@ -22,12 +22,12 @@ class Dump extends AbstractCommand
     /**
      *
      */
-    protected function configure ()
+    protected function configure()
     {
         $this->setName('routes:dump');
-        
+
         $this->setDescription('Dumps routes into one optimized file');
-        
+
         $this->setHelp(sprintf('%Dumps routes into one optimized file.%s', PHP_EOL, PHP_EOL));
     }
 
@@ -37,35 +37,35 @@ class Dump extends AbstractCommand
      *
      * @return int|null|void
      */
-    protected function execute (InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $rootCollection = new RouteCollection();
-        
-        $collection = include_once (ROOTPATH . 'config' . DS . 'routing.php');
+
+        $collection = include_once(ROOTPATH . 'config' . DS . 'routing.php');
         $rootCollection->addCollection($collection);
-        
+
         $files = $this->getFinder()
             ->files()
             ->in(ROOTPATH . 'application')
             ->name('routing*.php')
             ->contains('Symfony\Component\Routing\Route');
         foreach ($files as $file) {
-            $collection = include_once ($file->getRealpath());
+            $collection = include_once($file->getRealpath());
             $rootCollection->addCollection($collection);
         }
-        
+
         $dumper = new PhpGeneratorDumper($rootCollection);
         $this->getFilesystem()->dumpFile(ROOTPATH . 'var' . DS . 'GekosaleUrlGenerator.php', $dumper->dump(Array(
             'class' => 'GekosaleUrlGenerator'
         )));
-        
+
         $dumper = new PhpMatcherDumper($rootCollection);
         $this->getFilesystem()->dumpFile(ROOTPATH . 'var' . DS . 'GekosaleUrlMatcher.php', $dumper->dump(Array(
             'class' => 'GekosaleUrlMatcher'
         )));
-        
+
         $out = sprintf('%sFinished dumping routes.%s', PHP_EOL, PHP_EOL);
-        
+
         $output->write($out);
     }
 }

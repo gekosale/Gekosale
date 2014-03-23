@@ -16,13 +16,13 @@ $collection = new RouteCollection();
 
 $controller = 'Gekosale\Plugin\Product\Controller\Frontend\ProductController';
 
-$collection->add('frontend.contact.index', new Route('/product/contact', [
+$collection->add('frontend.product.index', new Route('/product/{slug}', [
     '_controller' => $controller,
     '_mode'       => 'frontend',
     '_action'     => 'indexAction',
-    '_locale'     => 'pl',
+    'slug'        => null
 ], [
-    '_locale' => 'en|fr|de|pl',
+    'slug' => '.+'
 ]));
 
 return $collection;

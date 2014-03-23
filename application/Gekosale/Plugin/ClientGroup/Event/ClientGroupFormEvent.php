@@ -9,17 +9,18 @@
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  */
-namespace Gekosale\Core\Controller;
+namespace Gekosale\Plugin\ClientGroup\Event;
 
-use Gekosale\Core\Controller;
+use Gekosale\Core\Event\FormEvent;
 
 /**
- * Class FrontendController
+ * Class ClientGroupFormEvent
  *
- * @package Gekosale\Core\Controller
+ * @package Gekosale\Plugin\ClientGroup\Event
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-abstract class FrontendController extends Controller
+final class ClientGroupFormEvent extends FormEvent
 {
 
+    const FORM_INIT_EVENT = 'client_group.form.init';
 }

@@ -51,6 +51,10 @@ class ServiceContainer extends Container
             'category.repository' => 'getCategory_RepositoryService',
             'category.subscriber' => 'getCategory_SubscriberService',
             'category.tree' => 'getCategory_TreeService',
+            'client_group.datagrid' => 'getClientGroup_DatagridService',
+            'client_group.form' => 'getClientGroup_FormService',
+            'client_group.repository' => 'getClientGroup_RepositoryService',
+            'client_group.subscriber' => 'getClientGroup_SubscriberService',
             'company.datagrid' => 'getCompany_DatagridService',
             'company.form' => 'getCompany_FormService',
             'company.repository' => 'getCompany_RepositoryService',
@@ -437,6 +441,71 @@ class ServiceContainer extends Container
         $instance->setContainer($this);
 
         return $instance;
+    }
+
+    /**
+     * Gets the 'client_group.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ClientGroup\DataGrid\ClientGroupDataGrid A Gekosale\Plugin\ClientGroup\DataGrid\ClientGroupDataGrid instance.
+     */
+    protected function getClientGroup_DatagridService()
+    {
+        $this->services['client_group.datagrid'] = $instance = new \Gekosale\Plugin\ClientGroup\DataGrid\ClientGroupDataGrid();
+
+        $instance->setRepository($this->get('client_group.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'client_group.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ClientGroup\Form\ClientGroupForm A Gekosale\Plugin\ClientGroup\Form\ClientGroupForm instance.
+     */
+    protected function getClientGroup_FormService()
+    {
+        $this->services['client_group.form'] = $instance = new \Gekosale\Plugin\ClientGroup\Form\ClientGroupForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'client_group.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ClientGroup\Repository\ClientGroupRepository A Gekosale\Plugin\ClientGroup\Repository\ClientGroupRepository instance.
+     */
+    protected function getClientGroup_RepositoryService()
+    {
+        $this->services['client_group.repository'] = $instance = new \Gekosale\Plugin\ClientGroup\Repository\ClientGroupRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'client_group.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\ClientGroup\Event\ClientGroupEventSubscriber A Gekosale\Plugin\ClientGroup\Event\ClientGroupEventSubscriber instance.
+     */
+    protected function getClientGroup_SubscriberService()
+    {
+        return $this->services['client_group.subscriber'] = new \Gekosale\Plugin\ClientGroup\Event\ClientGroupEventSubscriber();
     }
 
     /**
@@ -843,6 +912,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('availability.subscriber', 'Gekosale\\Plugin\\Availability\\Event\\AvailabilityEventSubscriber');
         $instance->addSubscriberService('cache_manager.subscriber', 'Gekosale\\Plugin\\CacheManager\\Event\\CacheManagerEventSubscriber');
         $instance->addSubscriberService('category.subscriber', 'Gekosale\\Plugin\\Category\\Event\\CategoryEventSubscriber');
+        $instance->addSubscriberService('client_group.subscriber', 'Gekosale\\Plugin\\ClientGroup\\Event\\ClientGroupEventSubscriber');
         $instance->addSubscriberService('company.subscriber', 'Gekosale\\Plugin\\Company\\Event\\CompanyEventSubscriber');
         $instance->addSubscriberService('contact.subscriber', 'Gekosale\\Plugin\\Contact\\Event\\ContactEventSubscriber');
         $instance->addSubscriberService('currency.subscriber', 'Gekosale\\Plugin\\Currency\\Event\\CurrencyEventSubscriber');

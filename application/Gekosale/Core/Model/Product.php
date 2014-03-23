@@ -226,7 +226,7 @@ class Product extends Model implements TranslatableModelInterface
         $this->attributes['weight'] = Helper::changeCommaToDot($value);
     }
 
-    /**s
+    /**
      * Mutator for sell_price attribute
      *
      * @param $value

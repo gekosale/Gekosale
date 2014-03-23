@@ -37,12 +37,13 @@ abstract class Component extends ContainerAware
      *
      * @return mixed
      */
-    public function forward($controller, $action = 'indexAction', array $path = array(), array $query = array())
+    public function forward($controller, $action = 'indexAction')
     {
-        $path['_controller'] = $controller;
-        $path['_action']     = $action;
-        $request             = $this->container->get('request_stack')->getCurrentRequest();
-        $subRequest          = $request->duplicate($query, null, $path);
+        $currentRequest         = $this->container->get('request_stack')->getCurrentRequest();
+        $request                = $currentRequest->attributes->all();
+        $request['_controller'] = $controller;
+        $request['_action']     = $action;
+        $subRequest = $currentRequest->duplicate($currentRequest->query->all(), null, $request);
 
         return $this->container->get('kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
     }

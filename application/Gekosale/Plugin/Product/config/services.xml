@@ -24,7 +24,7 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
-        
+
         <service id="product.subscriber" class="Gekosale\Plugin\Product\Event\ProductEventSubscriber">
         	<tag name="kernel.event_subscriber" />
         </service>

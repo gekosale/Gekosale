@@ -67,7 +67,7 @@ class Migration1394375351 extends Migration
                 $table->unique(Array('product_id', 'shop_id'));
             });
         }
-        
+
         if (!$this->getDb()->schema()->hasTable('product_category')) {
             $this->getDb()->schema()->create('product_category', function ($table) {
                 $table->increments('id');
@@ -126,10 +126,13 @@ class Migration1394375351 extends Migration
             });
         }
 
-        $this->getDb()->schema()->table('product', function ($table) {
-            $table->integer('photo_id')->nullable()->unsigned()->after('unit_id');;
-            $table->foreign('photo_id')->references('id')->on('file')->onDelete('SET NULL')->onUpdate('NO ACTION');
-        });
+//        if ($this->getDb()->schema()->hasColumn('product', 'photo_id')) {
+////            $this->getDb()->schema()->table('product', function ($table) {
+////                $table->integer('photo_id')->nullable()->unsigned()->after('unit_id');;
+////                $table->foreign('photo_id')->references('id')->on('file')->onDelete('SET NULL')->onUpdate('NO ACTION');
+////            });
+//        }
+
     }
 
     public function down()
