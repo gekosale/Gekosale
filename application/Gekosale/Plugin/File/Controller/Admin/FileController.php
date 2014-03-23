@@ -12,6 +12,7 @@
 namespace Gekosale\Plugin\File\Controller\Admin;
 
 use Gekosale\Core\Controller\AdminController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class FileController
@@ -21,6 +22,32 @@ use Gekosale\Core\Controller\AdminController;
  */
 class FileController extends AdminController
 {
+    public function addAction()
+    {
+        $request  = $this->getRequest();
+        $uploader = $this->getUploader();
+        $files    = $uploader->getFiles($request->files);
+
+        foreach ($files as $file) {
+            $data = $this->getRepository()->save($file);
+            $name = sprintf('%s.%s', $data->id, $data->extension);
+            $uploader->upload($file, $name);
+        }
+
+        // delete file cache
+        $this->getCache()->delete('files');
+
+        $response = [
+            'sId'        => $data->id,
+            'sThumb'     => $this->getImageGallery()->getImageUrl($data->id, 100, 100),
+            'sFilename'  => $data->name,
+            'sExtension' => $data->extension,
+            'sFileType'  => $data->type
+        ];
+
+        return new JsonResponse($response);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,7 +61,7 @@ class FileController extends AdminController
      */
     protected function getRepository()
     {
-        return $this->get('product.repository');
+        return $this->get('file.repository');
     }
 
     /**
@@ -42,7 +69,7 @@ class FileController extends AdminController
      */
     protected function getForm()
     {
-        return $this->get('product.form');
+        return $this->get('file.form');
     }
 
     /**
@@ -50,6 +77,6 @@ class FileController extends AdminController
      */
     protected function getDefaultRoute()
     {
-        return 'admin.product.index';
+        return 'admin.file.index';
     }
 }

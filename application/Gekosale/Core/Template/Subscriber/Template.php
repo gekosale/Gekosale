@@ -66,7 +66,9 @@ class Template implements EventSubscriberInterface
         $templateVars     = $request->attributes->get('_template_vars');
         $mode             = $request->attributes->get('_mode');
         $parameters       = array_merge($templateVars, $controllerResult);
-
+        if ($controllerResult instanceof Response) {
+            return $controllerResult;
+        }
         /*
          * Always process Xajax requests
          */

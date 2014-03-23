@@ -13318,7 +13318,7 @@ var oDefaults = {
 	sFileTypesDescription: '',
 	fDeleteHandler: GCore.NULL,
 	fLoadFiles: GCore.NULL,
-	sSwfUploadUrl: '_data_panel/swfupload.swf',
+	sSwfUploadUrl: '_js_libs/swfupload.swf',
 	iWidth: 131,
 	iHeight: 34,
 	iMaxFileSize: 100 * 1024,	// kB
@@ -13347,11 +13347,11 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		if ((gThis.m_oOptions.sComment != undefined) && (gThis.m_oOptions.sComment.length)) {
 			jLabel.append(' <small>' + gThis.m_oOptions.sComment + '</small>');
 		}
-		gThis.m_jSwfUpload = $('<div class="' + gThis._GetClass('AddFiles') + '"/>').append('<span id="' + gThis.GetId() + '__upload"/>');
+		gThis.m_jSwfUpload = $('<div class="' + gThis._GetClass('AddFiles') + '"><a href="#" class="button expand"><span id="' + gThis.GetId() + '__upload"><img src="' + gThis._GetImage('ChooseIcon') + '" alt=""/>' + GForm.Language.localfiles_upload + '</span></a></div>');
 		gThis.m_jNode.append(gThis.m_jSwfUpload);
 		gThis.m_jChooseButton = $('<a href="#" class="button expand"><span><img src="' + gThis._GetImage('ChooseIcon') + '" alt=""/>' + GForm.Language.localfiles_select + '</span></a>');
 		gThis.m_jNode.append($('<span class="browse-pictures" style="float: right;margin-right: 5px;"/>').append(gThis.m_jChooseButton));
-		gThis.m_jQueue = $('<ul class="' + gThis._GetClass('Queue') + '"/>');
+		gThis.m_jQueue = $('<ul class="' + gThis._GetClass('Queue') + '" id="' + gThis.GetId() + '__queue"/>');
 		gThis.m_jNode.append(gThis.m_jQueue);
 		gThis.m_jFilesDatagrid = $('<div/>').css('display', 'none');
 		gThis.m_jNode.append(gThis.m_jFilesDatagrid);
@@ -13468,7 +13468,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	gThis._AddImage = function(sId, oFile) {
 		if (gThis.m_bRepeatable) {
 			var jFileTr = $('<tr class="file__' + sId + '"/>');
-			jFileTr.append('<th scope="row"><span class="' + gThis._GetClass('Thumb') + '"><img src="' + oFile.thumb + '" alt=""/></span><span class="' + gThis._GetClass('Name') + '">' + oFile.name + '</span></th>');
+			jFileTr.append('<th scope="row"><span class="' + gThis._GetClass('Thumb') + '"><img src="' + oFile.preview + '" alt=""/></span><span class="' + gThis._GetClass('Name') + '">' + oFile.name + '</span></th>');
 			var jRadio = $('<input type="radio" name="' + gThis.GetName() + '[main]" value="' + sId + '"/>');
 			if (gThis.m_oOptions.sMainId) {
 				
@@ -13569,41 +13569,46 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	};
 
 	gThis._InitUploader = function() {
-		var sFileTypes = '';
-		for (var i = 0; i < gThis.m_oOptions.asFileTypes.length; i++) {
-			sFileTypes += '; *.' + gThis.m_oOptions.asFileTypes[i];
-		}
-		sFileTypes = sFileTypes.substr(2);
-		var oPostParams = {};
-		oPostParams[gThis.m_oOptions.sSessionName] = gThis.m_oOptions.sSessionId;
-		gThis.m_jSwfUpload.swfupload({
-			upload_url: gThis.m_oOptions.sUploadUrl,
-			file_size_limit: gThis.m_oOptions.iMaxFileSize,
-			file_types: sFileTypes,
-			file_types_description: gThis.m_oOptions.sFileTypesDescription,
-			file_upload_limit: 0,
-			file_queue_limit: 0,
-			button_image_url: gThis._GetImage('UploadButton'),
-			button_placeholder_id: gThis.GetId() + '__upload',
-			button_width: gThis.m_oOptions.iWidth,
-			button_height: gThis.m_oOptions.iHeight,
-			button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
-			flash_url: GCore.DESIGN_PATH + gThis.m_oOptions.sSwfUploadUrl,
-			post_params: oPostParams
+		var uploader = new plupload.Uploader({
+		    runtimes : 'html5',
+		    browse_button : gThis.GetId() + '__upload',
+		    container: document.getElementById(gThis.GetId() + '__queue'), //photos_pane__photo__queue
+		    url : gThis.m_oOptions.sUploadUrl,
+		    filters : {
+		        max_file_size : '10mb',
+		        mime_types: [{
+		        	title : "Image files", 
+		            extensions : "jpg,gif,png"
+		        }]
+		    },
+		    init: {
+		    	FilesAdded: function(up, files) {
+		    		plupload.each(files, function(file) {
+		    			gThis.OnFileQueued(file);
+		    		});
+		    		up.start();
+		    	},
+		    	FileUploaded: function(up, files, response) {
+		    		gThis.OnUploadSuccess(files, response);
+		        },
+		        UploadProgress: function(up, file) {
+		        	gThis.OnUploadProgress(file);
+		        },
+		 
+		        Error: function(up, err) {
+		        	gThis.OnUploadProgress(err);
+		        } 
+		    }
 		});
-		gThis.m_jSwfUpload.bind("fileQueued", gThis.OnFileQueued);
-		gThis.m_jSwfUpload.bind("uploadComplete", gThis.OnUploadComplete);
-		gThis.m_jSwfUpload.bind("uploadSuccess", gThis.OnUploadSuccess);
-		gThis.m_jSwfUpload.bind("uploadProgress", gThis.OnUploadProgress);
-		gThis.m_jSwfUpload.bind("uploadError", gThis.OnUploadError);
+		 
+		uploader.init();
 	};
 
-	gThis.OnFileQueued = function(eEvent, oFile) {
+	gThis.OnFileQueued = function(oFile) {
 		if (gThis.m_iUploadsInProgress++ == 0) {
 			gThis.m_iLockId = gThis.m_gForm.Lock(GForm.Language.file_selector_form_blocked, GForm.Language.file_selector_form_blocked_description);
 		}
-		gThis.m_jSwfUpload.swfupload("startUpload");
-		var jLi = $('<li class="upload__' + oFile.index + '"/>');
+		var jLi = $('<li class="upload__' + oFile.id + '"/>');
 		jLi.append('<h4>' + oFile.name + '</h4>');
 		jLi.append('<p class="' + gThis._GetClass('Progress') + '"/>');
 		jLi.append('<div class="' + gThis._GetClass('ProgressBar') + '"><div class="' + gThis._GetClass('ProgressBarIndicator') + '"></div>');
@@ -13614,49 +13619,33 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		gThis.m_jSwfUpload.swfupload('cancelUpload', sFid);
 	};
 
-	gThis.OnUploadProgress = function(eEvent, oFile, iCompleted, iTotal) {
-		var jLi = gThis.m_jQueue.find('.upload__' + oFile.index);
-		var iPercentage = Math.round(iCompleted / iTotal * 100);
-		jLi.find('.' + gThis._GetClass('Progress')).text(iPercentage + '%: ' + Math.ceil(iCompleted / 1024) + 'kB / ' + Math.ceil(iTotal / 1024) + 'kB');
-		jLi.find('.' + gThis._GetClass('ProgressBarIndicator')).css('width', (iCompleted / iTotal * 100) + '%');
+	gThis.OnUploadProgress = function(oFile) {
+		var jLi = gThis.m_jQueue.find('.upload__' + oFile.id);
+		jLi.find('.' + gThis._GetClass('Progress')).text(oFile.percent + '%');
+		jLi.find('.' + gThis._GetClass('ProgressBarIndicator')).css('width', oFile.percent + '%');
 	};
 
-	gThis.OnUploadError = function(eEvent, oFile, iErrorCode, sMessage) {
-		var jLi = gThis.m_jQueue.find('.upload__' + oFile.index);
-		jLi.addClass(gThis._GetClass('UploadError'));
-		jLi.find('.' + gThis._GetClass('Progress')).text(GForm.Language.file_selector_upload_error);
-		jLi.find('.' + gThis._GetClass('ProgressBarIndicator')).css('width', '100%');
-		GAlert(GForm.Language.file_selector_upload_error, sMessage);
-		jLi.delay(2000).fadeOut(250, function() {
-			$(this).remove();
-		});
+	gThis.OnUploadError = function(oError) {
+		GAlert(GForm.Language.file_selector_upload_error, oError.message);
 	};
 
-	gThis.OnUploadSuccess = function(eEvent, oFile, sServerData, sResponse) {
-		if (sServerData.substr(0, 11) != 'response = ') {
-			gThis.OnUploadError(eEvent, oFile, 0, sServerData);
-			return;
-		}
-		var jLi = gThis.m_jQueue.find('.upload__' + oFile.index);
+	gThis.OnUploadSuccess = function(oFile, oResponse) {
+		var oServerResponse = $.parseJSON(oResponse.response);
+		var jLi = gThis.m_jQueue.find('.upload__' + oFile.id);
 		jLi.addClass(gThis._GetClass('UploadSuccess'));
 		jLi.find('.' + gThis._GetClass('Progress')).text(GForm.Language.file_selector_upload_success);
 		jLi.find('.' + gThis._GetClass('ProgressBarIndicator')).css('width', '100%');
-		eval("var oResponse = " + sServerData.substr(11) + ";");
-		if (!oResponse.sId) {
-			gThis.OnUploadError(eEvent, oFile, 0, GForm.Language.file_selector_processing_error);
-			return;
-		}
 		if ((gThis.m_oOptions.oRepeat.iMax == 1) || !(gThis.m_gFilesDatagrid.m_asSelected instanceof Array)) {
 			gThis.m_gFilesDatagrid.m_asSelected = [];
 		}
-		gThis.m_gFilesDatagrid.m_asSelected.push(oResponse.sId);
+		gThis.m_gFilesDatagrid.m_asSelected.push(oServerResponse.sId);
 		gThis._OnChange(0, gThis.m_gFilesDatagrid.m_asSelected);
-		gThis._AddImage(oResponse.sId, {
-			idfile: oResponse.sId,
-			name: oResponse.sFilename,
-			thumb: oResponse.sThumb,
-			filetype: oResponse.sFileType,
-			extension: oResponse.sExtension
+		gThis._AddImage(oServerResponse.sId, {
+			id: oServerResponse.sId,
+			name: oServerResponse.sFilename,
+			thumb: oServerResponse.sThumb,
+			type: oServerResponse.sFileType,
+			extension: oServerResponse.sExtension
 		});
 		gThis.m_gFilesDatagrid.LoadData();
 		jLi.delay(2000).fadeOut(250, function() {
@@ -13743,7 +13732,6 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	};
 	
 	gThis._DefaultsLoaded = function(oData) {
-		console.log(oData);
 		for (var i = 0; i < oData.rows.length; i++) {
 			gThis._AddImage(oData.rows[i].idfile, oData.rows[i]);
 		}
@@ -20023,19 +20011,19 @@ GForm.Language = {
 	datagrid_select_selected : 'Wybrane rekordy',
 	datagrid_select_deselect : 'Anuluj wybór',
 	datagrid_select_dg_error : 'Błąd podczas inicjalizacji Datagrida',
-	file_selector_id : 'Id pliku',
-	file_selector_filename : 'Nazwa pliku',
-	file_selector_filetype : 'Typ pliku',
-	file_selector_extension : 'Rozszerzenie',
+	file_selector_id : 'Id',
+	file_selector_filename : 'Name',
+	file_selector_filetype : 'Type',
+	file_selector_extension : 'Extension',
 	file_selector_deselect : 'Anuluj wybór zdjęcia',
-	file_selector_thumb : 'Miniatura',
-	file_selector_show_thumb : 'Pokaż miniaturę',
+	file_selector_thumb : 'Thumbnail',
+	file_selector_show_thumb : 'Show thumbnail',
 	file_selector_photo : 'Zdjęcie',
-	file_selector_photo_main : 'Główne',
-	file_selector_photo_visible : 'Widoczne',
-	file_selector_photo_cancel : 'Anuluj wybór',
-	file_selector_upload_error : 'Błąd podczas wysyłania pliku',
-	file_selector_upload_success : 'Wysłano pomyślnie',
+	file_selector_photo_main : 'Main',
+	file_selector_photo_visible : 'Visible',
+	file_selector_photo_cancel : 'Cancel selection',
+	file_selector_upload_error : 'Error during file upload',
+	file_selector_upload_success : 'File uploaded',
 	file_selector_processing_error : 'Przetworzanie pliku na serwerze nie powiodło się',
 	file_selector_form_blocked : 'Nie wszystkie transfery plików zostały ukończone!',
 	file_selector_form_blocked_description : 'Nie można wysłać formularza, dopóki wszystkie transfery nie zostały zakończone. Poczekaj chwilę i spróbuj jeszcze raz.',
@@ -20152,21 +20140,22 @@ GForm.Language = {
 	colour_scheme_picker_background_repeat_x : 'w poziomie',
 	colour_scheme_picker_background_repeat_y : 'w pionie',
 	colour_scheme_picker_background_repeat_xy : 'w poziomie i w pionie',
-	localfile_select : 'Wybierz z biblioteki',
-	localfile_unselect : 'Zamknij bibliotekę',
-	localfiles_select : 'Wybierz z biblioteki',
-	localfile_processing_error : 'Wysłanie pliku nie powiodło się',
-	localfile_none_selected : '(nie wybrano pliku)',
-	localfile_fullpath : 'Pełna ścieżka',
-	localfile_filename : 'Nazwa pliku',
-	localfile_filesize : 'Rozmiar pliku',
-	localfile_fileowner : 'Właściciel',
-	localfile_filemtime : 'Ost. modyfikacja',
-	localfile_delete : 'Usuń plik',
+	localfile_select : 'Choose from library',
+	localfile_unselect : 'Close library',
+	localfiles_select : 'Choose from library',
+	localfiles_upload : 'Upload from disk',
+	localfile_processing_error : 'File upload unsucessful',
+	localfile_none_selected : '(no file chosen)',
+	localfile_fullpath : 'Full path',
+	localfile_filename : 'File name',
+	localfile_filesize : 'File size',
+	localfile_fileowner : 'Owner',
+	localfile_filemtime : 'Last modified',
+	localfile_delete : 'Delete file',
 	localfile_delete_warning : 'Czy na pewno chcesz usunąć ten plik?',
 	localfile_delete_warning_description : 'Jeśli jest on używany w innym miejscu, jego usunięcie może doprowadzić do niepoprawnego wyświetlania sklepu u klientów.',
 	localfile_ok : 'OK',
-	localfile_cancel : 'Anuluj',
+	localfile_cancel : 'Cancel',
 	border_none : 'brak',
 	border_side_top : 'Górne obramowanie',
 	border_side_right : 'Prawe obramowanie',

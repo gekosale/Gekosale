@@ -11,8 +11,10 @@
  */
 namespace Gekosale\Plugin\File\Repository;
 
-use Gekosale\Core\Repository,
-    Gekosale\Core\Model\File;
+use Gekosale\Core\Image;
+use Gekosale\Core\Repository;
+use Gekosale\Core\Model\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class FileRepository
@@ -42,5 +44,22 @@ class FileRepository extends Repository
     public function find($id)
     {
         return File::findOrFail($id);
+    }
+
+    /**
+     * Stores uploaded file data
+     *
+     * @param UploadedFile $file
+     */
+    public function save(UploadedFile $uploadedFile)
+    {
+        $file            = new File();
+        $file->name      = $uploadedFile->getClientOriginalName();
+        $file->size      = $uploadedFile->getClientSize();
+        $file->extension = $uploadedFile->getClientOriginalExtension();
+        $file->type      = $uploadedFile->getClientMimeType();
+        $file->save();
+
+        return $file;
     }
 }

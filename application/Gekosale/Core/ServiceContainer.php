@@ -82,6 +82,7 @@ class ServiceContainer extends Container
             'finder' => 'getFinderService',
             'form_helper' => 'getFormHelperService',
             'helper' => 'getHelperService',
+            'image_gallery' => 'getImageGalleryService',
             'kernel' => 'getKernelService',
             'language.datagrid' => 'getLanguage_DatagridService',
             'language.form' => 'getLanguage_FormService',
@@ -154,6 +155,7 @@ class ServiceContainer extends Container
             'unit.form' => 'getUnit_FormService',
             'unit.repository' => 'getUnit_RepositoryService',
             'unit.subscriber' => 'getUnit_SubscriberService',
+            'uploader' => 'getUploaderService',
             'xajax' => 'getXajaxService',
             'xajax_manager' => 'getXajaxManagerService',
         );
@@ -873,6 +875,7 @@ class ServiceContainer extends Container
         $this->services['file.datagrid'] = $instance = new \Gekosale\Plugin\File\DataGrid\FileDataGrid();
 
         $instance->setContainer($this);
+        $instance->setRepository($this->get('file.repository'));
 
         return $instance;
     }
@@ -950,6 +953,25 @@ class ServiceContainer extends Container
         $this->services['helper'] = $instance = new \Gekosale\Core\Helper();
 
         $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'image_gallery' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\ImageGallery A Gekosale\Core\ImageGallery instance.
+     */
+    protected function getImageGalleryService()
+    {
+        $this->services['image_gallery'] = $instance = new \Gekosale\Core\ImageGallery();
+
+        $instance->setContainer($this);
+        $instance->setPaths(array('original' => 'upload/gallery/original', 'cache' => 'upload/gallery/cache'));
+        $instance->setFiles();
 
         return $instance;
     }
@@ -2105,6 +2127,24 @@ class ServiceContainer extends Container
     }
 
     /**
+     * Gets the 'uploader' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Core\Uploader A Gekosale\Core\Uploader instance.
+     */
+    protected function getUploaderService()
+    {
+        $this->services['uploader'] = $instance = new \Gekosale\Core\Uploader();
+
+        $instance->setContainer($this);
+        $instance->setPaths(array('original' => 'upload/gallery/original', 'cache' => 'upload/gallery/cache'));
+
+        return $instance;
+    }
+
+    /**
      * Gets the 'xajax' service.
      *
      * This service is shared.
@@ -2188,6 +2228,10 @@ class ServiceContainer extends Container
             'application.design_path' => 'D:\\Git\\Gekosale3\\design',
             'security.encryption_key' => 'abcdefghijklmnoprstuwxyz12345678',
             'application.themes_path' => 'D:\\Git\\Gekosale3\\themes',
+            'application.gallery_paths' => array(
+                'original' => 'upload/gallery/original',
+                'cache' => 'upload/gallery/cache',
+            ),
             'admin.themes' => array(
                 0 => 'D:\\Git\\Gekosale3\\design/templates',
             ),
@@ -2227,8 +2271,10 @@ class ServiceContainer extends Container
             'helper.class' => 'Gekosale\\Core\\Helper',
             'kernel.class' => 'Symfony\\Component\\HttpKernel\\DependencyInjection\\ContainerAwareHttpKernel',
             'layout_manager.class' => 'Gekosale\\Core\\LayoutManager',
+            'image_gallery.class' => 'Gekosale\\Core\\ImageGallery',
             'translation.class' => 'Gekosale\\Core\\Translation',
             'xajax_manager.class' => 'Gekosale\\Core\\XajaxManager',
+            'uploader.class' => 'Gekosale\\Core\\Uploader',
             'xajax.class' => 'xajax',
             'request_stack.class' => 'Symfony\\Component\\HttpFoundation\\RequestStack',
             'database_manager.class' => 'Illuminate\\Database\\Capsule\\Manager',

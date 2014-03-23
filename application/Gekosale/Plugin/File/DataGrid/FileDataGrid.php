@@ -113,6 +113,6 @@ class FileDataGrid extends DataGrid implements DataGridInterface
 
     protected function getPreview($id)
     {
-        return 'http://gekosale3.tpl/design/_images_panel/datagrid/clear-selection.png';
+        return $this->getImageGallery()->getImageUrl($id, 100, 100);
     }
 }

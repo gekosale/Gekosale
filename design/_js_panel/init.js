@@ -4,7 +4,6 @@ $(document).ready(function() {
 	$('select').GSelect();
 	$('#message-bar').GMessageBar();
 	$('.simple-stats .tabs').tabs({fx: {opacity: 'toggle',duration: 75}});
-
 	$('.scrollable-tabs').GScrollableTabs();
 	GCore.Init();	
 	$('.order-notes').tabs();

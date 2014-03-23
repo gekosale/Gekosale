@@ -15,8 +15,10 @@
         <parameter key="helper.class">Gekosale\Core\Helper</parameter>
         <parameter key="kernel.class">Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel</parameter>
         <parameter key="layout_manager.class">Gekosale\Core\LayoutManager</parameter>
+        <parameter key="image_gallery.class">Gekosale\Core\ImageGallery</parameter>
         <parameter key="translation.class">Gekosale\Core\Translation</parameter>
         <parameter key="xajax_manager.class">Gekosale\Core\XajaxManager</parameter>
+        <parameter key="uploader.class">Gekosale\Core\Uploader</parameter>
         <parameter key="xajax.class">xajax</parameter>
         <parameter key="request_stack.class">Symfony\Component\HttpFoundation\RequestStack</parameter>
     </parameters>
@@ -71,6 +73,25 @@
 
         <service id="xajax_manager" class="%xajax_manager.class%">
             <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="image_gallery" class="%image_gallery.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setPaths">
+                <argument>%application.gallery_paths%</argument>
+            </call>
+            <call method="setFiles" />
+        </service>
+
+        <service id="uploader" class="%uploader.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setPaths">
+                <argument>%application.gallery_paths%</argument>
+            </call>
         </service>
 
         <service id="kernel" class="%kernel.class%">

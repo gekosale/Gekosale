@@ -36,7 +36,6 @@ class RegisterShippingCalculatorsPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition('shipping_method.calculator');
-        print_r($container->findTaggedServiceIds('shipping.calculator'));
         foreach ($container->findTaggedServiceIds('shipping.calculator') as $id => $attributes) {
             $class     = $container->getDefinition($id)->getClass();
             $refClass  = new \ReflectionClass($class);

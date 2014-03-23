@@ -328,4 +328,34 @@ abstract class Component extends ContainerAware
     {
         return $this->get('encryption')->decrypt($value);
     }
+
+    /**
+     * Shortcut to get Uploader service
+     *
+     * @return object
+     */
+    final protected function getUploader()
+    {
+        return $this->container->get('uploader');
+    }
+
+    /**
+     * Shortcut to get ImageGallery service
+     *
+     * @return object
+     */
+    final protected function getImageGallery()
+    {
+        return $this->container->get('image_gallery');
+    }
+
+    /**
+     * Shortcut to get Filesystem service
+     *
+     * @return object
+     */
+    final protected function getFilesystem()
+    {
+        return $this->container->get('filesystem');
+    }
 }
