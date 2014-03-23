@@ -81,6 +81,16 @@ class Product extends Model implements TranslatableModelInterface
     }
 
     /**
+     * Relation with File model through pivot table product_photo
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function photos()
+    {
+        return $this->belongsToMany('Gekosale\Core\Model\File', 'product_photo', 'product_id', 'file_id');
+    }
+
+    /**
      * Fetch shop ids from model
      *
      * @return array
@@ -93,6 +103,21 @@ class Product extends Model implements TranslatableModelInterface
         }
 
         return $shops;
+    }
+
+    /**
+     * Fetch photo ids from model
+     *
+     * @return array
+     */
+    public function getPhotos()
+    {
+        $photos = [];
+        foreach ($this->photos as $photo) {
+            $photos[] = $photo->id;
+        }
+
+        return $photos;
     }
 
     /**

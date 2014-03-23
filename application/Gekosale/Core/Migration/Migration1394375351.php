@@ -92,6 +92,17 @@ class Migration1394375351 extends Migration
             });
         }
 
+        if (!$this->getDb()->schema()->hasTable('product_photo')) {
+            $this->getDb()->schema()->create('product_photo', function ($table) {
+                $table->increments('id');
+                $table->integer('product_id')->unsigned();
+                $table->integer('file_id')->unsigned();
+                $table->timestamps();
+                $table->foreign('product_id')->references('id')->on('product')->onDelete('CASCADE')->onUpdate('NO ACTION');
+                $table->foreign('file_id')->references('id')->on('file')->onDelete('CASCADE')->onUpdate('NO ACTION');
+            });
+        }
+
         /*
          * Create product_translation table
          */
@@ -114,6 +125,11 @@ class Migration1394375351 extends Migration
                 $table->unique(Array('slug', 'language_id'));
             });
         }
+
+        $this->getDb()->schema()->table('product', function ($table) {
+            $table->integer('photo_id')->nullable()->unsigned()->after('unit_id');;
+            $table->foreign('photo_id')->references('id')->on('file')->onDelete('SET NULL')->onUpdate('NO ACTION');
+        });
     }
 
     public function down()

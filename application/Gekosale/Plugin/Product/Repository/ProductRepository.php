@@ -42,7 +42,7 @@ class ProductRepository extends Repository
      */
     public function find($id)
     {
-        return Product::with('translation', 'shop', 'deliverer')->findOrFail($id);
+        return Product::with('translation', 'shop', 'deliverer', 'photos')->findOrFail($id);
     }
 
     /**
@@ -86,6 +86,9 @@ class ProductRepository extends Repository
             $product->height           = $Data['height'];
             $product->depth            = $Data['depth'];
             $product->package_size     = $Data['package_size'];
+            if (0 == $Data['photo']['unmodified']) {
+                $product->photo_id = $Data['photo']['main'];
+            }
             $product->save();
 
             foreach ($this->getLanguageIds() as $language) {
@@ -102,7 +105,30 @@ class ProductRepository extends Repository
             $product->sync($product->deliverer(), $Data['deliverers']);
             $product->sync($product->category(), $Data['category']);
             $product->sync($product->shop(), $Data['shops']);
+            if (0 == $Data['photo']['unmodified']) {
+                $photos = $this->preparePhotos($Data['photo']);
+                $product->sync($product->photos(), $photos);
+            }
         });
+    }
+
+    /**
+     * Prepares photos data stripping all non-id values from data
+     *
+     * @param $Data
+     *
+     * @return array
+     */
+    private function preparePhotos($Data)
+    {
+        $photos = [];
+        foreach ($Data as $key => $value) {
+            if (!is_array($value) && is_int($key) && ($value > 0)) {
+                $photos[] = $value;
+            }
+        }
+
+        return $photos;
     }
 
     /**
@@ -189,6 +215,11 @@ class ProductRepository extends Repository
             'depth'        => $productData->depth,
             'package_size' => $productData->package_size,
 
+        ]);
+
+        $accessor->setValue($populateData, '[photos_pane]', [
+            'photo' => $productData->getPhotos(),
+            'main'  => $productData->photo_id
         ]);
 
         $accessor->setValue($populateData, '[shop_data]', [

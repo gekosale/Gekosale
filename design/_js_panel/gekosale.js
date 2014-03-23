@@ -13510,7 +13510,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 				return false;
 			});
 			jRemove.append('<img src="' + gThis._GetImage('DeleteIcon') + '" alt="' + GForm.Language.file_selector_deselect + '" title="' + GForm.Language.file_selector_deselect + '"/>');
-			gThis.m_jSelectedFiles.empty().append('<h4>' + GForm.Language.file_selector_selected_image + '</h4>').append('<img src="' + oFile.thumb + '" alt=""/>').append(jRemove);
+			gThis.m_jSelectedFiles.empty().append('<h4>' + GForm.Language.file_selector_selected_image + '</h4>').append('<img src="' + oFile.preview + '" alt=""/>').append(jRemove);
 		}
 	};
 
@@ -13597,7 +13597,10 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		 
 		        Error: function(up, err) {
 		        	gThis.OnUploadProgress(err);
-		        } 
+		        },
+		        UploadComplete: function(){
+		        	gThis.OnUploadComplete();
+		        }
 		    }
 		});
 		 
@@ -13643,7 +13646,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		gThis._AddImage(oServerResponse.sId, {
 			id: oServerResponse.sId,
 			name: oServerResponse.sFilename,
-			thumb: oServerResponse.sThumb,
+			preview: oServerResponse.sThumb,
 			type: oServerResponse.sFileType,
 			extension: oServerResponse.sExtension
 		});
@@ -13653,7 +13656,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 		});
 	};
 
-	gThis.OnUploadComplete = function(eEvent, oFile) {
+	gThis.OnUploadComplete = function() {
 		if (--gThis.m_iUploadsInProgress <= 0) {
 			gThis.m_iUploadsInProgress = 0;
 			gThis.m_gForm.Unlock(gThis.m_iLockId);
@@ -13733,7 +13736,7 @@ var GFormImage = GCore.ExtendClass(GFormFile, function() {
 	
 	gThis._DefaultsLoaded = function(oData) {
 		for (var i = 0; i < oData.rows.length; i++) {
-			gThis._AddImage(oData.rows[i].idfile, oData.rows[i]);
+			gThis._AddImage(oData.rows[i].id, oData.rows[i]);
 		}
 		gThis.m_bLoadedDefaults = true;
 	};
@@ -19970,18 +19973,18 @@ GException.Language = {
 };
 GForm.Language = {
 	select_store : 'Wybierz sklep:',
-	add_repetition : 'Dodaj nowy',
-	delete_repetition : 'Usuń',
+	add_repetition : 'Add new',
+	delete_repetition : 'Delete',
 	form_data_invalid : 'Nie można wysłać formularza, ponieważ zawiera on niepoprawne informacje. Przed zapisaniem zmian należy je poprawić.',
 	scroll_to_field : 'Przejdź do pola',
 	close_alert : 'Zamknij alert',
-	next : 'Dalej',
-	previous : 'Wstecz',
-	save : 'Zapisz',
+	next : 'Next',
+	previous : 'Back',
+	save : 'Save',
 	add_field_repetition : 'Dodaj nową wartość',
 	remove_field_repetition : 'Usuń wartość',
-	all_actions : 'wszystkie',
-	all_controllers : 'wszystkie',
+	all_actions : 'all',
+	all_controllers : 'all',
 	product_select_id : 'Id',
 	product_select_hierarchy : 'Kolejność',
 	product_select_product_id : 'Id produktu',
@@ -20018,7 +20021,7 @@ GForm.Language = {
 	file_selector_deselect : 'Anuluj wybór zdjęcia',
 	file_selector_thumb : 'Thumbnail',
 	file_selector_show_thumb : 'Show thumbnail',
-	file_selector_photo : 'Zdjęcie',
+	file_selector_photo : 'Photo',
 	file_selector_photo_main : 'Main',
 	file_selector_photo_visible : 'Visible',
 	file_selector_photo_cancel : 'Cancel selection',
