@@ -33,9 +33,11 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             'event_handlers' => [
                 'load'       => $this->getXajaxManager()->registerFunction(['LoadProduct', $this, 'loadData']),
                 'delete_row' => $this->getXajaxManager()->registerFunction(['DeleteProduct', $this, 'deleteRow']),
-                'edit_row'   => 'editRow',
-                'click_row'  => 'editRow',
+                'edit_row'   => 'editProduct',
+                'click_row'  => 'editProduct',
                 'update_row' => $this->getXajaxManager()->registerFunction(['UpdateProduct', $this, 'updateRow']),
+                'process'    => 'processProduct',
+                'loaded'     => 'dataLoaded'
             ],
             'routes'         => [
                 'index' => $this->generateUrl('admin.product.index'),
@@ -74,6 +76,21 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             'filter'     => [
                 'type' => DataGridInterface::FILTER_INPUT
             ]
+        ]);
+
+        $this->addColumn('preview', [
+            'source'           => 'product.photo_id',
+            'caption'          => $this->trans('Thumb'),
+            'sorting'          => [
+                'default_order' => DataGridInterface::SORT_DIR_DESC
+            ],
+            'appearance'       => [
+                'width'   => 90,
+                'visible' => false
+            ],
+            'process_function' => function ($id) {
+                    return $this->getImageGallery()->getImageUrl($id, 100, 100);
+                }
         ]);
 
         $this->addColumn('sku', [

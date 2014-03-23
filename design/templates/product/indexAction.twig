@@ -7,6 +7,21 @@
                title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
     </ul>
 
+    <script type="text/javascript">
+        function processProduct(row) {
+
+            if (row.preview != '') {
+                row.name = '<a title="" href="' + row.preview + '" class="show-thumb"><img src="{{ asset('design/_images_panel/icons/datagrid/details.png') }}" style="vertical-align: middle;" /></a> ' + row.name;
+            } else {
+                row.name = '<img style="opacity: 0.2;vertical-align: middle;" src="{{ asset('design/_images_panel/icons/datagrid/details.png') }}" style="vertical-align: middle;" /> ' + row.name;
+            }
+            return row;
+        }
+
+        function dataLoaded(dDg) {
+            dDg.m_jBody.find('.show-thumb').mouseenter(GTooltip.ShowThumbForThis).mouseleave(GTooltip.HideThumbForThis);
+        }
+    </script>
     {{ datagrid_renderer(datagrid) }}
 
 {% endblock %}
