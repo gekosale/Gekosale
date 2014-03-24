@@ -93,6 +93,10 @@ class ServiceContainer extends Container
             'language.repository' => 'getLanguage_RepositoryService',
             'language.subscriber' => 'getLanguage_SubscriberService',
             'layout_manager' => 'getLayoutManagerService',
+            'layout_theme.datagrid' => 'getLayoutTheme_DatagridService',
+            'layout_theme.form' => 'getLayoutTheme_FormService',
+            'layout_theme.repository' => 'getLayoutTheme_RepositoryService',
+            'layout_theme.subscriber' => 'getLayoutTheme_SubscriberService',
             'locale.listener' => 'getLocale_ListenerService',
             'payment_method.datagrid' => 'getPaymentMethod_DatagridService',
             'payment_method.form' => 'getPaymentMethod_FormService',
@@ -919,6 +923,7 @@ class ServiceContainer extends Container
         $instance->addSubscriberService('dashboard.subscriber', 'Gekosale\\Plugin\\Dashboard\\Event\\DashboardEventSubscriber');
         $instance->addSubscriberService('deliverer.subscriber', 'Gekosale\\Plugin\\Deliverer\\Event\\DelivererEventSubscriber');
         $instance->addSubscriberService('language.subscriber', 'Gekosale\\Plugin\\Language\\Event\\LanguageEventSubscriber');
+        $instance->addSubscriberService('layout_theme.subscriber', 'Gekosale\\Plugin\\Layout\\Event\\LayoutThemeEventSubscriber');
         $instance->addSubscriberService('payment_method.subscriber', 'Gekosale\\Plugin\\PaymentMethod\\Event\\PaymentMethodEventSubscriber');
         $instance->addSubscriberService('paypal.subscriber', 'Gekosale\\Plugin\\PayPal\\Event\\PayPalEventSubscriber');
         $instance->addSubscriberService('plugin_manager.subscriber', 'Gekosale\\Plugin\\PluginManager\\Event\\PluginManagerEventSubscriber');
@@ -1139,6 +1144,71 @@ class ServiceContainer extends Container
         $instance->setContainer($this);
 
         return $instance;
+    }
+
+    /**
+     * Gets the 'layout_theme.datagrid' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Layout\DataGrid\LayoutThemeDataGrid A Gekosale\Plugin\Layout\DataGrid\LayoutThemeDataGrid instance.
+     */
+    protected function getLayoutTheme_DatagridService()
+    {
+        $this->services['layout_theme.datagrid'] = $instance = new \Gekosale\Plugin\Layout\DataGrid\LayoutThemeDataGrid();
+
+        $instance->setRepository($this->get('layout_theme.repository'));
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'layout_theme.form' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Layout\Form\LayoutThemeForm A Gekosale\Plugin\Layout\Form\LayoutThemeForm instance.
+     */
+    protected function getLayoutTheme_FormService()
+    {
+        $this->services['layout_theme.form'] = $instance = new \Gekosale\Plugin\Layout\Form\LayoutThemeForm();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'layout_theme.repository' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Layout\Repository\LayoutThemeRepository A Gekosale\Plugin\Layout\Repository\LayoutThemeRepository instance.
+     */
+    protected function getLayoutTheme_RepositoryService()
+    {
+        $this->services['layout_theme.repository'] = $instance = new \Gekosale\Plugin\Layout\Repository\LayoutThemeRepository();
+
+        $instance->setContainer($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'layout_theme.subscriber' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Gekosale\Plugin\Layout\Event\LayoutThemeEventSubscriber A Gekosale\Plugin\Layout\Event\LayoutThemeEventSubscriber instance.
+     */
+    protected function getLayoutTheme_SubscriberService()
+    {
+        return $this->services['layout_theme.subscriber'] = new \Gekosale\Plugin\Layout\Event\LayoutThemeEventSubscriber();
     }
 
     /**

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="layout_theme.repository" class="Gekosale\Plugin\Layout\Repository\LayoutThemeRepository">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="layout_theme.datagrid" class="Gekosale\Plugin\Layout\DataGrid\LayoutThemeDataGrid">
+            <call method="setRepository">
+                <argument type="service" id="layout_theme.repository"/>
+            </call>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="layout_theme.form" class="Gekosale\Plugin\Layout\Form\LayoutThemeForm">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="layout_theme.subscriber" class="Gekosale\Plugin\Layout\Event\LayoutThemeEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+</container>

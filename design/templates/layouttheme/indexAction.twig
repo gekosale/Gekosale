@@ -1,0 +1,12 @@
+{% extends "layout.twig" %}
+{% block content %}
+    <h2>{% trans %}Themes{% endtrans %}</h2>
+
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.layout_theme.add') }}" class="button"
+               title="{% trans %}Add{% endtrans %}"><span>{% trans %}Add{% endtrans %}</span></a></li>
+    </ul>
+
+    {{ datagrid_renderer(datagrid) }}
+
+{% endblock %}

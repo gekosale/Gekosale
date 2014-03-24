@@ -42,6 +42,27 @@ class Migration1395612455 extends Migration
                 $table->foreign('language_id')->references('id')->on('language')->onDelete('CASCADE')->onUpdate('NO ACTION');
             });
         }
+
+        if (!$this->getDb()->schema()->hasTable('layout_theme')) {
+            $this->getDb()->schema()->create('layout_theme', function ($table) {
+                $table->increments('id');
+                $table->string('name', 255);
+                $table->string('folder', 255);
+                $table->timestamps();
+            });
+        }
+
+        if (!$this->getDb()->schema()->hasTable('layout_theme_css')) {
+            $this->getDb()->schema()->create('layout_theme_css', function ($table) {
+                $table->increments('id');
+                $table->string('class', 255);
+                $table->string('selector', 255);
+                $table->string('attribute', 255);
+                $table->integer('layout_theme_id')->unsigned();
+                $table->timestamps();
+                $table->foreign('layout_theme_id')->references('id')->on('layout_theme')->onDelete('CASCADE')->onUpdate('NO ACTION');
+            });
+        }
     }
 
     public function down()

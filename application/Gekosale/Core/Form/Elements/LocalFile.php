@@ -12,6 +12,8 @@
 
 namespace Gekosale\Core\Form\Elements;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class LocalFile
  *
@@ -21,9 +23,9 @@ namespace Gekosale\Core\Form\Elements;
 class LocalFile extends File implements ElementInterface
 {
 
-    public function __construct($attributes)
+    public function __construct($attributes, ContainerInterface $container)
     {
-        parent::__construct($attributes);
+        parent::__construct($attributes, $container);
         if (!isset($this->attributes['traversable'])) {
             $this->attributes['traversable'] = true;
         }
@@ -37,7 +39,7 @@ class LocalFile extends File implements ElementInterface
         }
         $this->attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
         $this->attributes['upload_url']
-                                                     = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->attributes['file_source']);
+                                                    = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->attributes['file_source']);
         $this->attributes['load_handler']           = 'xajax_loadFiles_' . $this->_id;
         App::getRegistry()->xajaxInterface->registerFunction(array(
             'loadFiles_' . $this->_id,

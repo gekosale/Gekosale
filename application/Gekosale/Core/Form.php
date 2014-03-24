@@ -383,4 +383,16 @@ class Form extends Component
         return new Dependency($type, $element, $condition, $argument, $this->container);
     }
 
+    /**
+     * Shortcut for adding LocalFile element
+     *
+     * @param $options
+     *
+     * @return Form\Elements\LocalFile
+     */
+    public function addLocalFile($options)
+    {
+        return new Form\Elements\LocalFile($options, $this->container);
+    }
+
 }
