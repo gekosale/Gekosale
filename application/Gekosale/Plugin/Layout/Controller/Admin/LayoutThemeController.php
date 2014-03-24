@@ -21,6 +21,33 @@ use Gekosale\Core\Controller\AdminController;
  */
 class LayoutThemeController extends AdminController
 {
+    public function addAction()
+    {
+        $request  = $this->getRequest();
+        $uploader = $this->getUploader();
+        $files    = $uploader->getFiles($request->files);
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                $name = sprintf('%s.%s', $data->id, $data->extension);
+                $uploader->upload($file, $name);
+            }
+        }
+
+
+        $form = $this->getForm()->init();
+
+        if ($this->getRequest()->isMethod('POST') && $form->isValid()) {
+
+            $this->getRepository()->save($form->getSubmitValuesFlat());
+
+            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
+        }
+
+        return [
+            'form' => $form
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */

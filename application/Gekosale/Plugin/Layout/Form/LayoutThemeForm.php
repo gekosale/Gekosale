@@ -44,6 +44,7 @@ class LayoutThemeForm extends Form
             'name'        => 'theme',
             'label'       => $this->trans('Theme package'),
             'file_source' => 'themes/',
+            'upload_url'  => $this->generateUrl('admin.layout_theme.add'),
             'traversable' => false,
             'file_types'  => [
                 'zip'

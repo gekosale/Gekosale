@@ -77,6 +77,20 @@ class Form extends Component
     }
 
     /**
+     * Shortcut for adding LocalFile element
+     *
+     * @param $options
+     *
+     * @return Form\Elements\LocalFile
+     */
+    public function addLocalFile($options)
+    {
+        $options['file_types_description'] = $this->trans('Files description');
+
+        return new Form\Elements\LocalFile($options, $this->container);
+    }
+
+    /**
      * Shortcut for adding Tip element
      *
      * @param $options
@@ -381,18 +395,6 @@ class Form extends Component
     public function addDependency($type, ElementInterface $element, ConditionInterface $condition, $argument)
     {
         return new Dependency($type, $element, $condition, $argument, $this->container);
-    }
-
-    /**
-     * Shortcut for adding LocalFile element
-     *
-     * @param $options
-     *
-     * @return Form\Elements\LocalFile
-     */
-    public function addLocalFile($options)
-    {
-        return new Form\Elements\LocalFile($options, $this->container);
     }
 
 }

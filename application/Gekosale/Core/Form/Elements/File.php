@@ -31,11 +31,11 @@ class File extends Field implements ElementInterface
     {
         parent::__construct($attributes);
 
-        $this->container                   = $container;
-        $this->datagrid                    = $container->get('file.datagrid');
+        $this->container                  = $container;
+        $this->datagrid                   = $container->get('file.datagrid');
         $this->attributes['session_name'] = session_name();
         $this->attributes['session_id']   = session_id();
-        $this->jsFunction                  = 'LoadFiles_' . $this->_id;
+        $this->jsFunction                 = 'LoadFiles_' . $this->_id;
         $this->attributes['load_handler'] = 'xajax_' . $this->jsFunction;
 
         $this->container->get('xajax_manager')->registerFunction([

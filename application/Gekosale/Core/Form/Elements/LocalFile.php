@@ -30,44 +30,48 @@ class LocalFile extends File implements ElementInterface
             $this->attributes['traversable'] = true;
         }
         if (!isset($this->attributes['file_types'])) {
-            $this->attributes['file_types'] = Array(
-                'jpg',
-                'png',
-                'gif',
-                'swf'
-            );
+            $this->attributes['file_types'] = ['jpg', 'png', 'gif', 'swf'];
         }
-        $this->attributes['file_types_description'] = Translation::get('TXT_FILE_TYPES_IMAGE');
-        $this->attributes['upload_url']
-                                                    = App::getURLAdressWithAdminPane() . 'files/add/' . base64_encode($this->attributes['file_source']);
-        $this->attributes['load_handler']           = 'xajax_loadFiles_' . $this->_id;
-        App::getRegistry()->xajaxInterface->registerFunction(array(
+
+        $this->attributes['load_handler']   = 'xajax_loadFiles_' . $this->_id;
+        $this->attributes['delete_handler'] = 'xajax_deleteFile_' . $this->_id;
+
+        $this->container->get('xajax_manager')->registerFunction([
             'loadFiles_' . $this->_id,
             $this,
             'loadFiles'
-        ));
-        $this->attributes['delete_handler'] = 'xajax_deleteFile_' . $this->_id;
-        App::getRegistry()->xajaxInterface->registerFunction(array(
+        ]);
+
+        $this->container->get('xajax_manager')->registerFunction([
             'deleteFile_' . $this->_id,
             $this,
             'deleteFile'
-        ));
-        $this->attributes['type_icons'] = Array(
-            'cdup'      => DESIGNPATH . '_images_panel/icons/filetypes/cdup.png',
-            'unknown'   => DESIGNPATH . '_images_panel/icons/filetypes/unknown.png',
-            'directory' => DESIGNPATH . '_images_panel/icons/filetypes/directory.png',
-            'gif'       => DESIGNPATH . '_images_panel/icons/filetypes/image.png',
-            'png'       => DESIGNPATH . '_images_panel/icons/filetypes/image.png',
-            'jpg'       => DESIGNPATH . '_images_panel/icons/filetypes/image.png',
-            'bmp'       => DESIGNPATH . '_images_panel/icons/filetypes/image.png',
-            'txt'       => DESIGNPATH . '_images_panel/icons/filetypes/text.png',
-            'doc'       => DESIGNPATH . '_images_panel/icons/filetypes/text.png',
-            'rtf'       => DESIGNPATH . '_images_panel/icons/filetypes/text.png',
-            'odt'       => DESIGNPATH . '_images_panel/icons/filetypes/text.png',
-            'htm'       => DESIGNPATH . '_images_panel/icons/filetypes/document.png',
-            'html'      => DESIGNPATH . '_images_panel/icons/filetypes/document.png',
-            'php'       => DESIGNPATH . '_images_panel/icons/filetypes/document.png'
-        );
+        ]);
+
+        $designPath      = $container->getParameter('application.design_path');
+        $this->iconsPath = sprintf('%s/%s', $designPath, '_images_panel/icons/filetypes');
+
+        $this->attributes['type_icons'] = [
+            'cdup'      => $this->getIcon('cdup.png'),
+            'unknown'   => $this->getIcon('unknown.png'),
+            'directory' => $this->getIcon('directory.png'),
+            'gif'       => $this->getIcon('image.png'),
+            'png'       => $this->getIcon('image.png'),
+            'jpg'       => $this->getIcon('image.png'),
+            'bmp'       => $this->getIcon('image.png'),
+            'txt'       => $this->getIcon('text.png'),
+            'doc'       => $this->getIcon('text.png'),
+            'rtf'       => $this->getIcon('text.png'),
+            'odt'       => $this->getIcon('text.png'),
+            'htm'       => $this->getIcon('document.png'),
+            'html'      => $this->getIcon('document.png'),
+            'php'       => $this->getIcon('document.png')
+        ];
+    }
+
+    private function getIcon($icon)
+    {
+        return sprintf('%s/%s', $this->iconsPath, $icon);
     }
 
     public function prepareAttributesJs()
@@ -86,7 +90,7 @@ class LocalFile extends File implements ElementInterface
             $this->formatAttributeJs('type_icons', 'oTypeIcons', ElementInterface::TYPE_OBJECT),
             $this->formatAttributeJs('file_types_description', 'sFileTypesDescription'),
             $this->formatAttributeJs('delete_handler', 'fDeleteFile', ElementInterface::TYPE_FUNCTION),
-            $this->formatAttributeJs('load_handler', 'fLoadFiles', ElementInterface::TYPE_FUNCTIONN),
+            $this->formatAttributeJs('load_handler', 'fLoadFiles', ElementInterface::TYPE_FUNCTION),
             $this->formatRepeatableJs(),
             $this->formatRulesJs(),
             $this->formatDependencyJs(),
