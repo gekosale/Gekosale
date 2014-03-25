@@ -112,8 +112,10 @@ class DataGrid extends Component
         $this->query->take((int)$request['limit']);
         $this->query->orderBy($request['order_by'], $request['order_dir']);
 
+        $connection = $this->getDb()->getConnection();
         foreach ($this->columns as $key => $column) {
-            $this->query->addSelect(sprintf('%s AS %s', $column['source'], $key));
+            $col = $connection->raw(sprintf('%s AS %s', $column['source'], $key));
+            $this->query->addSelect($col);
         }
         foreach ($request['where'] as $where) {
             $column   = $this->columns[$where['column']]['source'];

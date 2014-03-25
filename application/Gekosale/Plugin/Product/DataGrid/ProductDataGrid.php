@@ -89,9 +89,10 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
                 'visible' => false
             ],
             'process_function' => function ($id) {
-                    if((int)$id == 0){
+                    if ((int)$id == 0) {
                         return '';
                     }
+
                     return $this->getImageGallery()->getImageUrl($id, 100, 100);
                 }
         ]);
@@ -101,6 +102,17 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
             'caption'    => $this->trans('SKU'),
             'appearance' => [
                 'width' => 20,
+            ],
+            'filter'     => [
+                'type' => DataGridInterface::FILTER_INPUT
+            ]
+        ]);
+
+        $this->addColumn('category', [
+            'source'     => 'GROUP_CONCAT(DISTINCT SUBSTRING(CONCAT(\' \', category_translation.name), 1))',
+            'caption'    => $this->trans('Category'),
+            'appearance' => [
+                'width' => 120,
             ],
             'filter'     => [
                 'type' => DataGridInterface::FILTER_INPUT
@@ -182,6 +194,8 @@ class ProductDataGrid extends DataGrid implements DataGridInterface
         $this->query = $this->getDb()
             ->table('product')
             ->join('product_translation', 'product_translation.product_id', '=', 'product.id')
+            ->leftJoin('product_category', 'product_category.product_id', '=', 'product.id')
+            ->leftJoin('category_translation', 'category_translation.category_id', '=', 'product_category.category_id')
             ->groupBy('product.id');
 
         $event = new ProductDataGridEvent($this);
