@@ -32,24 +32,6 @@ class CategoryController extends AdminController
         );
     }
 
-    public function addAction()
-    {
-        $form = $this->getForm()->init();
-
-        $this->registerFunctions();
-
-        if ($form->isValid()) {
-
-            $this->getRepository()->save($form->getSubmitValues());
-
-            return $this->redirect($this->generateUrl($this->getDefaultRoute()));
-        }
-
-        return Array(
-            'form' => $form
-        );
-    }
-
     public function editAction($id)
     {
         $this->registerFunctions();
@@ -69,14 +51,6 @@ class CategoryController extends AdminController
             'tree' => $tree,
             'form' => $form
         );
-    }
-
-    /**
-     * Get DataGrid
-     */
-    protected function getDataGrid()
-    {
-        return $this->get('category.datagrid');
     }
 
     /**
@@ -130,10 +104,25 @@ class CategoryController extends AdminController
             'doAJAXRefreshSeoCategory'
         ]);
 
+        $this->getXajaxManager()->registerFunction([
+            'AddCategory',
+            $this->getRepository(),
+            'quickAddCategory'
+        ]);
+
+        $this->getXajaxManager()->registerFunction([
+            'DeleteCategory',
+            $this->getRepository(),
+            'delete'
+        ]);
+
+        $this->getXajaxManager()->registerFunction([
+            'ChangeCategoryOrder',
+            $this->getRepository(),
+            'changeCategoryOrder'
+        ]);
+
         $this->getXajaxManager()->registerFunctions([
-            'DeleteCategory'          => [$this->getRepository(), 'deleteCategory'],
-            'AddCategory'             => [$this->getRepository(), 'addEmptyCategory'],
-            'ChangeCategoryOrder'     => [$this->getRepository(), 'changeCategoryOrder'],
             'doAJAXCreateSeoCategory' => [$this->getRepository(), 'doAJAXCreateSeoCategory'],
         ]);
     }

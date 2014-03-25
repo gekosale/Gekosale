@@ -1,9 +1,29 @@
 {% extends "layout.twig" %}
 {% block content %}
-<h2>{% trans %}Edit currency{% endtrans %}</h2>
-<ul class="possibilities">
-	<li><a href="{{ path('admin.currency.index') }}" class="button return"><span></span></a></li>
-	<li><a href="#currency" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a></li>
-</ul>
-{{ form(form) }}
+    <h2>{% trans %}Edit category{% endtrans %}</h2>
+    <ul class="possibilities">
+        <li><a href="{{ path('admin.category.index') }}" class="button return"><span></span></a></li>
+        <li><a href="#category" rel="submit" class="button"><span>{% trans %}Save and finish{% endtrans %}</span></a>
+        </li>
+    </ul>
+    <div class="layout-two-columns">
+        <div class="column narrow-collapsed">
+            <div class="block">
+                {{ form(tree) }}
+            </div>
+        </div>
+        <div class="column wide-collapsed">
+            {{ form(form) }}
+        </div>
+    </div>
+    <script type="text/javascript">
+        function openCategoryEditor(sId) {
+            if (sId == undefined) {
+                window.location = '{{ path('admin.category.index') }}';
+            }
+            else {
+                window.location = '{{ path('admin.category.edit') }}/' + sId;
+            }
+        }
+    </script>
 {% endblock %}

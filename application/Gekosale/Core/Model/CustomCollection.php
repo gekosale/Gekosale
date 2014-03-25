@@ -22,6 +22,20 @@ use Illuminate\Database\Eloquent\Collection;
 class CustomCollection extends Collection
 {
     /**
+     * Returns current translation from translation Collection
+     *
+     * @param Collection $collection
+     */
+    public function getCurrentTranslation($language)
+    {
+        foreach ($this as $item) {
+            if ($item->language_id == $language) {
+                return $item;
+            }
+        }
+    }
+
+    /**
      * Flatten Collection to key-value pairs used in forms
      *
      * @param            $idKey

@@ -93,13 +93,6 @@ abstract class AdminController extends Controller
     abstract protected function getRepository();
 
     /**
-     * Returns DataGrid service for controller
-     *
-     * @return \Gekosale\Core\DataGrid|object
-     */
-    abstract protected function getDataGrid();
-
-    /**
      * Returns Form service for controller
      *
      * @return \Gekosale\Core\Form|object

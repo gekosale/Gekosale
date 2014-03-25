@@ -11,7 +11,9 @@
  */
 namespace Gekosale\Plugin\Category\Repository;
 
+use Gekosale\Core\Helper;
 use Gekosale\Core\Model\Category;
+use Gekosale\Core\Model\CategoryTranslation;
 use Gekosale\Core\Repository;
 
 /**
@@ -30,7 +32,7 @@ class CategoryRepository extends Repository
      */
     public function all()
     {
-        return Category::all();
+        return Category::with('translation')->get();
     }
 
     /**
@@ -50,9 +52,11 @@ class CategoryRepository extends Repository
      *
      * @param $id
      */
-    public function delete($id)
+    public function delete($request)
     {
-        return Category::destroy($id);
+        $this->transaction(function () use ($request) {
+            return Category::destroy($request['id']);
+        });
     }
 
     /**
@@ -80,6 +84,33 @@ class CategoryRepository extends Repository
         $category->negative_suffix    = $requiredData['negative_suffix'];
 
         $category->save();
+    }
+
+    public function quickAddCategory($request)
+    {
+        $id = $this->transaction(function () use ($request) {
+            $category            = new Category();
+            $category->parent_id = isset($request['parent']) ? $request['parent'] : null;
+            $category->save();
+
+            foreach ($this->getLanguageIds() as $language) {
+
+                $translation = CategoryTranslation::firstOrNew([
+                    'category_id' => $category->id,
+                    'language_id' => $language
+                ]);
+
+                $translation->name = $request['name'];
+                $translation->slug = Helper::makeSlug($request['name']);
+                $translation->save();
+            }
+
+            return $category->id;
+        });
+
+        return [
+            'id' => $id
+        ];
     }
 
     /**
@@ -110,24 +141,20 @@ class CategoryRepository extends Repository
         return $populateData;
     }
 
-    /**
-     * Retrieves all valid category symbols as key-value pairs
-     *
-     * @return array
-     */
-    public function getCategorySymbols()
+    public function changeCategoryOrder($request)
     {
-        $currencies = Intl::getCategoryBundle()->getCategoryNames();
+        $this->transaction(function () use ($request) {
+            foreach ($request['items'] as $item) {
+                $category            = Category::findOrFail($item['id']);
+                $category->parent_id = $item['parent'];
+                $category->hierarchy = $item['weight'];
+                $category->save();
+            }
+        });
 
-        ksort($currencies);
-
-        $Data = [];
-
-        foreach ($currencies as $categorySymbol => $categoryName) {
-            $Data[$categorySymbol] = sprintf('%s (%s)', $categorySymbol, $categoryName);
-        }
-
-        return $Data;
+        return [
+            'status' => $this->trans('Category order saved successfully.')
+        ];
     }
 
     /**
@@ -137,17 +164,17 @@ class CategoryRepository extends Repository
      */
     public function getCategoriesTree()
     {
-        $categories = $this->all();
-
+        $categories     = $this->all();
         $categoriesTree = [];
 
         foreach ($categories as $category) {
 
-            $children = Category::children($category->id)->get();
+            $children     = Category::children($category->id)->get();
+            $languageData = $category->translation->getCurrentTranslation($this->getCurrentLanguage());
 
             $categoriesTree[$category->id] = [
                 'id'          => $category->id,
-                'name'        => $category->id,
+                'name'        => $languageData->name,
                 'hasChildren' => count($children),
                 'parent'      => $category->parent_id,
                 'weight'      => $category->hierarchy

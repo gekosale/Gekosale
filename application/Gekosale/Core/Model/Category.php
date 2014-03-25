@@ -19,12 +19,22 @@ use Gekosale\Core\Model;
  * @package Gekosale\Core\Model
  * @author  Adam Piotrowski <adam@gekosale.com>
  */
-class Category extends Model
+class Category extends Model implements TranslatableModelInterface
 {
     protected $table = 'category';
     public $timestamps = true;
     protected $softDelete = false;
     protected $fillable = array('id');
+
+    public function translation()
+    {
+        return $this->hasMany('Gekosale\Core\Model\CategoryTranslation');
+    }
+
+    public function photo()
+    {
+        return $this->belongsToOne('Gekosale\Core\Model\File');
+    }
 
     public function scopeParents($query)
     {
@@ -56,5 +66,25 @@ class Category extends Model
     public function getEnabledAttribute($value)
     {
         return (int)$value;
+    }
+
+    /**
+     * Mutator for parent_id attribute
+     *
+     * @param $value
+     */
+    public function setParentIdAttribute($value)
+    {
+        $this->attributes['parent_id'] = ((int)$value == 0) ? null : $value;
+    }
+
+    /**
+     * Mutator for hierarchy attribute
+     *
+     * @param $value
+     */
+    public function setHierarchyAttribute($value)
+    {
+        $this->attributes['hierarchy'] = (int)$value;
     }
 }

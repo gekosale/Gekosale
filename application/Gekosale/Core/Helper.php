@@ -22,24 +22,6 @@ use Illuminate\Database\Eloquent\Collection;
 class Helper extends Component
 {
     /**
-     * Returns current translation from translation Collection
-     *
-     * @param Collection $collection
-     */
-    public function getCurrentTranslation(Collection $collection)
-    {
-        $language = $this->getCurrentLanguage();
-
-        $data = $collection->each(function ($item) use ($collection, $language) {
-            if ($item->language_id == $language) {
-                return $item;
-            }
-        });
-
-        return $data;
-    }
-
-    /**
      * Replaces commas with dots
      *
      * @param $value
@@ -49,5 +31,18 @@ class Helper extends Component
     public static function changeCommaToDot($value)
     {
         return str_replace(',', '.', $value);
+    }
+
+    /**
+     * @param $name
+     */
+    public static function makeSlug($name, $delimiter = '-')
+    {
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+        $clean = strtolower(trim($clean, '-'));
+        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+
+        return $clean;
     }
 }
