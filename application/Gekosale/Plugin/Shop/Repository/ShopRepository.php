@@ -72,9 +72,10 @@ class ShopRepository extends Repository
                 'id' => $id
             ]);
 
-            $shop->url        = $Data['url'];
-            $shop->offline    = $Data['offline'];
-            $shop->company_id = $Data['company_id'];
+            $shop->url             = $Data['url'];
+            $shop->offline         = $Data['offline'];
+            $shop->company_id      = $Data['company_id'];
+            $shop->layout_theme_id = $Data['layout_theme_id'];
             $shop->save();
 
             foreach ($this->getLanguageIds() as $language) {
@@ -103,8 +104,9 @@ class ShopRepository extends Repository
         $data = $request['data'];
 
         $this->transaction(function () use ($id, $data) {
-            $shop          = $this->find($id);
-            $shop->offline = $data['offline'];
+            $shop                  = $this->find($id);
+            $shop->offline         = $data['offline'];
+            $shop->layout_theme_id = $data['layout_theme_id'];
             $shop->save();
         });
 
@@ -128,10 +130,11 @@ class ShopRepository extends Repository
         $languageData = $shopData->getTranslationData();
 
         $accessor->setValue($populateData, '[required_data]', [
-            'url'           => $shopData->url,
-            'offline'       => $shopData->offline,
-            'company_id'    => $shopData->company_id,
-            'language_data' => $languageData
+            'url'             => $shopData->url,
+            'offline'         => $shopData->offline,
+            'company_id'      => $shopData->company_id,
+            'layout_theme_id' => $shopData->layout_theme_id,
+            'language_data'   => $languageData
         ]);
 
         $accessor->setValue($populateData, '[meta_data]', [

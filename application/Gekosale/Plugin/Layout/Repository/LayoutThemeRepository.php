@@ -110,4 +110,9 @@ class LayoutThemeRepository extends Repository
 
         return $populateData;
     }
+
+    public function getAllLayoutThemeToSelect()
+    {
+        return $this->all()->toSelect('id', 'name');
+    }
 }

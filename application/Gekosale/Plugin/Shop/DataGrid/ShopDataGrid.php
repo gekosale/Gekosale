@@ -75,6 +75,20 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
             ]
         ]);
 
+        $this->addColumn('layout_theme_id', [
+            'source'     => 'shop.layout_theme_id',
+            'caption'    => $this->trans('Theme'),
+            'selectable' => true,
+            'appearance' => [
+                'width' => 70,
+                'align' => DataGridInterface::ALIGN_LEFT
+            ],
+            'filter'     => [
+                'type'    => DataGridInterface::FILTER_SELECT,
+                'options' => $this->getLayoutThemeFilterOptions()
+            ]
+        ]);
+
         $this->addColumn('offline', [
             'source'     => 'shop.offline',
             'caption'    => $this->trans('Offline mode'),
@@ -110,6 +124,21 @@ class ShopDataGrid extends DataGrid implements DataGridInterface
             'id'      => 1,
             'caption' => $this->trans('Online'),
         ];
+
+        return $options;
+    }
+
+    protected function getLayoutThemeFilterOptions()
+    {
+        $themes  = $this->get('layout_theme.repository')->getAllLayoutThemeToSelect();
+        $options = [];
+
+        foreach ($themes as $id => $name) {
+            $options[] = [
+                'id'      => $id,
+                'caption' => $name
+            ];
+        }
 
         return $options;
     }

@@ -63,6 +63,11 @@ class Migration1395612455 extends Migration
                 $table->foreign('layout_theme_id')->references('id')->on('layout_theme')->onDelete('CASCADE')->onUpdate('NO ACTION');
             });
         }
+
+//        $this->getDb()->schema()->table('shop', function ($table) {
+//            $table->integer('layout_theme_id')->nullable()->unsigned()->after('company_id');
+//            $table->foreign('layout_theme_id')->references('id')->on('layout_theme')->onDelete('SET NULL')->onUpdate('NO ACTION');
+//        });
     }
 
     public function down()

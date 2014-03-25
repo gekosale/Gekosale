@@ -30,7 +30,7 @@ class CustomCollection extends Collection
      *
      * @return array
      */
-    public function toSelect($idKey, $translationPath, $language)
+    public function toSelect($idKey, $translationPath, $language = null)
     {
         $items           = $this;
         $select          = [];

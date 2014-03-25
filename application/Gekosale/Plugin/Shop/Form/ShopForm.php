@@ -80,6 +80,15 @@ class ShopForm extends Form
             ]
         ]));
 
+        $requiredData->addChild($this->addSelect([
+            'name'    => 'layout_theme_id',
+            'label'   => $this->trans('Theme'),
+            'options' => $this->makeOptions($this->get('layout_theme.repository')->getAllLayoutThemeToSelect()),
+            'rules'   => [
+                $this->addRuleRequired($this->trans('Theme is required'))
+            ]
+        ]));
+
         $metaData = $form->addChild($this->addFieldset([
             'name'  => 'meta_data',
             'label' => $this->trans('Seo settings')
