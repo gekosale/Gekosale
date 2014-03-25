@@ -161,9 +161,8 @@ class ShopRepository extends Repository
      */
     public function getShopByHost()
     {
-        $request = $this->getRequest();
-        $host    = $request->getHttpHost();
-        $shop    = $this->getDb()
+        $host = $this->getRequest()->getHttpHost();
+        $shop = $this->getDb()
             ->table('shop')
             ->join('shop_translation', 'shop_translation.shop_id', '=', 'shop.id')
             ->where('shop.url', '=', $host)
