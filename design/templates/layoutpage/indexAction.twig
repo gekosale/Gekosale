@@ -1,0 +1,17 @@
+{% extends "layout.twig" %}
+{% block content %}
+    <h2>{% trans %}Layout pages{% endtrans %}</h2>
+    <script type="text/javascript">
+        function openLayoutPageEditor(sId) {
+            if (sId == undefined) {
+                window.location = '{{ path('admin.layout_page.index') }}';
+            }
+            else {
+                window.location = "{{ path('admin.layout_page.edit') }}/" + sId;
+            }
+        };
+    </script>
+    <div class="block">
+        {{ form(tree) }}
+    </div>
+{% endblock %}

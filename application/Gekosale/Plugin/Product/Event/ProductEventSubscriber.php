@@ -11,10 +11,12 @@
  */
 namespace Gekosale\Plugin\Product\Event;
 
+use Gekosale\Plugin\Layout\Event\LayoutPageFormEvent;
 use Symfony\Component\EventDispatcher\Event,
     Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Class ProductEventSubscriber
@@ -24,6 +26,11 @@ use Gekosale\Plugin\AdminMenu\Event\AdminMenuInitEvent;
  */
 class ProductEventSubscriber implements EventSubscriberInterface
 {
+
+    public function onLayoutPageTreeInitAction(GenericEvent $event)
+    {
+        $event->setArgument('product', 'Product');
+    }
 
     public function onAdminMenuInitAction(Event $event)
     {
@@ -37,7 +44,8 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         return array(
             AdminMenuInitEvent::ADMIN_MENU_INIT_EVENT => 'onAdminMenuInitAction',
-            ProductDataGridEvent::DATAGRID_INIT_EVENT => 'onProductDataGridInitAction'
+            ProductDataGridEvent::DATAGRID_INIT_EVENT => 'onProductDataGridInitAction',
+            LayoutPageFormEvent::TREE_INIT_EVENT      => 'onLayoutPageTreeInitAction'
         );
     }
 }

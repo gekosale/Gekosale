@@ -61,11 +61,12 @@ $layoutPageCollection->add('admin.layout_page.add', new Route('/add', array(
     '_action'     => 'addAction'
 )));
 
-$layoutPageCollection->add('admin.layout_page.edit', new Route('/edit/{id}', array(
+$layoutPageCollection->add('admin.layout_page.edit', new Route('/edit/{id},{page}', array(
     '_controller' => $layoutPageController,
     '_mode'       => 'admin',
     '_action'     => 'editAction',
-    'id'          => null
+    'id'          => null,
+    'page'        => null
 )));
 
 $layoutPageCollection->addPrefix('/admin/layout_page');
